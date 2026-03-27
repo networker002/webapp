@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание 📅</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --main-bg-color: linear-gradient(-180deg, #05050a, #000);
+        }
+
+        @font-face {
+            font-family: "DejaVuSans";
+            src: url(../services/DejaVu\ Sans/DejaVuSans.ttf);
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--main-bg-color);
+            color: #fff;
+            font-family: "DejaVuSans";
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1em;
+            padding: .5em;
+            background:#4f6187;
+        }
+
+        .days {
+            ul {
+                display: flex;
+                justify-content: center;
+                list-style: none;
+                margin: 1em;
+                gap: 5vw;
+
+                li {
+                    background-color: #10244e;
+                    padding: 6px;
+                    border-radius: .5em;
+                    transition: scale .1s, background .2s ease, padding .5s ease;
+                    cursor: pointer;
+
+                    &:active {
+                        scale: .9;
+                    }
+                }
+            }
+        }
+
+        .days .selected {
+            background-color: rgb(0, 200, 200);
+            filter: drop-shadow(1px 1px .5em #ffffff34);
+            padding: 6px 12px;
+        }
+
+    </style>
+
+    <header>
+        <h1>Расписание занятий</h1>
+        <h5 id="date-time"></h5>
+    </header>
+
+    <main>
+        <div class="days">
+            <ul>
+                <li class="btnD">ПН</li>
+                <li class="btnD">ВТ</li>
+                <li class="btnD">СР</li>
+                <li class="btnD">ЧТ</li>
+                <li class="btnD">ПТ</li>
+                <li class="btnD">СБ</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        var d = new Date();
+        n = d.getDay();
+        m = d.getMonth();
+        dt = d.getDate();
+        days = {1:"Понедельник", 2:"Вторник", 3:"Среда", 4:"Четверг", 5:"Пятница", 6:"Субота", 7:"Воскресенье"}, months = {0:"января", 1:"февраля", 2:"марта", 3:"апреля", 4:"мая", 5:"июня", 6:"июля", 7:"августа", 8:"сентября", 9:"октября", 10:"ноября", 11:"декабря"}, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
+        document.getElementById("date-time").innerHTML = full;
+        daysShort = {1:"ПН", 2:"ВТ", 3:"СР", 4:"ЧТ", 5:"ПТ", 6:"СБ", 7:"ВС"}
+        let s = false;
+        let nowBtn;
+
+        var btns = document.querySelectorAll(".btnD");
+        btns.forEach((btn) => {
+            if (btn.innerHTML === daysShort[n]) {
+                btn.classList.add("selected");
+                nowBtn = btn;
+                s = true;
+            }
+            btn.addEventListener("click", function() {
+                if (s) {nowBtn.classList.remove("selected")}
+                btn.classList.add("selected");
+                nowBtn = btn;
+            });
+        });
+        
+    </script>
+</body>
+</html>
