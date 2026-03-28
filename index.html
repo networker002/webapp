@@ -169,6 +169,7 @@
         .second-header {
             display: flex;
             justify-content: space-around;
+            overflow-x: hidden;
         }
 
         .btns {
@@ -336,8 +337,8 @@
 
     function getSchedule1(){
     if (userId) {
-        const container = document.getElementById("schedule-container");
-            container.innerHTML = "";
+        //const container = document.getElementById("schedule-container");
+        //    container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
