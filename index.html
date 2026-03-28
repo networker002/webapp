@@ -125,7 +125,7 @@
             justify-content: center;
             align-items: center;
             gap: 1em;
-            z-index: 1000;
+            z-index: 100000;
             background: #000000c0;
             min-height: 100vh;
             min-width: 100vw;
@@ -174,19 +174,100 @@
             text-align: center;
             padding: 6px;
             transition: scale .1s, transform 3s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
 
             &:active {
                 scale: .75;
             }
         }
+
+        .menu-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+            text-align: center;
+            background: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
+            padding: 3em;
+            padding-bottom: 1.5em;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display:none;
+
+            h1 {
+                padding-bottom: 1em;
+                letter-spacing: 1px;
+            }
+
+            h4 {
+                font-family: monospace;
+                font-size: larger;
+                color: rgb(225, 225, 225);
+                position: relative;
+
+                span {
+                    letter-spacing: 1.5px;
+                }
+            }
+
+            button {
+                margin-top: 2em;
+                background: #5f757294;
+                border: none;
+                padding: 6px;
+                border-radius: 24px;
+                letter-spacing: 2px;
+                color:#ffffff;
+                filter: drop-shadow(0 4px .75em #ffffff3f);
+                transition: transform .3s;
+
+                &:active {
+                   transform: scale(.9);
+                }
+            }
+        }
+
+        h4 > input  {
+            margin-left:.3em;
+            margin-right: .9em;
+            transition: scale .2s;
+            position: relative;
+
+            &::after {
+                position: absolute;
+                content: '';
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 1em;
+                height: 1em;
+                border-radius: 50%;
+                background: #fff;
+                border: solid 1px currentColor;
+            }
+
+            &:active {
+                scale: 1.2;
+            }
+
+            &:checked&::after {
+                    background: #4f6187;
+                }
+        }
     </style>
 
     <div id="loader"><div>●</div><div>●</div><div>●</div></div>
 
-    <div class="menu-display">
+    <div class="menu-display" id="user-menu-display">
         <h1>Меню</h1>
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
         <h4>Группа: <span id="group-name-menu"></span></h4>
+        <h4>Тема:<br> <span id="d-s-t">Dark</span><input type="radio" name="theme" id="dark-theme" checked><br><span id="l-s-t">Light</span><input type="radio" name="theme" id="light-theme"></h4>
+        <button onclick="closee('user-menu-display', true)">Закрыть</button>
     </div>
 
     <header>
@@ -206,7 +287,7 @@
             </ul>
         </div>
         <div class="second-header">
-            <div class="btns" id="burger-menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
             <div id="gr"></div>
             <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
         </div>
@@ -232,7 +313,7 @@
         daysShort = {1:"ПН", 2:"ВТ", 3:"СР", 4:"ЧТ", 5:"ПТ", 6:"СБ", 7:"ВС"}
         let s = false;
         let nowBtn;
-
+        
 
     
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -259,6 +340,8 @@
             }
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
             document.getElementById("group-name-menu").innerHTML = Group;
+            var container = document.getElementById("schedule-container");
+            container.innerHTML = "";
 
             return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
@@ -270,7 +353,6 @@
         })
         .then((data) => {
             if (data) {
-                const container = document.getElementById("schedule-container");
                 container.innerHTML = data;
                 if (nowBtn) upsSV();
             }
@@ -281,15 +363,7 @@
             });
         } else {
             console.warn("userId не определен, запрос отменен.");
-            tg.showPopup({
-                title: "Неизвестный пользователь",
-                message: "Вы не зарегистрированы в системе!\nИспользуйте /group чтобы установить группу",
-                buttons: [{id:"close", type:"cancel", "text": "Закрыть"}]
-            }, function(buttonId) {
-                if (buttonId == "close"){
-                    window.close();
-                }
-            })
+            //
             loader.style.display = "none";
         }
     }
@@ -323,9 +397,10 @@
             });
         });
 
+    let r = 0;
     var Hbtns = document.querySelectorAll(".btns");
     Hbtns.forEach((bt) => {
-        let r = 0;
+        
         bt.addEventListener("click", function() {
             r += k;
             bt.style.transform = 'rotate('+r+"deg)";
@@ -347,11 +422,26 @@
     }
     });
 
-    var burger = document.getElementById("burger-menu");
+    //var burger = document.getElementById("burger-menu");
 
-    burger.addEventListener("click", function() {
-        let menu;
-    })
+    //burger.addEventListener("click", function() {
+    //    let menu;
+    //});
+
+    function openn(id, displ) {
+        var el = document.getElementById(id);
+        
+        el.style.display = displ;
+    }
+
+    function closee(id, YorN) {
+        if (YorN) {
+            r+=90;
+            document.getElementById("burger-menu").style.transform = "rotate("+r+"deg)";
+        }
+        var el = document.getElementById(id);
+        el.style.display = "none";
+    }
     </script>
 </body>
 </html>
