@@ -499,9 +499,10 @@
             var Group = userGroup.group_name;
             
             if (!Group || Group.toUpperCase() === "NULL") {
-                throw new Error("Group not found!");
+              
                 document.getElementById("alerter").style.display = "block";
-                Group = "Не указана"
+                Group = "Не указана";
+throw new Error("Group not found!");
             }
             if (localStorage.getItem("userGroup") !== Group) {
                 
