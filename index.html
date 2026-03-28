@@ -218,10 +218,11 @@
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
-            return response.text(); 
+            return response.json(); 
         })
         .then((userGroup) => {
-            if (userGroup) {var Group = userGroup["group_name"]}
+            var Group = userGroup.group_name;
+            if (!Group) throw new Error("Group not found!")
             if (localStorage.getItem("userGroup") !== Group) {
                 localStorage.setItem("userGroup", Group);
             }
