@@ -429,7 +429,7 @@
     container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
     //fetch("https://boost.rorosin.ru/group/" + userId)
-    fetch("http://127.0.0.1:8000/" + userId)
+    fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
             return response.json(); 
