@@ -18,6 +18,7 @@
             --header-bg-color: #4f6187;
             --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
             --menu-color:#fff;
+            --s-b-b: rgb(180, 180, 180);
         }
 
         @font-face {
@@ -268,6 +269,81 @@
                 }
         }
 
+        #alerter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:#000000c0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 200000;
+            padding: 2em;
+            box-sizing: border-box;
+            display: none;
+
+
+            h2, h3, h6 {
+                color: #fff;
+                padding: 1em;
+            }
+
+            h6 {
+                letter-spacing: 3px;
+                font-weight: 300;
+            }
+        }
+
+        #alerter h1 {
+            color: #ff0303;
+            margin-bottom: 0.5em;
+        }
+
+        #alerter input {
+            padding: 12px;
+            border-radius: 38px;
+            border: 1px solid #4f6187;
+            background: #10244e;
+            color: white;
+            font-size: 1.2em;
+            width: 80%;
+            max-width: 300px;
+
+            &::placeholder {
+                transition:  letter-spacing .5s ease-in-out, color 1s ease;
+                color: #999999;
+            }
+
+            &:focus {
+                outline: none;
+
+                &::placeholder {
+                    letter-spacing: 2px;
+                    color: #4f6187;
+                }
+            }
+
+            
+        }
+        #set-group-btn {
+            margin: 1em;
+                padding: .5em 1em;
+                background: var(--s-b-b);
+                border-radius: 24px;
+                border: none;
+                transition: transform .1s, filter .2s;
+                filter: drop-shadow(2px 4px 12px #0000006b);
+
+                &:active {
+                    transform: translateY(4px) scale(.95);
+                    filter: none;
+                }
+            }
+
         @keyframes opq1 {
             0% {
                 opacity: 0;
@@ -283,6 +359,15 @@
         <h4>Группа: <span id="group-name-menu"></span></h4>
         <h4>Тема:<br> <span id="d-s-t">Dark</span><input type="radio" name="theme" id="dark-theme" checked><br><span id="l-s-t">Light</span><input type="radio" name="theme" id="light-theme"></h4>
         <button onclick="closee('user-menu-display', true)">Закрыть</button>
+    </div>
+
+    <div id="alerter">
+        <h1>Неизвестный пользователь</h1>
+        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+        <h6>Давайте сделаем это сейчас:</h6>
+        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
     </div>
 
     <header>
@@ -313,6 +398,8 @@
     </main>
 
     <script>
+        const container = document.getElementById("schedule-container");
+        
         var loader = document.getElementById("loader");
         loader.style.display = "flex";
 
@@ -337,8 +424,7 @@
 
     function getSchedule1(){
     if (userId) {
-        //const container = document.getElementById("schedule-container");
-        //    container.innerHTML = "";
+    container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
@@ -359,7 +445,7 @@
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
             document.getElementById("group-name-menu").innerHTML = Group;
 
-            return fetch("http://127.0.0.1:8000/schedule/ИС-25-14О");
+            return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
         .then((resp) => {
             if (resp && resp.ok) {
@@ -379,8 +465,8 @@
                 loader.style.display = "none";
             });
         } else {
-            alert("userId не определен, запрос отменен.");
-
+            console.warn("userId не определен, запрос отменен.");
+            document.getElementById("alerter").style.display = "block";
             //
             loader.style.display = "none";
         }
@@ -517,6 +603,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function groupSet0() {
+    var D = document.getElementById("group-set").value.textContent;
+    var erDisplay = document.getElementById("errs-reg");
+    erDisplay.style = "font-weight:600;color:red";
+    if (D.length < 4 || D.length > 13) {
+        erDisplay.innerHTML = "Имя группы должно быть другой длины";
+        setTimeout(function(){erDisplay.innerHTML=""}, 3000);
+    } else {
+        url = "https://t.me/webapptestrobotbot?start=group "+D;
+        location.replace(url);
+    }
+}
     </script>
 </body>
 </html>
