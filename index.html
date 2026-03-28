@@ -336,6 +336,8 @@
 
     function getSchedule1(){
     if (userId) {
+        const container = document.getElementById("schedule-container");
+            container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
@@ -344,8 +346,7 @@
         })
         .then((userGroup) => {
             var Group = userGroup.group_name;
-            var container = document.getElementById("schedule-container");
-            container.innerHTML = "";
+            
             if (!Group) {
                 throw new Error("Group not found!");
                 Group = "Не указана"
