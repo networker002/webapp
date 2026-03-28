@@ -612,9 +612,9 @@
     function closee(id) {
         var el = document.getElementById(id);
         el.style.animation = "closing .5s normal";
-        burgerBtn.classList.remove("open-btn");
+        burgerBtn.classList.remove("opened-btn");
         burgerBtn.classList.add("closed-btn");
-        setTimeout(function(){el.style.display = "none";}, 70);
+        setTimeout(function(){el.style.display = "none";}, 80);
     }
 
 
