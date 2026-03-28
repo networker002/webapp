@@ -499,9 +499,9 @@
         .then((userGroup) => {
             var Group = userGroup.group_name;
 
-            if (!Group ) {
-                throw new Error("Group not found!");
+            if (!Group || Group.toUpperCase === "NULL") {
                 document.getElementById("alerter").style.display = "block";
+     throw new Error("Group not found!");
                 Group = "Не указана"
             }
             if (localStorage.getItem("userGroup") !== Group) {
@@ -533,7 +533,7 @@
             });
         } else {
             console.warn("userId не определен, запрос отменен.");
-            
+            document.getElementById("alerter").style.display = "block";
             //
             loader.style.display = "none";
         }
