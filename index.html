@@ -15,6 +15,9 @@
 
         :root {
             --main-bg-color: linear-gradient(-180deg, #05050a, #000);
+            --header-bg-color: #4f6187;
+            --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
+            --menu-color:#fff;
         }
 
         @font-face {
@@ -37,7 +40,7 @@
             gap: 1em;
             padding: .5em;
             padding-top: 2em;
-            background:#4f6187;
+            background:var(--header-bg-color);
         }
 
         .days {
@@ -182,6 +185,10 @@
             }
         }
 
+        .btnD {
+            color: #fff;
+        }
+
         .menu-display {
             position: absolute;
             top: 50%;
@@ -191,7 +198,7 @@
             flex-direction: column;
             gap: 1.5em;
             text-align: center;
-            background: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
+            background: var(--menu-bg);
             padding: 3em;
             padding-bottom: 1.5em;
             border-radius: 16px;
@@ -207,7 +214,7 @@
             h4 {
                 font-family: monospace;
                 font-size: larger;
-                color: rgb(225, 225, 225);
+                color: var(--menu-color);
                 position: relative;
 
                 span {
@@ -258,6 +265,12 @@
             &:checked&::after {
                     background: #4f6187;
                 }
+        }
+
+        @keyframes opq1 {
+            0% {
+                opacity: 0;
+            }
         }
     </style>
 
@@ -444,6 +457,63 @@
         var el = document.getElementById(id);
         el.style.display = "none";
     }
+
+
+function applyTheme(theme) {
+    const root = document.documentElement;
+    const themeNameDisplay = document.getElementById("d-s-t");
+    
+    if (theme === 'light') {
+        
+        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #f0f2f5, #ffffff)');
+        document.body.style.color = '#000';
+        root.style.setProperty("--header-bg-color", "#a2d2ff");
+        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25))");
+        root.style.setProperty("--menu-color", "#10002b");
+        if(themeNameDisplay) themeNameDisplay.textContent = "Light";
+    } else {
+        
+        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #05050a, #000)');
+        document.body.style.color = '#fff';
+        root.style.setProperty("--header-bg-color", "#4f6187");
+        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125))");
+        root.style.setProperty("--menu-color", "#fff");
+        if(themeNameDisplay) themeNameDisplay.textContent = "Dark";
+    }
+}
+
+const darkRadio = document.getElementById("dark-theme");
+const lightRadio = document.getElementById("light-theme");
+
+darkRadio.addEventListener("change", function() {
+    
+    if (this.checked) {
+        
+        applyTheme('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+});
+
+lightRadio.addEventListener("change", function() {
+
+    if (this.checked) {
+        applyTheme('light');
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark'; 
+    
+    if (savedTheme === 'light') {
+        lightRadio.checked = true;
+        applyTheme('light');
+    } else {
+        darkRadio.checked = true;
+        applyTheme('dark');
+    }
+});
+
     </script>
 </body>
 </html>
