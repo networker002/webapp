@@ -64,7 +64,7 @@
 
         .days .selected {
             background-color: rgb(0, 200, 200);
-            filter: drop-shadow(1px 1px .5em #ffffff34);
+            filter: drop-shadow(1px 1px .5em #ffffff38);
             padding: 6px 12px;
         }
 
@@ -163,9 +163,31 @@
             }
         }
 
+        .second-header {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .btns {
+            margin: auto;
+            background: none;
+            text-align: center;
+            padding: 6px;
+            transition: scale .1s, transform 3s cubic-bezier(0.19, 1, 0.22, 1);
+
+            &:active {
+                scale: .75;
+            }
+        }
     </style>
 
     <div id="loader"><div>●</div><div>●</div><div>●</div></div>
+
+    <div class="menu-display">
+        <h1>Меню</h1>
+        <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
+        <h4>Группа: <span id="group-name-menu"></span></h4>
+    </div>
 
     <header>
         <h1>Расписание занятий</h1>
@@ -183,8 +205,11 @@
                 <li class="btnD">СБ</li>
             </ul>
         </div>
-
-        <div id="gr"></div>
+        <div class="second-header">
+            <div class="btns" id="burger-menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+            <div id="gr"></div>
+            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
+        </div>
 
         <div id="schedule-container">
 
@@ -214,7 +239,9 @@
         var userId = tg.initDataUnsafe.user.id;
     };
 
+    function getSchedule1(){
     if (userId) {
+    document.getElementById("tg-id-menu").innerHTML = userId;
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
@@ -222,11 +249,16 @@
         })
         .then((userGroup) => {
             var Group = userGroup.group_name;
-            if (!Group) throw new Error("Group not found!")
+            if (!Group) {
+                throw new Error("Group not found!");
+                Group = "Не указана"
+            }
             if (localStorage.getItem("userGroup") !== Group) {
+                
                 localStorage.setItem("userGroup", Group);
             }
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
+            document.getElementById("group-name-menu").innerHTML = Group;
 
             return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
@@ -249,17 +281,30 @@
             });
         } else {
             console.warn("userId не определен, запрос отменен.");
+            tg.showPopup({
+                title: "Неизвестный пользователь",
+                message: "Вы не зарегистрированы в системе!\nИспользуйте /group чтобы установить группу",
+                buttons: [{id:"close", type:"cancel", "text": "Закрыть"}]
+            }, function(buttonId) {
+                if (buttonId == "close"){
+                    window.close();
+                }
+            })
             loader.style.display = "none";
         }
+    }
+        getSchedule1();
         function upsSV(){
                 var DAYS = document.querySelectorAll(".day");
                 
                 DAYS.forEach((de) => {
-                    de.style.display = "none";
+                    var dayName = de.querySelector(".day-name")?.textContent.trim();
                     btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
-                    if (de.querySelector(".day-name")?.innerHTML === btnMapping[nowBtn.innerHTML]) {
+                    if (dayName === btnMapping[nowBtn.innerHTML]) {
                         de.style.display = "block";
-                    } else {de.style.display = "none";}
+                    } else {
+                        de.style.display = "none";
+                    }
             });
             }
 
@@ -278,6 +323,35 @@
             });
         });
 
+    var Hbtns = document.querySelectorAll(".btns");
+    Hbtns.forEach((bt) => {
+        let r = 0;
+        bt.addEventListener("click", function() {
+            r += k;
+            bt.style.transform = 'rotate('+r+"deg)";
+        })
+        if (bt.id === "upd-b"){var k = 360}
+        else {var k = 90}
+    });
+
+    const updater = document.getElementById("upd-b");
+    let timeout = 0;
+    updater.addEventListener("click", function(){
+        if (timeout === 0){
+        getSchedule1();
+        upsSV();
+        timeout = 5000;
+        setTimeout(function(){
+            timeout = 0;
+        }, 5000)
+    }
+    });
+
+    var burger = document.getElementById("burger-menu");
+
+    burger.addEventListener("click", function() {
+        let menu;
+    })
     </script>
 </body>
 </html>
