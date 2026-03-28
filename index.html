@@ -20,6 +20,9 @@
             --menu-color:#fff;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: #000000c9;
+            --alert-bg: linear-gradient(90deg, #19d48d41, #10835741);
+            --time-color: #bdc6db;
+            --loader-filter: #ffffff44;
         }
 
         @font-face {
@@ -104,7 +107,7 @@
         }
 
         .time {
-            color: #bdc6db;
+            color: var(--time-color);
             letter-spacing: 1px;
             font-family: monospace;
             font-size: larger;
@@ -153,7 +156,7 @@
             color: transparent;
             background: linear-gradient(90deg, rgb(0, 255, 106), rgb(0, 89, 255));
             background-clip: text;
-            filter: drop-shadow(1px 2px .1em #ffffff44);
+            filter: drop-shadow(1px 2px .1em var(--loader-filter));
 
             &:first-child {
                 animation: scale1 2s infinite;
@@ -193,6 +196,20 @@
             color: #fff;
         }
 
+        @keyframes opening {
+            0% {
+                transform: translate(-50%, -40%);
+                opacity: .5;
+            }
+        }
+
+        @keyframes closing {
+            100% {
+                transform: translate(-50%, -30%);
+                opacity: .5;
+            }
+        }
+
         .menu-display {
             position: absolute;
             top: 50%;
@@ -209,6 +226,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             display:none;
+            transition: opacity .5s;
 
             h1 {
                 padding-bottom: 1em;
@@ -241,6 +259,14 @@
                    transform: scale(.9);
                 }
             }
+        }
+
+        #burger-menu.opened-btn {
+            transform: scaleY(1.75);
+        }
+
+        #burger-menu.closed-btn {
+            transform: scaleY(1);
         }
 
         h4 > input  {
@@ -346,11 +372,42 @@
                 }
             }
 
+        #fast-alert {
+            justify-content: center;
+            flex-direction: column;
+            position: absolute;
+            background: var(--alert-bg);
+            padding: 6px calc(18px + 5vw);
+            border-radius: 12px;
+            box-shadow: 2px 4px .4em #00000027;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            right: 0;
+            bottom: 10%;
+            display: none;
+
+            h2 {
+                color: var(--menu-color);
+                font-family: monospace;
+                letter-spacing: 2px;
+                font-weight: 100;
+            }
+        }
+
+        @keyframes flyDown {
+            100% {
+                transform: translateY(24px);
+                opacity: 0;
+            }
+        }
+
         @keyframes opq1 {
             0% {
                 opacity: 0;
             }
         }
+
+        
     </style>
 
     <div id="loader"><div>●</div><div>●</div><div>●</div></div>
@@ -360,7 +417,7 @@
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
         <h4>Группа: <span id="group-name-menu"></span></h4>
         <h4>Тема:<br> <span id="d-s-t">Dark</span><input type="radio" name="theme" id="dark-theme" checked><br><span id="l-s-t">Light</span><input type="radio" name="theme" id="light-theme"></h4>
-        <button onclick="closee('user-menu-display', true)">Закрыть</button>
+        <button onclick="closee('user-menu-display')">Закрыть</button>
     </div>
 
     <div id="alerter">
@@ -371,6 +428,8 @@
         <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
         <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
     </div>
+
+    <div id="fast-alert"><h2>Обновляем данные</h2></div>
 
     <header>
         <h1>Расписание занятий</h1>
@@ -425,6 +484,7 @@
     };
 
     function getSchedule1(){
+    userId = 5158602710;
     if (userId) {
     container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
@@ -507,21 +567,25 @@
         });
 
     let r = 0;
-    var Hbtns = document.querySelectorAll(".btns");
-    Hbtns.forEach((bt) => {
-        
-        bt.addEventListener("click", function() {
-            r += k;
-            bt.style.transform = 'rotate('+r+"deg)";
-        })
-        if (bt.id === "upd-b"){var k = 360}
-        else {var k = 90}
+    const burgerBtn = document.getElementById("burger-menu");
+    const updater = document.getElementById("upd-b");
+    
+    burgerBtn.addEventListener("click", function() {
+        burgerBtn.classList.remove("closed-btn");
+        burgerBtn.classList.add("opened-btn");
     });
 
-    const updater = document.getElementById("upd-b");
     let timeout = 0;
     updater.addEventListener("click", function(){
         if (timeout === 0){
+        r+=360;
+        updater.style.transform = `rotate(${r}deg)`;
+        var al = document.getElementById("fast-alert");
+        al.style.display = "flex";
+        al.style.animation = "flyDown 2s normal";
+        setTimeout(function(){
+            al.style.display = "none";
+        }, 1900);
         getSchedule1();
         upsSV();
         timeout = 5000;
@@ -539,17 +603,16 @@
 
     function openn(id, displ) {
         var el = document.getElementById(id);
-        
         el.style.display = displ;
+        el.style.animation = "opening .5s normal";
     }
 
-    function closee(id, YorN) {
-        if (YorN) {
-            r+=90;
-            document.getElementById("burger-menu").style.transform = "rotate("+r+"deg)";
-        }
+    function closee(id) {
         var el = document.getElementById(id);
-        el.style.display = "none";
+        el.style.animation = "closing .5s normal";
+        burgerBtn.classList.remove("open-btn");
+        burgerBtn.classList.add("closed-btn");
+        setTimeout(function(){el.style.display = "none";}, 70);
     }
 
 
@@ -565,7 +628,8 @@ function applyTheme(theme) {
         root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25))");
         root.style.setProperty("--menu-color", "#10002b");
         root.style.setProperty("--text-shadow-c", "#000000c9");
-        if(themeNameDisplay) themeNameDisplay.textContent = "Light";
+        root.style.setProperty("--time-color", "#fff");
+        root.style.setProperty("--loader-filter", "rgba(0, 0, 0, .2)");
     } else {
         
         root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #05050a, #000)');
@@ -574,7 +638,8 @@ function applyTheme(theme) {
         root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125))");
         root.style.setProperty("--menu-color", "#fff");
         root.style.setProperty("--text-shadow-c", "none");
-        if(themeNameDisplay) themeNameDisplay.textContent = "Dark";
+        root.style.setProperty("--time-color", "#bdc6db");
+        root.style.setProperty("--loader-filter", "#ffffff44");
     }
 }
 
@@ -584,17 +649,20 @@ const lightRadio = document.getElementById("light-theme");
 darkRadio.addEventListener("change", function() {
     
     if (this.checked) {
-        
+        document.body.style.transition = "all 1s";
         applyTheme('dark');
         localStorage.setItem('theme', 'dark');
+        setTimeout(function(){document.body.style.transition = "none";}, 1050);
     }
 });
 
 lightRadio.addEventListener("change", function() {
 
     if (this.checked) {
+        document.body.style.transition = "all 1s";
         applyTheme('light');
         localStorage.setItem('theme', 'light');
+        setTimeout(function(){document.body.style.transition = "none";}, 1050);
     }
 });
 
