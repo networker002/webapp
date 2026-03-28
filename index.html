@@ -436,6 +436,7 @@
             
             if (!Group) {
                 throw new Error("Group not found!");
+                document.getElementById("alerter").style.display = "block";
                 Group = "Не указана"
             }
             if (localStorage.getItem("userGroup") !== Group) {
