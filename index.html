@@ -359,7 +359,7 @@
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
             document.getElementById("group-name-menu").innerHTML = Group;
 
-            return fetch("http://127.0.0.1:8000/schedule/" + Group);
+            return fetch("http://127.0.0.1:8000/schedule/ИС-25-14О");
         })
         .then((resp) => {
             if (resp && resp.ok) {
@@ -379,7 +379,8 @@
                 loader.style.display = "none";
             });
         } else {
-            console.warn("userId не определен, запрос отменен.");
+            alert("userId не определен, запрос отменен.");
+
             //
             loader.style.display = "none";
         }
