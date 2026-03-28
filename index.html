@@ -224,7 +224,7 @@
             if (localStorage.getItem("userGroup") !== userGroup) {
                 localStorage.setItem("userGroup", userGroup);
             }
-            document.getElementById("gr").innerHTML = "Группа: " + userGroup;
+            document.getElementById("gr").innerHTML = "Ваша группа: " + userGroup;
 
             return fetch("http://127.0.0.1:8000/schedule/" + userGroup);
         })
