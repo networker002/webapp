@@ -428,7 +428,8 @@
     if (userId) {
     container.innerHTML = "";
     document.getElementById("tg-id-menu").innerHTML = userId;
-    fetch("https://boost.rorosin.ru/group/" + userId)
+    //fetch("https://boost.rorosin.ru/group/" + userId)
+    fetch("http://127.0.0.1:8000/" + userId)
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
             return response.json(); 
@@ -448,7 +449,8 @@
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
             document.getElementById("group-name-menu").innerHTML = Group;
 
-            return fetch("https://boost.rorosin.ru/schedule/" + Group);
+            //return fetch("https://boost.rorosin.ru/schedule/" + Group);
+            return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
         .then((resp) => {
             if (resp && resp.ok) {
@@ -616,7 +618,7 @@ function groupSet0() {
         erDisplay.innerHTML = "Имя группы должно быть другой длины";
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
-        url = "https://t.me/webapptestrobotbot?start=group "+D;
+        const url = "tg://resolve?domain=webapptestrobotbot&start=" + encodeURIComponent("group_" + D);
         tg.openTelegramLink(url);
     }
 }
