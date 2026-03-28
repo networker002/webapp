@@ -218,44 +218,37 @@
     fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
-            var userGroup = response.text();
-            if (!(localStorage.getItem("userGroup") === userGroup)){
-                localStorage.setItem("userGroup", userGroup);
-            };
-            document.getElementById("gr").innerHTML = "Группа: "+ userGroup;
-            return userGroup;
+            return response.text(); 
         })
-        //.then((userGroup) => {
-        //    console.log("Группа пользователя:", userGroup);
-        //})
-
-        .catch(err => console.error("Ошибка запроса группы:", err));
-} else {
-    console.warn("userId не определен, запрос отменен.");
-
-}
-
-    
-    fetch("http://127.0.0.1:8000/schedule/"+localStorage.getItem("userGroup"))
-        .then((resp) => {
-            if (!resp.ok){
-                throw new Error('HTTP error: ${response.status}');
-                
+        .then((userGroup) => {
+            if (localStorage.getItem("userGroup") !== userGroup) {
+                localStorage.setItem("userGroup", userGroup);
             }
-            if (resp.ok) {loader.style.display = "none";}
-            return resp.json();
+            document.getElementById("gr").innerHTML = "Группа: " + userGroup;
+
+            return fetch("http://127.0.0.1:8000/schedule/" + userGroup);
+        })
+        .then((resp) => {
+            if (resp && resp.ok) {
+                loader.style.display = "none";
+                return resp.json();
+            }
         })
         .then((data) => {
-            //console.log(data);
-
-            const container = document.getElementById("schedule-container");
-
-            if (container) {
+            if (data) {
+                const container = document.getElementById("schedule-container");
                 container.innerHTML = data;
-        }
+                if (nowBtn) upsSV();
+            }
         })
-        .catch(err => console.error("Ошибка расписания:", err));
-
+            .catch(err => {
+                console.error("Ошибка:", err);
+                loader.style.display = "none";
+            });
+        } else {
+            console.warn("userId не определен, запрос отменен.");
+            loader.style.display = "none";
+        }
         function upsSV(){
                 var DAYS = document.querySelectorAll(".day");
                 
