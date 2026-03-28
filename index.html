@@ -498,7 +498,7 @@
         .then((userGroup) => {
             var Group = userGroup.group_name;
             
-            if (!Group) {
+            if (!Group || Group.toUpperCase === "NULL") {
                 throw new Error("Group not found!");
                 document.getElementById("alerter").style.display = "block";
                 Group = "Не указана"
