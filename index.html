@@ -36,6 +36,7 @@
             text-align: center;
             gap: 1em;
             padding: .5em;
+            padding-top: 2em;
             background:#4f6187;
         }
 
@@ -87,8 +88,57 @@
 
         }
 
+        #loader  {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            margin: auto;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            z-index: 1000;
+            background: #000000c0;
+            min-height: 100vh;
+            min-width: 100vw;
+            pointer-events: none;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        @keyframes scale1 {
+            50% {
+                scale: .75;
+            }
+        }
+
+        #loader div {
+            position: relative;
+            font-size: 10vw;
+            text-align: center;
+            color: transparent;
+            background: linear-gradient(90deg, rgb(0, 255, 106), rgb(0, 89, 255));
+            background-clip: text;
+            filter: drop-shadow(1px 2px .1em #ffffff44);
+
+            &:first-child {
+                animation: scale1 2s infinite;
+            }
+
+            &:nth-child(2) {
+                animation: scale1 2s infinite;
+                animation-delay: 1s;
+            }
+
+            &:last-child {
+                animation: scale1 2s infinite;
+            }
+        }
 
     </style>
+
+    <div id="loader"><div>●</div><div>●</div><div>●</div></div>
 
     <header>
         <h1>Расписание занятий</h1>
@@ -113,6 +163,9 @@
     </main>
 
     <script>
+        var loader = document.getElementById("loader");
+        loader.style.display = "flex";
+
         const tg = window.Telegram.WebApp;
         tg.ready();
 
@@ -156,6 +209,7 @@
                 throw new Error('HTTP error: ${response.status}');
                 
             }
+            if (resp.ok) {loader.style.display = "none";}
             return resp.json();
         })
         .then((data) => {
