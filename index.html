@@ -107,6 +107,14 @@
             padding-bottom: .25em;
         }
 
+        #gr {
+            text-align: center;
+            margin: 2em;
+            letter-spacing: 2px;
+            color: #79ceff;
+            font-weight: 800;
+        }
+
         #loader  {
             position: absolute;
             top: 50%;
@@ -176,6 +184,8 @@
             </ul>
         </div>
 
+        <div id="gr"></div>
+
         <div id="schedule-container">
 
         </div>
@@ -209,9 +219,10 @@
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
             var userGroup = response.text();
-            if (localStorage.getItem("userGroup") !== userGroup){
+            if (!(localStorage.getItem("userGroup") === userGroup)){
                 localStorage.setItem("userGroup", userGroup);
             };
+            document.getElementById("gr").innerHTML = "Группа: "+ userGroup;
             return userGroup;
         })
         //.then((userGroup) => {
