@@ -330,6 +330,8 @@
         })
         .then((userGroup) => {
             var Group = userGroup.group_name;
+            var container = document.getElementById("schedule-container");
+            container.innerHTML = "";
             if (!Group) {
                 throw new Error("Group not found!");
                 Group = "Не указана"
@@ -340,14 +342,13 @@
             }
             document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
             document.getElementById("group-name-menu").innerHTML = Group;
-            var container = document.getElementById("schedule-container");
-            container.innerHTML = "";
 
             return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
         .then((resp) => {
             if (resp && resp.ok) {
                 loader.style.display = "none";
+
                 return resp.json();
             }
         })
