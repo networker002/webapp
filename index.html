@@ -209,6 +209,9 @@
         .then((response) => {
             if (!response.ok) throw new Error('Error: ' + response.status);
             var userGroup = response.text();
+            if (localStorage.getItem("userGroup") !== userGroup){
+                localStorage.setItem("userGroup", userGroup);
+            };
             return userGroup;
         })
         //.then((userGroup) => {
@@ -222,7 +225,7 @@
 }
 
     
-    fetch("http://127.0.0.1:8000/schedule/"+userGroup)
+    fetch("http://127.0.0.1:8000/schedule/"+localStorage.getItem("userGroup"))
         .then((resp) => {
             if (!resp.ok){
                 throw new Error('HTTP error: ${response.status}');
