@@ -222,7 +222,7 @@
 }
 
     
-    fetch("http://127.0.0.1:8000/schedule/ИС-25-14О")
+    fetch("http://127.0.0.1:8000/schedule/"+userGroup)
         .then((resp) => {
             if (!resp.ok){
                 throw new Error('HTTP error: ${response.status}');
