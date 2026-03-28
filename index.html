@@ -1,127 +1,625 @@
-import asyncio
-import os
-from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher
-from bot.handlers import start, show_c, conv, schedule, set_group, profile
-from utils.anti_flood import AntiFloodMiddleware
-import threading
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание 📅</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
 
-load_dotenv()
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+        :root {
+            --main-bg-color: linear-gradient(-180deg, #05050a, #000);
+            --header-bg-color: #4f6187;
+            --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
+            --menu-color:#fff;
+            --s-b-b: rgb(180, 180, 180);
+            --text-shadow-c: #000000c9;
+        }
 
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+        @font-face {
+            font-family: "DejaVuSans";
+            src: url(../services/DejaVu\ Sans/DejaVuSans.ttf);
+        }
 
-# add here
-dp.include_router(start.router)
-dp.include_router(show_c.router)
-dp.include_router(conv.router)
-dp.include_router(set_group.router)
-dp.include_router(schedule.router)
-dp.include_router(profile.router)   
+        body {
+            min-height: 100vh;
+            background: var(--main-bg-color);
+            color: #fff;
+            font-family: "DejaVuSans";
+        }
 
-# async def main():
-#     await dp.start_polling(bot)
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1em;
+            padding: .5em;
+            padding-top: 2em;
+            background:var(--header-bg-color);
+        }
 
-# if __name__ == "__main__":
-#     asyncio.run(main())
+        .days {
+            ul {
+                display: flex;
+                justify-content: center;
+                list-style: none;
+                margin: 1em;
+                gap: 5vw;
 
-async def start_bot():
-    dp.update.outer_middleware(AntiFloodMiddleware(default_rate=1.5))
-    await dp.start_polling(bot)
+                li {
+                    background-color: #10244e;
+                    padding: 6px;
+                    border-radius: .5em;
+                    transition: scale .1s, background .25s ease, padding .5s ease;
+                    cursor: pointer;
 
-# app = Flask(__name__)
+                    &:active {
+                        scale: .9;
+                    }
+                }
+            }
+        }
 
-# @app.route("/health")
-# def health_check():
-#     return "OK", 200
+        .days .selected {
+            background-color: rgb(0, 200, 200);
+            filter: drop-shadow(1px 1px .5em #ffffff38);
+            padding: 6px 12px;
+        }
 
-# def run_http_server():
-#     port = int(os.environ.get("PORT", 10000))
-#     app.run(host="0.0.0.0", port=port)
+        .day {
+            display: none;
+            background: #4f618738;
+            border-radius: 2em;
+            padding: .5em;
+            padding-bottom: 1em;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            padding-left: 1em;
+            padding-right: 1em;
+            margin-left: 1em;
+            margin-right: 1em;
 
-import fastapi
-from services.db import schedule as sch
-from pathlib import Path
-import json
-import uvicorn
-import threading
-from services.db import user_group
-from fastapi.middleware.cors import CORSMiddleware
+            .day-name {
+                text-align: center;
+                padding: 4px;
+                letter-spacing: 1px;
+
+                &::before {
+                    content: "📆";
+                }
+            }
+
+        }
+        .lesson {
+            margin-top: 1em;
+            padding-top: 1em;
+            border-top: 2px solid #ffffff13;
+
+        }
+
+        .time {
+            color: #bdc6db;
+            letter-spacing: 1px;
+            font-family: monospace;
+            font-size: larger;
+            padding-top: .2em;
+            padding-bottom: .25em;
+            text-shadow: 1px 2px 4px var(--text-shadow-c);
+        }
+
+        #gr {
+            text-align: center;
+            margin: 2em;
+            letter-spacing: 2px;
+            color: #79ceff;
+            font-weight: 800;
+        }
+
+        #loader  {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            margin: auto;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            z-index: 100000;
+            background: #000000c0;
+            min-height: 100vh;
+            min-width: 100vw;
+            pointer-events: none;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        @keyframes scale1 {
+            50% {
+                scale: .75;
+            }
+        }
+
+        #loader div {
+            position: relative;
+            font-size: 10vw;
+            text-align: center;
+            color: transparent;
+            background: linear-gradient(90deg, rgb(0, 255, 106), rgb(0, 89, 255));
+            background-clip: text;
+            filter: drop-shadow(1px 2px .1em #ffffff44);
+
+            &:first-child {
+                animation: scale1 2s infinite;
+            }
+
+            &:nth-child(2) {
+                animation: scale1 2s infinite;
+                animation-delay: 1s;
+            }
+
+            &:last-child {
+                animation: scale1 2s infinite;
+            }
+        }
+
+        .second-header {
+            display: flex;
+            justify-content: space-around;
+            overflow-x: hidden;
+        }
+
+        .btns {
+            margin: auto;
+            background: none;
+            text-align: center;
+            padding: 6px;
+            transition: scale .1s, transform 3s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            overflow-x: hidden;
+
+            &:active {
+                scale: .75;
+            }
+        }
+
+        .btnD {
+            color: #fff;
+        }
+
+        .menu-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+            text-align: center;
+            background: var(--menu-bg);
+            padding: 3em;
+            padding-bottom: 1.5em;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display:none;
+
+            h1 {
+                padding-bottom: 1em;
+                letter-spacing: 1px;
+            }
+
+            h4 {
+                font-family: monospace;
+                font-size: larger;
+                color: var(--menu-color);
+                position: relative;
+
+                span {
+                    letter-spacing: 1.5px;
+                }
+            }
+
+            button {
+                margin-top: 2em;
+                background: #5f757294;
+                border: none;
+                padding: 6px;
+                border-radius: 24px;
+                letter-spacing: 2px;
+                color:#ffffff;
+                filter: drop-shadow(0 4px .75em #ffffff3f);
+                transition: transform .3s;
+
+                &:active {
+                   transform: scale(.9);
+                }
+            }
+        }
+
+        h4 > input  {
+            margin-left:.3em;
+            margin-right: .9em;
+            transition: scale .2s;
+            position: relative;
+
+            &::after {
+                position: absolute;
+                content: '';
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 1em;
+                height: 1em;
+                border-radius: 50%;
+                background: #fff;
+                border: solid 1px currentColor;
+            }
+
+            &:active {
+                scale: 1.2;
+            }
+
+            &:checked&::after {
+                    background: #4f6187;
+                }
+        }
+
+        #alerter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:#000000c0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 200000;
+            padding: 2em;
+            box-sizing: border-box;
+            display: none;
 
 
-app = fastapi.FastAPI()
+            h2, h3, h6 {
+                color: #fff;
+                padding: 1em;
+            }
 
+            h6 {
+                letter-spacing: 3px;
+                font-weight: 300;
+            }
+        }
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        #alerter h1 {
+            color: #ff0303;
+            margin-bottom: 0.5em;
+        }
 
-@app.get("/")
-def f():
-    return {"status": 200}
+        #alerter input {
+            padding: 12px;
+            border-radius: 38px;
+            border: 1px solid #4f6187;
+            background: #10244e;
+            color: white;
+            font-size: 1.2em;
+            width: 80%;
+            max-width: 300px;
 
+            &::placeholder {
+                transition:  letter-spacing .5s ease-in-out, color 1s ease;
+                color: #999999;
+            }
 
-@app.get("/group/{tg_id}")
-async def get_group(tg_id: int):
-    data = await user_group.check_user_group(tg_id)
-    if data:
-        return data
+            &:focus {
+                outline: none;
+
+                &::placeholder {
+                    letter-spacing: 2px;
+                    color: #4f6187;
+                }
+            }
+
+            
+        }
+        #set-group-btn {
+            margin: 1em;
+                padding: .5em 1em;
+                background: var(--s-b-b);
+                border-radius: 24px;
+                border: none;
+                transition: transform .1s, filter .2s;
+                filter: drop-shadow(2px 4px 12px #0000006b);
+
+                &:active {
+                    transform: translateY(4px) scale(.95);
+                    filter: none;
+                }
+            }
+
+        @keyframes opq1 {
+            0% {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div id="loader"><div>●</div><div>●</div><div>●</div></div>
+
+    <div class="menu-display" id="user-menu-display">
+        <h1>Меню</h1>
+        <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
+        <h4>Группа: <span id="group-name-menu"></span></h4>
+        <h4>Тема:<br> <span id="d-s-t">Dark</span><input type="radio" name="theme" id="dark-theme" checked><br><span id="l-s-t">Light</span><input type="radio" name="theme" id="light-theme"></h4>
+        <button onclick="closee('user-menu-display', true)">Закрыть</button>
+    </div>
+
+    <div id="alerter">
+        <h1>Неизвестный пользователь</h1>
+        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+        <h6>Давайте сделаем это сейчас:</h6>
+        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
+    </div>
+
+    <header>
+        <h1>Расписание занятий</h1>
+        <h5 id="date-time"></h5>
+    </header>
+
+    <main>
+        <div class="days">
+            <ul>
+                <li class="btnD">ПН</li>
+                <li class="btnD">ВТ</li>
+                <li class="btnD">СР</li>
+                <li class="btnD">ЧТ</li>
+                <li class="btnD">ПТ</li>
+                <li class="btnD">СБ</li>
+            </ul>
+        </div>
+        <div class="second-header">
+            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+            <div id="gr"></div>
+            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
+        </div>
+
+        <div id="schedule-container">
+
+        </div>
+    </main>
+
+    <script>
+        const container = document.getElementById("schedule-container");
+        
+        var loader = document.getElementById("loader");
+        loader.style.display = "flex";
+
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        var d = new Date();
+        n = d.getDay();
+        m = d.getMonth();
+        dt = d.getDate();
+        days = {1:"Понедельник", 2:"Вторник", 3:"Среда", 4:"Четверг", 5:"Пятница", 6:"Суббота", 7:"Воскресенье"}, months = {0:"января", 1:"февраля", 2:"марта", 3:"апреля", 4:"мая", 5:"июня", 6:"июля", 7:"августа", 8:"сентября", 9:"октября", 10:"ноября", 11:"декабря"}, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
+        document.getElementById("date-time").innerHTML = full;
+        daysShort = {1:"ПН", 2:"ВТ", 3:"СР", 4:"ЧТ", 5:"ПТ", 6:"СБ", 7:"ВС"}
+        let s = false;
+        let nowBtn;
+        
+
     
-    
-@app.get("/schedule/{group}")
-def get_schedule(group: str):
-    resp = sch.Schedule(group_name=group).run_()
-    codes = {}
-    try:
-        config_path = Path(__file__).parent.parent / "config" / "example-time.json"
-        with open(config_path, encoding="utf-8") as f:
-            data = json.load(f)
-            # print(data)
-            for c in data["Times"]:
-                codes[c["Code"]] = (
-                    c["TimeFrom"][-8:-3],
-                    c["TimeTo"][-8:-3],
-                )
-    except FileNotFoundError:
-        print("example-time.json not found :(")
-    if not resp:
-        return "Пока что пусто"
-    
-    week_name, days_data = resp
-    if not days_data:
-        return "Пока что пусто"
-    
-    string = """"""
-    for day, contents in days_data.items():
-        for content in contents:
-            if not content:
-                continue
-            string += f"""<div class='day'><h3 class='day-name'>{day}</h3>"""
-            for lesson in content:
-                time_code = lesson["time_code"]
-                time_range = codes.get(time_code, ("", ""))
-                string += (
-                    f"<h4 class='lesson'>{lesson['time']}</h4>"
-                    f"<h6 class='time'> {time_range[0]} - {time_range[1]}</h6>"
-                )
-                string += f"{lesson['subject']} ({lesson["room"]})"
-            string += "</div>"
-    if not string:
-        return "Пока что пусто"
-    
-    return string
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        var userId = tg.initDataUnsafe.user.id;
+    };
 
-def run_api():
-    uvicorn.run(app, host="https://boost.rorosin.ru", port=443)
+    function getSchedule1(){
+    if (userId) {
+    container.innerHTML = "";
+    document.getElementById("tg-id-menu").innerHTML = userId;
+    fetch("https://boost.rorosin.ru/group/" + userId)
+        .then((response) => {
+            if (!response.ok) throw new Error('Error: ' + response.status);
+            return response.json(); 
+        })
+        .then((userGroup) => {
+            var Group = userGroup.group_name;
+            
+            if (!Group) {
+                throw new Error("Group not found!");
+                document.getElementById("alerter").style.display = "block";
+                Group = "Не указана"
+            }
+            if (localStorage.getItem("userGroup") !== Group) {
+                
+                localStorage.setItem("userGroup", Group);
+            }
+            document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
+            document.getElementById("group-name-menu").innerHTML = Group;
 
-if __name__ == "__main__":
-    # http_thread = threading.Thread(target=run_http_server, daemon=True)
-    # http_thread.start()
-    api_thread = threading.Thread(target=run_api, daemon=True)
-    api_thread.start()
-    asyncio.run(start_bot())
+            return fetch("https://boost.rorosin.ru/schedule/" + Group);
+        })
+        .then((resp) => {
+            if (resp && resp.ok) {
+                loader.style.display = "none";
+
+                return resp.json();
+            }
+        })
+        .then((data) => {
+            if (data) {
+                container.innerHTML = data;
+                if (nowBtn) upsSV();
+            }
+        })
+            .catch(err => {
+                console.error("Ошибка:", err);
+                loader.style.display = "none";
+            });
+        } else {
+            console.warn("userId не определен, запрос отменен.");
+            document.getElementById("alerter").style.display = "block";
+            //
+            loader.style.display = "none";
+        }
+    }
+        getSchedule1();
+        function upsSV(){
+                var DAYS = document.querySelectorAll(".day");
+                
+                DAYS.forEach((de) => {
+                    var dayName = de.querySelector(".day-name")?.textContent.trim();
+                    btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
+                    if (dayName === btnMapping[nowBtn.innerHTML]) {
+                        de.style.display = "block";
+                    } else {
+                        de.style.display = "none";
+                    }
+            });
+            }
+
+        var btns = document.querySelectorAll(".btnD");
+        btns.forEach((btn) => {
+            if (btn.innerHTML === daysShort[n]) {
+                btn.classList.add("selected");
+                nowBtn = btn;
+                s = true;
+            }
+            btn.addEventListener("click", function() {
+                if (s) {nowBtn.classList.remove("selected")}
+                btn.classList.add("selected");
+                nowBtn = btn;
+                upsSV();
+            });
+        });
+
+    let r = 0;
+    var Hbtns = document.querySelectorAll(".btns");
+    Hbtns.forEach((bt) => {
+        
+        bt.addEventListener("click", function() {
+            r += k;
+            bt.style.transform = 'rotate('+r+"deg)";
+        })
+        if (bt.id === "upd-b"){var k = 360}
+        else {var k = 90}
+    });
+
+    const updater = document.getElementById("upd-b");
+    let timeout = 0;
+    updater.addEventListener("click", function(){
+        if (timeout === 0){
+        getSchedule1();
+        upsSV();
+        timeout = 5000;
+        setTimeout(function(){
+            timeout = 0;
+        }, 5000)
+    }
+    });
+
+    //var burger = document.getElementById("burger-menu");
+
+    //burger.addEventListener("click", function() {
+    //    let menu;
+    //});
+
+    function openn(id, displ) {
+        var el = document.getElementById(id);
+        
+        el.style.display = displ;
+    }
+
+    function closee(id, YorN) {
+        if (YorN) {
+            r+=90;
+            document.getElementById("burger-menu").style.transform = "rotate("+r+"deg)";
+        }
+        var el = document.getElementById(id);
+        el.style.display = "none";
+    }
+
+
+function applyTheme(theme) {
+    const root = document.documentElement;
+    const themeNameDisplay = document.getElementById("d-s-t");
+    
+    if (theme === 'light') {
+        
+        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #f0f2f5, #ffffff)');
+        document.body.style.color = '#000';
+        root.style.setProperty("--header-bg-color", "#a2d2ff");
+        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25))");
+        root.style.setProperty("--menu-color", "#10002b");
+        root.style.setProperty("--text-shadow-c", "#000000c9");
+        if(themeNameDisplay) themeNameDisplay.textContent = "Light";
+    } else {
+        
+        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #05050a, #000)');
+        document.body.style.color = '#fff';
+        root.style.setProperty("--header-bg-color", "#4f6187");
+        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125))");
+        root.style.setProperty("--menu-color", "#fff");
+        root.style.setProperty("--text-shadow-c", "none");
+        if(themeNameDisplay) themeNameDisplay.textContent = "Dark";
+    }
+}
+
+const darkRadio = document.getElementById("dark-theme");
+const lightRadio = document.getElementById("light-theme");
+
+darkRadio.addEventListener("change", function() {
+    
+    if (this.checked) {
+        
+        applyTheme('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+});
+
+lightRadio.addEventListener("change", function() {
+
+    if (this.checked) {
+        applyTheme('light');
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark'; 
+    
+    if (savedTheme === 'light') {
+        lightRadio.checked = true;
+        applyTheme('light');
+    } else {
+        darkRadio.checked = true;
+        applyTheme('dark');
+    }
+});
+
+function groupSet0() {
+    var D = document.getElementById("group-set").value;
+    var erDisplay = document.getElementById("errs-reg");
+    erDisplay.style = "font-weight:600;color:red";
+    if (D.length < 4 || D.length > 13) {
+        erDisplay.innerHTML = "Имя группы должно быть другой длины";
+        setTimeout(function(){erDisplay.innerHTML=""}, 3000);
+    } else {
+        url = "https://t.me/webapptestrobotbot?start=group "+D;
+        tg.openTelegramLink(url);
+    }
+}
+    </script>
+</body>
+</html>
