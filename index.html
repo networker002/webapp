@@ -21,7 +21,7 @@
             --menu-color:#fff;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: none;
-            --alert-bg: rgb(0, 200, 200);
+            --alert-bg: rgba(0, 200, 200, .8);
             --time-color: #bdc6db;
             --loader-filter: #ffffff44;
             --accent: #0284c7;
@@ -29,6 +29,9 @@
             --lessons-b-c: #ffffff13;
             --days-bg: #18294e36;
             --days-o-color: #fff;
+            --header-glass: #4f61877e;
+            --shadows: rgba(255, 255, 255, .25);
+            --anti-shadows: rgba(0, 0, 0, .2);
         }
 
         [data-theme="light"] {
@@ -39,7 +42,7 @@
             --menu-color:#10002b;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: #c4c4c427;
-            --alert-bg: rgb(0, 200, 200);
+            --alert-bg: rgba(0, 200, 200, .9);
             --time-color: #000000;
             --loader-filter: rgba(0, 0, 0, .2);
             --accent: #0284c7;
@@ -47,6 +50,9 @@
             --lessons-b-c: #0000001a;
             --days-bg: #18294e00;
             --days-o-color: #3d3d3d;
+            --header-glass: #98b9ff7e;
+            --shadows: rgba(0, 0, 0, .3);
+            --anti-shadows: rgba(255, 255, 255, .2);
         }
 
         @font-face {
@@ -58,6 +64,7 @@
             min-height: 100vh;
             background: var(--main-bg-color);
             color: var(--over-color);
+            scroll-behavior: smooth;
             font-family: "DejaVuSans";
         }
 
@@ -68,8 +75,21 @@
             text-align: center;
             gap: 1em;
             padding: .5em;
-            padding-top: 5.5em;
+            padding-top: 3em;
             background:var(--header-bg-color);
+            position: sticky;
+            transition: all .2s ease;
+            top: 0;
+            z-index: 999;
+        }
+
+        header.scrolling {
+            transition: all 1s;
+            background: var(--header-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all .3s ease;
+
         }
 
         .days {
@@ -128,6 +148,7 @@
             padding-right: 1em;
             margin-left: 1em;
             margin-right: 1em;
+            margin-bottom: 2em;
 
             .day-name {
                 text-align: center;
@@ -160,7 +181,7 @@
 
         #gr {
             text-align: center;
-            margin: 2em;
+            margin: 1.2em;
             letter-spacing: 2px;
             color: var(--accent);
             background: var(--accent-bg);
@@ -258,7 +279,7 @@
         }
 
         .menu-display {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -272,7 +293,7 @@
             padding-bottom: 1.5em;
             border-radius: 16px;
             backdrop-filter: blur(10px);
-            z-index: 1000;
+            z-index: 2000;
             display:none;
             transition: opacity .5s;
 
@@ -455,12 +476,15 @@
             background: var(--alert-bg);
             padding: 6px calc(18px + 5vw);
             border-radius: 12px;
-            box-shadow: 2px 4px .4em #00000027;
+            box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows);
             text-align: center;
             backdrop-filter: blur(8px);
             right: 0;
-            bottom: 10%;
+            top: 15%;
             display: none;
+            transition: all .5s;
+            filter: drop-shadow(4px 4px 12px var(--shadows));
+            z-index: 1000;
 
             h2 {
                 color: var(--menu-color);
@@ -471,9 +495,36 @@
             }
         }
 
-        @keyframes flyDown {
+        #empty-container  {
+            display: none;
+            justify-content: center;
+            flex-direction: row;
+            color: var(--over-color);
+            margin: auto;
+            text-align: center;
+        }
+
+        #e-c {
+            display: flex;
+            flex-direction: column;
+            letter-spacing: 2px;
+            gap: .5em;
+        }
+
+        .sad-starry {
+                filter: drop-shadow(2px 4px 2em rgba(255, 231, 96, 0.63));
+            }
+
+        @keyframes flyUP {
+            0%{
+                transform: translateY(6px);
+            }
+            50%{
+                opacity: 1;
+                transform: translateY(0);
+            }
             100% {
-                transform: translateY(24px);
+                transform: translateY(-12px);
                 opacity: 0;
             }
         }
@@ -482,6 +533,45 @@
             0% {
                 opacity: 0;
             }
+        }
+
+        @keyframes glow {
+            50% {
+                filter: drop-shadow(4px 4px 2em rgba(255, 217, 0, 0.45));
+            }
+        }
+
+        .assistant > div {
+            position: fixed;
+            right: 1.5em;
+            z-index: 1000;
+            bottom: 1em;
+            background: none;
+            transition: all 1s cubic-bezier(0.77, 0, 0.175, 1);
+            animation: glow 30s infinite;
+
+            &:hover {
+                scale: 1.2;
+            }
+        }
+
+        .assistant-say {
+            position: fixed;
+            right: calc(2em + 70px);
+            z-index: 1000;
+            bottom: 5em;
+            background: #537fdf5e;
+            font-family: monospace;
+            font-weight: 200;
+            transition: all .5s;
+            border-radius: 36px 36px 10px 36px;
+            font-size: small;
+            backdrop-filter: brightness(50%) blur(9px);
+            overflow: scroll;
+        }
+
+        #ctx-assistant-say {
+            padding: 16px;
         }
 
 
@@ -531,13 +621,245 @@
             </ul>
         </div>
         
+        <div class="assistant">
+            <div id="default-assistant">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_18_41)">
+<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_41)"/>
+</g>
+<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_41)"/>
+<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_41)"/>
+<circle cx="41" cy="28.5" r="4" fill="black"/>
+<circle cx="39" cy="26.5" r="2" fill="white"/>
+<circle cx="23" cy="28.5" r="4" fill="black"/>
+<circle cx="21" cy="26.5" r="2" fill="white"/>
+<defs>
+<filter id="filter0_i_18_41" x="6.18707" y="5.27429" width="55.6259" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_41"/>
+</filter>
+<linearGradient id="paint0_linear_18_41" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFC404"/>
+<stop offset="1" stop-color="#996402"/>
+</linearGradient>
+<linearGradient id="paint1_linear_18_41" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_18_41" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+</defs>
+</svg></div>
+            <div id="shocked-assistant">
+
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_18_74)">
+<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_74)"/>
+</g>
+<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_74)"/>
+<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_74)"/>
+<circle cx="41" cy="28.5" r="4" fill="black"/>
+<circle cx="39" cy="28.5" r="2" fill="white"/>
+<circle cx="23" cy="28.5" r="4" fill="black"/>
+<circle cx="25" cy="28.5" r="2" fill="white"/>
+<g filter="url(#filter1_i_18_74)">
+<path d="M28 39.5C28 37.0147 30.0147 35 32.5 35V35C34.9853 35 37 37.0147 37 39.5V40.85C37 42.5897 35.5897 44 33.85 44H31.15C29.4103 44 28 42.5897 28 40.85V39.5Z" fill="#6C0A0A"/>
+</g>
+<path d="M32.5 35.5C34.7091 35.5 36.5 37.2909 36.5 39.5V40.8496C36.5 42.3132 35.3132 43.5 33.8496 43.5H31.1504C29.6868 43.5 28.5 42.3132 28.5 40.8496V39.5C28.5 37.2909 30.2909 35.5 32.5 35.5Z" stroke="#996402" stroke-opacity="0.49"/>
+<defs>
+<filter id="filter0_i_18_74" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74"/>
+</filter>
+<filter id="filter1_i_18_74" x="28" y="35" width="13" height="13" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="7" dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.34 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74"/>
+</filter>
+<linearGradient id="paint0_linear_18_74" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFC404"/>
+<stop offset="1" stop-color="#996402"/>
+</linearGradient>
+<linearGradient id="paint1_linear_18_74" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_18_74" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+</defs>
+</svg>
+
+            </div>
+            
+            <div id="gloomy-asistant">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_18_73)">
+<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_73)"/>
+</g>
+<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_73)"/>
+<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_73)"/>
+<circle cx="41" cy="28.5" r="4" fill="black"/>
+<circle cx="39" cy="26.5" r="2" fill="white"/>
+<circle cx="23" cy="28.5" r="4" fill="black"/>
+<circle cx="21" cy="26.5" r="2" fill="white"/>
+<rect x="24" y="40" width="17" height="1.5" rx="0.75" fill="#FFC404"/>
+<rect x="24.375" y="40.375" width="16.25" height="0.75" rx="0.375" stroke="#996402" stroke-opacity="0.79" stroke-width="0.75"/>
+<defs>
+<filter id="filter0_i_18_73" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_73"/>
+</filter>
+<linearGradient id="paint0_linear_18_73" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFC404"/>
+<stop offset="1" stop-color="#996402"/>
+</linearGradient>
+<linearGradient id="paint1_linear_18_73" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_18_73" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+</defs>
+</svg>
+            </div>
+
+        </div>
+
+        <div class="assistant-say">
+            <div id="ctx-assistant-say">
+            </div>
+        </div>
 
         <div id="schedule-container">
 
         </div>
+
+        <div id="empty-container">
+            <div id="e-c">
+            <div class="sad-starry">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_20_85)">
+<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_20_85)"/>
+</g>
+<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_20_85)"/>
+<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_20_85)"/>
+<circle cx="41" cy="28.5" r="4" fill="black"/>
+<circle cx="39" cy="26.5" r="2" fill="white"/>
+<circle cx="23" cy="28.5" r="4" fill="black"/>
+<circle cx="21" cy="26.5" r="2" fill="white"/>
+<g filter="url(#filter1_i_20_85)">
+<path d="M32.5371 37.6855H32.7812C34.1419 37.6855 35.3789 37.8255 36.4922 38.1055C37.612 38.3919 38.5918 38.7695 39.4316 39.2383C40.278 39.7135 40.9811 40.2376 41.541 40.8105C42.1009 41.3835 42.5013 41.9596 42.7422 42.5391L41.1895 43.125C40.916 42.7539 40.5449 42.3926 40.0762 42.041C39.6139 41.696 39.041 41.3802 38.3574 41.0938C37.6738 40.8138 36.873 40.5892 35.9551 40.4199C35.0371 40.2572 33.9857 40.1758 32.8008 40.1758H32.5176C31.3327 40.1758 30.2812 40.2572 29.3633 40.4199C28.4453 40.5892 27.6445 40.8138 26.9609 41.0938C26.2773 41.3802 25.7012 41.696 25.2324 42.041C24.7572 42.3926 24.3828 42.7539 24.1094 43.125L22.5762 42.5391C22.8236 41.9596 23.2272 41.3835 23.7871 40.8105C24.3405 40.2376 25.0404 39.7135 25.8867 39.2383C26.7266 38.7695 27.7031 38.3919 28.8164 38.1055C29.9362 37.8255 31.1764 37.6855 32.5371 37.6855Z" fill="#996402" fill-opacity="0.49"/>
+</g>
+<defs>
+<filter id="filter0_i_20_85" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85"/>
+</filter>
+<filter id="filter1_i_20_85" x="22.5762" y="37.6855" width="20.166" height="6.13945" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="0.35"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85"/>
+</filter>
+<linearGradient id="paint0_linear_20_85" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFC404"/>
+<stop offset="1" stop-color="#996402"/>
+</linearGradient>
+<linearGradient id="paint1_linear_20_85" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_20_85" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+</defs>
+</svg>
+
+            </div>
+            <h1>Пусто</h1>
+            </div>
+        </div>
     </main>
 
     <script>
+        const assistants = document.querySelector(".assistant");
+        var assistant = document.getElementById("default-assistant");
+        
+        Array.from(assistants.children).forEach((assist) => {
+            console.log(assist);
+            if (assist === assistant) {
+                assist.style.display = "block";
+            } else {
+                assist.style.display = "none";
+            }
+        });
+
+        const message = document.getElementById("ctx-assistant-say");
+        var msgS = [
+            `                <h1>Привет!</h1>
+                <p>Я твой напарник - Starry</p>`, 
+            `  
+                <p>Теперь мы будем вместе</p>`,
+                `
+                <p>Моя главная задача - помогать тебе с учебой</p>`,
+        ];
+
+        message.style.display = "none";
+        setTimeout(function(){
+            message.style.display = "block";
+            for (let m = 0; m < msgS.length; m++) {
+            setTimeout(function() {
+                message.innerHTML = msgS[m];
+            }, 5000 * (m));
+        }
+        }, 2000);
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 5000 * (msgS.length + 1));
+
+        
+
         const container = document.getElementById("schedule-container");
 
         var loader = document.getElementById("loader");
@@ -614,18 +936,95 @@
         }
     }
         getSchedule1();
-        function upsSV(){
-                var DAYS = document.querySelectorAll(".day");
 
+
+    function cleanDaySchedule(dayElement) {
+        const lessonsData = {};
+        const dayNameEl = dayElement.querySelector(".day-name");
+        
+        const lessonHeaders = dayElement.querySelectorAll(".lesson");
+        
+        lessonHeaders.forEach((header) => {
+            const lessonNum = header.textContent.trim(); 
+            const timeEl = header.nextElementSibling;
+            const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
+            
+            let subjectNode = timeEl.nextSibling;
+            let subjectText = subjectNode ? subjectNode.textContent.trim() : "";
+
+            const key = `${lessonNum}_${timeText}`;
+
+            const match = subjectText.match(/(.+?)\s*\((.+?)\)/);
+            let name = subjectText;
+            let room = "";
+            
+            if (match) {
+                name = match[1].trim();
+                room = match[2].trim();
+            }
+
+            if (!lessonsData[key]) {
+                lessonsData[key] = {
+                    num: lessonNum,
+                    time: timeText,
+                    name: name,
+                    rooms: [room]
+                };
+            } else {
+                if (room && !lessonsData[key].rooms.includes(room)) {
+                    lessonsData[key].rooms.push(room);
+                }
+            }
+        });
+
+        let newHTML = `<h3 class="day-name">${dayElement.querySelector(".day-name").innerHTML}</h3>`;
+        
+        Object.values(lessonsData).forEach(l => {
+            const roomsDisplay = l.rooms.length > 0 ? ` (${l.rooms.join(' / ')})` : "";
+            newHTML += `
+                <h4 class="lesson">${l.num}</h4>
+                <h6 class="time">${l.time}</h6>
+                ${l.name}${roomsDisplay}
+            `;
+        });
+
+        dayElement.innerHTML = newHTML;
+    }
+        //let ch;
+        function upsSV(){
+            var ch = false;
+            lm = new Map();
+                var DAYS = document.querySelectorAll(".day");
                 DAYS.forEach((de) => {
                     var dayName = de.querySelector(".day-name")?.textContent.trim();
+                    var dayLesson = de.querySelectorAll(".lesson");
+
                     btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
                     if (dayName === btnMapping[nowBtn.innerHTML]) {
                         de.style.display = "block";
+                        ch = false;
+                        lm.set(de, ch);
+                        document.getElementById("empty-container").style.display = "none";
                     } else {
                         de.style.display = "none";
+                        ch = true;
                     }
+
+                    if (!de.dataset.cleaned) {
+                        cleanDaySchedule(de);
+                        de.dataset.cleaned = "true";
+                    }
+                
+                
+            //if (!ch[0]) {
+            //}
             });
+
+            if (lm.size === 0) {
+                document.getElementById("empty-container").style.display = "flex";
+            } else {
+                document.getElementById("empty-container").style.display = "none";
+            }
             }
 
         var btns = document.querySelectorAll(".btnD");
@@ -640,6 +1039,7 @@
                 btn.classList.add("selected");
                 nowBtn = btn;
                 upsSV();
+                //console.log(ch);
             });
         });
 
@@ -659,7 +1059,7 @@
         updater.style.transform = `rotate(${r}deg)`;
         var al = document.getElementById("fast-alert");
         al.style.display = "flex";
-        al.style.animation = "flyDown 2s normal";
+        al.style.animation = "flyUP 2s normal";
         setTimeout(function(){
             al.style.display = "none";
         }, 1900);
@@ -746,6 +1146,15 @@ function groupSet0() {
         setTimeout(function(){tg.close();}, 50);
     }
 }
+    const Header = document.querySelector("header")
+    window.addEventListener("scroll", function(){
+        if (window.scrollY > 50){
+            setTimeout(function(){
+            Header.classList.add("scrolling");
+            }, 100);
+        }
+        else {setTimeout(function(){ Header.classList.remove("scrolling")}, 100)}
+    })
     </script>
 </body>
 </html>
