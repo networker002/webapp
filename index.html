@@ -32,6 +32,8 @@
             --header-glass: #4f61877e;
             --shadows: rgba(255, 255, 255, .25);
             --anti-shadows: rgba(0, 0, 0, .2);
+            --star-sh: drop-shadow(2px 4px 2em rgba(255, 231, 96, 0.63));
+            --acdeac-btn: #50a1af62;
         }
 
         [data-theme="light"] {
@@ -53,6 +55,8 @@
             --header-glass: #98b9ff7e;
             --shadows: rgba(0, 0, 0, .3);
             --anti-shadows: rgba(255, 255, 255, .2);
+            --star-sh: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.45));
+            --acdeac-btn: #68a7b362;
         }
 
         @font-face {
@@ -316,8 +320,7 @@
             }
 
             button {
-                margin-top: 2em;
-                background: #00a8c594;
+                background: var(--acdeac-btn);
                 border: none;
                 padding: 6px;
                 border-radius: 24px;
@@ -325,10 +328,16 @@
                 color:#ffffff;
                 filter: drop-shadow(0 4px .75em #ffffff3f);
                 transition: transform .3s;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
                 &:active {
                    transform: scale(.9);
                 }
+            }
+
+            #close-btn-m {
+                margin-top: 2em;
+                background: #00a8c594;
             }
 
             span {
@@ -502,6 +511,7 @@
             color: var(--over-color);
             margin: auto;
             text-align: center;
+            margin-top: 2em;
         }
 
         #e-c {
@@ -512,7 +522,7 @@
         }
 
         .sad-starry {
-                filter: drop-shadow(2px 4px 2em rgba(255, 231, 96, 0.63));
+                filter: var(--star-sh);
             }
 
         @keyframes flyUP {
@@ -567,11 +577,16 @@
             border-radius: 36px 36px 10px 36px;
             font-size: small;
             backdrop-filter: brightness(50%) blur(9px);
-            overflow: scroll;
+            /*overflow: scroll;*/
         }
 
         #ctx-assistant-say {
             padding: 16px;
+        }
+
+        #activate-ai-a {
+            letter-spacing: 2px;
+            transition: all .4s;
         }
 
 
@@ -584,7 +599,8 @@
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
         <h4>Группа: <span id="group-name-menu"></span></h4>
         <h4>Тема:<br> <div id="theme-container"><div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div><div><input type="radio" name="theme" id="light-theme"><span id="l-s-t">Light</span></div></div></h4>
-        <button onclick="closee('user-menu-display')">Закрыть</button>
+        <h4>Персональный помощник <button id="activate-ai-a"></button></h4>
+        <button onclick="closee('user-menu-display')" id="close-btn-m">Закрыть</button>
     </div>
 
     <div id="alerter">
@@ -823,7 +839,7 @@
 
     <script>
         const assistants = document.querySelector(".assistant");
-        var assistant = document.getElementById("default-assistant");
+        let assistant = document.getElementById("default-assistant");
         
         Array.from(assistants.children).forEach((assist) => {
             console.log(assist);
@@ -858,8 +874,38 @@
             message.style.display = "none";
         }, 5000 * (msgS.length + 1));
 
-        
+        const btnAI = document.getElementById("activate-ai-a");
+        const assistantBlock = document.querySelector(".assistant");
+        const assistantSay = document.querySelector(".assistant-say");
 
+        function initAI() {
+            const storedState = localStorage.getItem("isActiveAI");
+            const isActive = storedState === null ? true : storedState === 'true';
+            
+            applyAIState(isActive);
+        }
+
+        function applyAIState(isActive) {
+            const stateStr = isActive ? 'true' : 'false';
+            localStorage.setItem("isActiveAI", stateStr);
+            
+            btnAI.innerHTML = isActive ? "<b>ВЫКЛ</b>" : "<b>ВКЛ</b>";
+            
+            if (isActive) {
+                assistantBlock.style.display = "block";
+                assistantSay.style.display = "block";
+            } else {
+                assistantBlock.style.display = "none";
+                assistantSay.style.display = "none";
+            }
+        }
+
+        btnAI.onclick = function() {
+            const currentState = localStorage.getItem("isActiveAI") === 'true';
+            applyAIState(!currentState);
+        };
+
+        initAI();
         const container = document.getElementById("schedule-container");
 
         var loader = document.getElementById("loader");
