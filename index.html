@@ -721,7 +721,7 @@ function groupSet0() {
         erDisplay.innerHTML = "Имя группы должно быть другой длины";
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
-        const url = "tg://resolve?domain=webapptestrobotbot&start=" + encodeURIComponent("group_" + D);
+        const url = "tg://webapptestrobotbot&start=" + encodeURIComponent("group_" + D);
         tg.openTelegramLink(url);
     }
 }
