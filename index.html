@@ -720,7 +720,7 @@ function toBtoa(str) {
 
     const b64 = btoa(utf8Bytes);
 
-    return b64.replace(/\//g, '_').replace(/=+$/, '');
+    return b64.replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
     
 }
 
@@ -733,9 +733,9 @@ function groupSet0() {
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
         
-        const url = "https://t.me/webapptestrobotbot?start=" + encodeURIComponent("group_" + toBtoa(D));
+        const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
         tg.openTelegramLink(url);
-        tg.close();
+        setTimeout(function(){tg.close();}, 500);
     }
 }
     </script>
