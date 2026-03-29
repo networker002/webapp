@@ -407,6 +407,7 @@
             font-size: 1.2em;
             width: 80%;
             max-width: 300px;
+            outline: none;
 
             &::placeholder {
                 transition:  letter-spacing .5s ease-in-out, color 1s ease;
@@ -565,7 +566,7 @@
         .then((userGroup) => {
             var Group = userGroup.group_name;
 
-            if (!Group || Group.toUpperCase === "NULL") {
+            if (!Group || Group.toUpperCase() === "NULL" || userGroup.toUpperCase() === "NULL") {
                 document.getElementById("alerter").style.display = "block";
      throw new Error("Group not found!");
                 Group = "Не указана"
