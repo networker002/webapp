@@ -573,7 +573,7 @@
             background: #537fdf5e;
             font-family: monospace;
             font-weight: 200;
-            transition: all .5s;
+            transition: all 1s cubic-bezier(0.77, 0, 0.175, 1);
             border-radius: 36px 36px 10px 36px;
             font-size: small;
             backdrop-filter: brightness(50%) blur(9px);
@@ -587,6 +587,14 @@
         #activate-ai-a {
             letter-spacing: 2px;
             transition: all .4s;
+        }
+
+        .my-def-btns {
+            padding: 3px 6px;
+            border-radius: 24px;
+            border: none;
+            background: var(--accent);
+            box-shadow: 2px 2px 6px black;
         }
 
 
@@ -851,7 +859,7 @@
         });
 
         const message = document.getElementById("ctx-assistant-say");
-        var msgS = [
+        let msgS = [
             `                <h1>Привет!</h1>
                 <p>Я твой напарник - Starry</p>`, 
             `  
@@ -860,15 +868,27 @@
                 <p>Моя главная задача - помогать тебе с учебой</p>`,
         ];
 
+        timeouts = [];
+
         message.style.display = "none";
-        setTimeout(function(){
+        const initialDelay = setTimeout(function(){
             message.style.display = "block";
             for (let m = 0; m < msgS.length; m++) {
-            setTimeout(function() {
+            let t = setTimeout(function() {
                 message.innerHTML = msgS[m];
             }, 5000 * (m));
+            timeouts.push(t);
+            
         }
         }, 2000);
+
+        timeouts.push(initialDelay);
+
+        function stopAll() {
+            timeouts.forEach(t => clearTimeout(t));
+            message.style.display = "none";
+            console.log("Цикл остановлен");
+        }
 
         setTimeout(() => {
             message.style.display = "none";
@@ -923,8 +943,9 @@
         daysShort = {1:"ПН", 2:"ВТ", 3:"СР", 4:"ЧТ", 5:"ПТ", 6:"СБ", 7:"ВС", 0:"ВС"}
         let s = false;
         let nowBtn;
-
-
+        let tommorrow = new Date();
+        tommorrow.setDate(dt+1);
+        
 
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         var userId = tg.initDataUnsafe.user.id;
@@ -1036,14 +1057,15 @@
 
         dayElement.innerHTML = newHTML;
     }
-        //let ch;
+        let rr = true;
+        let clickedAi = false;
         function upsSV(){
             var ch = false;
             lm = new Map();
                 var DAYS = document.querySelectorAll(".day");
                 DAYS.forEach((de) => {
                     var dayName = de.querySelector(".day-name")?.textContent.trim();
-                    var dayLesson = de.querySelectorAll(".lesson");
+                    var dayLesson = de.querySelector(".lesson");
 
                     btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
                     if (dayName === btnMapping[nowBtn.innerHTML]) {
@@ -1051,6 +1073,24 @@
                         ch = false;
                         lm.set(de, ch);
                         document.getElementById("empty-container").style.display = "none";
+
+                        if (dayName === days[tommorrow.getDay()] && rr) {
+                            stopAll();
+                            message.style.display = "block";
+                            assistant.style.transform = "translate(0%, -50%)";   
+                            message.parentElement.style.transform = "translate(0%, -50%)";
+                            let kKo = "к ";
+                            if (dayLesson.textContent.startsWith("2")){
+                                kKo = "ко ";
+                            }
+                            message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${kKo+dayLesson.textContent.replace("пара", "паре")}</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
+                            clickedAi = true;
+                        } else if (clickedAi) {
+                            assistant.style.transform = "translate(0)";
+                            message.parentElement.style.transform = "translate(0)";
+                            message.innerHTML = '';
+                            message.style.display = "none";
+                        }
                     } else {
                         de.style.display = "none";
                         ch = true;
@@ -1101,6 +1141,10 @@
     let timeout = 0;
     updater.addEventListener("click", function(){
         if (timeout === 0){
+            message.style.display = "none";
+                setTimeout(function(){
+                    message.style.display = "block";
+                }, 2000);
         r+=360;
         updater.style.transform = `rotate(${r}deg)`;
         var al = document.getElementById("fast-alert");
