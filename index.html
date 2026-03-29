@@ -713,6 +713,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 })
 
+function toBtoa(str) {
+    const utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>{
+        return String.fromCharCode('0x' + p1);
+    });
+
+    const b64 = btoa(utf8Bytes);
+
+    return b64.replace(/\//g, '_').replace(/=+$/, '');
+    
+}
+
 function groupSet0() {
     var D = document.getElementById("group-set").value;
     var erDisplay = document.getElementById("errs-reg");
@@ -721,7 +732,8 @@ function groupSet0() {
         erDisplay.innerHTML = "Имя группы должно быть другой длины";
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
-        const url = "https://t.me/webapptestrobotbot?start=" + encodeURIComponent("group_" + btoa(unescape(D)));
+        
+        const url = "https://t.me/webapptestrobotbot?start=" + encodeURIComponent("group_" + toBtoa(D));
         tg.openTelegramLink(url);
         tg.close();
     }
