@@ -14,26 +14,50 @@
         }
 
         :root {
-            --main-bg-color: linear-gradient(-180deg, #05050a, #000);
+            --over-color: #fff;
+            --main-bg-color: linear-gradient(-180deg, #07070F, #05050A);
             --header-bg-color: #4f6187;
             --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
             --menu-color:#fff;
             --s-b-b: rgb(180, 180, 180);
-            --text-shadow-c: #000000c9;
+            --text-shadow-c: none;
             --alert-bg: rgb(0, 200, 200);
             --time-color: #bdc6db;
             --loader-filter: #ffffff44;
+            --accent: #0284c7;
+            --accent-bg: rgba(2, 132, 199, 0.3);
+            --lessons-b-c: #ffffff13;
+            --days-bg: #18294e36;
+            --days-o-color: #fff;
+        }
+
+        [data-theme="light"] {
+            --over-color: #000;
+            --main-bg-color: linear-gradient(-180deg, #f0f2f5, #ffffff);
+            --header-bg-color: #a2d2ff;
+            --menu-bg: linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25));
+            --menu-color:#10002b;
+            --s-b-b: rgb(180, 180, 180);
+            --text-shadow-c: #c4c4c427;
+            --alert-bg: rgb(0, 200, 200);
+            --time-color: #000000;
+            --loader-filter: rgba(0, 0, 0, .2);
+            --accent: #0284c7;
+            --accent-bg: rgba(2, 132, 199, 0.3);
+            --lessons-b-c: #0000001a;
+            --days-bg: #18294e00;
+            --days-o-color: #3d3d3d;
         }
 
         @font-face {
             font-family: "DejaVuSans";
-            src: url(../services/DejaVu\ Sans/DejaVuSans.ttf);
+            src: url(DejaVuSans.ttf);
         }
 
         body {
             min-height: 100vh;
             background: var(--main-bg-color);
-            color: #fff;
+            color: var(--over-color);
             font-family: "DejaVuSans";
         }
 
@@ -44,7 +68,7 @@
             text-align: center;
             gap: 1em;
             padding: .5em;
-            padding-top: 2em;
+            padding-top: 3em;
             background:var(--header-bg-color);
         }
 
@@ -55,12 +79,16 @@
                 list-style: none;
                 margin: 1em;
                 gap: 5vw;
+                user-select: none;
 
                 li {
-                    background-color: #10244e;
+                    background-color: var(--days-bg);
+                    color: var(--days-o-color);
+                    font-weight: 600;
+                    letter-spacing: 1px;
                     padding: 6px;
                     border-radius: .5em;
-                    transition: scale .1s, background .25s ease, padding .5s ease;
+                    transition: scale .1s, background .5s ease, padding .5s ease, color .5s;
                     cursor: pointer;
                     user-select: none;
 
@@ -68,14 +96,26 @@
                         scale: .9;
                     }
                 }
+
             }
+
+            
         }
 
         .days .selected {
             background-color: rgb(0, 200, 200);
             filter: drop-shadow(1px 1px .5em #ffffff38);
             padding: 6px 12px;
+            color: #fff;
+            animation: fasttr .5s;
         }
+
+        @keyframes fasttr {
+            50% {
+                transform: translateY(2px);
+            }
+        }
+
 
         .day {
             display: none;
@@ -103,7 +143,7 @@
         .lesson {
             margin-top: 1em;
             padding-top: 1em;
-            border-top: 2px solid #ffffff13;
+            border-top: 2px solid var(--lessons-b-c);
 
         }
 
@@ -111,6 +151,7 @@
             color: var(--time-color);
             letter-spacing: 1px;
             font-family: monospace;
+            font-weight: 200;
             font-size: larger;
             padding-top: .2em;
             padding-bottom: .25em;
@@ -121,8 +162,13 @@
             text-align: center;
             margin: 2em;
             letter-spacing: 2px;
-            color: #79ceff;
+            color: var(--accent);
+            background: var(--accent-bg);
+            padding: 6px;
+            border-radius: 36px;
             font-weight: 800;
+            backdrop-filter: blur(8px);
+            
         }
 
         #loader  {
@@ -222,6 +268,7 @@
             text-align: center;
             background: var(--menu-bg);
             padding: 3em;
+            min-width: 50vw;
             padding-bottom: 1.5em;
             border-radius: 16px;
             backdrop-filter: blur(10px);
@@ -239,6 +286,8 @@
                 font-size: larger;
                 color: var(--menu-color);
                 position: relative;
+                display: flex;
+                flex-direction: column;
 
                 span {
                     letter-spacing: 1.5px;
@@ -247,7 +296,7 @@
 
             button {
                 margin-top: 2em;
-                background: #5f757294;
+                background: #00a8c594;
                 border: none;
                 padding: 6px;
                 border-radius: 24px;
@@ -260,6 +309,23 @@
                    transform: scale(.9);
                 }
             }
+
+            span {
+                font-weight: 100;
+            }
+        }
+
+        #theme-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr;
+            
+        } 
+
+        #theme-container > div {
+            display: flex;
+            justify-content: center;
+            gap: .5em;
         }
 
         #burger-menu.opened-btn {
@@ -418,7 +484,7 @@
         <h1>Меню</h1>
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
         <h4>Группа: <span id="group-name-menu"></span></h4>
-        <h4>Тема:<br> <span id="d-s-t">Dark</span><input type="radio" name="theme" id="dark-theme" checked><br><span id="l-s-t">Light</span><input type="radio" name="theme" id="light-theme"></h4>
+        <h4>Тема:<br> <div id="theme-container"><div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div><div><input type="radio" name="theme" id="light-theme"><span id="l-s-t">Light</span></div></div></h4>
         <button onclick="closee('user-menu-display')">Закрыть</button>
     </div>
 
@@ -439,6 +505,11 @@
     </header>
 
     <main>
+        <div class="second-header">
+            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+            <div id="gr"></div>
+            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
+        </div>
         <div class="days">
             <ul>
                 <li class="btnD">ПН</li>
@@ -450,11 +521,7 @@
                 <li class="btnD" style="display:none">ВС</li>
             </ul>
         </div>
-        <div class="second-header">
-            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
-            <div id="gr"></div>
-            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
-        </div>
+        
 
         <div id="schedule-container">
 
@@ -485,7 +552,6 @@
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         var userId = tg.initDataUnsafe.user.id;
     };
-
     function getSchedule1(){
     if (userId) {
     container.innerHTML = "";
@@ -508,7 +574,7 @@
 
                 localStorage.setItem("userGroup", Group);
             }
-            document.getElementById("gr").innerHTML = "Ваша группа: " + Group;
+            document.getElementById("gr").innerHTML = Group;
             document.getElementById("group-name-menu").innerHTML = Group;
 
             return fetch("https://boost.rorosin.ru/schedule/" + Group);
@@ -621,64 +687,30 @@
 function applyTheme(theme) {
     const root = document.documentElement;
     const themeNameDisplay = document.getElementById("d-s-t");
-
-    if (theme === 'light') {
-
-        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #f0f2f5, #ffffff)');
-        document.body.style.color = '#000';
-        root.style.setProperty("--header-bg-color", "#a2d2ff");
-        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25))");
-        root.style.setProperty("--menu-color", "#10002b");
-        root.style.setProperty("--text-shadow-c", "#000000c9");
-        root.style.setProperty("--time-color", "#fff");
-        root.style.setProperty("--loader-filter", "rgba(0, 0, 0, .2)");
-    } else {
-
-        root.style.setProperty('--main-bg-color', 'linear-gradient(-180deg, #05050a, #000)');
-        document.body.style.color = '#fff';
-        root.style.setProperty("--header-bg-color", "#4f6187");
-        root.style.setProperty("--menu-bg", " linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125))");
-        root.style.setProperty("--menu-color", "#fff");
-        root.style.setProperty("--text-shadow-c", "none");
-        root.style.setProperty("--time-color", "#bdc6db");
-        root.style.setProperty("--loader-filter", "#ffffff44");
-    }
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
 }
 
 const darkRadio = document.getElementById("dark-theme");
 const lightRadio = document.getElementById("light-theme");
 
 darkRadio.addEventListener("change", function() {
-
-    if (this.checked) {
-        document.body.style.transition = "all 1s";
-        applyTheme('dark');
-        localStorage.setItem('theme', 'dark');
-        setTimeout(function(){document.body.style.transition = "none";}, 1050);
-    }
-});
-
+    if (this.checked) {applyTheme('dark')}
+})
 lightRadio.addEventListener("change", function() {
-
-    if (this.checked) {
-        document.body.style.transition = "all 1s";
-        applyTheme('light');
-        localStorage.setItem('theme', 'light');
-        setTimeout(function(){document.body.style.transition = "none";}, 1050);
-    }
+    if (this.checked) {applyTheme('light')}
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme') || 'dark'; 
-
-    if (savedTheme === 'light') {
+window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    if (savedTheme == "light") {
         lightRadio.checked = true;
-        applyTheme('light');
+        applyTheme("light");
     } else {
         darkRadio.checked = true;
-        applyTheme('dark');
+        applyTheme("dark");
     }
-});
+})
 
 function groupSet0() {
     var D = document.getElementById("group-set").value;
