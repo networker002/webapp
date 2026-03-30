@@ -670,6 +670,13 @@
             }
         }
 
+        @keyframes nothingFly {
+            0% {
+                transform: translateY(10%);
+                opacity: .05;
+            }
+        }
+
     </style>
 
     <div id="loader"><div>●</div><div>●</div><div>●</div></div>
@@ -1024,9 +1031,13 @@
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         var userId = tg.initDataUnsafe.user.id;
     };
-    let det = true;
+    
     function getSchedule1(){
     if (userId) {
+        const econt = document.getElementById("empty-container");
+        if (econt) {
+            econt.style.display = "none";
+        }
     container.innerHTML = `
     <div id="sk"><h2 class="skeleton"></h2>
             <h3 class="skeleton"></h3>
@@ -1040,7 +1051,7 @@
             <h6 class="skeleton"></h6>
             </div>`;
     document.getElementById("tg-id-menu").innerHTML = userId;
-    det = false;
+    //found = false;
     fetch("https://boost.rorosin.ru/group/" + userId)
     //fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
@@ -1068,7 +1079,6 @@
         .then((resp) => {
             if (resp && resp.ok) {
                 loader.style.display = "none";
-
                 return resp.json();
             }
         })
@@ -1076,6 +1086,19 @@
             if (data) {
                 container.innerHTML = data;
                 if (nowBtn) upsSV();
+                const rooms = document.querySelectorAll(".room");
+                        
+                    for (var i = 0; i < rooms.length; i++) {
+                            try{
+                                    if (rooms[i].innerHTML.toString()[1] !== rooms[i+1].innerHTML.toString()[1]) {
+                                        rooms[i].style.color = "red";
+                                        rooms[i+1].style.color = "red";
+                                    }
+                                }
+                                catch {
+                                    
+                                }
+                        }
             }
         })
             .catch(err => {
@@ -1088,78 +1111,93 @@
             //
             loader.style.display = "none";
         }
+
     }
         getSchedule1();
 
 
     function cleanDaySchedule(dayElement) {
-        const lessonsData = {};
-        const dayNameEl = dayElement.querySelector(".day-name");
+    const lessonsData = {};
+    const dayNameEl = dayElement.querySelector(".day-name");
+    
+    const lessonHeaders = dayElement.querySelectorAll(".lesson");
+    
+    lessonHeaders.forEach((header) => {
+        const lessonNum = header.textContent.trim(); 
         
-        const lessonHeaders = dayElement.querySelectorAll(".lesson");
+
+        const timeEl = header.nextElementSibling;
+        const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
         
-        lessonHeaders.forEach((header) => {
-            const lessonNum = header.textContent.trim(); 
-            const timeEl = header.nextElementSibling;
-            const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
-            
-            let subjectNode = timeEl.nextSibling;
-            let subjectText = subjectNode ? subjectNode.textContent.trim() : "";
 
-            const key = `${lessonNum}_${timeText}`;
+        const subjectEl = timeEl?.nextElementSibling;
+        const roomEl = subjectEl?.nextElementSibling;
 
-            const match = subjectText.match(/(.+?)\s*\((.+?)\)/);
-            let name = subjectText;
-            let room = "";
-            
-            if (match) {
-                name = match[1].trim();
-                room = match[2].trim();
+        const subjectName = subjectEl?.classList.contains("subject") ? subjectEl.textContent.trim() : "";
+        let roomText = roomEl?.classList.contains("room") ? roomEl.textContent.trim() : "";
+        
+        roomText = roomText.replace(/[()]/g, "");
+
+        const key = `${lessonNum}_${timeText}_${subjectName}`;
+
+        if (!lessonsData[key]) {
+            lessonsData[key] = {
+                num: lessonNum,
+                time: timeText,
+                name: subjectName,
+                rooms: roomText ? [roomText] : []
+            };
+        } else {
+            if (roomText && !lessonsData[key].rooms.includes(roomText)) {
+                lessonsData[key].rooms.push(roomText);
             }
+        }
+    });
 
-            if (!lessonsData[key]) {
-                lessonsData[key] = {
-                    num: lessonNum,
-                    time: timeText,
-                    name: name,
-                    rooms: [room]
-                };
-            } else {
-                if (room && !lessonsData[key].rooms.includes(room)) {
-                    lessonsData[key].rooms.push(room);
-                }
-            }
-        });
+    let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
+    
+    Object.values(lessonsData).forEach(l => {
+        const roomsDisplay = l.rooms.length > 0 
+            ? ` <span class="room">(${l.rooms.join(' / ')})</span>` 
+            : "";
 
-        let newHTML = `<h3 class="day-name">${dayElement.querySelector(".day-name").innerHTML}</h3>`;
-        
-        Object.values(lessonsData).forEach(l => {
-            const roomsDisplay = l.rooms.length > 0 ? ` (${l.rooms.join(' / ')})` : "";
-            newHTML += `
+        newHTML += `
+            <div class="lesson-row">
                 <h4 class="lesson">${l.num}</h4>
                 <h6 class="time">${l.time}</h6>
-                ${l.name}${roomsDisplay}
-            `;
-        });
+                <span class="subject">${l.name}</span>${roomsDisplay}
+            </div>
+        `;
+    });
 
-        dayElement.innerHTML = newHTML;
-    }
+    
+
+    dayElement.innerHTML = newHTML;
+}
+
+
         let rr = true;
         let clickedAi = false;
         function upsSV(){
+            let found = false;
             var ch = false;
             lm = new Map();
                 var DAYS = document.querySelectorAll(".day");
                 DAYS.forEach((de) => {
                     var dayName = de.querySelector(".day-name")?.textContent.trim();
                     var dayLesson = de.querySelector(".lesson");
-
+                    var dayLessons = de.querySelectorAll(".lesson");
+                    
                     btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
                     if (dayName === btnMapping[nowBtn.innerHTML]) {
                         de.style.display = "block";
+                        found = true;
                         ch = false;
                         lm.set(de, ch);
                         document.getElementById("empty-container").style.display = "none";
+                        
+                        
+
 
                         if (dayName === days[tommorrow.getDay()] && rr) {
                             stopAll();
@@ -1193,12 +1231,13 @@
             //}
             });
 
-            if (lm.size === 0 && det) {
+            if (!found) {
                 document.getElementById("empty-container").style.display = "flex";
+                document.getElementById("empty-container").style.animation = "nothingFly 1s ease";
             } else {
                 document.getElementById("empty-container").style.display = "none";
             }
-            }
+        }
 
         var btns = document.querySelectorAll(".btnD");
         btns.forEach((btn) => {
@@ -1240,8 +1279,9 @@
         setTimeout(function(){
             al.style.display = "none";
         }, 1900);
-        getSchedule1();
         upsSV();
+        getSchedule1();
+        
         timeout = 5000;
         setTimeout(function(){
             timeout = 0;
@@ -1331,7 +1371,7 @@ function groupSet0() {
             }, 100);
         }
         else {setTimeout(function(){ Header.classList.remove("scrolling")}, 100)}
-    })
+    });
     </script>
 </body>
 </html>
