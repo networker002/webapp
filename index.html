@@ -597,6 +597,76 @@
             box-shadow: 2px 2px 6px black;
         }
 
+        #sk {
+            border-radius: 30px;
+            background: #4f618738;
+            margin-left: 4.5vw;
+            margin-right: 4.5vw;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        h3.skeleton {
+            margin-top: 12px;
+            margin-bottom: 26px;
+        }
+
+        h2.skeleton {
+            margin-left: 15vw;
+            margin-right: 15vw;
+            margin-bottom: 32px;
+        }
+
+        h4.skeleton {
+            margin-top: 22px;
+            opacity: .8;
+        }
+
+        h6.skeleton {
+            opacity: .5;
+        }
+
+        .skeleton {
+            height: 1.5em;
+            background: #ffffff1c;    
+            margin-bottom: 16px;
+            border-radius: 9px;
+            margin-left: 5vw;
+            margin-right: 5vw;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow-x: hidden;
+
+            &::before {
+                border-radius: 9px;
+                position: absolute;
+                content: "";
+                background: linear-gradient(90deg, #ffffff03, #ffffff12, #ffffff03);
+                left: 0;
+                top: 50%;
+                transform: translate(-150%, -50%);
+                height: 90%;
+                width: 30%;
+
+                animation: skelet 2s infinite ease-in-out;
+
+            }
+            
+        }
+
+        @keyframes skelet {
+            0% {
+                left: 0;
+            }
+
+            50% {
+                left: 150%;
+            }
+
+            100% {
+                left: 0;
+            }
+        }
 
     </style>
 
@@ -922,6 +992,7 @@
 
         btnAI.onclick = function() {
             const currentState = localStorage.getItem("isActiveAI") === 'true';
+            haptic.notificationOccurred("success");
             applyAIState(!currentState);
         };
 
@@ -933,6 +1004,7 @@
 
         const tg = window.Telegram.WebApp;
         tg.ready();
+        const haptic = tg.HapticFeedback;
 
         var d = new Date();
         n = d.getDay();
@@ -952,7 +1024,18 @@
     };
     function getSchedule1(){
     if (userId) {
-    container.innerHTML = "";
+    container.innerHTML = `
+    <div id="sk"><h2 class="skeleton"></h2>
+            <h3 class="skeleton"></h3>
+            <h4 class="skeleton"></h4>
+            <h6 class="skeleton"></h6>
+
+            <h4 class="skeleton"></h4>
+            <h6 class="skeleton"></h6>
+
+            <h4 class="skeleton"></h4>
+            <h6 class="skeleton"></h6>
+            </div>`;
     document.getElementById("tg-id-menu").innerHTML = userId;
     fetch("https://boost.rorosin.ru/group/" + userId)
     //fetch("http://127.0.0.1:8000/group/" + userId)
