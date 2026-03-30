@@ -655,6 +655,39 @@
             }
             
         }
+        /*.lesson-row {
+            position: relative;
+            &::before {
+                position: absolute;
+                right: 1em;
+                top: 50%;
+                content:  "▼";
+                transform: translateY(-8px) scaleX(1.2);
+                padding: 4px;
+                opacity: .7;
+            }
+        }*/
+
+
+        .changing-rooms {
+            background: rgba(179, 163, 95, 0.3);
+            padding: 4px;
+            padding-top: 2px;
+            text-wrap:nowrap;
+            border-radius: 8px;
+            position: relative;
+
+            /*&::before {
+                position: absolute;
+                content: "i";
+                color: rgb(255, 230, 0);
+                font-style: italic;
+                font-size: smaller;
+                right: -8px;
+                top: 0px;
+                
+            }*/
+        }
 
         @keyframes skelet {
             0% {
@@ -1086,12 +1119,21 @@
             if (data) {
                 container.innerHTML = data;
                 if (nowBtn) upsSV();
-                const rooms = document.querySelectorAll(".room");
-                        
+                const dayss = document.querySelectorAll(".day");
+                dayss.forEach((DAY) => {
+                    var rooms = DAY.querySelectorAll(".room");
+                    rooms.forEach((r) => {console.log(r)});
+                    
+                    
                     for (var i = 0; i < rooms.length; i++) {
                             try{
                                     if (rooms[i].innerHTML.toString()[1] !== rooms[i+1].innerHTML.toString()[1]) {
+                                        //console.log(rooms[i].innerHTML.toString()[1]);
+                                        //console.log(rooms[i+1].innerHTML.toString()[1]);
+                                        console.log(rooms[i].parentElement.parentElement.style.display);
                                         rooms[i].style.color = "yellow";
+                                        rooms[i].classList.add("changing-rooms");
+                                        rooms[i+1].classList.add("changing-rooms");
                                         rooms[i+1].style.color = "yellow";
                                     }
                                 }
@@ -1099,6 +1141,7 @@
                                     
                                 }
                         }
+                    })
             }
         })
             .catch(err => {
