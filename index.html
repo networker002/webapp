@@ -1191,7 +1191,7 @@
             //}
             });
 
-            if (lm.size === 0 && dt) {
+            if (lm.size === 0 && det) {
                 document.getElementById("empty-container").style.display = "flex";
             } else {
                 document.getElementById("empty-container").style.display = "none";
@@ -1279,10 +1279,10 @@ const darkRadio = document.getElementById("dark-theme");
 const lightRadio = document.getElementById("light-theme");
 
 darkRadio.addEventListener("change", function() {
-    if (this.checked) {applyTheme('dark')}
+    if (this.checked) {applyTheme('dark'); haptic.notificationOccurred("success");}
 })
 lightRadio.addEventListener("change", function() {
-    if (this.checked) {applyTheme('light')}
+    if (this.checked) {applyTheme('light'); haptic.notificationOccurred("success");}
 });
 
 window.addEventListener("DOMContentLoaded", () => {
