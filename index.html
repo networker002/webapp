@@ -1519,6 +1519,7 @@ function groupSet0() {
     erDisplay.style = "font-weight:600;color:red";
     if (D.length < 4 || D.length > 13) {
         erDisplay.innerHTML = "Имя группы должно быть другой длины";
+        haptic.notificationOccurred("error");
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
         
