@@ -195,6 +195,7 @@
             color: var(--header-glass);
             opacity: var(--btn-opacity);
             filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
+            outline: none !important;
             
             &:active {
                 scale: 1.2;
@@ -210,6 +211,8 @@
             padding-top: 1.2em;
             margin-top: 1.5em;
             position: relative;
+            transition: all 2s;
+            animation: raise 0.4s ease forwards;
 
             &::before {
                 position: absolute;
@@ -232,6 +235,13 @@
             }
         }
 
+        }
+        .lesson {
+            margin-top: 1em;
+            padding-top: 1em;
+            border-top: 2px solid var(--lessons-b-c);
+        }
+
         @keyframes raise {
             0% {
                 opacity: 0;
@@ -242,14 +252,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        }
-        .lesson {
-            margin-top: 1em;
-            padding-top: 1em;
-            border-top: 2px solid var(--lessons-b-c);
-
         }
 
         .time {
@@ -436,6 +438,7 @@
             display: flex;
             justify-content: center;
             gap: .5em;
+            outline: none !important;
         }
 
         #burger-menu.opened-btn {
@@ -667,6 +670,7 @@
         #activate-ai-a {
             letter-spacing: 2px;
             transition: all .4s;
+            outline: none !important;
         }
 
         .my-def-btns {
@@ -1163,7 +1167,11 @@
             <h4 class="skeleton"></h4>
             <h6 class="skeleton"></h6>
             </div>`;
-    document.getElementById("tg-id-menu").innerHTML = userId;
+            m = "";
+            for (let i = 0; i < (userId.toString().length - 4); i++) {
+                m += "●";
+            }
+    document.getElementById("tg-id-menu").innerHTML = userId.toString().slice(0, 4) + m;
     //found = false;
     fetch("https://boost.rorosin.ru/group/" + userId)
     //fetch("http://127.0.0.1:8000/group/" + userId)
@@ -1308,7 +1316,12 @@
         `;
 
 
-        var btnsList = document.querySelectorAll(".list-btn");
+        
+    });
+
+    dayElement.innerHTML = newHTML;
+
+    var btnsList = dayElement.querySelectorAll(".list-btn");
                             btnsList.forEach((btnX) => {
                                 btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
                                 btnX.parentElement.querySelector(".teacher").style.display = "none";
@@ -1317,18 +1330,16 @@
                                 btnX.addEventListener("click", function(){
                                     if (!shown){
                                     btnX.parentElement.querySelector(".teacher").style.display = "block";
-                                    btnX.parentElement.querySelector(".teacher").style.animation = "raise 1s";
                                     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
                                     shown = true;
-                                     } else {
+                                    } else {
+                                    
                                     btnX.parentElement.querySelector(".teacher").style.display = "none";
+                                    
                                     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
                                     shown = false;
                                 }})
                             });
-    });
-
-    dayElement.innerHTML = newHTML;
 }
         
 
