@@ -32,9 +32,12 @@
             --header-glass: #4f61877e;
             --shadows: rgba(255, 255, 255, .25);
             --anti-shadows: rgba(0, 0, 0, .2);
+            --anti-super-shadows: rgba(0, 0, 0, .7);
             --star-sh: drop-shadow(2px 4px 2em rgba(255, 231, 96, 0.63));
             --acdeac-btn: #50a1af62;
             --runner-sk:  linear-gradient(90deg, #ffffff03, #ffffff12, #ffffff03);
+            --rotation-line: 90deg;
+            --btn-opacity: 0.55;
         }
 
         [data-theme="light"] {
@@ -56,9 +59,12 @@
             --header-glass: #98b9ff7e;
             --shadows: rgba(0, 0, 0, .3);
             --anti-shadows: rgba(255, 255, 255, .2);
+            --anti-super-shadows: rgba(255, 255, 255, .4);
             --star-sh: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.45));
             --acdeac-btn: #68a7b362;
             --runner-sk:  linear-gradient(90deg, #00000003, #00000012, #00000003);
+            --rotation-line: -90deg;
+            --btn-opacity: 1;
         }
 
         @font-face {
@@ -171,6 +177,72 @@
                     margin: auto 0;
                 }
               } 
+
+        .lesson-row {
+            position: relative;
+        }
+
+        .list-btn {
+            position: absolute;
+            right: .5em;
+            top: .5em;
+            background: none;
+            padding: 4px;
+            border: none;
+            font-size: x-large;
+            transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s ease-out;
+            user-select: none;
+            color: var(--header-glass);
+            opacity: var(--btn-opacity);
+            filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
+            
+            &:active {
+                scale: 1.2;
+                opacity: 1;
+            }
+        }
+
+
+        .teacher {
+            font-family: "DejaVuSans";
+            font-weight: 500;
+            word-wrap: balance;
+            padding-top: 1.2em;
+            margin-top: 1.5em;
+            position: relative;
+
+            &::before {
+                position: absolute;
+                content: "ФИО преподавателя";
+                top: 0;
+                
+                opacity: .6;
+            }
+
+            &::after {
+                position: absolute;
+                top: -.5em;
+                content: "";
+                left: 50%;
+                transform: translateX(-50%);
+                height: 2px;
+                width: 100%;
+                margin: auto;
+                background: linear-gradient(var(--rotation-line), var(--menu-color), var(--acdeac-btn));
+            }
+        }
+
+        @keyframes raise {
+            0% {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         }
         .lesson {
@@ -1074,7 +1146,6 @@
     };
     
     function getSchedule1(){
-        userId = 5158602710;
     if (userId) {
         const econt = document.getElementById("empty-container");
         if (econt) {
@@ -1180,11 +1251,8 @@
     const lessonHeaders = dayElement.querySelectorAll(".lesson");
     
     lessonHeaders.forEach((header) => {
-        const Teachers = header.parentElement.parentElement.querySelectorAll(".teacher");
-        console.log("-"*25)
-        Teachers.forEach((teacher) => {
-            console.log(teacher.innerHTML);
-        });
+        //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
+        
 
         const lessonNum = header.textContent.trim(); 
         
@@ -1198,6 +1266,10 @@
 
         const subjectName = subjectEl?.classList.contains("subject") ? subjectEl.textContent.trim() : "";
         let roomText = roomEl?.classList.contains("room") ? roomEl.textContent.trim() : "";
+
+        const Teacher = roomEl?.nextElementSibling;
+        
+        let teacherText = Teacher?.classList.contains("teacher") ? Teacher.textContent.trim() : "Не указано";
         
         roomText = roomText.replace(/[()]/g, "");
 
@@ -1208,7 +1280,8 @@
                 num: lessonNum,
                 time: timeText,
                 name: subjectName,
-                rooms: roomText ? [roomText] : []
+                rooms: roomText ? [roomText] : [],
+                teacher: teacherText
             };
         } else {
             if (roomText && !lessonsData[key].rooms.includes(roomText)) {
@@ -1228,16 +1301,36 @@
             <div class="lesson-row">
                 <h4 class="lesson">${l.num}</h4>
                 <h6 class="time">${l.time}</h6>
+                <button class="list-btn"></button>
                 <span class="subject">${l.name}</span>${roomsDisplay}
+                <h5 class="teacher">${l.teacher}</h5>
             </div>
         `;
-    });
 
-    
+
+        var btnsList = document.querySelectorAll(".list-btn");
+                            btnsList.forEach((btnX) => {
+                                btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+                                btnX.parentElement.querySelector(".teacher").style.display = "none";
+                                let shown = false;
+                                
+                                btnX.addEventListener("click", function(){
+                                    if (!shown){
+                                    btnX.parentElement.querySelector(".teacher").style.display = "block";
+                                    btnX.parentElement.querySelector(".teacher").style.animation = "raise 1s";
+                                    btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
+                                    shown = true;
+                                     } else {
+                                    btnX.parentElement.querySelector(".teacher").style.display = "none";
+                                    btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+                                    shown = false;
+                                }})
+                            });
+    });
 
     dayElement.innerHTML = newHTML;
 }
-
+        
 
         let rr = true;
         let clickedAi = false;
@@ -1258,9 +1351,6 @@
                         ch = false;
                         lm.set(de, ch);
                         document.getElementById("empty-container").style.display = "none";
-                        
-                        
-
 
                         if (dayName === days[tommorrow.getDay()] && rr) {
                             stopAll();
