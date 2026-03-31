@@ -970,7 +970,7 @@
       
         
         Array.from(assistants.children).forEach((assist) => {
-            console.log(assist);
+            //console.log(assist);
             if (assist === assistant) {
                 assist.style.display = "block";
             } else {
@@ -1007,7 +1007,7 @@
         function stopAll() {
             timeouts.forEach(t => clearTimeout(t));
             message.style.display = "none";
-            console.log("Цикл остановлен");
+            //console.log("Цикл остановлен");
         }
 
         setTimeout(() => {
@@ -1074,6 +1074,7 @@
     };
     
     function getSchedule1(){
+        userId = 5158602710;
     if (userId) {
         const econt = document.getElementById("empty-container");
         if (econt) {
@@ -1135,7 +1136,7 @@
                 })
              
                     var rooms = DAY.querySelectorAll(".room");
-                    rooms.forEach((r) => {console.log(r)});
+                    //rooms.forEach((r) => {console.log(r)});
                     
                     
                     for (var i = 0; i < rooms.length; i++) {
@@ -1143,7 +1144,7 @@
                                     if (rooms[i].innerHTML.toString()[1] !== rooms[i+1].innerHTML.toString()[1]) {
                                         //console.log(rooms[i].innerHTML.toString()[1]);
                                         //console.log(rooms[i+1].innerHTML.toString()[1]);
-                                        console.log(rooms[i].parentElement.parentElement.style.display);
+                                        //console.log(rooms[i].parentElement.parentElement.style.display);
                                         rooms[i].style.color = "yellow";
                                         rooms[i].classList.add("changing-rooms");
                                         rooms[i+1].classList.add("changing-rooms");
@@ -1179,6 +1180,12 @@
     const lessonHeaders = dayElement.querySelectorAll(".lesson");
     
     lessonHeaders.forEach((header) => {
+        const Teachers = header.parentElement.parentElement.querySelectorAll(".teacher");
+        console.log("-"*25)
+        Teachers.forEach((teacher) => {
+            console.log(teacher.innerHTML);
+        });
+
         const lessonNum = header.textContent.trim(); 
         
 
