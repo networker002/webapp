@@ -1406,7 +1406,7 @@ function toBtoa(str) {
 }
 
 function groupSet0() {
-    var D = document.getElementById("group-set").value;
+    var D = document.getElementById("group-set").value.trim();
     var erDisplay = document.getElementById("errs-reg");
     erDisplay.style = "font-weight:600;color:red";
     if (D.length < 4 || D.length > 13) {
@@ -1416,7 +1416,7 @@ function groupSet0() {
         
         const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
         tg.openTelegramLink(url);
-        setTimeout(function(){tg.close();}, 50);
+        setTimeout(function(){tg.close();}, 2000);
     }
 }
     const Header = document.querySelector("header")
