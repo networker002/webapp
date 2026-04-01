@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание 📅</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://static.rorosin.ru/twa.js"></script>
 </head>
 <body>
     <style>
@@ -1234,7 +1234,8 @@
                                     
                                 }
                         }
-                    })
+                    });
+                    dayParseOnline();
             }
         })
             .catch(err => {
@@ -1250,6 +1251,30 @@
 
     }
         getSchedule1();
+        
+
+    function dayParseOnline(){
+        const dayS = document.querySelectorAll(".day");
+        dayS.forEach((D) => {
+            
+            if ((D.querySelector(".day-name").innerHTML.toString().split("<")[0].toString().trim()) === days[n]){
+
+        const lessonH = document.querySelectorAll(".lesson-row");
+        lessonH.forEach((ls) => {
+            const times = ls.querySelectorAll(".time");
+            times.forEach((timee) => {
+            timeeText = timee.innerHTML.toString().trim();
+            console.log(timeeText);
+            const timeNow = new Date();
+            const nowH = timeNow.getHours();
+            const nowM = timeNow.getMinutes();
+
+           
+        })
+        });
+    }
+    });
+    }
 
 
     function cleanDaySchedule(dayElement) {
