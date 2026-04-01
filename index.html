@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание 📅</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
+
 <body>
     <style>
         * {
@@ -18,7 +20,7 @@
             --main-bg-color: linear-gradient(-180deg, #07070F, #05050A);
             --header-bg-color: #4f6187;
             --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
-            --menu-color:#fff;
+            --menu-color: #fff;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: none;
             --alert-bg: rgba(0, 200, 200, .8);
@@ -35,9 +37,10 @@
             --anti-super-shadows: rgba(0, 0, 0, .7);
             --star-sh: drop-shadow(2px 4px 2em rgba(255, 231, 96, 0.63));
             --acdeac-btn: #50a1af62;
-            --runner-sk:  linear-gradient(90deg, #ffffff03, #ffffff12, #ffffff03);
+            --runner-sk: linear-gradient(90deg, #ffffff03, #ffffff12, #ffffff03);
             --rotation-line: 90deg;
             --btn-opacity: 0.55;
+            --ch-room-bg: rgba(179, 163, 95, 0.3);
         }
 
         [data-theme="light"] {
@@ -45,7 +48,7 @@
             --main-bg-color: linear-gradient(-180deg, #f0f2f5, #ffffff);
             --header-bg-color: #a2d2ff;
             --menu-bg: linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25));
-            --menu-color:#10002b;
+            --menu-color: #10002b;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: #c4c4c427;
             --alert-bg: rgba(0, 200, 200, .9);
@@ -62,9 +65,10 @@
             --anti-super-shadows: rgba(255, 255, 255, .4);
             --star-sh: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.45));
             --acdeac-btn: #68a7b362;
-            --runner-sk:  linear-gradient(90deg, #00000003, #00000012, #00000003);
+            --runner-sk: linear-gradient(90deg, #00000003, #00000012, #00000003);
             --rotation-line: -90deg;
             --btn-opacity: 1;
+            --ch-room-bg: rgba(0, 0, 0, 0.15);
         }
 
         @font-face {
@@ -88,7 +92,7 @@
             gap: 1em;
             padding: .5em;
             padding-top: 3em;
-            background:var(--header-bg-color);
+            background: var(--header-bg-color);
             position: sticky;
             transition: all .2s ease;
             top: 0;
@@ -170,73 +174,74 @@
                 display: flex;
                 flex-direction: row-reverse;
                 justify-content: center;
-                margin: auto;             
+                margin: auto;
                 gap: .25em;
 
                 svg {
                     margin: auto 0;
-                    scale:1.25;
+                    scale: 1.25;
                 }
-              } 
-
-        .lesson-row {
-            position: relative;
-        }
-
-        .list-btn {
-            position: absolute;
-            right: .5em;
-            top: .5em;
-            background: none;
-            padding: 4px;
-            border: none;
-            font-size: x-large;
-            transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s ease-out;
-            user-select: none;
-            color: var(--header-glass);
-            opacity: var(--btn-opacity);
-            filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
-            outline: none !important;
-
-            &:active {
-                scale: 1.2;
-                opacity: 1;
             }
-        }
 
+            .lesson-row {
+                position: relative;
+            }
 
-        .teacher {
-            font-family: "DejaVuSans";
-            font-weight: 500;
-            word-wrap: balance;
-            padding-top: 1.2em;
-            margin-top: 1.5em;
-            position: relative;
-            transition: all 2s;
-            animation: raise 0.4s ease forwards;
-
-            &::before {
+            .list-btn {
                 position: absolute;
-                content: "ФИО преподавателя";
-                top: 0;
+                right: .5em;
+                top: .5em;
+                background: none;
+                padding: 4px;
+                border: none;
+                font-size: x-large;
+                transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s ease-out;
+                user-select: none;
+                color: var(--header-glass);
+                opacity: var(--btn-opacity);
+                filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
+                outline: none !important;
 
-                opacity: .6;
+                &:active {
+                    scale: 1.2;
+                    opacity: 1;
+                }
             }
 
-            &::after {
-                position: absolute;
-                top: -.5em;
-                content: "";
-                left: 50%;
-                transform: translateX(-50%);
-                height: 2px;
-                width: 100%;
-                margin: auto;
-                background: linear-gradient(var(--rotation-line), var(--menu-color), var(--acdeac-btn));
+
+            .teacher {
+                font-family: "DejaVuSans";
+                font-weight: 500;
+                word-wrap: balance;
+                padding-top: 1.2em;
+                margin-top: 1.5em;
+                position: relative;
+                transition: all 2s;
+                animation: raise 0.4s ease forwards;
+
+                &::before {
+                    position: absolute;
+                    content: "ФИО преподавателя";
+                    top: 0;
+
+                    opacity: .6;
+                }
+
+                &::after {
+                    position: absolute;
+                    top: -.5em;
+                    content: "";
+                    left: 50%;
+                    transform: translateX(-50%);
+                    height: 2px;
+                    width: 100%;
+                    margin: auto;
+                    background: linear-gradient(var(--rotation-line), var(--menu-color), var(--acdeac-btn));
+                }
             }
-        }
 
         }
+
         .lesson {
             margin-top: 1em;
             padding-top: 1em;
@@ -265,9 +270,10 @@
             padding-bottom: .25em;
             text-shadow: 1px 2px 4px var(--text-shadow-c);
         }
-        
+
         .time.now {
-        position: relative;
+            position: relative;
+
             &::after {
                 content: "";
                 position: absolute;
@@ -282,7 +288,7 @@
                 opacity: .8;
             }
         }
-        
+
         @keyframes active {
             50% {
                 scale: .94;
@@ -303,7 +309,7 @@
 
         }
 
-        #loader  {
+        #loader {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -320,7 +326,7 @@
             pointer-events: auto;
             user-select: none;
             overflow: hidden;
-            
+
         }
 
         @keyframes scale1 {
@@ -406,7 +412,7 @@
             border-radius: 16px;
             backdrop-filter: blur(10px);
             z-index: 2000;
-            display:none;
+            display: none;
             transition: opacity .5s;
 
             h1 {
@@ -433,13 +439,13 @@
                 padding: 6px;
                 border-radius: 24px;
                 letter-spacing: 2px;
-                color:#ffffff;
+                color: #ffffff;
                 filter: drop-shadow(0 4px .75em #ffffff3f);
                 transition: transform .3s;
                 font-family: "DejaVuSans";
 
                 &:active {
-                   transform: scale(.9);
+                    transform: scale(.9);
                 }
             }
 
@@ -458,9 +464,9 @@
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr;
 
-        } 
+        }
 
-        #theme-container > div {
+        #theme-container>div {
             display: flex;
             justify-content: center;
             gap: .5em;
@@ -475,8 +481,8 @@
             transform: scaleY(1);
         }
 
-        h4 > input  {
-            margin-left:.3em;
+        h4>input {
+            margin-left: .3em;
             margin-right: .9em;
             transition: scale .2s;
             position: relative;
@@ -499,8 +505,8 @@
             }
 
             &:checked&::after {
-                    background: #4f6187;
-                }
+                background: #4f6187;
+            }
         }
 
         #alerter {
@@ -509,7 +515,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background:#000000c0;
+            background: #000000c0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -520,9 +526,12 @@
             padding-top: 6em;
             box-sizing: border-box;
             display: none;
+            outline: none;
 
 
-            h2, h3, h6 {
+            h2,
+            h3,
+            h6 {
                 color: #fff;
                 padding: 1em;
             }
@@ -551,7 +560,7 @@
             transition: background .5s;
 
             &::placeholder {
-                transition:  letter-spacing .5s ease-in-out, color 1s ease;
+                transition: letter-spacing .5s ease-in-out, color 1s ease;
                 color: #999999;
             }
 
@@ -563,29 +572,31 @@
                     color: #4f6187;
                 }
             }
+
             &:placeholder-shown {
                 background: #10244e;
             }
 
 
         }
+
         #set-group-btn {
             margin: 1em;
-                padding: .5em 1.5em;
-                background: var(--s-b-b);
-                border-radius: 24px;
-                border: none;
-                transition: transform .1s, filter .2s;
-                filter: drop-shadow(2px 4px 12px #0000006b);
-                font-size: 1em;
-                outline: none;
-                user-select: none;
+            padding: .5em 1.5em;
+            background: var(--s-b-b);
+            border-radius: 24px;
+            border: none;
+            transition: transform .1s, filter .2s;
+            filter: drop-shadow(2px 4px 12px #0000006b);
+            font-size: 1em;
+            outline: none;
+            user-select: none;
 
-                &:active {
-                    transform: translateY(4px) scale(.95);
-                    filter: none;
-                }
+            &:active {
+                transform: translateY(4px) scale(.95);
+                filter: none;
             }
+        }
 
         #fast-alert {
             justify-content: center;
@@ -609,11 +620,11 @@
                 font-family: monospace;
                 letter-spacing: 2px;
                 font-weight: 100;
-                font-size:large;
+                font-size: large;
             }
         }
 
-        #empty-container  {
+        #empty-container {
             display: none;
             justify-content: center;
             flex-direction: row;
@@ -631,17 +642,19 @@
         }
 
         .sad-starry {
-                filter: var(--star-sh);
-            }
+            filter: var(--star-sh);
+        }
 
         @keyframes flyUP {
-            0%{
+            0% {
                 transform: translateY(6px);
             }
-            50%{
+
+            50% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             100% {
                 transform: translateY(-12px);
                 opacity: 0;
@@ -660,7 +673,7 @@
             }
         }
 
-        .assistant > div {
+        .assistant>div {
             position: fixed;
             right: 1.5em;
             z-index: 1000;
@@ -738,7 +751,7 @@
 
         .skeleton {
             height: 1.5em;
-            background: #ffffff1c;    
+            background: #ffffff1c;
             margin-bottom: 16px;
             border-radius: 9px;
             margin-left: 5vw;
@@ -763,6 +776,7 @@
             }
 
         }
+
         /*.lesson-row {
             position: relative;
             &::before {
@@ -778,10 +792,10 @@
 
 
         .changing-rooms {
-            background: rgba(179, 163, 95, 0.3);
+            background: var(--ch-room-bg);
             padding: 4px;
             padding-top: 2px;
-            text-wrap:nowrap;
+            text-wrap: nowrap;
             border-radius: 8px;
             position: relative;
 
@@ -817,16 +831,24 @@
                 opacity: .05;
             }
         }
-
     </style>
 
-    <div id="loader"><div>●</div><div>●</div><div>●</div></div>
+    <div id="loader">
+        <div>●</div>
+        <div>●</div>
+        <div>●</div>
+    </div>
 
     <div class="menu-display" id="user-menu-display">
         <h1>Меню</h1>
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
         <h4>Группа: <span id="group-name-menu"></span></h4>
-        <h4>Тема:<br> <div id="theme-container"><div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div><div><input type="radio" name="theme" id="light-theme"><span id="l-s-t">Light</span></div></div></h4>
+        <h4>Тема:<br>
+            <div id="theme-container">
+                <div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div>
+                <div><input type="radio" name="theme" id="light-theme"><span id="l-s-t">Light</span></div>
+            </div>
+        </h4>
         <h4>Персональный помощник <button id="activate-ai-a"></button></h4>
         <button onclick="closee('user-menu-display')" id="close-btn-m">Закрыть</button>
     </div>
@@ -840,7 +862,9 @@
         <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
     </div>
 
-    <div id="fast-alert"><h2>Обновляем данные</h2></div>
+    <div id="fast-alert">
+        <h2>Обновляем данные</h2>
+    </div>
 
     <header>
         <h1>Расписание занятий</h1>
@@ -849,9 +873,22 @@
 
     <main>
         <div class="second-header">
-            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+            <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex")'><svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <title>Menu-burger-horizontal SVG Icon</title>
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" d="M3 6h18M3 12h18M3 18h18" />
+                </svg></div>
             <div id="gr"></div>
-            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2"/><path d="M3 4.5h4v4"/></g></svg></div>
+            <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24">
+                    <title>Restart SVG Icon</title>
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2">
+                        <path d="M12 3a9 9 0 1 1-5.657 2" />
+                        <path d="M3 4.5h4v4" />
+                    </g>
+                </svg></div>
         </div>
         <div class="days">
             <ul>
@@ -868,132 +905,161 @@
         <div class="assistant">
             <div id="default-assistant">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_i_18_41)">
-<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_41)"/>
-</g>
-<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_41)"/>
-<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_41)"/>
-<circle cx="41" cy="28.5" r="4" fill="black"/>
-<circle cx="39" cy="26.5" r="2" fill="white"/>
-<circle cx="23" cy="28.5" r="4" fill="black"/>
-<circle cx="21" cy="26.5" r="2" fill="white"/>
-<defs>
-<filter id="filter0_i_18_41" x="6.18707" y="5.27429" width="55.6259" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="4" dy="9"/>
-<feGaussianBlur stdDeviation="6.1"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_41"/>
-</filter>
-<linearGradient id="paint0_linear_18_41" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC404"/>
-<stop offset="1" stop-color="#996402"/>
-</linearGradient>
-<linearGradient id="paint1_linear_18_41" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-<linearGradient id="paint2_linear_18_41" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-</defs>
-</svg></div>
+                    <g filter="url(#filter0_i_18_41)">
+                        <path
+                            d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                            fill="url(#paint0_linear_18_41)" />
+                    </g>
+                    <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_41)" />
+                    <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_41)" />
+                    <circle cx="41" cy="28.5" r="4" fill="black" />
+                    <circle cx="39" cy="26.5" r="2" fill="white" />
+                    <circle cx="23" cy="28.5" r="4" fill="black" />
+                    <circle cx="21" cy="26.5" r="2" fill="white" />
+                    <defs>
+                        <filter id="filter0_i_18_41" x="6.18707" y="5.27429" width="55.6259" height="58.8802"
+                            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dx="4" dy="9" />
+                            <feGaussianBlur stdDeviation="6.1" />
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_41" />
+                        </filter>
+                        <linearGradient id="paint0_linear_18_41" x1="32" y1="0" x2="32" y2="64"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFC404" />
+                            <stop offset="1" stop-color="#996402" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_18_41" x1="23" y1="23.5" x2="23" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                        <linearGradient id="paint2_linear_18_41" x1="41" y1="23.5" x2="41" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
             <div id="shocked-assistant">
 
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_i_18_74)">
-<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_74)"/>
-</g>
-<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_74)"/>
-<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_74)"/>
-<circle cx="41" cy="28.5" r="4" fill="black"/>
-<circle cx="39" cy="28.5" r="2" fill="white"/>
-<circle cx="23" cy="28.5" r="4" fill="black"/>
-<circle cx="25" cy="28.5" r="2" fill="white"/>
-<g filter="url(#filter1_i_18_74)">
-<path d="M28 39.5C28 37.0147 30.0147 35 32.5 35V35C34.9853 35 37 37.0147 37 39.5V40.85C37 42.5897 35.5897 44 33.85 44H31.15C29.4103 44 28 42.5897 28 40.85V39.5Z" fill="#6C0A0A"/>
-</g>
-<path d="M32.5 35.5C34.7091 35.5 36.5 37.2909 36.5 39.5V40.8496C36.5 42.3132 35.3132 43.5 33.8496 43.5H31.1504C29.6868 43.5 28.5 42.3132 28.5 40.8496V39.5C28.5 37.2909 30.2909 35.5 32.5 35.5Z" stroke="#996402" stroke-opacity="0.49"/>
-<defs>
-<filter id="filter0_i_18_74" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="4" dy="9"/>
-<feGaussianBlur stdDeviation="6.1"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74"/>
-</filter>
-<filter id="filter1_i_18_74" x="28" y="35" width="13" height="13" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="7" dy="4"/>
-<feGaussianBlur stdDeviation="2"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.34 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74"/>
-</filter>
-<linearGradient id="paint0_linear_18_74" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC404"/>
-<stop offset="1" stop-color="#996402"/>
-</linearGradient>
-<linearGradient id="paint1_linear_18_74" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-<linearGradient id="paint2_linear_18_74" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-</defs>
-</svg>
+                    <g filter="url(#filter0_i_18_74)">
+                        <path
+                            d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                            fill="url(#paint0_linear_18_74)" />
+                    </g>
+                    <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_74)" />
+                    <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_74)" />
+                    <circle cx="41" cy="28.5" r="4" fill="black" />
+                    <circle cx="39" cy="28.5" r="2" fill="white" />
+                    <circle cx="23" cy="28.5" r="4" fill="black" />
+                    <circle cx="25" cy="28.5" r="2" fill="white" />
+                    <g filter="url(#filter1_i_18_74)">
+                        <path
+                            d="M28 39.5C28 37.0147 30.0147 35 32.5 35V35C34.9853 35 37 37.0147 37 39.5V40.85C37 42.5897 35.5897 44 33.85 44H31.15C29.4103 44 28 42.5897 28 40.85V39.5Z"
+                            fill="#6C0A0A" />
+                    </g>
+                    <path
+                        d="M32.5 35.5C34.7091 35.5 36.5 37.2909 36.5 39.5V40.8496C36.5 42.3132 35.3132 43.5 33.8496 43.5H31.1504C29.6868 43.5 28.5 42.3132 28.5 40.8496V39.5C28.5 37.2909 30.2909 35.5 32.5 35.5Z"
+                        stroke="#996402" stroke-opacity="0.49" />
+                    <defs>
+                        <filter id="filter0_i_18_74" x="6.18713" y="5.27429" width="55.6257" height="58.8802"
+                            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dx="4" dy="9" />
+                            <feGaussianBlur stdDeviation="6.1" />
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74" />
+                        </filter>
+                        <filter id="filter1_i_18_74" x="28" y="35" width="13" height="13" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dx="7" dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.34 0" />
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_74" />
+                        </filter>
+                        <linearGradient id="paint0_linear_18_74" x1="32" y1="0" x2="32" y2="64"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFC404" />
+                            <stop offset="1" stop-color="#996402" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_18_74" x1="23" y1="23.5" x2="23" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                        <linearGradient id="paint2_linear_18_74" x1="41" y1="23.5" x2="41" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                    </defs>
+                </svg>
 
             </div>
 
             <div id="gloomy-asistant">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_i_18_73)">
-<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_18_73)"/>
-</g>
-<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_73)"/>
-<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_73)"/>
-<circle cx="41" cy="28.5" r="4" fill="black"/>
-<circle cx="39" cy="26.5" r="2" fill="white"/>
-<circle cx="23" cy="28.5" r="4" fill="black"/>
-<circle cx="21" cy="26.5" r="2" fill="white"/>
-<rect x="24" y="40" width="17" height="1.5" rx="0.75" fill="#FFC404"/>
-<rect x="24.375" y="40.375" width="16.25" height="0.75" rx="0.375" stroke="#996402" stroke-opacity="0.79" stroke-width="0.75"/>
-<defs>
-<filter id="filter0_i_18_73" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="4" dy="9"/>
-<feGaussianBlur stdDeviation="6.1"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_73"/>
-</filter>
-<linearGradient id="paint0_linear_18_73" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC404"/>
-<stop offset="1" stop-color="#996402"/>
-</linearGradient>
-<linearGradient id="paint1_linear_18_73" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-<linearGradient id="paint2_linear_18_73" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-</defs>
-</svg>
+                    <g filter="url(#filter0_i_18_73)">
+                        <path
+                            d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                            fill="url(#paint0_linear_18_73)" />
+                    </g>
+                    <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_73)" />
+                    <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_73)" />
+                    <circle cx="41" cy="28.5" r="4" fill="black" />
+                    <circle cx="39" cy="26.5" r="2" fill="white" />
+                    <circle cx="23" cy="28.5" r="4" fill="black" />
+                    <circle cx="21" cy="26.5" r="2" fill="white" />
+                    <rect x="24" y="40" width="17" height="1.5" rx="0.75" fill="#FFC404" />
+                    <rect x="24.375" y="40.375" width="16.25" height="0.75" rx="0.375" stroke="#996402"
+                        stroke-opacity="0.79" stroke-width="0.75" />
+                    <defs>
+                        <filter id="filter0_i_18_73" x="6.18713" y="5.27429" width="55.6257" height="58.8802"
+                            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dx="4" dy="9" />
+                            <feGaussianBlur stdDeviation="6.1" />
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_73" />
+                        </filter>
+                        <linearGradient id="paint0_linear_18_73" x1="32" y1="0" x2="32" y2="64"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFC404" />
+                            <stop offset="1" stop-color="#996402" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_18_73" x1="23" y1="23.5" x2="23" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                        <linearGradient id="paint2_linear_18_73" x1="41" y1="23.5" x2="41" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                    </defs>
+                </svg>
             </div>
 
         </div>
@@ -1009,58 +1075,69 @@
 
         <div id="empty-container">
             <div id="e-c">
-            <div class="sad-starry">
-                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_i_20_85)">
-<path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_20_85)"/>
-</g>
-<circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_20_85)"/>
-<circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_20_85)"/>
-<circle cx="41" cy="28.5" r="4" fill="black"/>
-<circle cx="39" cy="26.5" r="2" fill="white"/>
-<circle cx="23" cy="28.5" r="4" fill="black"/>
-<circle cx="21" cy="26.5" r="2" fill="white"/>
-<g filter="url(#filter1_i_20_85)">
-<path d="M32.5371 37.6855H32.7812C34.1419 37.6855 35.3789 37.8255 36.4922 38.1055C37.612 38.3919 38.5918 38.7695 39.4316 39.2383C40.278 39.7135 40.9811 40.2376 41.541 40.8105C42.1009 41.3835 42.5013 41.9596 42.7422 42.5391L41.1895 43.125C40.916 42.7539 40.5449 42.3926 40.0762 42.041C39.6139 41.696 39.041 41.3802 38.3574 41.0938C37.6738 40.8138 36.873 40.5892 35.9551 40.4199C35.0371 40.2572 33.9857 40.1758 32.8008 40.1758H32.5176C31.3327 40.1758 30.2812 40.2572 29.3633 40.4199C28.4453 40.5892 27.6445 40.8138 26.9609 41.0938C26.2773 41.3802 25.7012 41.696 25.2324 42.041C24.7572 42.3926 24.3828 42.7539 24.1094 43.125L22.5762 42.5391C22.8236 41.9596 23.2272 41.3835 23.7871 40.8105C24.3405 40.2376 25.0404 39.7135 25.8867 39.2383C26.7266 38.7695 27.7031 38.3919 28.8164 38.1055C29.9362 37.8255 31.1764 37.6855 32.5371 37.6855Z" fill="#996402" fill-opacity="0.49"/>
-</g>
-<defs>
-<filter id="filter0_i_20_85" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="4" dy="9"/>
-<feGaussianBlur stdDeviation="6.1"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85"/>
-</filter>
-<filter id="filter1_i_20_85" x="22.5762" y="37.6855" width="20.166" height="6.13945" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="1"/>
-<feGaussianBlur stdDeviation="0.35"/>
-<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85"/>
-</filter>
-<linearGradient id="paint0_linear_20_85" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC404"/>
-<stop offset="1" stop-color="#996402"/>
-</linearGradient>
-<linearGradient id="paint1_linear_20_85" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-<linearGradient id="paint2_linear_20_85" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8C3BD"/>
-<stop offset="1" stop-color="#DBDBDB"/>
-</linearGradient>
-</defs>
-</svg>
+                <div class="sad-starry">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g filter="url(#filter0_i_20_85)">
+                            <path
+                                d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                                fill="url(#paint0_linear_20_85)" />
+                        </g>
+                        <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_20_85)" />
+                        <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_20_85)" />
+                        <circle cx="41" cy="28.5" r="4" fill="black" />
+                        <circle cx="39" cy="26.5" r="2" fill="white" />
+                        <circle cx="23" cy="28.5" r="4" fill="black" />
+                        <circle cx="21" cy="26.5" r="2" fill="white" />
+                        <g filter="url(#filter1_i_20_85)">
+                            <path
+                                d="M32.5371 37.6855H32.7812C34.1419 37.6855 35.3789 37.8255 36.4922 38.1055C37.612 38.3919 38.5918 38.7695 39.4316 39.2383C40.278 39.7135 40.9811 40.2376 41.541 40.8105C42.1009 41.3835 42.5013 41.9596 42.7422 42.5391L41.1895 43.125C40.916 42.7539 40.5449 42.3926 40.0762 42.041C39.6139 41.696 39.041 41.3802 38.3574 41.0938C37.6738 40.8138 36.873 40.5892 35.9551 40.4199C35.0371 40.2572 33.9857 40.1758 32.8008 40.1758H32.5176C31.3327 40.1758 30.2812 40.2572 29.3633 40.4199C28.4453 40.5892 27.6445 40.8138 26.9609 41.0938C26.2773 41.3802 25.7012 41.696 25.2324 42.041C24.7572 42.3926 24.3828 42.7539 24.1094 43.125L22.5762 42.5391C22.8236 41.9596 23.2272 41.3835 23.7871 40.8105C24.3405 40.2376 25.0404 39.7135 25.8867 39.2383C26.7266 38.7695 27.7031 38.3919 28.8164 38.1055C29.9362 37.8255 31.1764 37.6855 32.5371 37.6855Z"
+                                fill="#996402" fill-opacity="0.49" />
+                        </g>
+                        <defs>
+                            <filter id="filter0_i_20_85" x="6.18713" y="5.27429" width="55.6257" height="58.8802"
+                                filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix"
+                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                <feOffset dx="4" dy="9" />
+                                <feGaussianBlur stdDeviation="6.1" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85" />
+                            </filter>
+                            <filter id="filter1_i_20_85" x="22.5762" y="37.6855" width="20.166" height="6.13945"
+                                filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix"
+                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                <feOffset dy="1" />
+                                <feGaussianBlur stdDeviation="0.35" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85" />
+                            </filter>
+                            <linearGradient id="paint0_linear_20_85" x1="32" y1="0" x2="32" y2="64"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FFC404" />
+                                <stop offset="1" stop-color="#996402" />
+                            </linearGradient>
+                            <linearGradient id="paint1_linear_20_85" x1="23" y1="23.5" x2="23" y2="33.5"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#D8C3BD" />
+                                <stop offset="1" stop-color="#DBDBDB" />
+                            </linearGradient>
+                            <linearGradient id="paint2_linear_20_85" x1="41" y1="23.5" x2="41" y2="33.5"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#D8C3BD" />
+                                <stop offset="1" stop-color="#DBDBDB" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
 
-            </div>
-            <h1>Пусто</h1>
+                </div>
+                <h1>Пусто</h1>
             </div>
         </div>
     </main>
@@ -1083,25 +1160,25 @@
         const message = document.getElementById("ctx-assistant-say");
         let msgS = [
             `                <h1>Привет!</h1>
-                <p>Я твой напарник - Starry</p>`, 
+                <p>Я твой напарник - Starry</p>`,
             `  
                 <p>Теперь мы будем вместе</p>`,
-                `
+            `
                 <p>Моя главная задача - помогать тебе с учебой</p>`,
         ];
 
         timeouts = [];
 
         message.style.display = "none";
-        const initialDelay = setTimeout(function(){
+        const initialDelay = setTimeout(function () {
             message.style.display = "block";
             for (let m = 0; m < msgS.length; m++) {
-            let t = setTimeout(function() {
-                message.innerHTML = msgS[m];
-            }, 5000 * (m));
-            timeouts.push(t);
+                let t = setTimeout(function () {
+                    message.innerHTML = msgS[m];
+                }, 5000 * (m));
+                timeouts.push(t);
 
-        }
+            }
         }, 2000);
 
         timeouts.push(initialDelay);
@@ -1142,7 +1219,7 @@
             }
         }
 
-        btnAI.onclick = function() {
+        btnAI.onclick = function () {
             const currentState = localStorage.getItem("isActiveAI") === 'true';
             haptic.notificationOccurred("success");
             applyAIState(!currentState);
@@ -1162,26 +1239,32 @@
         n = d.getDay();
         m = d.getMonth();
         dt = d.getDate();
-        days = {1:"Понедельник", 2:"Вторник", 3:"Среда", 4:"Четверг", 5:"Пятница", 6:"Суббота", 7:"Воскресенье", 0:"Воскресенье"}, months = {0:"января", 1:"февраля", 2:"марта", 3:"апреля", 4:"мая", 5:"июня", 6:"июля", 7:"августа", 8:"сентября", 9:"октября", 10:"ноября", 11:"декабря"}, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
+        days = { 1: "Понедельник", 2: "Вторник", 3: "Среда", 4: "Четверг", 5: "Пятница", 6: "Суббота", 7: "Воскресенье", 0: "Воскресенье" }, months = { 0: "января", 1: "февраля", 2: "марта", 3: "апреля", 4: "мая", 5: "июня", 6: "июля", 7: "августа", 8: "сентября", 9: "октября", 10: "ноября", 11: "декабря" }, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
         document.getElementById("date-time").innerHTML = full;
-        daysShort = {1:"ПН", 2:"ВТ", 3:"СР", 4:"ЧТ", 5:"ПТ", 6:"СБ", 7:"ВС", 0:"ВС"}
+        daysShort = { 1: "ПН", 2: "ВТ", 3: "СР", 4: "ЧТ", 5: "ПТ", 6: "СБ", 7: "ВС", 0: "ВС" }
         let s = false;
         let nowBtn;
         let tommorrow = new Date();
-        tommorrow.setDate(dt+1);
+        tommorrow.setDate(dt + 1);
 
 
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        var userId = tg.initDataUnsafe.user.id;
-    };
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            var userId = tg.initDataUnsafe.user.id;
+        };
 
-    function getSchedule1(){
-    if (userId) {
-        const econt = document.getElementById("empty-container");
-        if (econt) {
-            econt.style.display = "none";
-        }
-    container.innerHTML = `
+        function getSchedule1(reqNeed = false) {
+            var ttl = 30 * 60 * 1000;
+            var cachedData = localStorage.getItem("schedule");
+            var dataLastUpd = localStorage.getItem("updated_at");
+
+
+            if (userId) {
+
+                const econt = document.getElementById("empty-container");
+                if (econt) {
+                    econt.style.display = "none";
+                }
+                container.innerHTML = `
     <div id="sk"><h2 class="skeleton"></h2>
             <h3 class="skeleton"></h3>
             <h4 class="skeleton"></h4>
@@ -1193,187 +1276,232 @@
             <h4 class="skeleton"></h4>
             <h6 class="skeleton"></h6>
             </div>`;
-            m = "";
-            for (let i = 0; i < (userId.toString().length - 4); i++) {
-                m += "●";
-            }
-    document.getElementById("tg-id-menu").innerHTML = userId.toString().slice(0, 4) + m;
-    //found = false;
-    fetch("https://boost.rorosin.ru/group/" + userId)
-    //fetch("http://127.0.0.1:8000/group/" + userId)
-        .then((response) => {
-            if (!response.ok) throw new Error('Error: ' + response.status);
-            return response.json(); 
-        })
-        .then((userGroup) => {
-            var Group = userGroup.group_name;
+                m = "";
+                for (let i = 0; i < (userId.toString().length - 4); i++) {
+                    m += "●";
+                }
+                document.getElementById("tg-id-menu").innerHTML = userId.toString().slice(0, 4) + m;
+                //found = false;
 
-            if (!Group || Group.toUpperCase() === "NULL") {
-                document.getElementById("alerter").style.display = "block";
-     throw new Error("Group not found!");
-                Group = "Не указана"
-            }
-            if (localStorage.getItem("userGroup") !== Group) {
+                if (reqNeed) {
+                    fetch("https://boost.rorosin.ru/group/" + userId)
+                        //fetch("http://127.0.0.1:8000/group/" + userId)
+                        .then((response) => {
+                            if (!response.ok) throw new Error('Error: ' + response.status);
+                            return response.json();
+                        })
+                        .then((userGroup) => {
+                            var Group = userGroup.group_name;
 
-                localStorage.setItem("userGroup", Group);
-            }
-            document.getElementById("gr").innerHTML = Group;
-            document.getElementById("group-name-menu").innerHTML = Group;
+                            if (!Group || Group.toUpperCase() === "NULL") {
+                                document.getElementById("alerter").style.display = "block";
+                                throw new Error("Group not found!");
+                                Group = "Не указана"
+                            }
+                            if (localStorage.getItem("userGroup") !== Group) {
 
-            return fetch("https://boost.rorosin.ru/schedule/" + Group);
-            //return fetch("http://127.0.0.1:8000/schedule/" + Group);
-        })
-        .then((resp) => {
-            if (resp && resp.ok) {
-                loader.style.display = "none";
-                return resp.json();
-            }
-        })
-        .then((data) => {
-            if (data) {
-                container.innerHTML = data;
-                if (nowBtn) upsSV();
-                const dayss = document.querySelectorAll(".day");
-                dayss.forEach((DAY) => {
-                var dayNAMES = DAY.querySelectorAll(".day-name");
-                dayNAMES.forEach((dn) => {
-                    dn.innerHTML += ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 14q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>`
-                })
+                                localStorage.setItem("userGroup", Group);
+                            }
+                            document.getElementById("gr").innerHTML = Group;
+                            document.getElementById("group-name-menu").innerHTML = Group;
 
-                    var rooms = DAY.querySelectorAll(".room");
-                    //rooms.forEach((r) => {console.log(r)});
+                            return fetch("https://boost.rorosin.ru/schedule/" + Group);
+                            //return fetch("http://127.0.0.1:8000/schedule/" + Group);
+                        })
+                        .then((resp) => {
+                            if (resp && resp.ok) {
+                                loader.style.display = "none";
+                                return resp.json();
+                            }
+                        })
+                        .then((data) => {
+                            if (data) {
+                                container.innerHTML = data;
+                                if (nowBtn) upsSV();
+                                const dayss = document.querySelectorAll(".day");
+                                dayss.forEach((DAY) => {
+                                    var dayNAMES = DAY.querySelectorAll(".day-name");
+                                    dayNAMES.forEach((dn) => {
+                                        dn.innerHTML += ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 14q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>`
+                                    })
+
+                                    var rooms = DAY.querySelectorAll(".room");
+                                    //rooms.forEach((r) => {console.log(r)});
 
 
-                    for (var i = 0; i < rooms.length; i++) {
-                            try{
-                                    if (rooms[i].innerHTML.toString()[1] !== rooms[i+1].innerHTML.toString()[1]) {
-                                        //console.log(rooms[i].innerHTML.toString()[1]);
-                                        //console.log(rooms[i+1].innerHTML.toString()[1]);
-                                        //console.log(rooms[i].parentElement.parentElement.style.display);
-                                        rooms[i].style.color = "yellow";
-                                        rooms[i].classList.add("changing-rooms");
-                                        rooms[i+1].classList.add("changing-rooms");
-                                        rooms[i+1].style.color = "yellow";
+                                    for (var i = 0; i < rooms.length; i++) {
+                                        try {
+                                            if (rooms[i].innerHTML.toString()[1] !== rooms[i + 1].innerHTML.toString()[1]) {
+                                                //console.log(rooms[i].innerHTML.toString()[1]);
+                                                //console.log(rooms[i+1].innerHTML.toString()[1]);
+                                                //console.log(rooms[i].parentElement.parentElement.style.display);
+                                                rooms[i].style.color = "yellow";
+                                                rooms[i].classList.add("changing-rooms");
+                                                rooms[i + 1].classList.add("changing-rooms");
+                                                rooms[i + 1].style.color = "yellow";
+                                            }
+                                        }
+                                        catch {
+
+                                        }
                                     }
-                                }
-                                catch {
+                                });
 
-                                }
+                                dayParseOnline();
+                                cacheData(container.innerHTML);
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Ошибка:", err);
+                            loader.style.display = "none";
+                        });
+                }
+                else if (!reqNeed) {
+                    if (cachedData && ((Date.now() - dataLastUpd) < ttl)) {
+                        container.innerHTML = cachedData;
+                        loader.style.display = "none";
+                        if (nowBtn) upsSV();
+                        //console.log("cache!");
+                        loader.style.display = "none";
+                        var Group = localStorage.getItem("userGroup");
+                        teacherHide();
+                        dayParseOnline();
+
+                        if (Group) {
+
+                            document.getElementById("gr").innerHTML = Group;
+                            document.getElementById("group-name-menu").innerHTML = Group;
+                        } else if (!Group) {
+                            getSchedule1(true);
                         }
-                    });
-                    dayParseOnline();
-            }
-        })
-            .catch(err => {
-                console.error("Ошибка:", err);
-                loader.style.display = "none";
-            });
-        } else {
-            console.warn("userId не определен, запрос отменен.");
-            document.getElementById("alerter").style.display = "block";
-            //
-            loader.style.display = "none";
-        }
+                    } else if ((Date.now() - dataLastUpd) >= ttl) {
+                        getSchedule1(true);
+                    }
 
-    }
+                    if (!cachedData && !reqNeed) {
+                        getSchedule1(true);
+                    }
+                }
+
+            } else {
+                //console.warn("userId не определен, запрос отменен.");
+                document.getElementById("alerter").style.display = "block";
+                //
+                loader.style.display = "none";
+            }
+
+
+        }
         getSchedule1();
 
+        function cacheData(data) {
 
-    function dayParseOnline(){
-        const dayS = document.querySelectorAll(".day");
-        dayS.forEach((D) => {
-
-            if ((D.querySelector(".day-name").innerHTML.toString().split("<")[0].toString().trim()) === days[n]){
-        const D1 = new Date();
-            const D2 = new Date();
-        const lessonH = D.querySelectorAll(".lesson-row");
-        lessonH.forEach((ls) => {
-            const times = ls.querySelectorAll(".time");
-            times.forEach((timee) => {
-            timeeText = timee.innerHTML.toString().trim();
-            
-            const timeNow = new Date();
-            const nowH = timeNow.getHours();
-            const nowM = timeNow.getMinutes();
-            const HRSMINS= [timeeText.split("-")[0].split(":"), timeeText.split("-")[1].split(":")];
-            
-           
-            
-            D1.setHours(HRSMINS[0][0]);
-            D1.setMinutes(HRSMINS[0][1]);
-            
-            D2.setHours(HRSMINS[1][0]);
-            D2.setMinutes(HRSMINS[1][1]);
-            
-            
-            if( timeNow >= D1 && timeNow <= D2) {
-                timee.classList.add("now");
-                
-            } else {
-                timee.classList.remove("now");
+            const NOW = Date.now();
+            try {
+                localStorage.setItem("schedule", data.toString());
+                localStorage.setItem("updated_at", NOW);
+                return true;
             }
-
-        })
-        });
-    }
-    });
-    }
-
-
-    function cleanDaySchedule(dayElement) {
-    const lessonsData = {};
-    const dayNameEl = dayElement.querySelector(".day-name");
-
-    const lessonHeaders = dayElement.querySelectorAll(".lesson");
-
-    lessonHeaders.forEach((header) => {
-        //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
-
-
-        const lessonNum = header.textContent.trim(); 
-
-
-        const timeEl = header.nextElementSibling;
-        const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
-
-
-        const subjectEl = timeEl?.nextElementSibling;
-        const roomEl = subjectEl?.nextElementSibling;
-
-        const subjectName = subjectEl?.classList.contains("subject") ? subjectEl.textContent.trim() : "";
-        let roomText = roomEl?.classList.contains("room") ? roomEl.textContent.trim() : "";
-
-        const Teacher = roomEl?.nextElementSibling;
-
-        let teacherText = Teacher?.classList.contains("teacher") ? Teacher.textContent.trim() : "Не указано";
-
-        roomText = roomText.replace(/[()]/g, "");
-
-        const key = `${lessonNum}_${timeText}_${subjectName}`;
-
-        if (!lessonsData[key]) {
-            lessonsData[key] = {
-                num: lessonNum,
-                time: timeText,
-                name: subjectName,
-                rooms: roomText ? [roomText] : [],
-                teacher: teacherText
-            };
-        } else {
-            if (roomText && !lessonsData[key].rooms.includes(roomText)) {
-                lessonsData[key].rooms.push(roomText);
+            catch {
+                return false;
             }
         }
-    });
 
-    let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
+        function dayParseOnline() {
+            const dayS = document.querySelectorAll(".day");
+            dayS.forEach((D) => {
 
-    Object.values(lessonsData).forEach(l => {
-        const roomsDisplay = l.rooms.length > 0 
-            ? ` <span class="room">(${l.rooms.join(' / ')})</span>` 
-            : "";
+                if ((D.querySelector(".day-name").innerHTML.toString().split("<")[0].toString().trim()) === days[n]) {
+                    const D1 = new Date();
+                    const D2 = new Date();
+                    const lessonH = D.querySelectorAll(".lesson-row");
+                    lessonH.forEach((ls) => {
+                        const times = ls.querySelectorAll(".time");
+                        times.forEach((timee) => {
+                            timeeText = timee.innerHTML.toString().trim();
 
-        newHTML += `
+                            const timeNow = new Date();
+                            const nowH = timeNow.getHours();
+                            const nowM = timeNow.getMinutes();
+                            const HRSMINS = [timeeText.split("-")[0].split(":"), timeeText.split("-")[1].split(":")];
+
+
+
+                            D1.setHours(HRSMINS[0][0]);
+                            D1.setMinutes(HRSMINS[0][1]);
+
+                            D2.setHours(HRSMINS[1][0]);
+                            D2.setMinutes(HRSMINS[1][1]);
+
+
+                            if (timeNow >= D1 && timeNow <= D2) {
+                                timee.classList.add("now");
+
+                            } else {
+                                timee.classList.remove("now");
+                            }
+
+                        })
+                    });
+                }
+            });
+        }
+
+
+        function cleanDaySchedule(dayElement) {
+            const lessonsData = {};
+            const dayNameEl = dayElement.querySelector(".day-name");
+
+            const lessonHeaders = dayElement.querySelectorAll(".lesson");
+
+            lessonHeaders.forEach((header) => {
+                //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
+
+
+                const lessonNum = header.textContent.trim();
+
+
+                const timeEl = header.nextElementSibling;
+                const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
+
+
+                const subjectEl = timeEl?.nextElementSibling;
+                const roomEl = subjectEl?.nextElementSibling;
+
+                const subjectName = subjectEl?.classList.contains("subject") ? subjectEl.textContent.trim() : "";
+                let roomText = roomEl?.classList.contains("room") ? roomEl.textContent.trim() : "";
+
+                const Teacher = roomEl?.nextElementSibling;
+
+                let teacherText = Teacher?.classList.contains("teacher") ? Teacher.textContent.trim() : "Не указано";
+
+                roomText = roomText.replace(/[()]/g, "");
+
+                const key = `${lessonNum}_${timeText}_${subjectName}`;
+
+                if (!lessonsData[key]) {
+                    lessonsData[key] = {
+                        num: lessonNum,
+                        time: timeText,
+                        name: subjectName,
+                        rooms: roomText ? [roomText] : [],
+                        teacher: teacherText
+                    };
+                } else {
+                    if (roomText && !lessonsData[key].rooms.includes(roomText)) {
+                        lessonsData[key].rooms.push(roomText);
+                    }
+                }
+            });
+
+            let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
+
+            Object.values(lessonsData).forEach(l => {
+                const roomsDisplay = l.rooms.length > 0
+                    ? ` <span class="room">(${l.rooms.join(' / ')})</span>`
+                    : "";
+
+                newHTML += `
             <div class="lesson-row">
                 <h4 class="lesson">${l.num}</h4>
                 <h6 class="time">${l.time}</h6>
@@ -1385,86 +1513,91 @@
 
 
 
-    });
+            });
 
-    dayElement.innerHTML = newHTML;
+            dayElement.innerHTML = newHTML;
 
-    var btnsList = dayElement.querySelectorAll(".list-btn");
-                            btnsList.forEach((btnX) => {
-                                btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-                                btnX.parentElement.querySelector(".teacher").style.display = "none";
-                                let shown = false;
+            teacherHide(dayElement);
+        }
 
-                                btnX.addEventListener("click", function(){
-                                    if (!shown){
-                                    btnX.parentElement.querySelector(".teacher").style.display = "block";
-                                    btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
-                                    shown = true;
-                                    } else {
+        function teacherHide(element = document) {
+            var btnsList = element.querySelectorAll(".list-btn");
+            btnsList.forEach((btnX) => {
+                btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+                btnX.parentElement.querySelector(".teacher").style.display = "none";
+                let shown = false;
 
-                                    btnX.parentElement.querySelector(".teacher").style.display = "none";
+                btnX.addEventListener("click", function () {
+                    if (!shown) {
+                        btnX.parentElement.querySelector(".teacher").style.display = "block";
+                        btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
+                        shown = true;
+                    } else {
 
-                                    btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-                                    shown = false;
-                                }})
-                            });
-}
+                        btnX.parentElement.querySelector(".teacher").style.display = "none";
+
+                        btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+                        shown = false;
+                    }
+                })
+            });
+        }
 
 
         let rr = true;
         let clickedAi = false;
-        function upsSV(){
+        function upsSV() {
             let found = false;
             var ch = false;
             lm = new Map();
-                var DAYS = document.querySelectorAll(".day");
-                DAYS.forEach((de) => {
-                    var dayName = de.querySelector(".day-name")?.textContent.trim();
-                    var dayLesson = de.querySelector(".lesson");
-                    var dayLessons = de.querySelectorAll(".lesson");
+            var DAYS = document.querySelectorAll(".day");
+            DAYS.forEach((de) => {
+                var dayName = de.querySelector(".day-name")?.textContent.trim();
+                var dayLesson = de.querySelector(".lesson");
+                var dayLessons = de.querySelectorAll(".lesson");
 
-                    btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
-                    
-                    if (dayName === btnMapping[nowBtn.innerHTML]) {
-                        de.style.display = "block";
-                        found = true;
-                        ch = false;
-                        lm.set(de, ch);
-                        document.getElementById("empty-container").style.display = "none"; 
-                        if (dayName === days[n]) {
-                            dayParseOnline();                         
-                        }
+                btnMapping = { "ПН": "Понедельник", "ВТ": "Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота" };
 
-                        if (dayName === days[tommorrow.getDay()] && rr) {
-                            stopAll();
-                            message.style.display = "block";
-                            assistant.style.transform = "translate(0%, -50%)";   
-                            message.parentElement.style.transform = "translate(0%, -50%)";
-                            let kKo = "к ";
-                            if (dayLesson.textContent.startsWith("2")){
-                                kKo = "ко ";
-                            }
-                            message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${kKo+dayLesson.textContent.replace("пара", "паре")}</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
-                            clickedAi = true;
-                        } else if (clickedAi) {
-                            assistant.style.transform = "translate(0)";
-                            message.parentElement.style.transform = "translate(0)";
-                            message.innerHTML = '';
-                            message.style.display = "none";
-                        }
-                    } else {
-                        de.style.display = "none";
-                        ch = true;
+                if (dayName === btnMapping[nowBtn.innerHTML]) {
+                    de.style.display = "block";
+                    found = true;
+                    ch = false;
+                    lm.set(de, ch);
+                    document.getElementById("empty-container").style.display = "none";
+                    if (dayName === days[n]) {
+                        dayParseOnline();
                     }
 
-                    if (!de.dataset.cleaned) {
-                        cleanDaySchedule(de);
-                        de.dataset.cleaned = "true";
+                    if (dayName === days[tommorrow.getDay()] && rr) {
+                        stopAll();
+                        message.style.display = "block";
+                        assistant.style.transform = "translate(0%, -50%)";
+                        message.parentElement.style.transform = "translate(0%, -50%)";
+                        let kKo = "к ";
+                        if (dayLesson.textContent.startsWith("2")) {
+                            kKo = "ко ";
+                        }
+                        message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${kKo + dayLesson.textContent.replace("пара", "паре")}</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
+                        clickedAi = true;
+                    } else if (clickedAi) {
+                        assistant.style.transform = "translate(0)";
+                        message.parentElement.style.transform = "translate(0)";
+                        message.innerHTML = '';
+                        message.style.display = "none";
                     }
+                } else {
+                    de.style.display = "none";
+                    ch = true;
+                }
+
+                if (!de.dataset.cleaned) {
+                    cleanDaySchedule(de);
+                    de.dataset.cleaned = "true";
+                }
 
 
-            //if (!ch[0]) {
-            //}
+                //if (!ch[0]) {
+                //}
             });
 
             if (!found) {
@@ -1482,8 +1615,8 @@
                 nowBtn = btn;
                 s = true;
             }
-            btn.addEventListener("click", function() {
-                if (s) {nowBtn.classList.remove("selected")}
+            btn.addEventListener("click", function () {
+                if (s) { nowBtn.classList.remove("selected") }
                 btn.classList.add("selected");
                 nowBtn = btn;
                 upsSV();
@@ -1491,124 +1624,125 @@
             });
         });
 
-    let r = 0;
-    const burgerBtn = document.getElementById("burger-menu");
-    const updater = document.getElementById("upd-b");
+        let r = 0;
+        const burgerBtn = document.getElementById("burger-menu");
+        const updater = document.getElementById("upd-b");
 
-    burgerBtn.addEventListener("click", function() {
-        burgerBtn.classList.remove("closed-btn");
-        burgerBtn.classList.add("opened-btn");
-    });
+        burgerBtn.addEventListener("click", function () {
+            burgerBtn.classList.remove("closed-btn");
+            burgerBtn.classList.add("opened-btn");
+        });
 
-    let timeout = 0;
-    updater.addEventListener("click", function(){
-        if (timeout === 0){
-            message.style.display = "none";
-                setTimeout(function(){
+        let timeout = 0;
+        updater.addEventListener("click", function () {
+            if (timeout === 0) {
+                message.style.display = "none";
+                setTimeout(function () {
                     message.style.display = "block";
                 }, 2000);
-        r+=360;
-        updater.style.transform = `rotate(${r}deg)`;
-        var al = document.getElementById("fast-alert");
-        al.style.display = "flex";
-        al.style.animation = "flyUP 2s normal";
-        setTimeout(function(){
-            al.style.display = "none";
-        }, 1900);
-        upsSV();
-        getSchedule1();
+                r += 360;
+                updater.style.transform = `rotate(${r}deg)`;
+                var al = document.getElementById("fast-alert");
+                al.style.display = "flex";
+                al.style.animation = "flyUP 2s normal";
+                setTimeout(function () {
+                    al.style.display = "none";
+                }, 1900);
+                upsSV();
+                getSchedule1(true);
 
-        timeout = 5000;
-        setTimeout(function(){
-            timeout = 0;
-        }, 5000)
-    }
-    });
+                timeout = 5000;
+                setTimeout(function () {
+                    timeout = 0;
+                }, 5000)
+            }
+        });
 
-    //var burger = document.getElementById("burger-menu");
+        //var burger = document.getElementById("burger-menu");
 
-    //burger.addEventListener("click", function() {
-    //    let menu;
-    //});
+        //burger.addEventListener("click", function() {
+        //    let menu;
+        //});
 
-    function openn(id, displ) {
-        var el = document.getElementById(id);
-        el.style.display = displ;
-        el.style.animation = "opening .5s normal";
-    }
-
-    function closee(id) {
-        var el = document.getElementById(id);
-        el.style.animation = "closing .5s normal";
-        burgerBtn.classList.remove("opened-btn");
-        burgerBtn.classList.add("closed-btn");
-        setTimeout(function(){el.style.display = "none";}, 80);
-    }
-
-
-function applyTheme(theme) {
-    const root = document.documentElement;
-    const themeNameDisplay = document.getElementById("d-s-t");
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-}
-
-const darkRadio = document.getElementById("dark-theme");
-const lightRadio = document.getElementById("light-theme");
-
-darkRadio.addEventListener("change", function() {
-    if (this.checked) {applyTheme('dark'); haptic.notificationOccurred("success");}
-})
-lightRadio.addEventListener("change", function() {
-    if (this.checked) {applyTheme('light'); haptic.notificationOccurred("success");}
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    if (savedTheme == "light") {
-        lightRadio.checked = true;
-        applyTheme("light");
-    } else {
-        darkRadio.checked = true;
-        applyTheme("dark");
-    }
-})
-
-function toBtoa(str) {
-    const utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>{
-        return String.fromCharCode('0x' + p1);
-    });
-
-    const b64 = btoa(utf8Bytes);
-
-    return b64.replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
-
-}
-
-function groupSet0() {
-    var D = document.getElementById("group-set").value.trim();
-    var erDisplay = document.getElementById("errs-reg");
-    erDisplay.style = "font-weight:600;color:red";
-    if (D.length < 4 || D.length > 13) {
-        erDisplay.innerHTML = "Имя группы должно быть другой длины";
-        haptic.notificationOccurred("error");
-        setTimeout(function(){erDisplay.innerHTML=""}, 3000);
-    } else {
-
-        const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
-        tg.openTelegramLink(url);
-        setTimeout(function(){tg.close();}, 2000);
-    }
-}
-    const Header = document.querySelector("header")
-    window.addEventListener("scroll", function(){
-        if (window.scrollY > 50){
-            setTimeout(function(){
-            Header.classList.add("scrolling");
-            }, 100);
+        function openn(id, displ) {
+            var el = document.getElementById(id);
+            el.style.display = displ;
+            el.style.animation = "opening .5s normal";
         }
-        else {setTimeout(function(){ Header.classList.remove("scrolling")}, 100)}
-    });
+
+        function closee(id) {
+            var el = document.getElementById(id);
+            el.style.animation = "closing .5s normal";
+            burgerBtn.classList.remove("opened-btn");
+            burgerBtn.classList.add("closed-btn");
+            setTimeout(function () { el.style.display = "none"; }, 80);
+        }
+
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            const themeNameDisplay = document.getElementById("d-s-t");
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        const darkRadio = document.getElementById("dark-theme");
+        const lightRadio = document.getElementById("light-theme");
+
+        darkRadio.addEventListener("change", function () {
+            if (this.checked) { applyTheme('dark'); haptic.notificationOccurred("success"); }
+        })
+        lightRadio.addEventListener("change", function () {
+            if (this.checked) { applyTheme('light'); haptic.notificationOccurred("success"); }
+        });
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            if (savedTheme == "light") {
+                lightRadio.checked = true;
+                applyTheme("light");
+            } else {
+                darkRadio.checked = true;
+                applyTheme("dark");
+            }
+        })
+
+        function toBtoa(str) {
+            const utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+                return String.fromCharCode('0x' + p1);
+            });
+
+            const b64 = btoa(utf8Bytes);
+
+            return b64.replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
+
+        }
+
+        function groupSet0() {
+            var D = document.getElementById("group-set").value.trim();
+            var erDisplay = document.getElementById("errs-reg");
+            erDisplay.style = "font-weight:600;color:red";
+            if (D.length < 4 || D.length > 13) {
+                erDisplay.innerHTML = "Имя группы должно быть другой длины";
+                haptic.notificationOccurred("error");
+                setTimeout(function () { erDisplay.innerHTML = "" }, 3000);
+            } else {
+
+                const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
+                tg.openTelegramLink(url);
+                setTimeout(function () { tg.close(); }, 3000);
+            }
+        }
+        const Header = document.querySelector("header")
+        window.addEventListener("scroll", function () {
+            if (window.scrollY > 50) {
+                setTimeout(function () {
+                    Header.classList.add("scrolling");
+                }, 100);
+            }
+            else { setTimeout(function () { Header.classList.remove("scrolling") }, 100) }
+        });
     </script>
 </body>
+
 </html>
