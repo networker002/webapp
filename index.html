@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание 📅</title>
-    <script src="https://static.rorosin.ru/twa.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <style>
@@ -131,7 +131,7 @@
 
             }
 
-            
+
         }
 
         .days .selected {
@@ -172,9 +172,10 @@
                 justify-content: center;
                 margin: auto;             
                 gap: .25em;
-                
+
                 svg {
                     margin: auto 0;
+                    scale:1.25;
                 }
               } 
 
@@ -196,7 +197,7 @@
             opacity: var(--btn-opacity);
             filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
             outline: none !important;
-            
+
             &:active {
                 scale: 1.2;
                 opacity: 1;
@@ -218,7 +219,7 @@
                 position: absolute;
                 content: "ФИО преподавателя";
                 top: 0;
-                
+
                 opacity: .6;
             }
 
@@ -264,6 +265,30 @@
             padding-bottom: .25em;
             text-shadow: 1px 2px 4px var(--text-shadow-c);
         }
+        
+        .time.now {
+        position: relative;
+            &::after {
+                content: "";
+                position: absolute;
+                height: 10px;
+                width: 10px;
+                top: 50%;
+                transform: translateY(-60%);
+                background: #85ff15;
+                border-radius: 50%;
+                margin-left: .5em;
+                animation: active 2s infinite;
+                opacity: .8;
+            }
+        }
+        
+        @keyframes active {
+            50% {
+                scale: .94;
+                filter: drop-shadow(0 0 .4em #9bff6abc);
+            }
+        }
 
         #gr {
             text-align: center;
@@ -275,7 +300,7 @@
             border-radius: 36px;
             font-weight: 800;
             backdrop-filter: blur(8px);
-            
+
         }
 
         #loader  {
@@ -288,13 +313,14 @@
             justify-content: center;
             align-items: center;
             gap: 1em;
-            z-index: 100000;
+            z-index: 1000000;
             background: #000000c0;
             min-height: 100vh;
             min-width: 100vw;
-            pointer-events: none;
+            pointer-events: auto;
             user-select: none;
             overflow: hidden;
+            scale: 1.1;
         }
 
         @keyframes scale1 {
@@ -431,7 +457,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr;
-            
+
         } 
 
         #theme-container > div {
@@ -735,7 +761,7 @@
                 animation: skelet 2s infinite ease-in-out;
 
             }
-            
+
         }
         /*.lesson-row {
             position: relative;
@@ -838,7 +864,7 @@
                 <li class="btnD" style="display:none">ВС</li>
             </ul>
         </div>
-        
+
         <div class="assistant">
             <div id="default-assistant">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -929,7 +955,7 @@
 </svg>
 
             </div>
-            
+
             <div id="gloomy-asistant">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_i_18_73)">
@@ -1038,13 +1064,13 @@
             </div>
         </div>
     </main>
-    
+
 
     <script>
         const assistants = document.querySelector(".assistant");
         let assistant = document.getElementById("default-assistant");
-      
-        
+
+
         Array.from(assistants.children).forEach((assist) => {
             //console.log(assist);
             if (assist === assistant) {
@@ -1074,7 +1100,7 @@
                 message.innerHTML = msgS[m];
             }, 5000 * (m));
             timeouts.push(t);
-            
+
         }
         }, 2000);
 
@@ -1097,16 +1123,16 @@
         function initAI() {
             const storedState = localStorage.getItem("isActiveAI");
             const isActive = storedState === null ? true : storedState === 'true';
-            
+
             applyAIState(isActive);
         }
 
         function applyAIState(isActive) {
             const stateStr = isActive ? 'true' : 'false';
             localStorage.setItem("isActiveAI", stateStr);
-            
+
             btnAI.innerHTML = isActive ? "<b>ВЫКЛ</b>" : "<b>ВКЛ</b>";
-            
+
             if (isActive) {
                 assistantBlock.style.display = "block";
                 assistantSay.style.display = "block";
@@ -1143,12 +1169,12 @@
         let nowBtn;
         let tommorrow = new Date();
         tommorrow.setDate(dt+1);
-        
+
 
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         var userId = tg.initDataUnsafe.user.id;
     };
-    
+
     function getSchedule1(){
     if (userId) {
         const econt = document.getElementById("empty-container");
@@ -1213,11 +1239,11 @@
                 dayNAMES.forEach((dn) => {
                     dn.innerHTML += ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 14q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>`
                 })
-             
+
                     var rooms = DAY.querySelectorAll(".room");
                     //rooms.forEach((r) => {console.log(r)});
-                    
-                    
+
+
                     for (var i = 0; i < rooms.length; i++) {
                             try{
                                     if (rooms[i].innerHTML.toString()[1] !== rooms[i+1].innerHTML.toString()[1]) {
@@ -1231,7 +1257,7 @@
                                     }
                                 }
                                 catch {
-                                    
+
                                 }
                         }
                     });
@@ -1251,25 +1277,42 @@
 
     }
         getSchedule1();
-        
+
 
     function dayParseOnline(){
         const dayS = document.querySelectorAll(".day");
         dayS.forEach((D) => {
-            
-            if ((D.querySelector(".day-name").innerHTML.toString().split("<")[0].toString().trim()) === days[n]){
 
-        const lessonH = document.querySelectorAll(".lesson-row");
+            if ((D.querySelector(".day-name").innerHTML.toString().split("<")[0].toString().trim()) === days[n]){
+        const D1 = new Date();
+            const D2 = new Date();
+        const lessonH = D.querySelectorAll(".lesson-row");
         lessonH.forEach((ls) => {
             const times = ls.querySelectorAll(".time");
             times.forEach((timee) => {
             timeeText = timee.innerHTML.toString().trim();
-            console.log(timeeText);
+            
             const timeNow = new Date();
             const nowH = timeNow.getHours();
             const nowM = timeNow.getMinutes();
-
+            const HRSMINS= [timeeText.split("-")[0].split(":"), timeeText.split("-")[1].split(":")];
+            
            
+            
+            D1.setHours(HRSMINS[0][0]);
+            D1.setMinutes(HRSMINS[0][1]);
+            
+            D2.setHours(HRSMINS[1][0]);
+            D2.setMinutes(HRSMINS[1][1]);
+            
+            
+            if( timeNow >= D1 && timeNow <= D2) {
+                timee.classList.add("now");
+                
+            } else {
+                timee.classList.remove("now");
+            }
+
         })
         });
     }
@@ -1280,19 +1323,19 @@
     function cleanDaySchedule(dayElement) {
     const lessonsData = {};
     const dayNameEl = dayElement.querySelector(".day-name");
-    
+
     const lessonHeaders = dayElement.querySelectorAll(".lesson");
-    
+
     lessonHeaders.forEach((header) => {
         //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
-        
+
 
         const lessonNum = header.textContent.trim(); 
-        
+
 
         const timeEl = header.nextElementSibling;
         const timeText = timeEl?.classList.contains("time") ? timeEl.textContent.trim() : "";
-        
+
 
         const subjectEl = timeEl?.nextElementSibling;
         const roomEl = subjectEl?.nextElementSibling;
@@ -1301,9 +1344,9 @@
         let roomText = roomEl?.classList.contains("room") ? roomEl.textContent.trim() : "";
 
         const Teacher = roomEl?.nextElementSibling;
-        
+
         let teacherText = Teacher?.classList.contains("teacher") ? Teacher.textContent.trim() : "Не указано";
-        
+
         roomText = roomText.replace(/[()]/g, "");
 
         const key = `${lessonNum}_${timeText}_${subjectName}`;
@@ -1324,7 +1367,7 @@
     });
 
     let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
-    
+
     Object.values(lessonsData).forEach(l => {
         const roomsDisplay = l.rooms.length > 0 
             ? ` <span class="room">(${l.rooms.join(' / ')})</span>` 
@@ -1341,7 +1384,7 @@
         `;
 
 
-        
+
     });
 
     dayElement.innerHTML = newHTML;
@@ -1351,22 +1394,22 @@
                                 btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
                                 btnX.parentElement.querySelector(".teacher").style.display = "none";
                                 let shown = false;
-                                
+
                                 btnX.addEventListener("click", function(){
                                     if (!shown){
                                     btnX.parentElement.querySelector(".teacher").style.display = "block";
                                     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
                                     shown = true;
                                     } else {
-                                    
+
                                     btnX.parentElement.querySelector(".teacher").style.display = "none";
-                                    
+
                                     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
                                     shown = false;
                                 }})
                             });
 }
-        
+
 
         let rr = true;
         let clickedAi = false;
@@ -1379,14 +1422,18 @@
                     var dayName = de.querySelector(".day-name")?.textContent.trim();
                     var dayLesson = de.querySelector(".lesson");
                     var dayLessons = de.querySelectorAll(".lesson");
-                    
+
                     btnMapping = {"ПН":"Понедельник", "ВТ":"Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота"};
+                    
                     if (dayName === btnMapping[nowBtn.innerHTML]) {
                         de.style.display = "block";
                         found = true;
                         ch = false;
                         lm.set(de, ch);
-                        document.getElementById("empty-container").style.display = "none";
+                        document.getElementById("empty-container").style.display = "none"; 
+                        if (dayName === days[n]) {
+                            dayParseOnline();                         
+                        }
 
                         if (dayName === days[tommorrow.getDay()] && rr) {
                             stopAll();
@@ -1414,8 +1461,8 @@
                         cleanDaySchedule(de);
                         de.dataset.cleaned = "true";
                     }
-                
-                
+
+
             //if (!ch[0]) {
             //}
             });
@@ -1470,7 +1517,7 @@
         }, 1900);
         upsSV();
         getSchedule1();
-        
+
         timeout = 5000;
         setTimeout(function(){
             timeout = 0;
@@ -1535,7 +1582,7 @@ function toBtoa(str) {
     const b64 = btoa(utf8Bytes);
 
     return b64.replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
-    
+
 }
 
 function groupSet0() {
@@ -1547,7 +1594,7 @@ function groupSet0() {
         haptic.notificationOccurred("error");
         setTimeout(function(){erDisplay.innerHTML=""}, 3000);
     } else {
-        
+
         const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
         tg.openTelegramLink(url);
         setTimeout(function(){tg.close();}, 2000);
