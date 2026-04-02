@@ -1847,6 +1847,10 @@
 
                 const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
+                let foundGroup = false;
+                for (let i = 2; i>0 && !foundGroup; i--) {
+                setTimeout(function() {
+                if (foundGroup) return;
                 fetch("http://127.0.0.1:8000/group/" + userId)
                     .then((response) => {
                         if (!response.ok) throw new Error('Error: ' + response.status);
@@ -1868,7 +1872,10 @@
                             erDisplay.classList.remove("is-active");
                             erDisplay.classList.add("is-hidden");
                             getSchedule1(true);
+                            foundGroup = true;
                         }
+
+
                     })
                     .catch((error) => {
                         console.error('Error:', error);
@@ -1877,7 +1884,10 @@
                         haptic.notificationOccurred("error");
                     });
 
-            }
+            }, 6500);
+        }
+            
+    }
         }
         const Header = document.querySelector("header");
         window.addEventListener("scroll", function () {
