@@ -108,10 +108,12 @@
 
         .is-hidden {
             display: none !important;
+            pointer-events: none !important;
         }
 
         .is-active {
             display: block !important;
+            pointer-events: all !important;
         }
 
         .days {
@@ -1848,7 +1850,7 @@
                 const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
                 let foundGroup = false;
-                for (let i = 2; i>0 && !foundGroup; i--) {
+                
                 setTimeout(function() {
                 if (foundGroup) return;
                 fetch("http://127.0.0.1:8000/group/" + userId)
@@ -1892,7 +1894,7 @@
         }
             
     }
-        }
+        
         const Header = document.querySelector("header");
         window.addEventListener("scroll", function () {
             if (window.scrollY > 50) {
