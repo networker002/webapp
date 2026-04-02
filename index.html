@@ -1344,8 +1344,8 @@
                 //found = false;
 
                 if (reqNeed) {
-                    fetch("https://boost.rorosin.ru/group/" + userId)
-                        //fetch("http://127.0.0.1:8000/group/" + userId)
+                    //fetch("https://boost.rorosin.ru/group/" + userId)
+                        fetch("http://127.0.0.1:8000/group/" + userId)
                         .then((response) => {
                             if (!response.ok) throw new Error('Error: ' + response.status);
                             return response.json();
@@ -1366,8 +1366,8 @@
                             document.getElementById("gr").innerHTML = Group;
                             document.getElementById("group-name-menu").innerHTML = Group;
 
-                            return fetch("https://boost.rorosin.ru/schedule/" + Group);
-                            //return fetch("http://127.0.0.1:8000/schedule/" + Group);
+                            //return fetch("https://boost.rorosin.ru/schedule/" + Group);
+                            return fetch("http://127.0.0.1:8000/schedule/" + Group);
                         })
                         .then((resp) => {
                             if (resp && resp.ok) {
@@ -1845,9 +1845,9 @@
                 setTimeout(function () { erDisplay.innerHTML = "" }, 3000);
             } else {
 
-                const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
+                const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
-                fetch("https://boost.rorosin.ru/group/" + userId)
+                fetch("http://127.0.0.1:8000/group/" + userId)
                     .then((response) => {
                         if (!response.ok) throw new Error('Error: ' + response.status);
                         return response.json();
