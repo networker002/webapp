@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание 📅</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-
-<body>
     <style>
         * {
             margin: 0;
@@ -107,6 +104,14 @@
             -webkit-backdrop-filter: blur(16px);
             transition: all .3s ease;
 
+        }
+
+        .is-hidden {
+            display: none !important;
+        }
+
+        .is-active {
+            display: block !important;
         }
 
         .days {
@@ -525,7 +530,7 @@
             transform: scaleY(1);
         }
 
-        
+
 
         h4>input {
             margin-left: .3em;
@@ -878,6 +883,9 @@
             }
         }
     </style>
+</head>
+
+<body>
 
     <div id="loader">
         <div>●</div>
@@ -900,7 +908,7 @@
     </div>
 
     <div id="alerter">
-        
+
     </div>
 
     <div id="fast-alert">
@@ -1192,9 +1200,11 @@
         Array.from(assistants.children).forEach((assist) => {
             //console.log(assist);
             if (assist === assistant) {
-                assist.style.display = "block";
+                assist.classList.remove("is-hidden");
+                assist.classList.add("is-active");
             } else {
-                assist.style.display = "none";
+                assist.classList.remove("is-active");
+                assist.classList.add("is-hidden");
             }
         });
 
@@ -1208,11 +1218,12 @@
                 <p>Моя главная задача - помогать тебе с учебой</p>`,
         ];
 
-        timeouts = [];
+        let timeouts = [];
 
-        message.style.display = "none";
+        message.classList.add("is-hidden");
         const initialDelay = setTimeout(function () {
-            message.style.display = "block";
+            message.classList.remove("is-hidden");
+            message.classList.add("is-active");
             for (let m = 0; m < msgS.length; m++) {
                 let t = setTimeout(function () {
                     message.innerHTML = msgS[m];
@@ -1226,12 +1237,14 @@
 
         function stopAll() {
             timeouts.forEach(t => clearTimeout(t));
-            message.style.display = "none";
+            message.classList.add("is-hidden");
+            message.classList.remove("is-active");
             //console.log("Цикл остановлен");
         }
 
         setTimeout(() => {
-            message.style.display = "none";
+            message.classList.add("is-hidden");
+            message.classList.remove("is-active");
         }, 5000 * (msgS.length + 1));
 
         const btnAI = document.getElementById("activate-ai-a");
@@ -1252,11 +1265,15 @@
             btnAI.innerHTML = isActive ? "<b>ВЫКЛ</b>" : "<b>ВКЛ</b>";
 
             if (isActive) {
-                assistantBlock.style.display = "block";
-                assistantSay.style.display = "block";
+                assistantBlock.classList.remove("is-hidden");
+                assistantBlock.classList.add("is-active");
+                assistantSay.classList.remove("is-hidden");
+                assistantSay.classList.add("is-active");
             } else {
-                assistantBlock.style.display = "none";
-                assistantSay.style.display = "none";
+                assistantBlock.classList.add("is-hidden");
+                assistantBlock.classList.remove("is-active");
+                assistantSay.classList.add("is-hidden");
+                assistantSay.classList.remove("is-active");
             }
         }
 
@@ -1270,6 +1287,8 @@
         const container = document.getElementById("schedule-container");
 
         var loader = document.getElementById("loader");
+        
+        loader.classList.remove("is-hidden");
         loader.style.display = "flex";
 
         const tg = window.Telegram.WebApp;
@@ -1277,12 +1296,12 @@
         const haptic = tg.HapticFeedback;
 
         var d = new Date();
-        n = d.getDay();
-        m = d.getMonth();
-        dt = d.getDate();
-        days = { 1: "Понедельник", 2: "Вторник", 3: "Среда", 4: "Четверг", 5: "Пятница", 6: "Суббота", 7: "Воскресенье", 0: "Воскресенье" }, months = { 0: "января", 1: "февраля", 2: "марта", 3: "апреля", 4: "мая", 5: "июня", 6: "июля", 7: "августа", 8: "сентября", 9: "октября", 10: "ноября", 11: "декабря" }, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
+        let n = d.getDay();
+        let m = d.getMonth();
+        let dt = d.getDate();
+        let days = { 1: "Понедельник", 2: "Вторник", 3: "Среда", 4: "Четверг", 5: "Пятница", 6: "Суббота", 7: "Воскресенье", 0: "Воскресенье" }, months = { 0: "января", 1: "февраля", 2: "марта", 3: "апреля", 4: "мая", 5: "июня", 6: "июля", 7: "августа", 8: "сентября", 9: "октября", 10: "ноября", 11: "декабря" }, dayCall = days[n] ?? "Воскресенье", full = dayCall + ", " + dt + " " + (months[m] ?? 0);
         document.getElementById("date-time").innerHTML = full;
-        daysShort = { 1: "ПН", 2: "ВТ", 3: "СР", 4: "ЧТ", 5: "ПТ", 6: "СБ", 7: "ВС", 0: "ВС" }
+        let daysShort = { 1: "ПН", 2: "ВТ", 3: "СР", 4: "ЧТ", 5: "ПТ", 6: "СБ", 7: "ВС", 0: "ВС" };
         let s = false;
         let nowBtn;
         let tommorrow = new Date();
@@ -1298,12 +1317,12 @@
             var cachedData = localStorage.getItem("schedule");
             var dataLastUpd = localStorage.getItem("updated_at");
 
-
             if (userId) {
 
                 const econt = document.getElementById("empty-container");
                 if (econt) {
-                    econt.style.display = "none";
+                    econt.classList.remove("is-active");
+                    econt.classList.add("is-hidden");
                 }
                 container.innerHTML = `
     <div id="sk"><h2 class="skeleton"></h2>
@@ -1317,7 +1336,7 @@
             <h4 class="skeleton"></h4>
             <h6 class="skeleton"></h6>
             </div>`;
-                m = "";
+                let m = "";
                 for (let i = 0; i < (userId.toString().length - 4); i++) {
                     m += "●";
                 }
@@ -1335,7 +1354,8 @@
                             var Group = userGroup.group_name;
 
                             if (!Group || Group.toUpperCase() === "NULL") {
-                                document.getElementById("alerter").style.display = "block";
+                                document.getElementById("alerter").classList.remove("is-hidden");
+                                document.getElementById("alerter").classList.add("is-active");
                                 throw new Error("Group not found!");
                                 Group = "Не указана"
                             }
@@ -1351,7 +1371,8 @@
                         })
                         .then((resp) => {
                             if (resp && resp.ok) {
-                                loader.style.display = "none";
+                                loader.classList.remove("is-active");
+                                loader.classList.add("is-hidden");
                                 return resp.json();
                             }
                         })
@@ -1394,16 +1415,19 @@
                         })
                         .catch(err => {
                             console.error("Ошибка:", err);
-                            loader.style.display = "none";
+                            loader.classList.remove("is-active");
+                            loader.classList.add("is-hidden");
                         });
                 }
                 else if (!reqNeed) {
                     if (cachedData && ((Date.now() - dataLastUpd) < ttl)) {
                         container.innerHTML = cachedData;
-                        loader.style.display = "none";
+                        loader.classList.remove("is-active");
+                        loader.classList.add("is-hidden");
                         if (nowBtn) upsSV();
                         //console.log("cache!");
-                        loader.style.display = "none";
+                        loader.classList.add("is-hidden");
+                        loader.classList.remove("is-active");
                         var Group = localStorage.getItem("userGroup");
                         teacherHide();
                         dayParseOnline();
@@ -1426,8 +1450,9 @@
 
             } else {
                 //console.warn("userId не определен, запрос отменен.");
-                document.getElementById("alerter").style.display = "block";
-                
+                document.getElementById("alerter").classList.remove("is-hidden");
+                document.getElementById("alerter").classList.add("is-active");
+
                 document.getElementById("alerter").innerHTML = `<h1 style="color: #fff;">Неизвестный пользователь</h1>
         <h3>Вы еще не зарегистрировались в нашей системе!</h3>
         <h6>Давайте сделаем это сейчас:</h6>
@@ -1435,7 +1460,8 @@
         <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
         <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
                 //
-                loader.style.display = "none";
+                loader.classList.remove("is-active");
+                loader.classList.add("is-hidden");
             }
 
 
@@ -1577,14 +1603,16 @@
 
                 btnX.addEventListener("click", function () {
                     if (!shown) {
-                        
-                        btnX.parentElement.querySelector(".teacher").style.display = "block";
-                        
+
+                        btnX.parentElement.querySelector(".teacher").classList.remove("is-hidden");
+                        btnX.parentElement.querySelector(".teacher").classList.add("is-active");
+
                         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
                         shown = true;
                     } else {
 
-                        btnX.parentElement.querySelector(".teacher").style.display = "none";
+                        btnX.parentElement.querySelector(".teacher").classList.remove("is-active");
+                        btnX.parentElement.querySelector(".teacher").classList.add("is-hidden");
 
                         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
                         shown = false;
@@ -1609,18 +1637,21 @@
                 btnMapping = { "ПН": "Понедельник", "ВТ": "Вторник", "СР": "Среда", "ЧТ": "Четверг", "ПТ": "Пятница", "СБ": "Суббота" };
 
                 if (dayName === btnMapping[nowBtn.innerHTML]) {
-                    de.style.display = "block";
+                    de.classList.remove("is-hidden");
+                    de.classList.add("is-active");
                     found = true;
                     ch = false;
                     lm.set(de, ch);
-                    document.getElementById("empty-container").style.display = "none";
+                    document.getElementById("empty-container").classList.remove("is-hidden");
+                    document.getElementById("empty-container").classList.add("is-active");
                     if (dayName === days[n]) {
                         dayParseOnline();
                     }
 
                     if (dayName === days[tommorrow.getDay()] && rr) {
                         stopAll();
-                        message.style.display = "block";
+                        message.classList.remove("is-hidden");
+                        message.classList.add("is-active"); 
                         assistant.style.transform = "translate(0%, -50%)";
                         message.parentElement.style.transform = "translate(0%, -50%)";
                         let kKo = "к ";
@@ -1633,10 +1664,12 @@
                         assistant.style.transform = "translate(0)";
                         message.parentElement.style.transform = "translate(0)";
                         message.innerHTML = '';
-                        message.style.display = "none";
+                        message.classList.remove("is-active");
+                        message.classList.add("is-hidden");
                     }
                 } else {
-                    de.style.display = "none";
+                    de.classList.remove("is-active");                    de.classList.add("is-hidden");
+                    lm.set(de, false);
                     ch = true;
                 }
 
@@ -1651,10 +1684,12 @@
             });
 
             if (!found) {
+                document.getElementById("empty-container").classList.remove("is-hidden");
                 document.getElementById("empty-container").style.display = "flex";
                 document.getElementById("empty-container").style.animation = "nothingFly 1s ease";
             } else {
-                document.getElementById("empty-container").style.display = "none";
+                document.getElementById("empty-container").classList.remove("is-active");
+                document.getElementById("empty-container").classList.add("is-hidden");
             }
         }
 
@@ -1686,9 +1721,11 @@
         let timeout = 0;
         updater.addEventListener("click", function () {
             if (timeout === 0) {
-                message.style.display = "none";
+                message.classList.remove("is-active");
+                message.classList.add("is-hidden");
                 setTimeout(function () {
-                    message.style.display = "block";
+                    message.classList.remove("is-hidden");
+                    message.classList.add("is-active");
                 }, 2000);
                 r += 360;
                 updater.style.transform = `rotate(${r}deg)`;
@@ -1696,9 +1733,10 @@
                 al.style.display = "flex";
                 al.style.animation = "flyUP 2s normal";
                 setTimeout(function () {
-                    al.style.display = "none";
+                    al.classList.remove("is-active");
+                    al.classList.add("is-hidden");
                 }, 1900);
-                upsSV();
+                //upsSV();
                 getSchedule1(true);
 
                 timeout = 5000;
@@ -1715,9 +1753,11 @@
         //});
 
         function openGroupChangeModal() {
-            document.getElementById("alerter").style.display = "block";
+            document.getElementById("alerter").classList.remove("is-hidden");
+            document.getElementById("alerter").classList.add("is-active");
+
             document.getElementById("alerter").style.animation = "OpenObj .5s ease";
-                document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
+            document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
             <h3>Обновление данных</h3>
             <h6>Давайте сделаем это сейчас:</h6>
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
@@ -1730,7 +1770,8 @@
             var el = document.getElementById(id);
             document.getElementById(id).style.animation = "CloseObj .5s ease";
             setTimeout(function () {
-                el.style.display = "none";
+                el.classList.remove("is-active");
+                el.classList.add("is-hidden");
             }, 440);
         }
 
@@ -1745,7 +1786,7 @@
             el.style.animation = "closing .5s normal";
             burgerBtn.classList.remove("opened-btn");
             burgerBtn.classList.add("closed-btn");
-            setTimeout(function () { el.style.display = "none"; }, 80);
+            setTimeout(function () { el.classList.remove("is-active"); el.classList.add("is-hidden"); }, 80);
         }
 
 
@@ -1806,12 +1847,29 @@
 
                 const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
-                setTimeout(function () {
-                   getSchedule1(true);
-                }, 6000);
+                fetch("https://boost.rorosin.ru/group/" + userId)
+                    .then((response) => {
+                        if (!response.ok) throw new Error('Error: ' + response.status);
+                        return response.json();
+                    })
+                    .then((data) => {
+                        if (data.group_name.toUpperCase() === D.toUpperCase()) {
+                            erDisplay.style = "font-weight:600;color:green";
+                            erDisplay.innerHTML = "Группа успешно обновлена! Обновление расписания...";
+                            haptic.notificationOccurred("success");
+                            getSchedule1(true);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        erDisplay.style = "font-weight:600;color:red";
+                        erDisplay.innerHTML = "Произошла ошибка при обновлении группы. Пожалуйста, попробуйте снова позже.";
+                        haptic.notificationOccurred("error");
+                    });
+
             }
         }
-        const Header = document.querySelector("header")
+        const Header = document.querySelector("header");
         window.addEventListener("scroll", function () {
             if (window.scrollY > 50) {
                 setTimeout(function () {
