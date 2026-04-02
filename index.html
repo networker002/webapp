@@ -93,7 +93,6 @@
             text-align: center;
             gap: 1em;
             padding: .5em;
-            padding-top: 3em;
             background: var(--header-bg-color);
             position: sticky;
             transition: all .2s ease;
@@ -1772,6 +1771,7 @@
                 tg.exitFullscreen();
             } if (tg.device.isMobile && !tg.isFullscreen) {
                 tg.enterFullscreen();
+                document.querySelector("header").style.paddingTop = "4em";
             }
             const savedTheme = localStorage.getItem("theme") || "dark";
             if (savedTheme == "light") {
