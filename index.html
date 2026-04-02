@@ -41,6 +41,7 @@
             --rotation-line: 90deg;
             --btn-opacity: 0.55;
             --ch-room-bg: rgba(179, 163, 95, 0.3);
+            --menu-bg-bg: #00000085;
         }
 
         [data-theme="light"] {
@@ -69,6 +70,7 @@
             --rotation-line: -90deg;
             --btn-opacity: 1;
             --ch-room-bg: rgba(0, 0, 0, 0.15);
+            --menu-bg-bg: none;
         }
 
         @font-face {
@@ -396,6 +398,36 @@
             }
         }
 
+        @keyframes OpenObj {
+            0% {
+                opacity: .5;
+                scale: 0;
+            }
+
+            100% {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        @keyframes CloseObj {
+            0% {
+                opacity: 1;
+                scale: 1;
+            }
+
+            100% {
+                opacity: .5;
+                scale: 0;
+            }
+        }
+
+        @keyframes simpleOpacity {
+            0% {
+                opacity: 0;
+            }
+        }
+
         .menu-display {
             position: fixed;
             top: 50%;
@@ -414,6 +446,19 @@
             z-index: 2000;
             display: none;
             transition: opacity .5s;
+
+            &::before {
+                position: absolute;
+                content: "";
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                min-height: 1000vh;
+                min-width: 1000vw;
+                background: var(--menu-bg-bg);
+                z-index: -100;
+                animation: simpleOpacity 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+            }
 
             h1 {
                 padding-bottom: 1em;
@@ -481,6 +526,8 @@
             transform: scaleY(1);
         }
 
+        
+
         h4>input {
             margin-left: .3em;
             margin-right: .9em;
@@ -515,7 +562,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #000000c0;
+            background: #000000f3;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -543,7 +590,7 @@
         }
 
         #alerter h1 {
-            color: #ff0303;
+            color: var(--accent);
             margin-bottom: 0.5em;
         }
 
@@ -551,7 +598,7 @@
             padding: 12px;
             border-radius: 38px;
             border: 1px solid #4f6187;
-            background: #021e5c;
+            background: #2a406e;
             color: white;
             font-size: 1.2em;
             width: 80%;
@@ -574,7 +621,7 @@
             }
 
             &:placeholder-shown {
-                background: #10244e;
+                background: var(--accent-bg);
             }
 
 
@@ -842,7 +889,7 @@
     <div class="menu-display" id="user-menu-display">
         <h1>Меню</h1>
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
-        <h4>Группа: <span id="group-name-menu"></span></h4>
+        <h4>Группа: <span id="group-name-menu"></span><button onclick="openGroupChangeModal()">Изменить</button></h4>
         <h4>Тема:<br>
             <div id="theme-container">
                 <div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div>
@@ -854,12 +901,7 @@
     </div>
 
     <div id="alerter">
-        <h1>Неизвестный пользователь</h1>
-        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-        <h6>Давайте сделаем это сейчас:</h6>
-        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
+        
     </div>
 
     <div id="fast-alert">
@@ -1386,6 +1428,13 @@
             } else {
                 //console.warn("userId не определен, запрос отменен.");
                 document.getElementById("alerter").style.display = "block";
+                
+                document.getElementById("alerter").innerHTML = `<h1 style="color: #fff;">Неизвестный пользователь</h1>
+        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+        <h6>Давайте сделаем это сейчас:</h6>
+        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
                 //
                 loader.style.display = "none";
             }
@@ -1529,7 +1578,9 @@
 
                 btnX.addEventListener("click", function () {
                     if (!shown) {
+                        
                         btnX.parentElement.querySelector(".teacher").style.display = "block";
+                        
                         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
                         shown = true;
                     } else {
@@ -1664,6 +1715,26 @@
         //    let menu;
         //});
 
+        function openGroupChangeModal() {
+            document.getElementById("alerter").style.display = "block";
+            document.getElementById("alerter").style.animation = "OpenObj .5s ease";
+                document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
+            <h3>Обновление данных</h3>
+            <h6>Давайте сделаем это сейчас:</h6>
+            <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
+            <button style="background: rgba(255, 255, 255, 0.2); color: var(--text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter')">Отмена</button>`;
+        }
+
+        function closeN(id) {
+            var el = document.getElementById(id);
+            document.getElementById(id).style.animation = "CloseObj .5s ease";
+            setTimeout(function () {
+                el.style.display = "none";
+            }, 440);
+        }
+
         function openn(id, displ) {
             var el = document.getElementById(id);
             el.style.display = displ;
@@ -1730,7 +1801,9 @@
 
                 const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
-                setTimeout(function () { tg.close(); }, 3000);
+                setTimeout(function () {
+                   getSchedule1(true);
+                }, 6000);
             }
         }
         const Header = document.querySelector("header")
