@@ -1768,8 +1768,10 @@
         });
 
         window.addEventListener("DOMContentLoaded", () => {
-            if (tg.isFullscreen && tg.device.isDesktop()) {
+            if (tg.isFullscreen && tg.device.isDesktop) {
                 tg.exitFullscreen();
+            } if (tg.device.isMobile && !tg.isFullscreen) {
+                tg.enterFullscreen();
             }
             const savedTheme = localStorage.getItem("theme") || "dark";
             if (savedTheme == "light") {
