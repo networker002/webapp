@@ -1768,6 +1768,9 @@
         });
 
         window.addEventListener("DOMContentLoaded", () => {
+            if (tg.isFullscreen) {
+                tg.exitFullscreen();
+            }
             const savedTheme = localStorage.getItem("theme") || "dark";
             if (savedTheme == "light") {
                 lightRadio.checked = true;
