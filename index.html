@@ -1861,14 +1861,17 @@
                             erDisplay.style = "font-weight:600;color:green";
                             erDisplay.innerHTML = "Группа успешно обновлена! Обновление расписания...";
                             haptic.notificationOccurred("success");
-                            document.querySelector("#fast-alert h1").classList.remove("is-hidden");
-                            document.querySelector("#fast-alert h1").classList.add("is-active");    
-                            document.querySelector("#fast-alert h1").innerHTML = "Группа обновлена!";
-                            document.querySelector("#fast-alert h1").style.animation = "flyUP 2s normal";
-                            setTimeout(function () {
-                                document.querySelector("#fast-alert h1").classList.remove("is-active");
-                                document.querySelector("#fast-alert h1").classList.add("is-hidden");
-                            }, 1900);
+                            const alertEl = document.querySelector("#fast-alert h2");   
+                            if (alertEl) {
+                                alertEl.classList.remove("is-hidden");
+                                alertEl.classList.add("is-active");    
+                                alertEl.innerHTML = "Группа обновлена!";
+                                alertEl.style.animation = "flyUP 2s normal";
+                                setTimeout(function () {
+                                    alertEl.classList.remove("is-active");
+                                    alertEl.classList.add("is-hidden");
+                                }, 1900);
+                            }
                             erDisplay.classList.remove("is-active");
                             erDisplay.classList.add("is-hidden");
                             getSchedule1(true);
