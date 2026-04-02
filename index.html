@@ -1859,24 +1859,21 @@
                         return response.json();
                     })
                     .then((data) => {
-                        if (data.group_name.toUpperCase() === D.toUpperCase()) {
-                            erDisplay.style = "font-weight:600;color:green";
-                            erDisplay.innerHTML = "Группа успешно обновлена! Обновление расписания...";
-                            haptic.notificationOccurred("success");
-                            const alertEl = document.querySelector("#fast-alert h2");   
+                        if (data.group_name && data.group_name.toUpperCase() === D.toUpperCase()) {
+                            const alertEl = document.querySelector("#fast-alert h2");
                             if (alertEl) {
-                                alertEl.classList.remove("is-hidden");
-                                alertEl.classList.add("is-active");    
+                                safeClass(alertEl, "remove", "is-hidden");
+                                safeClass(alertEl, "add", "is-active");
                                 alertEl.innerHTML = "Группа обновлена!";
-                                alertEl.style.animation = "flyUP 2s normal";
-                                setTimeout(function () {
-                                    alertEl.classList.remove("is-active");
-                                    alertEl.classList.add("is-hidden");
+                                safeStyle(alertEl, "animation", "flyUP 2s normal");
+                                setTimeout(() => {
+                                    safeClass(alertEl, "remove", "is-active");
+                                    safeClass(alertEl, "add", "is-hidden");
                                 }, 1900);
                             }
                             erDisplay.classList.remove("is-active");
                             erDisplay.classList.add("is-hidden");
-                            closeN('alerter');
+                            closeN("alerter");           // закрываем блок, чтобы меню не перекрывал
                             getSchedule1(true);
                             foundGroup = true;
                         }
