@@ -1880,7 +1880,7 @@
                     .catch((error) => {
                         console.error('Error:', error);
                         erDisplay.style = "font-weight:600;color:red";
-                        erDisplay.innerHTML = "Произошла ошибка при обновлении группы. Пожалуйста, попробуйте снова позже.";
+                        erDisplay.innerHTML = `Произошла ошибка при обновлении группы. Пожалуйста, попробуйте снова позже. ${error.message}`;
                         haptic.notificationOccurred("error");
                     });
 
