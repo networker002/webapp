@@ -724,7 +724,7 @@ function groupSet0() {
       erDisplay.innerHTML = "";
     }, 3000);
   } else {
-    const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
+    const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
     tg.openTelegramLink(url);
 
     setTimeout(function () {
