@@ -724,7 +724,7 @@ function groupSet0() {
       erDisplay.innerHTML = "";
     }, 3000);
   } else {
-    const url = "https://t.me/webapptestrobotbot?start=" + "group_" + toBtoa(D);
+    const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
     tg.openTelegramLink(url);
 
     setTimeout(function () {
@@ -738,16 +738,17 @@ function groupSet0() {
           if (localStorage.getItem("userGroup")) {
             if (localStorage.getItem("userGroup") !== Group) {
               document.getElementById("alerter").style.display = "none";
+              closeN('user-menu-display');
               getSchedule1(true);
             } else {
               document.getElementById("alerter").style.display = "none";
               localStorage.setItem("userGroup", userGroup);
-
+              closeN('user-menu-display');
               getSchedule1(true);
             }
           }
         });
-    }, 8000);
+    }, 5000);
   }
 }
 const Header = document.querySelector("header");
