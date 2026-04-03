@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1623,7 +1624,11 @@
           if (localStorage.getItem("roomShown") === "false") {
              var message = document.getElementById("ctx-assistant-say");
              stopAll();
-             message.style.display = "block"; message.innerHTML = `<h4 style="color: #fff100ed;">В промежутке между парами вам придётся менять корпуса! Будьте внимательны</h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;}
+             message.style.display = "block"; message.innerHTML = `<h4 style="color: #fff100ed;">В промежутке между парами вам придётся менять корпуса! Будьте внимательны</h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;
+             setTimeout(function() {
+                 message.style.display = "none";
+             }, 10000);
+             }
              
           } 
           if (test.length < 7) {
