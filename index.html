@@ -288,12 +288,42 @@
                 animation: active 2s infinite;
                 opacity: .8;
             }
+            
         }
+        
+        
+        .isNow {
+            position: relative;
+            animation: activeNoScale 2s infinite;
 
+            &::after{
+                content: "";
+                position: absolute;
+                height: 10px;
+                width: 10px;
+                top: 50%;
+                transform: translateY(-35%);
+                background: #85ff15;
+                border-radius: 50%;
+                margin-left: .5em;
+                animation: active 2s infinite;
+                opacity: .8;
+                
+            }
+            
+        }
+        
+         
         @keyframes active {
             50% {
                 scale: .94;
                 filter: drop-shadow(0 0 .4em #9bff6abc);
+            }
+        }
+        
+        @keyframes activeNoScale {
+            50% {
+                text-shadow: 0 0 .4em #9bff6abc;
             }
         }
 
@@ -889,11 +919,11 @@
     <div class="menu-display" id="user-menu-display">
         <h1>Меню</h1>
         <h4>Айди пользователя: <span id="tg-id-menu"></span></h4>
-        <h4>Группа: <span id="group-name-menu"></span><button onclick="openGroupChangeModal()">Изменить</button></h4>
+        <h4>Группа: <span id="group-name-menu"></span><button onclick="openGroupChangeModal()" style="outline: none;">Изменить</button></h4>
         <h4>Тема:<br>
             <div id="theme-container">
-                <div><input type="radio" name="theme" id="dark-theme" checked><span id="d-s-t">Dark</span></div>
-                <div><input type="radio" name="theme" id="light-theme"><span id="l-s-t">Light</span></div>
+                <div><input type="radio" name="theme" id="dark-theme" checked style="outline: none;"><span id="d-s-t">Dark</span></div>
+                <div><input type="radio" name="theme" id="light-theme" style="outline: none;"><span id="l-s-t">Light</span></div>
             </div>
         </h4>
         <h4>Персональный помощник <button id="activate-ai-a"></button></h4>
@@ -1188,7 +1218,6 @@
 
 
     <script>
-        
         const assistants = document.querySelector(".assistant");
         let assistant = document.getElementById("default-assistant");
 
@@ -1588,13 +1617,13 @@
           var test = btnX.parentElement.querySelector(".room").innerHTML;
           if (test) {
           if (btnX.parentElement.querySelector(".room").style.color === "yellow") {
-          if (localStorage.getItem("roomShown") === "null") {
+          if (!localStorage.getItem("roomShown")) {
               localStorage.setItem("roomShown", false);
           }
           if (localStorage.getItem("roomShown") === "false") {
              var message = document.getElementById("ctx-assistant-say");
              stopAll();
-             message.style.display = "block"; message.innerHTML = `<h4 style="color: #fff100ed;"><span class="changing-rooms" style="margin-right: .2em; color: yellow;">i</span>В промежутке между парами вам придётся менять корпуса! Будьте внимательны</h4><button onclick="hideRoomShown()">ОК</button>`;}
+             message.style.display = "block"; message.innerHTML = `<h4 style="color: #fff100ed;">В промежутке между парами вам придётся менять корпуса! Будьте внимательны</h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;}
              
           } 
           if (test.length < 7) {
@@ -1604,7 +1633,7 @@ let floor = Number(test[1]);
 let room = Number(test.slice(2, 4));
        btnX.parentElement.querySelector(".teacher").innerHTML += `<h5 style="color: #80ffd6c3; padding-top: .3em">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
                         added = true;
-                        } else if (test.length > 6 && test[0] !== "Н") {    
+                        } else if (test.length > 6 && test[1] !== "Н") {    
                          tests = test.split("/", 2);
                           tests.forEach((test) => {
                               test = test.replace(/[()]/g, "");
@@ -1616,6 +1645,10 @@ let room = Number(test.slice(2, 4));
                           })
                         }
                         
+                        }
+                        if (btnX.parentElement.querySelector(".time.now")) {
+                            btnX.parentElement.querySelector(".time.now").parentElement.querySelector(".teacher").innerHTML += `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
+                           
                         }
                     }
 
