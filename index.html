@@ -525,7 +525,7 @@
             transform: scaleY(1);
         }
 
-        
+
 
         h4>input {
             margin-left: .3em;
@@ -900,7 +900,7 @@
     </div>
 
     <div id="alerter">
-        
+
     </div>
 
     <div id="fast-alert">
@@ -1427,7 +1427,7 @@
             } else {
                 //console.warn("userId не определен, запрос отменен.");
                 document.getElementById("alerter").style.display = "block";
-                
+
                 document.getElementById("alerter").innerHTML = `<h1 style="color: #fff;">Неизвестный пользователь</h1>
         <h3>Вы еще не зарегистрировались в нашей системе!</h3>
         <h6>Давайте сделаем это сейчас:</h6>
@@ -1577,9 +1577,9 @@
 
                 btnX.addEventListener("click", function () {
                     if (!shown) {
-                        
+
                         btnX.parentElement.querySelector(".teacher").style.display = "block";
-                        
+
                         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
                         shown = true;
                     } else {
@@ -1717,7 +1717,7 @@
         function openGroupChangeModal() {
             document.getElementById("alerter").style.display = "block";
             document.getElementById("alerter").style.animation = "OpenObj .5s ease";
-                document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
+            document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
             <h3>Обновление данных</h3>
             <h6>Давайте сделаем это сейчас:</h6>
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
@@ -1807,8 +1807,8 @@
                 const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
                 tg.openTelegramLink(url);
                 setTimeout(function () {
-                   getSchedule1(true);
-                }, 6000);
+                    getSchedule1(true);
+                }, 8000);
             }
         }
         const Header = document.querySelector("header")
