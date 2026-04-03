@@ -535,6 +535,7 @@
             border-radius: 18px;
             padding-left: 6px;
             padding-right: 6px;
+            user-select: none;
             
             &:first-child {
                 border-right: 1px solid;
