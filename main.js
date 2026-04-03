@@ -23,6 +23,7 @@ let msgS = [
 ];
 
 let timeouts = [];
+let message_start = 5000;
 
 message.style.display = "none";
 const initialDelay = setTimeout(function () {
@@ -33,7 +34,8 @@ const initialDelay = setTimeout(function () {
     }, 5000 * m);
     timeouts.push(t);
   }
-}, 2000);
+}, message_start);
+
 
 timeouts.push(initialDelay);
 
@@ -85,8 +87,11 @@ btnAI.onclick = function () {
 initAI();
 const container = document.getElementById("schedule-container");
 
+var loaderContainer = document.querySelector(".loader-container");
 var loader = document.getElementById("loader");
 loader.style.display = "flex";
+loaderContainer.style.display = "block";
+assistant.style.display = "none";
 
 const tg = window.Telegram.WebApp;
 tg.ready();
@@ -173,6 +178,7 @@ function getSchedule1(reqNeed = false) {
     //found = false;
 
     if (reqNeed) {
+        //let forMessageFrom = Date.now();
       fetch("https://boost.rorosin.ru/group/" + userId)
         //fetch("http://127.0.0.1:8000/group/" + userId)
         .then((response) => {
@@ -184,8 +190,9 @@ function getSchedule1(reqNeed = false) {
 
           if (!Group || Group.toUpperCase() === "NULL") {
             document.getElementById("alerter").style.display = "block";
-            throw new Error("Group not found!");
             Group = "Не указана";
+            throw new Error("Group not found!");
+            
           }
           if (localStorage.getItem("userGroup") !== Group) {
             localStorage.setItem("userGroup", Group);
@@ -198,7 +205,14 @@ function getSchedule1(reqNeed = false) {
         })
         .then((resp) => {
           if (resp && resp.ok) {
+            //let messageEnd = Date.now();
             loader.style.display = "none";
+            loaderContainer.style.display = "none";
+            assistant.style.display = "block";
+            
+                //message_start = message_start + (messageEnd - forMessageFrom - message_start);
+                //console.log(messageEnd - forMessageFrom );
+            
             return resp.json();
           }
         })
@@ -241,14 +255,20 @@ function getSchedule1(reqNeed = false) {
         .catch((err) => {
           console.error("Ошибка:", err);
           loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
         });
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
         container.innerHTML = cachedData;
         loader.style.display = "none";
+        loaderContainer.style.display = "none";
+        assistant.style.display = "block";
         if (nowBtn) upsSV();
         //console.log("cache!");
         loader.style.display = "none";
+        loaderContainer.style.display = "none";
+        assistant.style.display = "block";
         var Group = localStorage.getItem("userGroup");
         teacherHide();
         dayParseOnline();
@@ -280,6 +300,8 @@ function getSchedule1(reqNeed = false) {
         <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
     //
     loader.style.display = "none";
+    loaderContainer.style.display = "none";
+    assistant.style.display = "block";
   }
 }
 getSchedule1();
@@ -437,7 +459,7 @@ function teacherHide(element = document) {
                 var message = document.getElementById("ctx-assistant-say");
                 stopAll();
                 message.style.display = "block";
-                message.innerHTML = `<h4 style="color: #fff100ed;">В промежутке между парами вам придётся менять корпуса! Будьте внимательны</h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;
+                message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;
                 setTimeout(function () {
                   message.style.display = "none";
                 }, 10000);
@@ -449,7 +471,7 @@ function teacherHide(element = document) {
               let floor = Number(test[1]);
               let room = Number(test.slice(2, 4));
               btnX.parentElement.querySelector(".teacher").innerHTML +=
-                `<h5 style="color: #80ffd6c3; padding-top: .3em">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
+                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
               added = true;
             } else if (test.length > 6 && test[1] !== "Н") {
               tests = test.split("/", 2);
@@ -459,7 +481,7 @@ function teacherHide(element = document) {
                 let floor = Number(test[1]);
                 let room = Number(test.slice(2, 4));
                 btnX.parentElement.querySelector(".teacher").innerHTML +=
-                  `<h5 style="color: #80ffd6c3; padding-top: .3em">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
+                  `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
                 added = true;
               });
             }
@@ -493,11 +515,13 @@ function hideRoomShown() {
 
 let rr = true;
 let clickedAi = false;
+
 function upsSV() {
   let found = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
+  document.getElementById("empty-container").style.display = "none";
   DAYS.forEach((de) => {
     var dayName = de.querySelector(".day-name")?.textContent.trim();
     var dayLesson = de.querySelector(".lesson");
@@ -553,7 +577,7 @@ function upsSV() {
     //}
   });
 
-  if (!found) {
+  if (!found && !document.querySelector(".skeleton")) {
     document.getElementById("empty-container").style.display = "flex";
     document.getElementById("empty-container").style.animation =
       "nothingFly 1s ease";
@@ -592,10 +616,12 @@ burgerBtn.addEventListener("click", function () {
 let timeout = 0;
 updater.addEventListener("click", function () {
   if (timeout === 0) {
+    if (message.style.display === "block"){
     message.style.display = "none";
     setTimeout(function () {
       message.style.display = "block";
     }, 2000);
+    }
     r += 360;
     updater.style.transform = `rotate(${r}deg)`;
     var al = document.getElementById("fast-alert");
