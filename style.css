@@ -384,7 +384,7 @@
         .second-header {
             display: flex;
             justify-content: space-around;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .btns {
@@ -531,7 +531,33 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr;
+            box-sizing: border-box;
+            border-radius: 18px;
+            padding-left: 6px;
+            padding-right: 6px;
+            
+            &:first-child {
+                border-right: 1px solid;
+            }
 
+            input {
+                display: none;
+            }
+        }
+
+        .theme-radio {
+           cursor: pointer; 
+           padding: 10px;
+            
+        }
+
+        .theme-radio input:checked + span {
+            transition: all .25s;
+            border-radius: 16px;
+            padding: 6px 8px;
+           box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
+
+           
         }
 
         #theme-container>div {
