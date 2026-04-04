@@ -716,6 +716,37 @@ lightRadio.addEventListener("change", function () {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+  let dayPeriodMapping = {
+  0: "0",
+  1: "0",
+  2: "10%",
+  3: "20%",
+  4: "30%",
+  5: "40%",
+  6: "45%",
+  7: "50%",
+  8: "55%",
+  9: "60%",
+  10: "65%",
+  11: "65%",
+  12: "70%",
+  13: "75%",
+  14: "80%",
+  15: "85%",
+  16: "90%",
+  17: "95%",
+  18: "115%",
+  19: "125%",
+  20: "130%",
+  21: "140%",
+  22: "145%",
+  23: "150%"
+}
+  const d2 = new Date();
+  const hours = d2.getHours();
+  console.log(dayPeriodMapping[hours]);
+  document.querySelector(":root").style.setProperty("--star-background-day", dayPeriodMapping[hours] || "0");
+
   try {
     if (tg.isFullscreen && tg.device.isDesktop) {
       tg.exitFullscreen();
