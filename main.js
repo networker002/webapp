@@ -471,7 +471,7 @@ function teacherHide(element = document) {
               let floor = Number(test[1]);
               let room = Number(test.slice(2, 4));
               btnX.parentElement.querySelector(".teacher").innerHTML +=
-                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
+                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
               added = true;
             } else if (test.length > 6 && test[1] !== "Н") {
               tests = test.split("/", 2);
@@ -481,7 +481,7 @@ function teacherHide(element = document) {
                 let floor = Number(test[1]);
                 let room = Number(test.slice(2, 4));
                 btnX.parentElement.querySelector(".teacher").innerHTML +=
-                  `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} | этаж: ${floor} | аудитория: ${room}</h5>`;
+                  `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
                 added = true;
               });
             }
@@ -723,6 +723,7 @@ window.addEventListener("DOMContentLoaded", () => {
     darkRadio.checked = true;
     applyTheme("dark");
   }
+  if (nowBtn) upsSV();
 });
 
 function toBtoa(str) {

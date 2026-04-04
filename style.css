@@ -12,7 +12,7 @@
             --menu-color: #fff;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: none;
-            --alert-bg: rgba(0, 200, 200, .8);
+            --alert-bg: rgba(0, 200, 200, .4);
             --time-color: #bdc6db;
             --loader-filter: #ffffff44;
             --accent: #0284c7;
@@ -32,6 +32,7 @@
             --ch-room-bg: rgba(179, 163, 95, 0.3);
             --menu-bg-bg: #00000094;
             --room-green: #80ffd6c3;
+            --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
         }
 
         [data-theme="light"] {
@@ -42,7 +43,7 @@
             --menu-color: #10002b;
             --s-b-b: rgb(180, 180, 180);
             --text-shadow-c: #c4c4c427;
-            --alert-bg: rgba(0, 200, 200, .9);
+            --alert-bg: rgba(0, 200, 200, .7);
             --time-color: #000000;
             --loader-filter: rgba(0, 0, 0, .2);
             --accent: #0284c7;
@@ -62,6 +63,7 @@
             --ch-room-bg: rgba(0, 0, 0, 0.15);
             --menu-bg-bg: none;
             --room-green: #1e3830c3;
+            --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
         }
 
         @font-face {
@@ -535,6 +537,7 @@
             border-radius: 18px;
             padding-left: 6px;
             padding-right: 6px;
+            user-select: none !important;
             
             &:first-child {
                 border-right: 1px solid;
@@ -548,6 +551,7 @@
         .theme-radio {
            cursor: pointer; 
            padding: 10px;
+           outline: none;
             
         }
 
@@ -555,9 +559,9 @@
             transition: all .25s;
             border-radius: 16px;
             padding: 6px 8px;
-           box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
-
-           
+           /*box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;*/
+            /*box-shadow: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;*/
+            box-shadow: var(--dark-theme-btn);
         }
 
         #theme-container>div {
@@ -712,14 +716,30 @@
             filter: drop-shadow(4px 4px 12px var(--shadows));
             z-index: 1000;
 
+            /*&::before {
+                    position: absolute;
+                    left: .7em;
+                    top: .2em;
+                    content: "i";
+                    font-size: small;
+                    font-family: monospace;
+                }*/
+            
+
             h2 {
                 color: var(--menu-color);
                 font-family: monospace;
-                letter-spacing: 2px;
+                letter-spacing: 1px;
                 font-weight: 100;
                 font-size: large;
+                position: relative;
+
+                
             }
+            
+            
         }
+
 
         #empty-container {
             display: none;
