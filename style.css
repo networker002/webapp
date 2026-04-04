@@ -819,6 +819,15 @@
             /*overflow: scroll;*/
         }
 
+        #shocked-assistant {
+            position: absolute;
+            z-index: 2000000;
+            display: none;
+            top: 2em;
+            left: 50%;
+            transform: translateX(-50%); 
+        }
+
         #ctx-assistant-say {
             padding: 16px;
         }
