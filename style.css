@@ -37,6 +37,7 @@
     --only-light-color: none;
     --day-card-bg: #4f618738;
     --menu-liq-glass: blur(10px);
+    --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
 }
 
 [data-theme="light"] {
@@ -73,6 +74,7 @@
     --only-light-color: #00000054;
     --day-card-bg: #c2d5ff70;
     --menu-liq-glass: blur(18px);
+    --chat-bg: linear-gradient(to bottom, rgba(255, 255, 255, .15), rgba(255, 255, 255, . 2);
 }
 
 @font-face {
@@ -1021,8 +1023,8 @@ h6.skeleton {
     position: fixed;
     inset: 0;
     z-index: 2000000;
-    background: var(--tg-theme-secondary-bg-color), linear-gradient(to bottom, #00000000, #0000008f);
-    background-blend-mode: overlay;
+    background: var(--chat-bg);
+    backdrop-filter: blur(16px);
     padding: 1em;
     width: 100vw;
     height: 100vh;
