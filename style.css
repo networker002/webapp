@@ -738,7 +738,7 @@ h4>input {
 #set-group-btn {
     margin: 1em;
     padding: .5em 1.5em;
-    background: var(--s-b-b);
+    background: var(--tg-theme-button-color);
     border-radius: 24px;
     border: none;
     transition: transform .1s, filter .2s;
