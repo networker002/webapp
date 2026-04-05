@@ -1016,3 +1016,65 @@ h6.skeleton {
         opacity: .05;
     }
 }
+
+.chat {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000000;
+    background: var(--tg-theme-bg-color);
+    padding: 1em;
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat-header {
+    text-align: center;
+    font-size: smaller;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1em;
+    background-color: var(--tg-theme-header-bg-color);
+
+    h1 {
+        color: var(--tg-theme-button-color);
+        letter-spacing: 1px;
+    }
+
+}
+
+.chat-content {
+    margin-bottom: 4em;
+    display: grid;
+    grid-template-rows: 90% 10%;
+}
+
+.chat-input {
+    display: flex;
+    justify-content: center;
+    gap: .5em;
+    flex-wrap: wrap;
+    background: var(--tg-theme-secondary-bg-color);
+
+    button {
+        background: var(--tg-theme-button-color);
+        border: none;
+        padding: 6px 12px;
+        border-radius: 24px;
+        letter-spacing: 2px;
+        color: var(--tg-theme-button-text-color);
+        filter: drop-shadow(0 4px .75em #ffffff3f);
+        transition: transform .3s;
+        font-family: "DejaVuSans";
+        outline: none !important;
+
+        &:active {
+            transform: scale(.9);
+        }
+    }
+}
