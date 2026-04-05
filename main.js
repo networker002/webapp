@@ -457,7 +457,7 @@ function teacherHide(element = document) {
                 var message = document.getElementById("ctx-assistant-say");
                 stopAll();
                 message.style.display = "block";
-                message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg);">ОК</button></div>`;
+                message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);">ОК</button></div>`;
                 setTimeout(function () {
                   message.style.display = "none";
                 }, 10000);
@@ -744,8 +744,12 @@ window.addEventListener("DOMContentLoaded", () => {
 }
   const d2 = new Date();
   const hours = d2.getHours();
+  const dayType = d2.getDay();
+  if (dayType === 0 || dayType === 6 || dayType === 7) {
+    document.querySelector(":root").style.setProperty("--star-background-day", dayPeriodMapping[hours] || "0");
+  }
   console.log(dayPeriodMapping[hours]);
-  document.querySelector(":root").style.setProperty("--star-background-day", dayPeriodMapping[hours] || "0");
+  
 
   try {
     if (tg.isFullscreen && tg.device.isDesktop) {

@@ -34,6 +34,8 @@
     --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     --star-background-day: 0;
     --only-dark: block;
+    --only-light-color: none;
+    --day-card-bg: #4f618738;
 }
 
 [data-theme="light"] {
@@ -55,18 +57,20 @@
     --header-glass: #98b9ff7e;
     --shadows: rgba(0, 0, 0, .3);
     --anti-shadows: rgba(255, 255, 255, .2);
-    --anti-super-shadows: rgba(255, 255, 255, .4);
+    --anti-super-shadows: rgba(3, 32, 70, 0.548);
     --star-sh: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.45));
-    --acdeac-btn: #68a7b362;
+    --acdeac-btn: #50a1af62;
     --runner-sk: linear-gradient(90deg, #00000003, #00000012, #00000003);
     --rotation-line: -90deg;
     --btn-opacity: 1;
     --ch-room-bg: rgba(0, 0, 0, 0.15);
     --menu-bg-bg: none;
-    --room-green: #1e3830c3;
+    --room-green: #024631d2;
     --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     --only-dark: none;
     --star-background-day: 0;
+    --only-light-color: #00000054;
+    --day-card-bg: #c2d5ff70;
 }
 
 @font-face {
@@ -194,7 +198,7 @@ header.scrolling {
 
 .day {
     display: none;
-    background: #4f618738;
+    background: var(--day-card-bg);
     border-radius: 2em;
     padding: .5em;
     padding-bottom: 1em;
@@ -206,6 +210,7 @@ header.scrolling {
     margin-bottom: 2em;
     margin-top: 1.25em;
     backdrop-filter: blur(8px) brightness(50%);
+    box-shadow: 2px 6px 8px var(--only-light-color);
 
     .day-name {
         text-align: center;
@@ -790,6 +795,7 @@ h4>input {
 }
 
 
+
 #empty-container {
     display: none;
     justify-content: center;
@@ -879,6 +885,7 @@ h4>input {
 
 #ctx-assistant-say {
     padding: 16px;
+    filter: drop-shadow(4px 4px 6px var(--shadows));
 }
 
 #activate-ai-a {
