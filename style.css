@@ -1023,7 +1023,7 @@ h6.skeleton {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2000000;
-    background: var(--tg-theme-bg-color);
+    background: var(--tg-theme-secondary-bg-color);
     padding: 1em;
     min-height: 100vh;
     min-width: 100vw;
@@ -1080,7 +1080,7 @@ h6.skeleton {
     padding: 1em;
 
     p {
-        background: var(--tg-theme-secondary-bg-color);
+        background: var(--tg-theme-bg-color);
         padding: .3em 1em;
         border-radius: 12px;
         width: fit-content;
