@@ -1019,17 +1019,20 @@ h6.skeleton {
 
 .chat {
     position: fixed;
+    inset: 0;
+    z-index: 2000000;
+    background: var(--tg-theme-secondary-bg-color), linear-gradient(to bottom, #00000000, #0000008f);
+    background-blend-mode: overlay;
+    padding: 1em;
+    width: 100vw;
+    height: 100vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2000000;
-    background: var(--tg-theme-secondary-bg-color);
-    padding: 1em;
-    min-height: 100vh;
-    min-width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
     animation: openChat .5s ease forwards;
 }
 
@@ -1043,6 +1046,13 @@ h6.skeleton {
         transform: translate(-50%, -50%);
         opacity: 1;
     }
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 }
 
 .chat-header {
@@ -1065,8 +1075,11 @@ h6.skeleton {
         border-radius: 50%;
         padding: 4px;
         position: absolute;
-        right: 2em;
+        right: 50%;
+        transform: translateX(50%);
         top: 2em;
+        cursor: pointer;
+        user-select: none;
     }
 
 }
@@ -1078,8 +1091,20 @@ h6.skeleton {
     gap: 1em;
     text-align: right;
     padding: 1em;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto !important;
 
-    p {
+    &::-webkit-scrollbar {
+        width: 8px;
+        cursor: pointer;
+        background: transparent;
+        color: #2a406e;
+    }
+
+    p { 
         background: var(--tg-theme-bg-color);
         padding: .3em 1em;
         border-radius: 12px;
@@ -1089,6 +1114,7 @@ h6.skeleton {
 
 .from-user {
     align-self: flex-end;
+    text-align: right;
 
     &::before {
         content: "You";
@@ -1102,6 +1128,8 @@ h6.skeleton {
 
 .from-bot {
     align-self: flex-start;
+    text-align: left;
+    line-height: 1em;
 
     &::before {
         content: "Bot";
@@ -1122,6 +1150,9 @@ h6.skeleton {
     flex-wrap: wrap;
     background: #0000002d;
     padding: 2em;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
 
     button {
         background: var(--tg-theme-button-color);
@@ -1138,5 +1169,11 @@ h6.skeleton {
         &:active {
             transform: scale(.9);
         }
+    }
+}
+
+@keyframes popupBtnText {
+    100% {
+        opacity: 0;
     }
 }

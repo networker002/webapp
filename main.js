@@ -644,11 +644,125 @@ updater.addEventListener("click", function () {
 //    let menu;
 //});
 
+
+function setOtherBtns() {
+  var chatInput = document.querySelectorAll(".user-input-btn");
+  fetch('ctx.json')
+    .then((response) => response.json())
+    .then((data) => { 
+      for (const key in data) {
+        if (key !== "Привет!") {
+          chatInput.forEach((btn) => {
+            if (btn.innerHTML === key) {
+              btn.style.display = "inline-block";
+            }
+          });
+
+        }
+      }
+    });
+}
+
+function getDays() {
+  var daYS = document.querySelectorAll(".day");
+  let ans = {};
+  let newWeek = `<div>`
+  daYS.forEach((day) => {
+    let dn = day.querySelector(".day-name").innerHTML.trim().split("<")[0].trim();
+    //console.log(dn);
+    //console.log(days[tommorrow.getDay()]);
+    //console.log(dn === days[tommorrow.getDay()]);
+    if (dn === dayCall){
+      //console.log("now");
+      var lessons = day.querySelectorAll(".lesson-row");
+      newDay = `<div><b>${day.querySelector(".day-name").innerHTML.split("<")[0]}</b>`;
+      lessons.forEach((lesson) => {
+        newDay += `<br>${lesson.innerHTML.replace('<button', '<button style="display:none;" ')}`;
+      });
+      newDay += "</div>";
+
+      ans["now"] = newDay;
+      //console.log(day);
+    } else if (dn === days[tommorrow.getDay()]) {
+      //console.log("tommorrow");
+      var lessons = day.querySelectorAll(".lesson-row");
+      newDay = `<div><b>${day.querySelector(".day-name").innerHTML.split("<")[0]}</b>`;
+      lessons.forEach((lesson) => {
+        newDay += `<br>${lesson.innerHTML.replace('<button', '<button style="display:none;" ')}`;
+      });
+      newDay += "</div>";
+      ans["tommorrow"] = newDay;
+      //console.log(day);
+    } 
+    newWeek += `${day.innerHTML.trim().replace(/<button/gi, '<button style="display:none;" ').replace(/<h3 class="day-name"/gi, '<br><br><br><h3 class="day-name"')}`;
+  });
+  newWeek += "</div>";
+  //newWeek = `<div>${daYS.innerHTML.replace('<button', '<button style="display:none;" ')}</div>`;
+  //console.log(newWeek);
+  ans["week"] = newWeek;
+  return ans;
+}
+
+
+
+var btnUserIput = document.querySelectorAll(".user-input-btn");
+let clickedToAI = false;
+
+btnUserIput.forEach((btn) => {
+
+  btn.addEventListener("click", function () {
+    //console.log(btn.innerHTML);
+    var btnCtx = btn.innerHTML;
+    fetch('ctx.json')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data[btnCtx]) {
+          var answerText = data[btnCtx];
+          let keys = Object.keys(data);
+          //console.log(btnCtx);
+
+          var daysData = getDays();
+
+          if (btnCtx === "Что сегодня?") {
+            answerText = answerText.replace("{today_schedule}", daysData["now"] ?? "На сегодня ничего нет!")
+          } else if (btnCtx === "Что завтра?") {
+            answerText = answerText.replace("{tomorrow_schedule}", daysData["tommorrow"] ?? "На завтра ничего нет!")
+          } else if (btnCtx === "Группа") {
+            answerText = answerText.replace("{current_group}", `<b>${document.getElementById("gr").innerHTML}</b>`)
+          } else if (btnCtx === "На неделю") {
+            answerText = answerText.replace("{week_schedule}", daysData["week"]);
+          }
+          
+
+          var msg = document.getElementById("chat-messages");
+          msg.innerHTML += `<div class="from-user"><p>${btnCtx}</p></div>`;
+          setTimeout(() => {
+            msg.innerHTML += `<div class="from-bot"><p>${answerText}</p></div>`;
+          }, 500 * (Math.random() + 1));
+          
+          btn.style.animation = "popupBtnText .5s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+          setTimeout(function () {            
+            btn.style.display = "none";
+          }, 500);
+          clickedToAI = true;
+        }
+        if (clickedToAI) {
+          setTimeout(() => {
+          setOtherBtns();
+          }, 500);
+        }
+      });
+  });
+});
+
+
+
 function openGroupChangeModal() {
   document.getElementById("alerter").style.display = "block";
   document.getElementById("alerter").style.animation = "OpenObj .5s ease";
   document.getElementById("shocked-assistant").style.display = "block";
-  document.getElementById("shocked-assistant").style.animation = "OpenObj .5s ease, opq1 1s ease-in";
+  document.getElementById("shocked-assistant").style.animation =
+    "OpenObj .5s ease, opq1 1s ease-in";
   document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
             <h3>Обновление данных</h3>
             <h6>Давайте сделаем это сейчас:</h6>
@@ -656,19 +770,17 @@ function openGroupChangeModal() {
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
             <button style="background: rgba(255, 255, 255, 0.2); color: var(--text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
-  
-          }
-
+}
 
 function closeN(id, id2 = false) {
   var el = document.getElementById(id);
   if (id2) {
     var el2 = document.getElementById(id2);
     el2.style.animation = "CloseObj .5s ease";
-  setTimeout(function () {
-    el2.style.display = "none";
-    el2.style.animation = "none";
-  }, 400);
+    setTimeout(function () {
+      el2.style.display = "none";
+      el2.style.animation = "none";
+    }, 400);
   }
   el.style.animation = "CloseObj .5s ease";
   setTimeout(function () {
@@ -717,40 +829,187 @@ lightRadio.addEventListener("change", function () {
 
 window.addEventListener("DOMContentLoaded", () => {
   let dayPeriodMapping = {
-  0: "0",
-  1: "0",
-  2: "10%",
-  3: "20%",
-  4: "30%",
-  5: "40%",
-  6: "45%",
-  7: "50%",
-  8: "55%",
-  9: "60%",
-  10: "65%",
-  11: "65%",
-  12: "70%",
-  13: "75%",
-  14: "80%",
-  15: "85%",
-  16: "90%",
-  17: "95%",
-  18: "115%",
-  19: "125%",
-  20: "130%",
-  21: "140%",
-  22: "145%",
-  23: "150%"
-}
+    0: "0",
+    1: "0",
+    2: "10%",
+    3: "20%",
+    4: "30%",
+    5: "40%",
+    6: "45%",
+    7: "50%",
+    8: "55%",
+    9: "60%",
+    10: "65%",
+    11: "65%",
+    12: "70%",
+    13: "75%",
+    14: "80%",
+    15: "85%",
+    16: "90%",
+    17: "95%",
+    18: "115%",
+    19: "125%",
+    20: "130%",
+    21: "140%",
+    22: "145%",
+    23: "150%",
+  };
   const d2 = new Date();
   const hours = d2.getHours();
   const dayType = d2.getDay();
   if (dayType === 0 || dayType === 6 || dayType === 7) {
-    document.querySelector(":root").style.setProperty("--star-background-day", dayPeriodMapping[hours] || "0");
+    document
+      .querySelector(":root")
+      .style.setProperty(
+        "--star-background-day",
+        dayPeriodMapping[hours] || "0",
+      );
   }
   console.log(dayPeriodMapping[hours]);
-  
 
+  if (hours >= 7 || hours > 20) {
+    assistant.innerHTML = `<svg width="81" height="84" viewBox="0 0 81 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_35_3)">
+<path d="M42.6161 28.4529C45.8169 24.2147 52.1831 24.2147 55.3839 28.4529L59.3814 33.7459C60.3386 35.0134 61.6514 35.9672 63.1527 36.4859L69.4218 38.6521C74.4417 40.3866 76.409 46.4412 73.3673 50.795L69.5687 56.2324C68.6591 57.5345 68.1576 59.0778 68.1282 60.6659L68.0053 67.2976C67.907 72.6078 62.7566 76.3497 57.6759 74.8023L51.3308 72.8699C49.8114 72.4071 48.1886 72.4071 46.6692 72.8699L40.3241 74.8023C35.2434 76.3497 30.093 72.6078 29.9947 67.2976L29.8718 60.6659C29.8424 59.0778 29.3409 57.5345 28.4313 56.2324L24.6327 50.795C21.591 46.4412 23.5583 40.3866 28.5782 38.6521L34.8473 36.4859C36.3486 35.9672 37.6614 35.0134 38.6186 33.7459L42.6161 28.4529Z" fill="url(#paint0_linear_35_3)"/>
+</g>
+<circle cx="40" cy="48.5" r="5" fill="url(#paint1_linear_35_3)"/>
+<circle cx="58" cy="48.5" r="5" fill="url(#paint2_linear_35_3)"/>
+<circle cx="58" cy="48.5" r="4" fill="black"/>
+<circle cx="56" cy="46.5" r="2" fill="white"/>
+<circle cx="40" cy="48.5" r="4" fill="black"/>
+<circle cx="38" cy="46.5" r="2" fill="white"/>
+<rect width="37.5563" height="4.81491" rx="2.40745" transform="matrix(0.852534 -0.522673 0.649293 0.760539 21.6902 44.8112)" fill="white"/>
+<g filter="url(#filter1_n_35_3)">
+<path d="M21.5792 16.1147L54.0688 26.2557L22.7812 45.4376L21.5792 16.1147Z" fill="url(#paint3_linear_35_3)"/>
+</g>
+<path d="M24.8025 19.0703L26.0152 19.7688L27.3951 18.8664L26.7647 20.2006L27.9775 20.8992L26.3751 21.0252L25.7448 22.3594L25.3849 21.103L23.7825 21.229L25.1624 20.3266L24.8025 19.0703Z" fill="#FFFFA2" fill-opacity="0.82"/>
+<path d="M34.054 33.6278L35.2667 34.3264L36.6466 33.4239L36.0162 34.7581L37.2289 35.4567L35.6266 35.5827L34.9962 36.9169L34.6363 35.6606L33.034 35.7866L34.4139 34.8841L34.054 33.6278Z" fill="#FFFFA2" fill-opacity="0.82"/>
+<path d="M24.2541 34.6941L25.4668 35.3926L26.8467 34.4902L26.2163 35.8244L27.4291 36.523L25.8267 36.649L25.1964 37.9832L24.8365 36.7268L23.2341 36.8528L24.614 35.9504L24.2541 34.6941Z" fill="#FFFFA2" fill-opacity="0.82"/>
+<path d="M30.57 25.2206L31.7828 25.9192L33.1626 25.0168L32.5323 26.351L33.745 27.0496L32.1427 27.1756L31.5123 28.5098L31.1524 27.2534L29.55 27.3794L30.9299 26.477L30.57 25.2206Z" fill="#FFFFA2" fill-opacity="0.82"/>
+<path d="M43.1884 24.6008L44.4012 25.2994L45.7811 24.3969L45.1507 25.7311L46.3634 26.4297L44.7611 26.5557L44.1307 27.8899L43.7708 26.6336L42.1685 26.7596L43.5483 25.8571L43.1884 24.6008Z" fill="#FFFFA2" fill-opacity="0.82"/>
+<g filter="url(#filter2_n_35_3)">
+<line x1="22.2785" y1="16.6499" x2="18.6499" y2="25.7215" stroke="#002174" stroke-linecap="round"/>
+</g>
+<g filter="url(#filter3_d_35_3)">
+<circle cx="18.5" cy="26.5" r="2.5" fill="white"/>
+<circle cx="18.5" cy="26.5" r="2" stroke="white" stroke-opacity="0.37"/>
+</g>
+<defs>
+<filter id="filter0_i_35_3" x="23.1871" y="25.2743" width="55.6259" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_35_3"/>
+</filter>
+<filter id="filter1_n_35_3" x="21.5792" y="16.1147" width="32.4896" height="29.3229" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="3.3333332538604736 3.3333332538604736" stitchTiles="stitch" numOctaves="3" result="noise" seed="7494" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(0, 0, 0, 0.2)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_35_3">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+<filter id="filter2_n_35_3" x="18.1498" y="16.1498" width="4.62891" height="10.0718" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="2 2" stitchTiles="stitch" numOctaves="3" result="noise" seed="6685" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(0, 0, 0, 0.25)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_35_3">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+<filter id="filter3_d_35_3" x="14.1" y="22.1" width="8.8" height="8.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="0.95"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.3 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_35_3"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_35_3" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_35_3" x1="49" y1="20" x2="49" y2="84" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFC404"/>
+<stop offset="1" stop-color="#996402"/>
+</linearGradient>
+<linearGradient id="paint1_linear_35_3" x1="40" y1="43.5" x2="40" y2="53.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_35_3" x1="58" y1="43.5" x2="58" y2="53.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint3_linear_35_3" x1="21.5792" y1="16.1147" x2="39.4386" y2="45.2452" gradientUnits="userSpaceOnUse">
+<stop stop-color="#002174"/>
+<stop offset="1" stop-color="#001DDA"/>
+</linearGradient>
+</defs>
+</svg>
+`;
+  } else {
+    assistant.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_i_18_41)">
+                        <path
+                            d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                            fill="url(#paint0_linear_18_41)" />
+                    </g>
+                    <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_41)" />
+                    <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_41)" />
+                    <circle cx="41" cy="28.5" r="4" fill="black" />
+                    <circle cx="39" cy="26.5" r="2" fill="white" />
+                    <circle cx="23" cy="28.5" r="4" fill="black" />
+                    <circle cx="21" cy="26.5" r="2" fill="white" />
+                    <defs>
+                        <filter id="filter0_i_18_41" x="6.18707" y="5.27429" width="55.6259" height="58.8802"
+                            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dx="4" dy="9" />
+                            <feGaussianBlur stdDeviation="6.1" />
+                            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_41" />
+                        </filter>
+                        <linearGradient id="paint0_linear_18_41" x1="32" y1="0" x2="32" y2="64"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFC404" />
+                            <stop offset="1" stop-color="#996402" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_18_41" x1="23" y1="23.5" x2="23" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                        <linearGradient id="paint2_linear_18_41" x1="41" y1="23.5" x2="41" y2="33.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D8C3BD" />
+                            <stop offset="1" stop-color="#DBDBDB" />
+                        </linearGradient>
+                    </defs>
+                </svg>`;
+  }
   try {
     if (tg.isFullscreen && tg.device.isDesktop) {
       tg.exitFullscreen();
@@ -792,7 +1051,8 @@ function groupSet0() {
   if (D.length < 4 || D.length > 13) {
     erDisplay.innerHTML = "Имя группы должно быть другой длины";
     haptic.notificationOccurred("error");
-    document.getElementById("shocked-assistant").innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    document.getElementById("shocked-assistant").innerHTML =
+      `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_i_28_16)">
 <path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_28_16)"/>
 </g>
@@ -833,7 +1093,8 @@ function groupSet0() {
 `;
     setTimeout(function () {
       erDisplay.innerHTML = "";
-      document.getElementById("shocked-assistant").innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      document.getElementById("shocked-assistant").innerHTML =
+        `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g filter="url(#filter0_i_18_72)">
                         <path
                             d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3814 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
@@ -892,7 +1153,6 @@ function groupSet0() {
                         </linearGradient>
                     </defs>
                 </svg>`;
-
     }, 3000);
   } else {
     const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
@@ -909,16 +1169,18 @@ function groupSet0() {
           if (localStorage.getItem("userGroup")) {
             if (localStorage.getItem("userGroup") !== Group) {
               document.getElementById("alerter").style.display = "none";
-              document.getElementById("shocked-assistant").style.display = "none";
-                burgerBtn.classList.remove("opened-btn");
-                burgerBtn.classList.add("closed-btn");
+              document.getElementById("shocked-assistant").style.display =
+                "none";
+              burgerBtn.classList.remove("opened-btn");
+              burgerBtn.classList.add("closed-btn");
               closeN("user-menu-display");
               getSchedule1(true);
             } else {
               document.getElementById("alerter").style.display = "none";
-              document.getElementById("shocked-assistant").style.display = "none";
-                burgerBtn.classList.remove("opened-btn");
-                burgerBtn.classList.add("closed-btn");
+              document.getElementById("shocked-assistant").style.display =
+                "none";
+              burgerBtn.classList.remove("opened-btn");
+              burgerBtn.classList.add("closed-btn");
               localStorage.setItem("userGroup", userGroup);
               closeN("user-menu-display");
               getSchedule1(true);
@@ -932,19 +1194,17 @@ function groupSet0() {
 var CloseChatButton = document.querySelector(".chat-header svg");
 var Chat = document.querySelector(".chat");
 
-CloseChatButton.addEventListener("click", function() {
-    Chat.style.display = "none";
+CloseChatButton.addEventListener("click", function () {
+  Chat.style.display = "none";
 });
 
-
-assistant.addEventListener("click", function() {
-    Chat.style.display = "flex";
+assistant.addEventListener("click", function () {
+  Chat.style.display = "flex";
 });
 
-window.addEventListener("DOMContentLoaded", function() {
-    Chat.style.display = "none";
+window.addEventListener("DOMContentLoaded", function () {
+  Chat.style.display = "none";
 });
-
 
 const Header = document.querySelector("header");
 window.addEventListener("scroll", function () {
