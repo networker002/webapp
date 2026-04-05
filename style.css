@@ -29,13 +29,14 @@
     --rotation-line: 90deg;
     --btn-opacity: 0.55;
     --ch-room-bg: rgba(179, 163, 95, 0.3);
-    --menu-bg-bg: #00000094;
+    --menu-bg-bg: #00000075;
     --room-green: #80ffd6c3;
     --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     --star-background-day: 0;
     --only-dark: block;
     --only-light-color: none;
     --day-card-bg: #4f618738;
+    --menu-liq-glass: blur(10px);
 }
 
 [data-theme="light"] {
@@ -71,6 +72,7 @@
     --star-background-day: 0;
     --only-light-color: #00000054;
     --day-card-bg: #c2d5ff70;
+    --menu-liq-glass: blur(18px);
 }
 
 @font-face {
@@ -519,7 +521,7 @@ header.scrolling {
     min-width: 50vw;
     padding-bottom: 1.5em;
     border-radius: 16px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--menu-liq-glass);
     z-index: 2000;
     display: none;
     transition: opacity .5s;
