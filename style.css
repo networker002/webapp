@@ -1030,6 +1030,19 @@ h6.skeleton {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    animation: openChat .5s ease forwards;
+}
+
+@keyframes openChat {
+    0% {
+        transform: translate(-50%, -40%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
 }
 
 .chat-header {
@@ -1044,22 +1057,71 @@ h6.skeleton {
     h1 {
         color: var(--tg-theme-button-color);
         letter-spacing: 1px;
+        padding-top: 2em;
+    }
+
+    svg {
+        background: none;
+        border-radius: 50%;
+        padding: 4px;
+        position: absolute;
+        right: 2em;
+        top: 2em;
     }
 
 }
 
-.chat-content {
-    margin-bottom: 4em;
-    display: grid;
-    grid-template-rows: 90% 10%;
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    text-align: right;
+    padding: 1em;
+
+    p {
+        background: var(--tg-theme-secondary-bg-color);
+        padding: .3em 1em;
+        border-radius: 12px;
+        width: fit-content;
+    }
 }
+
+.from-user {
+    align-self: flex-end;
+
+    &::before {
+        content: "You";
+        font-size: smaller;
+        color: var(--tg-theme-button-color);
+        opacity: 0.8;
+        letter-spacing: 1px;
+        text-align: start;
+    }
+}
+
+.from-bot {
+    align-self: flex-start;
+
+    &::before {
+        content: "Bot";
+        font-size: smaller;
+        color: var(--tg-theme-button-color);
+        margin-right: .5em;
+        opacity: 0.8;
+        letter-spacing: 1px;
+        text-align: end;
+    }
+}
+
 
 .chat-input {
     display: flex;
     justify-content: center;
-    gap: .5em;
+    gap: .75em;
     flex-wrap: wrap;
-    background: var(--tg-theme-secondary-bg-color);
+    background: #0000002d;
+    padding: 2em;
 
     button {
         background: var(--tg-theme-button-color);

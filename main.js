@@ -928,6 +928,24 @@ function groupSet0() {
     }, 5000);
   }
 }
+
+var CloseChatButton = document.querySelector(".chat-header svg");
+var Chat = document.querySelector(".chat");
+
+CloseChatButton.addEventListener("click", function() {
+    Chat.style.display = "none";
+});
+
+
+assistant.addEventListener("click", function() {
+    Chat.style.display = "flex";
+});
+
+window.addEventListener("DOMContentLoaded", function() {
+    Chat.style.display = "none";
+});
+
+
 const Header = document.querySelector("header");
 window.addEventListener("scroll", function () {
   if (window.scrollY > 50) {
