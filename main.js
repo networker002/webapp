@@ -1031,7 +1031,7 @@ window.addEventListener("DOMContentLoaded", () => {
       tg.exitFullscreen();
     }
     else {
-      tg.requestFullScreen();
+      tg.requestFullscreen();
       document.querySelector("header").style.paddingTop = "var(--tg-content-safe-area-top)";
       document.querySelector(".chat-header").style.paddingTop = "var(--tg-content-safe-area-top)";
     }
@@ -1266,6 +1266,9 @@ CloseChatButton.addEventListener("click", function () {
 
 assistant.addEventListener("click", function () {
   Chat.style.display = "flex";
+  tg.BackButton.show();
+  tg.BackButton.onClick = function() {Chat.style.display = "none";}
+  tg.BackButton.hide();
 });
 
 window.addEventListener("DOMContentLoaded", function () {
