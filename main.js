@@ -185,32 +185,37 @@ function getSchedule1(reqNeed = false) {
           return response.json();
         })
         .then((userGroup) => {
-          var Group = userGroup.group_name;
+          if (userGroup !== null) {
+            var Group = userGroup.group_name;
+            if (Group !== null) {
 
-          if (!Group || Group === null) {
-            document.getElementById("alerter").style.display = "block";
+              if (localStorage.getItem("userGroup") !== Group) {
+                localStorage.setItem("userGroup", Group);
+              }
+              document.getElementById("gr").innerHTML = Group;
+              document.getElementById("group-name-menu").innerHTML = Group;
 
-            document.getElementById("alerter").innerHTML =
-              `<h1 style="color: #fff;">Неизвестный пользователь</h1>
+              return fetch("https://boost.rorosin.ru/schedule/" + Group);
+              //return fetch("http://127.0.0.1:8000/schedule/" + Group);
+            }
+          }
+          console.log(userGroup)
+          console.log(Group);
+          document.getElementById("alerter").style.display = "block";
+
+          document.getElementById("alerter").innerHTML =
+            `<h1 style="color: #fff;">Неизвестный пользователь</h1>
                 <h3>Вы еще не зарегистрировались в нашей системе!</h3>
                 <h6>Давайте сделаем это сейчас:</h6>
                 <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
                 <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
                 <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-            //
-            loader.style.display = "none";
-            loaderContainer.style.display = "none";
-            assistant.style.display = "block";
-            throw new Error("Group not found!");
-          }
-          if (localStorage.getItem("userGroup") !== Group) {
-            localStorage.setItem("userGroup", Group);
-          }
-          document.getElementById("gr").innerHTML = Group;
-          document.getElementById("group-name-menu").innerHTML = Group;
+          //
+          loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          throw new Error("Group not found!");
 
-          return fetch("https://boost.rorosin.ru/schedule/" + Group);
-          //return fetch("http://127.0.0.1:8000/schedule/" + Group);
         })
         .then((resp) => {
           if (resp && resp.ok) {
@@ -253,7 +258,7 @@ function getSchedule1(reqNeed = false) {
                     rooms[i + 1].classList.add("changing-rooms");
                     rooms[i + 1].style.color = "yellow";
                   }
-                } catch {}
+                } catch { }
               }
             });
 
@@ -660,7 +665,7 @@ function setOtherBtns() {
   var chatInput = document.querySelectorAll(".user-input-btn");
   fetch('ctx.json')
     .then((response) => response.json())
-    .then((data) => { 
+    .then((data) => {
       for (const key in data) {
         if (key !== "Привет!") {
           chatInput.forEach((btn) => {
@@ -683,7 +688,7 @@ function getDays() {
     //console.log(dn);
     //console.log(days[tommorrow.getDay()]);
     //console.log(dn === days[tommorrow.getDay()]);
-    if (dn === dayCall){
+    if (dn === dayCall) {
       //console.log("now");
       var lessons = day.querySelectorAll(".lesson-row");
       newDay = `<div><b>${day.querySelector(".day-name").innerHTML.split("<")[0]}</b>`;
@@ -704,7 +709,7 @@ function getDays() {
       newDay += "</div>";
       ans["tommorrow"] = newDay;
       //console.log(day);
-    } 
+    }
     newWeek += `${day.innerHTML.trim().replace(/<button/gi, '<button style="display:none;" ').replace(/<h3 class="day-name"/gi, '<br><br><br><h3 class="day-name"')}`;
   });
   newWeek += "</div>";
@@ -743,23 +748,23 @@ btnUserIput.forEach((btn) => {
           } else if (btnCtx === "На неделю") {
             answerText = answerText.replace("{week_schedule}", daysData["week"]);
           }
-          
+
 
           var msg = document.getElementById("chat-messages");
           msg.innerHTML += `<div class="from-user"><p>${btnCtx}</p></div>`;
           setTimeout(() => {
             msg.innerHTML += `<div class="from-bot"><p>${answerText}</p></div>`;
           }, 500 * (Math.random() + 1));
-          
+
           btn.style.animation = "popupBtnText .5s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
-          setTimeout(function () {            
+          setTimeout(function () {
             btn.style.display = "none";
           }, 500);
           clickedToAI = true;
         }
         if (clickedToAI) {
           setTimeout(() => {
-          setOtherBtns();
+            setOtherBtns();
           }, 500);
         }
       });
@@ -1029,7 +1034,7 @@ window.addEventListener("DOMContentLoaded", () => {
       tg.enterFullscreen();
       document.querySelector("header").style.paddingTop = "4em";
     }
-  } catch {}
+  } catch { }
   const savedTheme = localStorage.getItem("theme") || "dark";
   if (savedTheme == "light") {
     lightRadio.checked = true;
