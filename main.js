@@ -198,8 +198,8 @@ function getSchedule1(reqNeed = false) {
               //return fetch("http://127.0.0.1:8000/schedule/" + Group);
             }
           }
-          console.log(userGroup)
-          console.log(Group);
+          //console.log(userGroup)
+          //console.log(Group);
           document.getElementById("alerter").style.display = "block";
 
           document.getElementById("alerter").innerHTML =
@@ -458,7 +458,7 @@ function teacherHide(element = document) {
     btnX.addEventListener("click", function () {
       if (!shown) {
         btnX.parentElement.querySelector(".teacher").style.display = "block";
-        btnX.parentElement.querySelector(".teacher").innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="position: absolute; right: 2em; top: 50%; transform: translateY(-50%);" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
+        btnX.parentElement.querySelector(".teacher").innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd();" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
 
         if (!added) {
           var test = btnX.parentElement.querySelector(".room").innerHTML;
@@ -881,13 +881,13 @@ window.addEventListener("DOMContentLoaded", () => {
         dayPeriodMapping[hours] || "0",
       );
   }
-  console.log(dayPeriodMapping[hours]);
+  //console.log(dayPeriodMapping[hours]);
 
   if (hours <= 7 || hours > 20) {
     assistant.innerHTML = `<svg width="81" height="84" viewBox="0 0 81 84" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_i_35_3)">
 <path d="M42.6161 28.4529C45.8169 24.2147 52.1831 24.2147 55.3839 28.4529L59.3814 33.7459C60.3386 35.0134 61.6514 35.9672 63.1527 36.4859L69.4218 38.6521C74.4417 40.3866 76.409 46.4412 73.3673 50.795L69.5687 56.2324C68.6591 57.5345 68.1576 59.0778 68.1282 60.6659L68.0053 67.2976C67.907 72.6078 62.7566 76.3497 57.6759 74.8023L51.3308 72.8699C49.8114 72.4071 48.1886 72.4071 46.6692 72.8699L40.3241 74.8023C35.2434 76.3497 30.093 72.6078 29.9947 67.2976L29.8718 60.6659C29.8424 59.0778 29.3409 57.5345 28.4313 56.2324L24.6327 50.795C21.591 46.4412 23.5583 40.3866 28.5782 38.6521L34.8473 36.4859C36.3486 35.9672 37.6614 35.0134 38.6186 33.7459L42.6161 28.4529Z" fill="url(#paint0_linear_35_3)"/>
-</g>
+</g>  
 <circle cx="40" cy="48.5" r="5" fill="url(#paint1_linear_35_3)"/>
 <circle cx="58" cy="48.5" r="5" fill="url(#paint2_linear_35_3)"/>
 <circle cx="58" cy="48.5" r="4" fill="black"/>
@@ -1047,6 +1047,55 @@ window.addEventListener("DOMContentLoaded", () => {
   if (nowBtn) upsSV();
 });
 
+
+function ShowAdd() {
+  document.getElementById("black-bg").style.animation = "none";
+  document.getElementById("black-bg").style.animation = "opq1 1.5s ease";
+  document.getElementById("black-bg").style.display = "block";
+  openn("event-input", "flex");
+}
+
+function CloseBG() {
+  document.getElementById("black-bg").style.animation = "popupBtnText 1s ease forwards";
+  setTimeout(() => {
+    document.getElementById('black-bg').style.display = 'none';
+  }, 1000); 
+}
+
+function saveTeacherData() {
+  var allTeachers = document.querySelectorAll(".teacher");
+  var TitleEvent = document.getElementById("name-event").value ?? "Безымянный";
+  var TimePeriodEvent = document.getElementById("time-event").value;
+  var ExtraEvent = document.getElementById("extra-event").value;
+
+  if (!TimePeriodEvent) {
+    document.getElementById("save-event-btn").innerHTML = "<b style='color: #000;'>Неверный ввод!</b>";
+    document.getElementById("save-event-btn").style.pointerEvents = "none";
+    document.getElementById("save-event-btn").style.filter = "drop-shadow(0 0 8px #eb7c7cc2)";
+    document.getElementById("save-event-btn").style.background = "linear-gradient(90deg, #ca2525b9, #fd2600a9)";
+    document.getElementById("save-event-btn").style.boxShadow = "none";
+    haptic.notificationOccurred("error");
+    setTimeout(() => {
+      document.getElementById("save-event-btn").innerHTML = "Сохранить";
+      document.getElementById("save-event-btn").style.pointerEvents = "all";
+      document.getElementById("save-event-btn").style.filter = "drop-shadow(0 0 6px #38ca25a6)";
+      document.getElementById("save-event-btn").style.background = "linear-gradient(90deg, #38ca25b9, #1efd00a9)";
+      document.getElementById("save-event-btn").style.boxShadow = "inset 2px 2px 10px #ffffff60, inset -2px -2px 3px rgba(0, 83, 14, 0.4), inset 8px 0 12px #03572362, inset -8px 0 12px #03572362";
+    }, 2000);
+  } else {
+    closeN('event-input'); CloseBG();
+  }
+  allTeachers.forEach((teacher) => {
+    if (teacher.style.display === "block") {
+      if (ExtraEvent) {
+      teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+      } else {
+        teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span></div>`
+      }
+    }
+  });
+}
+
 function toBtoa(str) {
   const utf8Bytes = encodeURIComponent(str).replace(
     /%([0-9A-F]{2})/g,
@@ -1062,7 +1111,7 @@ function toBtoa(str) {
 
 function groupSet0() {
   var D = document.getElementById("group-set").value.trim();
-  console.log(D);
+  //console.log(D);
   var erDisplay = document.getElementById("errs-reg");
   erDisplay.style = "font-weight:600;color:red";
   if (D.length < 4 || D.length > 13) {

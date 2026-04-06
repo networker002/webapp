@@ -38,6 +38,7 @@
     --day-card-bg: #4f618738;
     --menu-liq-glass: blur(10px);
     --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
+    --event-color: linear-gradient(90deg, #15c8ff, #ffffff);
 }
 
 [data-theme="light"] {
@@ -75,6 +76,7 @@
     --day-card-bg: #c2d5ff70;
     --menu-liq-glass: blur(18px);
     --chat-bg: linear-gradient(to bottom, rgba(255, 255, 255, .15), rgba(255, 255, 255, . 2));
+    --event-color: linear-gradient(90deg, #00789c, #0cd1a0);
 }
 
 @font-face {
@@ -1144,6 +1146,118 @@ h6.skeleton {
     }
 }
 
+.input-svg {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    transition: all .1s;
+    opacity: 1;
+    color: inherit;
+
+    &:active {
+        scale: .9;
+        opacity: .7;
+    }
+}
+
+#event-input {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    align-items: center;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2001;
+    box-sizing: border-box;
+    user-select: none;
+
+    h4 {
+        color: transparent;
+        letter-spacing: 1px;
+        background: var(--event-color) text;    
+    }
+
+    input, textarea{
+        margin-top: 1em;
+        border-radius: 12px;
+        padding: 6px;
+        outline: none;
+        border: none;
+        background: var(--accent-bg);
+        color: var(--over-color);
+        letter-spacing: 1px;
+        overflow: hidden !important;
+        /*backdrop-filter: blur(6px);*/
+
+        &::placeholder {
+            color: #000;
+            letter-spacing: 1px;
+        }
+    }
+
+    label > div {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1em;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    button {
+        padding: 4px;
+        border-radius: 8px;
+        border: none !important;
+        letter-spacing: 1px;
+        transition: all .1s;
+
+        &:active {
+            scale: .9;
+        }
+    }
+}
+
+#save-event-btn {
+    background: linear-gradient(90deg, #38ca25b9, #1efd00a9);
+    box-shadow: inset 2px 2px 10px #ffffff60, inset -2px -2px 3px rgba(0, 83, 14, 0.4), inset 8px 0 12px #03572362, inset -8px 0 12px #03572362;
+    filter: drop-shadow(0 0 6px #38ca25a6);
+    color: var(--menu-color);
+
+    &:active {
+        box-shadow: inset 2px 2px 8px #00000021, inset -2px -2px 3px rgba(0, 83, 14, 0.459), inset 10px 0 12px #0357237a, inset -10px 0 12px #0357237a;
+        filter: drop-shadow(0 0 6px #12460db7) brightness(90%);
+    }
+}
+
+#cancel-event-btn {
+    background: rgba(128, 128, 128, 0.6);
+    box-shadow: inset 4px 4px 6px #00000027;
+    font-weight: 100;
+
+    &:active {
+        background: rgba(105, 105, 105, 0.6);
+    }
+}
+
+#black-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1999;
+    background: linear-gradient(0deg, #000000af, #00000067);
+    min-width: 100vw;
+    min-height: 100vh;
+    backdrop-filter: blur(3px);
+    animation: opq1 2s ease;
+    overflow: hidden !important;
+    display: none;
+}
+
+
 
 .chat-input {
     display: flex;
@@ -1173,6 +1287,43 @@ h6.skeleton {
         }
     }
 }
+
+
+.custom-events {
+    position: relative;
+    margin-top: .5em;
+    display: flex;
+    flex-direction: column;
+    gap: .25em;
+    padding: .2em;
+    padding-left: 1em;
+    background: linear-gradient(90deg,  rgba(255, 255, 255, .02),  rgba(255, 255, 255, .002));
+    
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 100%;
+        width: .4em;
+        background: var(--room-green);
+        border-radius: .5em 0 0 .5em;
+    }
+
+}
+
+.del-event {
+    color: rgba(255, 0, 0, 0.5);
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    transform:translateY(-50%);
+    border: none;
+    padding: 6px;
+    border-radius: 12px;
+}
+
 
 @keyframes popupBtnText {
     100% {

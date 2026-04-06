@@ -55,6 +55,21 @@
         <h2>Обновляем данные</h2>
     </div>
 
+    <div id="black-bg"></div>
+
+    <div id="event-input">
+        <label>
+            <h4>Добавление события</h4><br>
+            <input type="text" placeholder="Название" id="name-event"><br><br>
+            <span>Время</span><br><input type="time" style="margin-top: .5em;" id="time-event"><br>
+            <textarea placeholder="Дополнительно" style="margin-top: 2em;" id="extra-event"></textarea><br>
+            <div>
+            <button id="save-event-btn" onclick="saveTeacherData()">Сохранить</button>
+            <button id="cancel-event-btn" onclick="closeN('event-input'); CloseBG();">Отмена</button>
+            </div>
+        </label>
+    </div>
+
     <header>
         <h1>Расписание занятий</h1>
         <h5 id="date-time"></h5>
