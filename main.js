@@ -187,7 +187,7 @@ function getSchedule1(reqNeed = false) {
         .then((userGroup) => {
           var Group = userGroup.group_name;
 
-          if (!Group || Group.toUpperCase() === "NULL") {
+          if (!Group || Group === null) {
             document.getElementById("alerter").style.display = "block";
             Group = "Не указана";
             throw new Error("Group not found!");
