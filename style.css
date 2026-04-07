@@ -146,6 +146,7 @@ header {
     transition: all .2s ease;
     top: 0;
     z-index: 999;
+    padding-top: var(--tg-content-safe-area-top);
 }
 
 header.scrolling {
@@ -259,10 +260,21 @@ header.scrolling {
         }
     }
 
+    .tname {
+        font-weight: 500;
+
+         &::before {
+            position: absolute;
+            content: "ФИО преподавателя";
+            top: 0;
+            color: var(--tg-theme-hint-color);
+            opacity: .9;
+        }
+    }
 
     .teacher {
         font-family: "DejaVuSans";
-        font-weight: 500;
+        
         word-wrap: balance;
         padding-top: 1.2em;
         margin-top: 1.5em;
@@ -270,13 +282,7 @@ header.scrolling {
         transition: all 2s;
         animation: raise 0.4s ease forwards;
 
-        &::before {
-            position: absolute;
-            content: "ФИО преподавателя";
-            top: 0;
-
-            opacity: .6;
-        }
+       
 
         &::after {
             position: absolute;
@@ -312,6 +318,17 @@ header.scrolling {
 }
 
 .time {
+    color: var(--time-color);
+    letter-spacing: 1px;
+    font-family: monospace;
+    font-weight: 200;
+    font-size: larger;
+    padding-top: .2em;
+    padding-bottom: .25em;
+    text-shadow: 1px 2px 4px var(--text-shadow-c);
+}
+
+.time1 {
     color: var(--time-color);
     letter-spacing: 1px;
     font-family: monospace;
@@ -906,6 +923,7 @@ h4>input {
     border: none;
     background: var(--accent);
     box-shadow: 2px 2px 6px black;
+    color: var(--tg-theme-button-text-color);
 }
 
 #sk {
@@ -1067,6 +1085,7 @@ h6.skeleton {
     align-items: center;
     padding-bottom: 1em;
     background-color: var(--tg-theme-header-bg-color);
+    padding-top: var(--tg-content-safe-area-top);
 
     h1 {
         color: var(--tg-theme-button-color);
@@ -1387,6 +1406,27 @@ h6.skeleton {
     border: none;
     padding: 6px;
     border-radius: 12px;
+    transition: all .05s;
+
+    &:active {
+        transform: translateY(-50%) rotate(30deg) scale(.95);
+    }
+}
+
+#nowtimeset1 {
+    position: absolute;
+    right: 2em; 
+    top: 50%;
+    transform:translateY(-12%);
+    background: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+    padding: 6px;
+    border-radius: 12px;
+    transition: all .1s;
+
+    &:active {
+        scale: .9;
+    }
 }
 
 

@@ -263,6 +263,7 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
+            teacherHide();
           }
         })
         .catch((err) => {
@@ -346,6 +347,9 @@ function dayParseOnline() {
       lessonH.forEach((ls) => {
         const times = ls.querySelectorAll(".time");
         times.forEach((timee) => {
+          try{
+          if (timee === undefined) {console.log(1)}
+          else {
           timeeText = timee.innerHTML.toString().trim();
 
           const timeNow = new Date();
@@ -367,6 +371,10 @@ function dayParseOnline() {
           } else {
             timee.classList.remove("now");
           }
+        }}
+        catch {
+
+        }
         });
       });
     }
@@ -438,30 +446,50 @@ function cleanDaySchedule(dayElement) {
                 <h6 class="time">${l.time}</h6>
                 <button class="list-btn"></button>
                 <span class="subject">${l.name}</span>${roomsDisplay}
-                <h5 class="teacher">${l.teacher}</h5>
+                <div class="teacher"><h5 class="tname">${l.teacher}</h5></div>
             </div>
         `;
   });
 
   dayElement.innerHTML = newHTML;
 
-  teacherHide(dayElement);
+  teacherHide(dayElement, false);
 }
 
-function teacherHide(element = document) {
+function teacherHide(element = document, del=true) {
+  let notAdd = true;
+  if (del) {
+    localStorage.setItem("added-teacher", "false");
+   }
   var btnsList = element.querySelectorAll(".list-btn");
+  var eventsAll = document.querySelectorAll(".custom-events");
+  if (eventsAll) {
+  eventsAll.forEach((ev) => {
+    
+    if (ev) {
+    ev.style.display = 'none';
+    }
+  });
+} 
+  var cDataTeacher = container.querySelectorAll(".teacher svg");
+  
+  if (cDataTeacher.length === 0) {
+    notAdd = false;
+  }
   btnsList.forEach((btnX) => {
+    
     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+  
     btnX.parentElement.querySelector(".teacher").style.display = "none";
-    let shown = false;
-    let added = false;
-    btnX.addEventListener("click", function () {
-      if (!shown) {
-        btnX.parentElement.querySelector(".teacher").style.display = "block";
-        btnX.parentElement.querySelector(".teacher").innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd();" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
 
-        if (!added) {
-          var test = btnX.parentElement.querySelector(".room").innerHTML;
+    var newUUID = SetUUID();
+    btnX.parentElement.querySelector(".teacher").id = newUUID;
+    let shown = false;
+    let addedNotesBtn = false;
+    console.log("working...");
+    if (localStorage.getItem("added-teacher") !== "true") {
+      console.log("not true! adding rooms");
+      var test = btnX.parentElement.querySelector(".room").innerHTML;
           if (test) {
             if (
               btnX.parentElement.querySelector(".room").style.color === "yellow"
@@ -484,40 +512,77 @@ function teacherHide(element = document) {
               let corpus = Number(test[0]);
               let floor = Number(test[1]);
               let room = Number(test.slice(2, 4));
-              btnX.parentElement.querySelector(".teacher").innerHTML +=
+              if (!notAdd) {btnX.parentElement.querySelector(".teacher").innerHTML +=
                 `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
-              added = true;
+              }
             } else if (test.length > 6 && test[1] !== "Н") {
-              tests = test.split("/", 2);
+              let tests = test.split("/", 2);
               tests.forEach((test) => {
                 test = test.replace(/[()]/g, "");
                 let corpus = Number(test[0]);
                 let floor = Number(test[1]);
                 let room = Number(test.slice(2, 4));
-                btnX.parentElement.querySelector(".teacher").innerHTML +=
+                if (!notAdd) { btnX.parentElement.querySelector(".teacher").innerHTML +=
                   `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500;">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
-                added = true;
+                }
               });
             }
           }
-          if (btnX.parentElement.querySelector(".time.now")) {
+          if (btnX.parentElement.querySelector(".time.now" && !notAdd)) {
             btnX.parentElement
               .querySelector(".time.now")
               .parentElement.querySelector(".teacher").innerHTML +=
               `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
           }
-        }
+          
+    }
+
+    btnX.addEventListener("click", function () {
+      let events = btnX.parentElement.querySelectorAll(".custom-events");
+
+      if (events) {
+          
+            events.forEach((e) => {
+              console.log(e);
+              if (e) {
+                e.style.display = "block";
+              }
+            });
+    }
+      
+
+      if (!shown) {
+        btnX.parentElement.querySelector(".teacher").style.display = "block";
+        
+        if (!addedNotesBtn) {
+          if (btnX.parentElement.querySelector(".teacher").querySelector(".input-svg")) {
+            btnX.parentElement.querySelector(".teacher").querySelector(".input-svg").remove();
+          }
+          btnX.parentElement.querySelector(".teacher").innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd('${newUUID}');" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
+        addedNotesBtn = true;
+        
+
+      }
 
         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
         shown = true;
       } else {
         btnX.parentElement.querySelector(".teacher").style.display = "none";
-
+        if (events) {
+          
+            events.forEach((e) => {
+              console.log(e);
+              if (e) {
+                e.style.display = "none";
+              }
+            });
+    }
         btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
         shown = false;
       }
     });
   });
+  localStorage.setItem("added-teacher", "true");
 }
 
 function hideRoomShown() {
@@ -555,6 +620,7 @@ function upsSV() {
       found = true;
       ch = false;
       lm.set(de, ch);
+      document.querySelectorAll(".teacher").forEach((t)=>t.style.display = 'none');
       document.getElementById("empty-container").style.display = "none";
       if (dayName === days[n]) {
         dayParseOnline();
@@ -1048,28 +1114,79 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function ShowAdd() {
+function ShowAdd(id) {
+  console.log("showing popup");
   document.getElementById("black-bg").style.animation = "none";
   document.getElementById("black-bg").style.animation = "opq1 1.5s ease";
   document.getElementById("black-bg").style.display = "block";
   openn("event-input", "flex");
-}
+  document.getElementById("event-input").setAttribute("data-uuid", id);}
 
 function CloseBG() {
   document.getElementById("black-bg").style.animation = "popupBtnText 1s ease forwards";
   setTimeout(() => {
     document.getElementById('black-bg').style.display = 'none';
+    document.getElementById("event-input").removeAttribute("data-uuid");
   }, 1000); 
 }
 
+function SetUUID() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0;
+    var v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function DelEvent(el) {
+  const eventElement = el.parentElement;
+
+  setTimeout(function() {
+    eventElement.remove();
+
+  console.log("cleaned");
+  //console.log(container.querySelector(el));
+  
+  localStorage.setItem('schedule', container.innerHTML);
+  }, 100);
+
+  haptic.notificationOccurred("success");
+}
+
 function saveTeacherData() {
+  console.log("saving data");
   var errR = false;
   var allTeachers = document.querySelectorAll(".teacher");
+  var myElement = document.getElementById("event-input");
   var TitleEvent = document.getElementById("name-event").value ?? "Безымянный";
   var TimePeriodEvent = document.getElementById("time-event").value;
   var ExtraEvent = document.getElementById("extra-event").value;
+  var UUID = myElement.getAttribute("data-uuid");
+  var UTeacher = document.getElementById(UUID);
 
-  if (!TimePeriodEvent) {
+  function escapeX(string) {
+    var htmlEscapes = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;'};
+ 
+    return string.replace(/[&<>"']/g, function(match) {
+        return htmlEscapes[match];
+    });
+};
+function testLetters(str) {
+  return /[a-zA-Z]/.test(str);
+}
+
+  TitleEvent = escapeX(TitleEvent);
+  ExtraEvent = escapeX(ExtraEvent);
+  TimePeriodEvent = escapeX(TimePeriodEvent);
+
+  if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
     document.getElementById("save-event-btn").innerHTML = "<b style='color: #000;'>Неверный ввод!</b>";
     document.getElementById("save-event-btn").style.pointerEvents = "none";
     document.getElementById("save-event-btn").style.filter = "drop-shadow(0 0 8px #eb7c7cc2)";
@@ -1087,15 +1204,31 @@ function saveTeacherData() {
     closeN('event-input'); CloseBG();
   }
   if (!errR) {
-  allTeachers.forEach((teacher) => {
-    if (teacher.style.display === "block") {
-      if (ExtraEvent) {
-      teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+  
+    if (ExtraEvent) {
+         UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
       } else {
-        teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-      }
-    }
-  });
+          UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+         }
+        
+      document.getElementById("event-input").removeAttribute("data-uuid");
+      localStorage.setItem("schedule", container.innerHTML);
+  // allTeachers.forEach((teacher) => {
+  //   if (teacher.style.display === "block") {
+  //     if (ExtraEvent) {
+  //     teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+  //     } else {
+  //       teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+  //     }
+  //   }
+  // });
+  // if (TeacherOnly.style.display === "block") {
+  //        if (ExtraEvent) {
+  //        TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+  //        } else {
+  //         TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+  //        }
+  //      }
 }
 }
 

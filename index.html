@@ -68,9 +68,9 @@
             
          </label>
          
-         <div>
+         <div style="position: relative;">
          <span>Время</span>
-            <input type="text" id="time-event" maxlength="11" min="4"><br></div>
+            <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00"><b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ' : ' + new Date().getMinutes();">now</b><br></div>
             
             <div>
             <span>Дополнительно</span>
@@ -363,7 +363,7 @@
 
         <div class="chat">
             <div class="chat-header">
-              <h1>Starry Help Chat v1</h1>  
+              <h1>Starry Help Chat</h1>  
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Gridicons by Automattic - https://github.com/Automattic/gridicons/blob/trunk/LICENSE.md --><path fill="currentColor" d="m17.705 7.705l-1.41-1.41L12 10.59L7.705 6.295l-1.41 1.41L10.59 12l-4.295 4.295l1.41 1.41L12 13.41l4.295 4.295l1.41-1.41L13.41 12z"/></svg>
             </div>
             <div class="chat-content">
