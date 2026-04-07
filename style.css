@@ -572,6 +572,7 @@ header.scrolling {
     z-index: 2000;
     display: none;
     transition: opacity .5s;
+    overflow: hidden;
 
     &::before {
         position: absolute;
@@ -1462,6 +1463,30 @@ h6.skeleton {
     }
 }
 
+#canvas  {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    filter: drop-shadow(0 0 4px #ffffff);
+    transition: all .3s ease;
+    animation: glow-canvas 8s infinite;
+    opacity: .5;
+}
+
+@keyframes glow-canvas {
+    0% {
+        filter: drop-shadow(0 0 4px #ffffff);
+    }
+    50% {
+        filter: drop-shadow(0 0 8px #fffb00);
+        opacity: 1;
+    }
+    100% {
+        filter: drop-shadow(0 0 4px #ffffff);
+    }
+}
 
 @keyframes popupBtnText {
     100% {
