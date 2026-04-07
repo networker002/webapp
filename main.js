@@ -1098,8 +1098,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     else {
       tg.requestFullscreen();
-      document.querySelector("header").style.paddingTop = "var(--tg-content-safe-area-top)";
-      document.querySelector(".chat-header").style.paddingTop = "var(--tg-content-safe-area-top)";
     }
   } catch { }
   const savedTheme = localStorage.getItem("theme") || "dark";
