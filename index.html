@@ -57,18 +57,32 @@
 
     <div id="black-bg"></div>
 
+
     <div id="event-input">
         <label>
             <h4>Добавление события</h4><br>
-            <input type="text" placeholder="Название" id="name-event"><br><br>
-            <span>Время</span><br><input type="time" style="margin-top: .5em;" id="time-event"><br>
-            <textarea placeholder="Дополнительно" style="margin-top: 2em;" id="extra-event"></textarea><br>
             <div>
+            <span>Название</span>
+            <input type="text" placeholder="Как назовём событие?" id="name-event"><br>
+            </div>
+            
+         </label>
+         
+         <div>
+         <span>Время</span>
+            <input type="text" id="time-event" maxlength="11" min="4"><br></div>
+            
+            <div>
+            <span>Дополнительно</span>
+            <textarea placeholder="Заметки..." id="extra-event"></textarea><br></div>
+            
+            <div class="btbtns">
             <button id="save-event-btn" onclick="saveTeacherData()">Сохранить</button>
             <button id="cancel-event-btn" onclick="closeN('event-input'); CloseBG();">Отмена</button>
             </div>
-        </label>
+        
     </div>
+    
 
     <header>
         <h1>Расписание занятий</h1>
@@ -151,7 +165,7 @@
                     </defs>
                 </svg>
             </div>
-            
+
 
             <div id="gloomy-asistant">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
