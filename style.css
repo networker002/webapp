@@ -1110,8 +1110,8 @@ h6.skeleton {
 
     p { 
         background: var(--tg-theme-bg-color);
-        padding: .3em 1em;
-        border-radius: 12px;
+        padding: 8px;
+        border-radius: 8px;
         width: fit-content;
     }
 }
@@ -1119,6 +1119,7 @@ h6.skeleton {
 .from-user {
     align-self: flex-end;
     text-align: right;
+
 
     &::before {
         content: "You";
