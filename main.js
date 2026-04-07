@@ -1409,6 +1409,7 @@ assistant.addEventListener("click", function () {
 
 window.addEventListener("DOMContentLoaded", function () {
   Chat.style.display = "none";
+  document.querySelector(".menu-display img").src = tg.initDataUnsafe.user.photo_url;
 });
 
 const Header = document.querySelector("header");

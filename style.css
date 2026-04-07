@@ -146,7 +146,7 @@ header {
     transition: all .2s ease;
     top: 0;
     z-index: 999;
-    padding-top: var(--tg-content-safe-area-top);
+    padding-top: var(--tg-safe-area-inset-top);
 }
 
 header.scrolling {
@@ -251,7 +251,7 @@ header.scrolling {
         user-select: none;
         color: var(--header-glass);
         opacity: var(--btn-opacity);
-        filter: drop-shadow(4px 8px 4px var(--anti-super-shadows));
+        filter: drop-shadow(4px 4px 4px var(--anti-super-shadows));
         outline: none !important;
 
         &:active {
@@ -593,6 +593,13 @@ header.scrolling {
         &:active {
             transform: scale(.9);
         }
+    }
+
+    img {
+        align-self: center;
+        border-radius: 50%;
+        border: none;
+        user-select: none;
     }
 
     #close-btn-m {
@@ -1085,7 +1092,7 @@ h6.skeleton {
     align-items: center;
     padding-bottom: 1em;
     background-color: var(--tg-theme-header-bg-color);
-    padding-top: var(--tg-content-safe-area-top);
+    padding-top: var(--tg-safe-area-inset-top);
 
     h1 {
         color: var(--tg-theme-button-color);
