@@ -1080,9 +1080,8 @@ function saveTeacherData() {
     setTimeout(() => {
       document.getElementById("save-event-btn").innerHTML = "Сохранить";
       document.getElementById("save-event-btn").style.pointerEvents = "all";
-      document.getElementById("save-event-btn").style.filter = "drop-shadow(0 0 6px #38ca25a6)";
-      document.getElementById("save-event-btn").style.background = "linear-gradient(90deg, #38ca25b9, #1efd00a9)";
-      document.getElementById("save-event-btn").style.boxShadow = "inset 2px 2px 10px #ffffff60, inset -2px -2px 3px rgba(0, 83, 14, 0.4), inset 8px 0 12px #03572362, inset -8px 0 12px #03572362";
+      document.getElementById("save-event-btn").style.filter = "none";
+      document.getElementById("save-event-btn").style.background = "#fff";      document.getElementById("save-event-btn").style.boxShadow = "none";
     }, 2000);
   } else {
     closeN('event-input'); CloseBG();
