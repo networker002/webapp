@@ -387,7 +387,7 @@ header.scrolling {
     }
 }
 
-keyframes activeNoScale {
+@keyframes activeNoScale {
     50% {
         text-shadow: 0 0 .4em #86ff6a44;
     }
@@ -1403,7 +1403,6 @@ h6.skeleton {
         border-radius: 24px;
         letter-spacing: 2px;
         color: var(--tg-theme-button-text-color);
-        filter: drop-shadow(0 4px .75em #ffffff3f);
         transition: transform .3s;
         font-family: "DejaVuSans";
         outline: none !important;

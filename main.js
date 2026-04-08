@@ -1120,6 +1120,13 @@ window.addEventListener("DOMContentLoaded", () => {
                 </svg>`
   }
   try {
+    tg.setBackgroundColor(
+      document.body.computedStyleMap().get("--tg-theme-bg-color")[0],
+    )
+    tg.setHeaderColor(
+      document.body.computedStyleMap().get("--header-bg-color")[0],
+    )
+
     if (tg.platform === "tdesktop") {
       tg.exitFullscreen()
     } else {
@@ -1447,14 +1454,16 @@ window.addEventListener("DOMContentLoaded", function () {
 
 const Header = document.querySelector("header")
 window.addEventListener("scroll", function () {
-  if (window.scrollY > 50) {
-    setTimeout(function () {
-      Header.classList.add("scrolling")
-    }, 100)
-  } else {
-    setTimeout(function () {
-      Header.classList.remove("scrolling")
-    }, 100)
+  if (tg.platform !== "tdesktop") {
+    if (window.scrollY > 50) {
+      setTimeout(function () {
+        Header.classList.add("scrolling")
+      }, 100)
+    } else {
+      setTimeout(function () {
+        Header.classList.remove("scrolling")
+      }, 100)
+    }
   }
 })
 
