@@ -85,7 +85,6 @@
 }
 
 body {
-    min-height: 100vh;
     background: var(--main-bg-color);
     color: var(--over-color);
     scroll-behavior: smooth;
