@@ -1442,8 +1442,8 @@ assistant.addEventListener("click", function () {
   tg.BackButton.show()
   tg.BackButton.onClick = function () {
     Chat.style.display = "none"
+    tg.BackButton.hide()
   }
-  tg.BackButton.hide()
 })
 
 window.addEventListener("DOMContentLoaded", function () {
