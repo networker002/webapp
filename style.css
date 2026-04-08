@@ -388,9 +388,9 @@ header.scrolling {
     }
 }
 
-@keyframes activeNoScale {
+keyframes activeNoScale {
     50% {
-        text-shadow: 0 0 .4em #9bff6abc;
+        text-shadow: 0 0 .4em #86ff6a44;
     }
 }
 
