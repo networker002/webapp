@@ -1331,8 +1331,8 @@ h6.skeleton {
 }
 
 #cancel-event-btn {
-    color: var(--tg-theme-text-color);
-    background: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color) !important;
+    background: var(--tg-theme-bg-color) !important;
     box-shadow: none;
     font-weight: 500;
 }
@@ -1408,7 +1408,7 @@ h6.skeleton {
 }
 
 .del-event {
-    color: rgba(255, 0, 0, 0.5);
+    color: var(--tg-theme-destructive-text-color);
     position: absolute;
     right: 1em;
     top: 50%;
@@ -1425,7 +1425,7 @@ h6.skeleton {
 
 #nowtimeset1 {
     position: absolute;
-    right: .7em;
+    right: 1em;
     top: 50%;
     transform: translateY(-5%);
     background: var(--tg-theme-button-color);
