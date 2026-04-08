@@ -1223,19 +1223,16 @@ function saveTeacherData() {
 
   if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
     document.getElementById("save-event-btn").innerHTML =
-      "<b style='color: #000;'>Неверный ввод!</b>";
+      "<b>Неверный ввод!</b>";
     document.getElementById("save-event-btn").style.pointerEvents = "none";
-    document.getElementById("save-event-btn").style.filter =
-      "drop-shadow(0 0 8px #eb7c7cc2)";
     document.getElementById("save-event-btn").style.background =
-      "linear-gradient(90deg, #ca2525b9, #fd2600a9)";
+      "var(--tg-theme-destructive-text-color)";
     document.getElementById("save-event-btn").style.boxShadow = "none";
     haptic.notificationOccurred("error");
     errR = true;
     setTimeout(() => {
       document.getElementById("save-event-btn").innerHTML = "Сохранить";
       document.getElementById("save-event-btn").style.pointerEvents = "all";
-      document.getElementById("save-event-btn").style.filter = "none";
       document.getElementById("save-event-btn").style.background = "#fff";
       document.getElementById("save-event-btn").style.boxShadow = "none";
     }, 2000);
