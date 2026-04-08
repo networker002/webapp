@@ -226,7 +226,7 @@ header.scrolling {
         flex-direction: row-reverse;
         justify-content: center;
         margin: auto;
-        gap: .25em;
+        gap: .4em;
 
         svg {
             margin: auto 0;
