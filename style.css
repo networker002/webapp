@@ -1130,6 +1130,7 @@ h6.skeleton {
         background: none;
         border-radius: 50%;
         padding: 4px;
+        margin-top: var(--tg-safe-area-inset-top);
         position: absolute;
         right: 50%;
         transform: translateX(50%);
