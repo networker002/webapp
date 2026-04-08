@@ -1,4 +1,5 @@
 //PERSONAL ASSISTANT INITIALISATION
+userId = 946602610
 
 const assistants = document.querySelector(".assistant")
 let assistant = document.getElementById("default-assistant")

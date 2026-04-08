@@ -1155,7 +1155,7 @@ h6.skeleton {
     overflow-y: auto !important;
 
     &::-webkit-scrollbar {
-        width: 8px;
+        width: .5em;
         cursor: pointer;
         background: transparent;
         color: #2a406e;
@@ -1163,8 +1163,8 @@ h6.skeleton {
 
     p { 
         background: var(--tg-theme-bg-color);
-        padding: 8px;
-        border-radius: 8px;
+        padding: .5em;
+        border-radius: 1em;
         width: fit-content;
     }
 }
@@ -1182,6 +1182,10 @@ h6.skeleton {
         letter-spacing: 1px;
         text-align: start;
     }
+
+    p {
+        border-top-right-radius: 0!important;
+    }
 }
 
 .from-bot {
@@ -1197,6 +1201,10 @@ h6.skeleton {
         opacity: 0.8;
         letter-spacing: 1px;
         text-align: end;
+    }
+    
+    p {
+        border-top-left-radius: 0 !important;
     }
 }
 
