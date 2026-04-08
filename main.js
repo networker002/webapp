@@ -1446,6 +1446,6 @@ function draw() {
   
   ctx.fill();
 }
-if (new Date().getHours() >= 7 || new Date().getHours() <= 20) {
+if (new Date().getHours() <= 7 || new Date().getHours() >= 20) {
   draw();
 }
