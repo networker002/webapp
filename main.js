@@ -504,7 +504,7 @@ function teacherHide(element = document, del=true) {
             } else if (test.length > 6 && test[1] !== "Н") {
               let tests = test.split("/", 2);
               tests.forEach((test) => {
-                test = test.replace(/[()]/g, "");
+                test = test.replace(/[()]/g, "").trim();
                 let corpus = Number(test[0]);
                 let floor = Number(test[1]);
                 let room = Number(test.slice(2, 4));
