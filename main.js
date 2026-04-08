@@ -626,7 +626,7 @@ function upsSV() {
         dayParseOnline();
       }
 
-      if (dayName === days[tommorrow.getDay()] && rr) {
+      if (dayName === days[tommorrow.getDay()] && rr && new Date().getHours() > 7) {
         stopAll();
         message.style.display = "block";
         assistant.style.transform = "translate(0%, -50%)";
