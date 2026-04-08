@@ -1433,12 +1433,7 @@ function groupSet0() {
   }
 }
 
-var CloseChatButton = document.querySelector(".chat-header svg");
 var Chat = document.querySelector(".chat");
-
-CloseChatButton.addEventListener("click", function () {
-  Chat.style.display = "none";
-});
 
 assistant.addEventListener("click", function () {
   Chat.style.display = "flex";

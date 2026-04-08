@@ -1125,20 +1125,6 @@ h6.skeleton {
         letter-spacing: 1px;
         padding-top: 2em;
     }
-
-    svg {
-        background: none;
-        border-radius: 50%;
-        padding: 4px;
-        margin-top: var(--tg-safe-area-inset-top);
-        position: absolute;
-        right: 50%;
-        transform: translateX(50%);
-        top: 2em;
-        cursor: pointer;
-        user-select: none;
-    }
-
 }
 
 
