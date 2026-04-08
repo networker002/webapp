@@ -456,6 +456,8 @@ function cleanDaySchedule(dayElement) {
   teacherHide(dayElement, false);
 }
 
+
+
 function teacherHide(element = document, del=true) {
   let notAdd = true;
   if (del) {
@@ -465,21 +467,21 @@ function teacherHide(element = document, del=true) {
   var eventsAll = document.querySelectorAll(".custom-events");
   if (eventsAll) {
   eventsAll.forEach((ev) => {
-    
+
     if (ev) {
     ev.style.display = 'none';
     }
   });
 } 
   var cDataTeacher = container.querySelectorAll(".teacher svg");
-  
+
   if (cDataTeacher.length === 0) {
     notAdd = false;
   }
   btnsList.forEach((btnX) => {
-    
+
     btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-  
+
     btnX.parentElement.querySelector(".teacher").style.display = "none";
 
     var newUUID = SetUUID();
@@ -490,23 +492,7 @@ function teacherHide(element = document, del=true) {
     if (localStorage.getItem("added-teacher") !== "true") {
       console.log("not true! adding rooms");
       var test = btnX.parentElement.querySelector(".room").innerHTML;
-          if (test) {
-            if (
-              btnX.parentElement.querySelector(".room").style.color === "yellow"
-            ) {
-              if (!localStorage.getItem("roomShown")) {
-                localStorage.setItem("roomShown", false);
-              }
-              if (localStorage.getItem("roomShown") === "false") {
-                var message = document.getElementById("ctx-assistant-say");
-                stopAll();
-                message.style.display = "block";
-                message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);">ОК</button></div>`;
-                setTimeout(function () {
-                  message.style.display = "none";
-                }, 10000);
-              }
-            }
+          if (test){
             if (test.length < 7) {
               test = test.replace(/[()]/g, "");
               let corpus = Number(test[0]);
@@ -528,20 +514,40 @@ function teacherHide(element = document, del=true) {
               });
             }
           }
-          if (btnX.parentElement.querySelector(".time.now" && !notAdd)) {
+          if (btnX.parentElement.querySelector(".time.now") && !notAdd) {
             btnX.parentElement
               .querySelector(".time.now")
               .parentElement.querySelector(".teacher").innerHTML +=
               `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
           }
-          
+
     }
 
     btnX.addEventListener("click", function () {
+    var test = btnX.parentElement.querySelector(".room").innerHTML;
+    if (test) {
+            if (
+          btnX.parentElement.querySelector(".room").classList.contains("changing-rooms")
+
+            ) {
+              if (!localStorage.getItem("roomShown")) {
+                localStorage.setItem("roomShown", false);
+              }
+              if (localStorage.getItem("roomShown") === "false") {
+                var message = document.getElementById("ctx-assistant-say");
+                stopAll();
+                message.style.display = "block";
+                message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);">ОК</button></div>`;
+                setTimeout(function () {
+                  message.style.display = "none";
+                }, 10000);
+              }
+            }
+        }
       let events = btnX.parentElement.querySelectorAll(".custom-events");
 
       if (events) {
-          
+
             events.forEach((e) => {
               console.log(e);
               if (e) {
@@ -549,18 +555,18 @@ function teacherHide(element = document, del=true) {
               }
             });
     }
-      
+
 
       if (!shown) {
         btnX.parentElement.querySelector(".teacher").style.display = "block";
-        
+
         if (!addedNotesBtn) {
           if (btnX.parentElement.querySelector(".teacher").querySelector(".input-svg")) {
             btnX.parentElement.querySelector(".teacher").querySelector(".input-svg").remove();
           }
           btnX.parentElement.querySelector(".teacher").innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd('${newUUID}');" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
         addedNotesBtn = true;
-        
+
 
       }
 
@@ -569,7 +575,7 @@ function teacherHide(element = document, del=true) {
       } else {
         btnX.parentElement.querySelector(".teacher").style.display = "none";
         if (events) {
-          
+
             events.forEach((e) => {
               console.log(e);
               if (e) {
@@ -1132,7 +1138,7 @@ function SetUUID() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  
+
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0;
     var v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -1148,7 +1154,7 @@ function DelEvent(el) {
 
   console.log("cleaned");
   //console.log(container.querySelector(el));
-  
+
   localStorage.setItem('schedule', container.innerHTML);
   }, 100);
 
@@ -1171,7 +1177,7 @@ function saveTeacherData() {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;'};
- 
+
     return string.replace(/[&<>"']/g, function(match) {
         return htmlEscapes[match];
     });
@@ -1202,13 +1208,13 @@ function testLetters(str) {
     closeN('event-input'); CloseBG();
   }
   if (!errR) {
-  
+
     if (ExtraEvent) {
          UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
       } else {
           UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
          }
-        
+
       document.getElementById("event-input").removeAttribute("data-uuid");
       localStorage.setItem("schedule", container.innerHTML);
   // allTeachers.forEach((teacher) => {
@@ -1430,12 +1436,12 @@ const ctx = canvas.getContext("2d");
 
 function draw() {
 
-  
+
   ctx.fillStyle = "rgba(250, 252, 255, 0.1)";
   ctx.beginPath();
-  
+
   var numPoints = 400;
-  
+
   for (var i = 0; i < numPoints; i++) {
     ctx.fillStyle = "rgba(250, 252, 255, " + Math.random()  +")";
     var x = Math.random() * canvas.width;
@@ -1443,7 +1449,7 @@ function draw() {
     ctx.moveTo(x, y);
     ctx.arc(x, y, 2, 0, 2 * Math.PI);
   }
-  
+
   ctx.fill();
 }
 if (new Date().getHours() <= 7 || new Date().getHours() >= 20) {
