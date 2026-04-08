@@ -146,7 +146,7 @@ header {
     transition: all .2s ease;
     top: 0;
     z-index: 999;
-    padding-top: var(--tg-safe-area-inset-top);
+    padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
 }
 
 header.scrolling {
