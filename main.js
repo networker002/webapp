@@ -536,7 +536,7 @@ function teacherHide(element = document, del = true) {
             var message = document.getElementById("ctx-assistant-say");
             stopAll();
             message.style.display = "block";
-            message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" style="padding: 5px 10px; border-radius: 24px; border: none; background: var(--accent-bg); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);">ОК</button></div>`;
+            message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" class="ai-btn">ОК</button></div>`;
             setTimeout(function () {
               message.style.display = "none";
             }, 10000);
@@ -880,7 +880,7 @@ function openGroupChangeModal() {
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
-            <button style="background: rgba(255, 255, 255, 0.2); color: var(--text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
+            <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
 }
 
 function closeN(id, id2 = false) {
