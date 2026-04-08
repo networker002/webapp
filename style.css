@@ -26,7 +26,7 @@
     /* --lessons-b-c: #ffffff13; */
     --lessons-b-c: var(--tg-theme-secondary-bg-color);
     /* --days-bg: #18294e36; */
-    --days-bg: var(--tg-theme-section-bg-color);
+    --days-bg: var(--tg-theme-secondary-bg-color);
     --days-o-color: var(--tg-theme-text-color);
     --shadows: rgba(255, 255, 255, .25);
     --anti-shadows: rgba(0, 0, 0, .2);
@@ -38,15 +38,15 @@
     --btn-opacity: 0.55;
     --ch-room-bg: rgba(179, 163, 95, 0.3);
     --menu-bg-bg: #00000075;
-    --room-green: #80ffd6c3;
+    --room-green: var(--tg-theme-accent-text-color);
     /* --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0; */
     --star-background-day: 0;
     --only-dark: block;
     --only-light-color: none;
-    --day-card-bg: #4f618738;
+    --day-card-bg: var(--tg-theme-secondary-bg-color);
     --menu-liq-glass: blur(10px);
     --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
-    --event-color: linear-gradient(90deg, #95ffe0, #ffffff);
+    --event-color: linear-gradient(90deg, var(--tg-theme-accent-text-color), var(--tg-theme-text-color));
 }
 
 /* [data-theme="light"] {
@@ -195,7 +195,8 @@ header.scrolling {
 }
 
 .days .selected {
-    background-color: rgb(0, 200, 200);
+    /* background-color: rgb(0, 200, 200); */
+    background-color: var(--tg-theme-accent-text-color);
     filter: drop-shadow(1px 1px .5em #ffffff38);
     padding: 6px 12px;
     color: #fff;
@@ -255,9 +256,9 @@ header.scrolling {
         font-size: x-large;
         transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s ease-out;
         user-select: none;
-        color: var(--header-glass);
-        opacity: var(--btn-opacity);
-        filter: drop-shadow(4px 4px 4px var(--anti-super-shadows));
+        color: var(--tg-theme-bg-color);
+        /* opacity: var(--btn-opacity); */
+        /* filter: drop-shadow(4px 4px 4px var(--anti-super-shadows)); */
         outline: none !important;
 
         &:active {
@@ -927,7 +928,7 @@ h4>input {
     right: calc(2em + 70px);
     z-index: 1000;
     bottom: 5em;
-    background: #537fdf5e;
+    background: rgb(from var(--tg-theme-header-bg-color) r g b / 0.75);
     font-family: monospace;
     font-weight: 200;
     transition: all 1s cubic-bezier(0.77, 0, 0.175, 1);
@@ -1128,7 +1129,7 @@ h6.skeleton {
     padding-top: var(--tg-safe-area-inset-top);
 
     h1 {
-        color: var(--tg-theme-button-color);
+        color: var(--tg-theme-accent-text-color);
         letter-spacing: 1px;
     }
 }
@@ -1169,7 +1170,7 @@ h6.skeleton {
     &::before {
         content: "You";
         font-size: smaller;
-        color: var(--tg-theme-button-color);
+        color: var(--tg-theme-accent-text-color);
         opacity: 0.8;
         letter-spacing: 1px;
         text-align: start;
@@ -1188,7 +1189,7 @@ h6.skeleton {
     &::before {
         content: "Bot";
         font-size: smaller;
-        color: var(--tg-theme-button-color);
+        color: var(--tg-theme-accent-text-color);
         margin-right: .5em;
         opacity: 0.8;
         letter-spacing: 1px;
@@ -1206,7 +1207,7 @@ h6.skeleton {
     top: 1em;
     transition: all .1s;
     opacity: 1;
-    color: inherit;
+    color: var(--tg-theme-button-color);
 
     &:active {
         scale: .9;
