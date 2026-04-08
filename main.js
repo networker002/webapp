@@ -1443,10 +1443,10 @@ CloseChatButton.addEventListener("click", function () {
 assistant.addEventListener("click", function () {
   Chat.style.display = "flex";
   tg.BackButton.show();
-  tg.BackButton.onClick = function () {
+  tg.BackButton.onClick(() => {
     Chat.style.display = "none";
     tg.BackButton.hide();
-  };
+  });
 });
 
 window.addEventListener("DOMContentLoaded", function () {
