@@ -4,22 +4,30 @@
 }
 
 :root {
-    --over-color: #fff;
-    --main-bg-color: linear-gradient(-180deg, #07070F, #05050A);
-    --header-bg-color: #4f6187;
+    /* --over-color: #fff; */
+    --over-color: var(--tg-theme-text-color);
+    /* --main-bg-color: linear-gradient(-180deg, #07070F, #05050A); */
+    --main-bg-color: var(--tg-theme-bg-color);
+    /* --header-bg-color: #4f6187; */
+    --header-bg-color: var(--tg-theme-header-bg-color);
+    /* --header-glass: #4f61877e; */
+    --header-glass: rgb(from var(--tg-theme-header-bg-color) r g b / 0.5);
     --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
     --menu-color: #fff;
-    --s-b-b: rgb(180, 180, 180);
     --text-shadow-c: none;
-    --alert-bg: rgba(0, 200, 200, .4);
-    --time-color: #bdc6db;
-    --loader-filter: #ffffff44;
-    --accent: #0284c7;
-    --accent-bg: rgba(2, 132, 199, 0.3);
-    --lessons-b-c: #ffffff13;
-    --days-bg: #18294e36;
-    --days-o-color: #fff;
-    --header-glass: #4f61877e;
+    /* --alert-bg: rgba(0, 200, 200, .4); */
+    --alert-bg: var(--tg-theme-accent-text-color);
+    /* --time-color: #bdc6db; */
+    --time-color: var(--tg-theme-text-color);
+    /* --accent: #0284c7; */
+    --accent: var(--tg-theme-accent-text-color);
+    /* --accent-bg: rgba(2, 132, 199, 0.3); */
+    --accent-bg: var(--tg-theme-secondary-bg-color);
+    /* --lessons-b-c: #ffffff13; */
+    --lessons-b-c: var(--tg-theme-secondary-bg-color);
+    /* --days-bg: #18294e36; */
+    --days-bg: var(--tg-theme-section-bg-color);
+    --days-o-color: var(--tg-theme-text-color);
     --shadows: rgba(255, 255, 255, .25);
     --anti-shadows: rgba(0, 0, 0, .2);
     --anti-super-shadows: rgba(0, 0, 0, .7);
@@ -31,7 +39,7 @@
     --ch-room-bg: rgba(179, 163, 95, 0.3);
     --menu-bg-bg: #00000075;
     --room-green: #80ffd6c3;
-    --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
+    /* --dark-theme-btn: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #4ce973, inset .2em .2em 1em #3dcece, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0; */
     --star-background-day: 0;
     --only-dark: block;
     --only-light-color: none;
@@ -41,13 +49,12 @@
     --event-color: linear-gradient(90deg, #95ffe0, #ffffff);
 }
 
-[data-theme="light"] {
+/* [data-theme="light"] {
     --over-color: #000;
     --main-bg-color: linear-gradient(-180deg, #f0f2f5, #ffffff);
     --header-bg-color: #a2d2ff;
     --menu-bg: linear-gradient(70deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25));
     --menu-color: #10002b;
-    --s-b-b: rgb(180, 180, 180);
     --text-shadow-c: #c4c4c427;
     --alert-bg: rgba(0, 200, 200, .7);
     --time-color: #000000;
@@ -77,7 +84,7 @@
     --menu-liq-glass: blur(18px);
     --chat-bg: linear-gradient(to bottom, rgba(255, 255, 255, .15), rgba(255, 255, 255, . 2));
     --event-color: linear-gradient(90deg, #00789c, #0cd1a0);
-}
+} */
 
 @font-face {
     font-family: "DejaVuSans";
@@ -150,7 +157,7 @@ header {
 
 header.scrolling {
     transition: all 1s;
-    background: var(--header-glass);
+    background-color: var(--header-glass);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     transition: all .3s ease;
@@ -262,7 +269,7 @@ header.scrolling {
     .tname {
         font-weight: 500;
 
-         &::before {
+        &::before {
             position: absolute;
             content: "ФИО преподавателя";
             top: 0;
@@ -273,7 +280,7 @@ header.scrolling {
 
     .teacher {
         font-family: "DejaVuSans";
-        
+
         word-wrap: balance;
         padding-top: 1.2em;
         margin-top: 1.5em;
@@ -281,7 +288,7 @@ header.scrolling {
         transition: all 2s;
         animation: raise 0.4s ease forwards;
 
-       
+
 
         &::after {
             position: absolute;
@@ -292,7 +299,7 @@ header.scrolling {
             height: 2px;
             width: 100%;
             margin: auto;
-            background: linear-gradient(var(--rotation-line), var(--menu-color), var(--acdeac-btn));
+            background: linear-gradient(to right, var(--tg-theme-secondary-bg-color), var(--tg-theme-section-bg-color));
         }
     }
 
@@ -639,7 +646,7 @@ header.scrolling {
     }
 }
 
-#theme-container {
+/* #theme-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
@@ -669,8 +676,8 @@ header.scrolling {
     transition: all .25s;
     border-radius: 16px;
     padding: 6px 8px;
-    /*box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;*/
-    /*box-shadow: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;*/
+    box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
+    box-shadow: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     box-shadow: var(--dark-theme-btn);
 }
 
@@ -679,7 +686,7 @@ header.scrolling {
     justify-content: center;
     gap: .5em;
     outline: none !important;
-}
+} */
 
 #burger-menu.opened-btn {
     transform: scaleY(1.75);
@@ -1116,14 +1123,13 @@ h6.skeleton {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 1em;
+    padding: 1em;
     background-color: var(--tg-theme-header-bg-color);
     padding-top: var(--tg-safe-area-inset-top);
 
     h1 {
         color: var(--tg-theme-button-color);
         letter-spacing: 1px;
-        padding-top: 2em;
     }
 }
 
@@ -1147,7 +1153,7 @@ h6.skeleton {
         color: #2a406e;
     }
 
-    p { 
+    p {
         background: var(--tg-theme-bg-color);
         padding: .5em;
         border-radius: 1em;
@@ -1170,7 +1176,7 @@ h6.skeleton {
     }
 
     p {
-        border-top-right-radius: 0!important;
+        border-top-right-radius: 0 !important;
     }
 }
 
@@ -1188,7 +1194,7 @@ h6.skeleton {
         letter-spacing: 1px;
         text-align: end;
     }
-    
+
     p {
         border-top-left-radius: 0 !important;
     }
@@ -1224,7 +1230,7 @@ h6.skeleton {
     display: none;
     flex-direction: column;
     gap: 20px;
-    
+
 }
 
 #event-input h4 {
@@ -1239,8 +1245,8 @@ h6.skeleton {
     -webkit-text-fill-color: unset;
 }
 
-#event-input > label,
-#event-input > div:not(.btbtns) {
+#event-input>label,
+#event-input>div:not(.btbtns) {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -1259,7 +1265,8 @@ h6.skeleton {
 #event-input input,
 #event-input textarea {
     width: 100%;
-    background: none;    border: 1px solid #35355a;
+    background: none;
+    border: 1px solid #35355a;
     border-radius: 12px;
     padding: 16px 18px;
     color: #ffffff;
@@ -1297,8 +1304,8 @@ h6.skeleton {
     flex-direction: column;
     gap: 12px;
     margin-top: 12px;
-    
-  
+
+
 }
 
 #event-input button {
@@ -1311,8 +1318,9 @@ h6.skeleton {
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.3s;
     font-family: "DejaVuSans", sans-serif;
-    user-select: none;
-    letter-spacing: 0;}
+    select: none;
+    letter-spacing: 0;
+}
 
 #event-input button:active {
     transform: translateY(0);
@@ -1408,7 +1416,7 @@ h6.skeleton {
     gap: .25em;
     padding: .2em;
     padding-left: 1em;
-    background: linear-gradient(90deg,  rgba(255, 255, 255, .02),  rgba(255, 255, 255, .002));
+    background: linear-gradient(90deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .002));
 
     &::before {
         content: "";
@@ -1429,7 +1437,7 @@ h6.skeleton {
     position: absolute;
     right: 1em;
     top: 50%;
-    transform:translateY(-50%);
+    transform: translateY(-50%);
     border: none;
     padding: 6px;
     border-radius: 12px;
@@ -1442,9 +1450,9 @@ h6.skeleton {
 
 #nowtimeset1 {
     position: absolute;
-    right: 2em; 
+    right: 2em;
     top: 50%;
-    transform:translateY(-12%);
+    transform: translateY(-12%);
     background: var(--tg-theme-button-color);
     color: var(--tg-theme-button-text-color);
     padding: 6px;
@@ -1456,7 +1464,7 @@ h6.skeleton {
     }
 }
 
-#canvas  {
+#canvas {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -1472,10 +1480,12 @@ h6.skeleton {
     0% {
         filter: drop-shadow(0 0 4px #ffffff);
     }
+
     50% {
         filter: drop-shadow(0 0 8px #fffb00);
         opacity: 1;
     }
+
     100% {
         filter: drop-shadow(0 0 4px #ffffff);
     }

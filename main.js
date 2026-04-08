@@ -1,5 +1,4 @@
 //PERSONAL ASSISTANT INITIALISATION
-userId = 946602610;
 
 const assistants = document.querySelector(".assistant");
 let assistant = document.getElementById("default-assistant");
@@ -207,7 +206,7 @@ function getSchedule1(reqNeed = false) {
           document.getElementById("alerter").style.display = "block";
 
           document.getElementById("alerter").innerHTML =
-            `<h1 style="color: #fff;">Неизвестный пользователь</h1>
+            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
                 <h3>Вы еще не зарегистрировались в нашей системе!</h3>
                 <h6>Давайте сделаем это сейчас:</h6>
                 <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
@@ -916,28 +915,28 @@ function closee(id) {
   }, 80);
 }
 
-function applyTheme(theme) {
-  const root = document.documentElement;
-  const themeNameDisplay = document.getElementById("d-s-t");
-  document.body.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
-}
+// function applyTheme(theme) {
+//   const root = document.documentElement;
+//   const themeNameDisplay = document.getElementById("d-s-t");
+//   document.body.setAttribute("data-theme", theme);
+//   localStorage.setItem("theme", theme);
+// }
 
-const darkRadio = document.getElementById("dark-theme");
-const lightRadio = document.getElementById("light-theme");
+// const darkRadio = document.getElementById("dark-theme");
+// const lightRadio = document.getElementById("light-theme");
 
-darkRadio.addEventListener("change", function () {
-  if (this.checked) {
-    applyTheme("dark");
-    haptic.notificationOccurred("success");
-  }
-});
-lightRadio.addEventListener("change", function () {
-  if (this.checked) {
-    applyTheme("light");
-    haptic.notificationOccurred("success");
-  }
-});
+// darkRadio.addEventListener("change", function () {
+//   if (this.checked) {
+//     applyTheme("dark");
+//     haptic.notificationOccurred("success");
+//   }
+// });
+// lightRadio.addEventListener("change", function () {
+//   if (this.checked) {
+//     applyTheme("light");
+//     haptic.notificationOccurred("success");
+//   }
+// });
 
 window.addEventListener("DOMContentLoaded", () => {
   let dayPeriodMapping = {
@@ -1136,14 +1135,14 @@ window.addEventListener("DOMContentLoaded", () => {
       tg.requestFullscreen();
     }
   } catch {}
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  if (savedTheme == "light") {
-    lightRadio.checked = true;
-    applyTheme("light");
-  } else {
-    darkRadio.checked = true;
-    applyTheme("dark");
-  }
+  // const savedTheme = localStorage.getItem("theme") || "dark";
+  // if (savedTheme == "light") {
+  //   lightRadio.checked = true;
+  //   applyTheme("light");
+  // } else {
+  //   darkRadio.checked = true;
+  //   applyTheme("dark");
+  // }
   if (nowBtn) upsSV();
 });
 
