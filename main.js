@@ -1235,7 +1235,7 @@ function saveTeacherData() {
       document.getElementById("save-event-btn").style.pointerEvents = "all";
       document.getElementById("save-event-btn").style.background = "var(--tg-theme-button-color)";
 
-document.getElementById("save-event-btn").style.color = "var(--tg-theme-button-text-color");
+document.getElementById("save-event-btn").style.color = "var(--tg-theme-button-text-color)";
       document.getElementById("save-event-btn").style.boxShadow = "none";
     }, 2000);
   } else {
