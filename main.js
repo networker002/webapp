@@ -1149,7 +1149,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function ShowAdd(id) {
   console.log("showing popup");
   document.getElementById("black-bg").style.animation = "none";
-  document.getElementById("black-bg").style.animation = "opq1 1.5s ease";
+  document.getElementById("black-bg").style.animation = "opq1 1s ease";
   document.getElementById("black-bg").style.display = "block";
   openn("event-input", "flex");
   document.getElementById("event-input").setAttribute("data-uuid", id);

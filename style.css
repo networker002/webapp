@@ -322,6 +322,7 @@ header.scrolling {
     padding-top: .2em;
     padding-bottom: .25em;
     text-shadow: 1px 2px 4px var(--text-shadow-c);
+    opacity: .8;
 }
 
 .time1 {
@@ -333,6 +334,7 @@ header.scrolling {
     padding-top: .2em;
     padding-bottom: .25em;
     text-shadow: 1px 2px 4px var(--text-shadow-c);
+    opacity: .75;
 }
 
 .time.now {
@@ -918,7 +920,8 @@ h4>input {
     border-radius: 2em;
     border-bottom-right-radius: 0;
     font-size: small;
-    backdrop-filter: brightness(50%) blur(9px);
+    backdrop-filter: brightness(70%) blur(9px);
+    left: 1em;
     /*overflow: scroll;*/
 }
 
@@ -1122,7 +1125,7 @@ h6.skeleton {
     align-items: center;
     padding: 1em;
     background-color: var(--tg-theme-header-bg-color);
-    padding-top: var(--tg-safe-area-inset-top);
+    padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
 
     h1 {
         color: var(--tg-theme-accent-text-color);
@@ -1348,7 +1351,7 @@ h6.skeleton {
     min-width: 100vw;
     min-height: 100vh;
     backdrop-filter: blur(6px);
-    animation: opq1 1s ease;
+    animation: opq1 .5s cubic-bezier(0.19, 1, 0.22, 1);
     overflow: hidden !important;
     display: none;
 }
@@ -1465,5 +1468,12 @@ h6.skeleton {
 @keyframes popupBtnText {
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes popupBtnText2 {
+    100% {
+        opacity: 0;
+        transform: translate(-50%, 0%);
     }
 }
