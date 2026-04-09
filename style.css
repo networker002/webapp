@@ -932,7 +932,7 @@ h4>input {
 }
 
 #ctx-assistant-say {
-    padding: .5em;
+    padding: .75em;
     /* filter: drop-shadow(4px 4px 6px var(--shadows)); */
 
     .ai-btn {
