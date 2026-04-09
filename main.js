@@ -1157,7 +1157,7 @@ function ShowAdd(id) {
 
 function CloseBG() {
   document.getElementById("black-bg").style.animation =
-    "popupBtnText 1s ease forwards";
+    "popupBtnText2 1s ease forwards";
   setTimeout(() => {
     document.getElementById("black-bg").style.display = "none";
     document.getElementById("event-input").removeAttribute("data-uuid");
