@@ -351,7 +351,7 @@ function dayParseOnline() {
         times.forEach((timee) => {
           try {
             if (timee === undefined) {
-              console.log(1);
+              //console.log(1);
             } else {
               timeeText = timee.innerHTML.toString().trim();
 
@@ -485,9 +485,9 @@ function teacherHide(element = document, del = true) {
     btnX.parentElement.querySelector(".teacher").id = newUUID;
     let shown = false;
     let addedNotesBtn = false;
-    console.log("working...");
+    //console.log("working...");
     if (localStorage.getItem("added-teacher") !== "true") {
-      console.log("not true! adding rooms");
+      //console.log("not true! adding rooms");
       var test = btnX.parentElement.querySelector(".room").innerHTML;
       if (test) {
         if (test.length < 7) {
@@ -547,7 +547,7 @@ function teacherHide(element = document, del = true) {
 
       if (events) {
         events.forEach((e) => {
-          console.log(e);
+          //console.log(e);
           if (e) {
             e.style.display = "block";
           }
@@ -579,7 +579,7 @@ function teacherHide(element = document, del = true) {
         btnX.parentElement.querySelector(".teacher").style.display = "none";
         if (events) {
           events.forEach((e) => {
-            console.log(e);
+            //console.log(e);
             if (e) {
               e.style.display = "none";
             }
@@ -1158,10 +1158,12 @@ function ShowAdd(id) {
 function CloseBG() {
   document.getElementById("black-bg").style.animation =
     "popupBtnText2 1s ease forwards";
+  document.getElementById("event-input").style.animation = "popupBtnText2 1s ease forwards";
   setTimeout(() => {
     document.getElementById("black-bg").style.display = "none";
+    document.getElementById("event-input").style.display = "none";
     document.getElementById("event-input").removeAttribute("data-uuid");
-  }, 1000);
+  }, 900);
 }
 
 function SetUUID() {
@@ -1182,7 +1184,7 @@ function DelEvent(el) {
   setTimeout(function () {
     eventElement.remove();
 
-    console.log("cleaned");
+    //console.log("cleaned");
     //console.log(container.querySelector(el));
 
     localStorage.setItem("schedule", container.innerHTML);
@@ -1192,7 +1194,7 @@ function DelEvent(el) {
 }
 
 function saveTeacherData() {
-  console.log("saving data");
+  //console.log("saving data");
   var errR = false;
   var allTeachers = document.querySelectorAll(".teacher");
   var myElement = document.getElementById("event-input");
@@ -1214,8 +1216,8 @@ function saveTeacherData() {
     });
   }
   function testLetters(str) {
-    return /[a-zA-Z]/.test(str);
-  }
+    return /[a-zA-Zа-яА-ЯёЁ]/.test(str);
+}
 
   TitleEvent = escapeX(TitleEvent);
   ExtraEvent = escapeX(ExtraEvent);
@@ -1239,7 +1241,6 @@ document.getElementById("save-event-btn").style.color = "var(--tg-theme-button-t
       document.getElementById("save-event-btn").style.boxShadow = "none";
     }, 2000);
   } else {
-    closeN("event-input");
     CloseBG();
   }
   if (!errR) {
