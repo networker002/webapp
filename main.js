@@ -1166,6 +1166,13 @@ function CloseBG() {
   }, 900);
 }
 
+function CloseBG2() {
+  document.getElementById("black-bg").style.animation = "popupBtnText 1s ease forwards";
+  setTimeout(() => {
+    document.getElementById("black-bg").style.display = "none";
+    document.getElementById("black-bg").style.zIndex = "1999";
+  }, 900);
+}
 function SetUUID() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -1487,3 +1494,39 @@ function draw() {
 if (new Date().getHours() <= 7 || new Date().getHours() >= 20) {
   draw();
 }
+
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+}
+
+const savedTheme = localStorage.getItem("theme") || "standard";
+
+if (savedTheme === "standard") {
+  document.documentElement.setAttribute("data-theme", "standard");
+}
+
+if (savedTheme) {
+  setTheme(savedTheme);
+}
+
+
+document.getElementById("themes-btn").addEventListener("click", function () {
+  document.getElementById("black-bg").style.animation = "none";
+  document.getElementById("black-bg").style.animation = "opq1 1s ease";
+  document.getElementById("black-bg").style.display = "block";
+  document.getElementById("black-bg").style.zIndex = "2002";
+  openn("themes", "block");
+});
+
+document.querySelectorAll("#theme-container input[name='theme']").forEach((radio) => {
+  if (radio.id === savedTheme) {
+    radio.checked = true;
+  }
+  radio.addEventListener("change", function () {
+    console.log(this.id);
+    if (this.checked) {
+      setTheme(this.id);
+      localStorage.setItem("theme", this.id);
+    }
+  });
+});

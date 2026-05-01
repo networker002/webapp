@@ -47,8 +47,44 @@
     --menu-liq-glass: blur(10px);
     --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
     --event-color: linear-gradient(90deg, var(--tg-theme-accent-text-color), var(--tg-theme-text-color));
+    --days-selected-filter: none;
 }
 
+[data-theme="neon"] {
+    --over-color: #e0ffff;
+    --main-bg-color: linear-gradient(-180deg, #0d0221, #02010a);
+    --header-bg-color: #1a0b2e; 
+    --header-glass: #ff00ff1a;
+    --menu-bg: linear-gradient(70deg, rgba(255, 0, 255, 0.05), rgba(0, 255, 255, 0.1));
+    --menu-color: #00f2ff;
+    --text-shadow-c: 0 0 8px rgba(0, 242, 255, 0.6);
+    --alert-bg: rgba(255, 0, 127, 0.3);
+    --time-color: #b794f4;
+    --accent: #ff00ff;
+    --accent-bg: rgba(255, 0, 255, 0.2);
+    --lessons-b-c: #00f2ff22;
+    --days-o-color: #ff00ff;
+    --shadows: rgba(0, 242, 255, 0.2);
+    --anti-shadows: rgba(0, 0, 0, 0.6);
+    --anti-super-shadows: rgba(0, 0, 0, 0.85);
+    --star-sh: drop-shadow(0 0 15px rgba(0, 242, 255, 0.8));
+    --acdeac-btn: #00f2ff33;
+    --runner-sk: linear-gradient(90deg, #ff00ff05, #00f2ff44, #ff00ff05);
+    --rotation-line: 90deg;
+    --btn-opacity: 0.85;
+    --ch-room-bg: rgba(45, 0, 77, 0.5);
+    --menu-bg-bg: #050505cc;
+    --room-green: #39ff14aa;
+    /* --dark-theme-btn: .2em .2em 1em #ff00ffc2, inset -.2em -.2em 1em #00f2ff, inset .2em .2em 1em #ff00ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0; */
+    --star-background-day: 0;
+    --only-dark: block;
+    --only-light-color: none;
+    --day-card-bg: rgb(15, 5, 35);
+    --menu-liq-glass: blur(15px);
+    --chat-bg: linear-gradient(to bottom, #120129cc, #050505cc);
+    --event-color: linear-gradient(90deg, #00f2ff, #bc13fe);
+    --days-selected-filter: drop-shadow(0 0 6px #d3fdffc0);
+}
 /* [data-theme="light"] {
     --over-color: #000;
     --main-bg-color: linear-gradient(-180deg, #f0f2f5, #ffffff);
@@ -194,7 +230,7 @@ header.scrolling {
     /* background-color: rgb(0, 200, 200); */
     color: var(--tg-theme-button-text-color);
     background-color: var(--tg-theme-button-color);
-    /* filter: drop-shadow(1px 1px .5em #ffffff38); */
+    filter: var(--days-selected-filter); 
     padding: .5em 1em;
 }
 
@@ -638,7 +674,7 @@ header.scrolling {
     }
 }
 
-/* #theme-container {
+#theme-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
@@ -655,6 +691,14 @@ header.scrolling {
     input {
         display: none;
     }
+
+    label {
+        text-align: center;
+
+        input:checked+span {
+            filter: drop-shadow(0 2px 6px);
+        }
+    }
 }
 
 .theme-radio {
@@ -667,7 +711,6 @@ header.scrolling {
 .theme-radio input:checked+span {
     transition: all .25s;
     border-radius: 16px;
-    padding: 6px 8px;
     box-shadow: .2em .2em 1em #8aff47c2, inset -.2em -.2em 1em #85ff15, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     box-shadow: .2em .2em 1em #47fff6c2, inset -.2em -.2em 1em #15c8ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0;
     box-shadow: var(--dark-theme-btn);
@@ -676,7 +719,7 @@ header.scrolling {
 #theme-container>div {
     display: flex;
     justify-content: center;
-    gap: .5em;
+    gap: .75em;
     outline: none !important;
 } */
 
@@ -1449,6 +1492,53 @@ h6.skeleton {
     animation: glow-canvas 8s infinite;
     opacity: .5;
 }
+
+.th-btn {
+    position: relative;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    padding: 1em;
+    padding-top: 0;
+}
+
+#themes-btn {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+    border-radius: 24px;
+    letter-spacing: 2px;
+    transition: scale .3s;
+    font-family: "DejaVuSans";
+    outline: none !important;
+    color: var(--menu-color);
+
+    &:active {
+        scale: .8;
+    }
+}
+
+#themes {
+   position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(var(--menu-bg), 0.75);
+    padding: 3em;
+    padding-bottom: 1.5em;
+    border-radius: 16px;
+    backdrop-filter: var(--menu-liq-glass);
+    z-index: 2003;
+    transition: opacity .5s;
+    overflow: hidden;
+    display: none;
+    color: var(--menu-color);
+
+}
+
+
 
 @keyframes glow-canvas {
     0% {
