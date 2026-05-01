@@ -588,6 +588,10 @@ header.scrolling {
     }
 }
 
+#schedule-container {
+    min-height: 60vh;
+}
+
 .menu-display {
     position: fixed;
     top: 50%;
@@ -705,7 +709,8 @@ header.scrolling {
     cursor: pointer;
     padding: 10px;
     outline: none;
-
+    margin: auto;
+    outline: none !important;
 }
 
 .theme-radio input:checked+span {
