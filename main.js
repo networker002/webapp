@@ -1528,5 +1528,9 @@ document.querySelectorAll("#theme-container input[name='theme']").forEach((radio
       setTheme(this.id);
       localStorage.setItem("theme", this.id);
     }
+    setTimeout(() => {
+      closee('themes');
+    CloseBG2();
+    }, 50);
   });
 });
