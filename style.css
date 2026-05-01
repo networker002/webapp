@@ -588,9 +588,9 @@ header.scrolling {
     }
 }
 
-#schedule-container {
+/* #schedule-container {
     min-height: 40vh;
-}
+} */
 
 .menu-display {
     position: fixed;
@@ -901,6 +901,7 @@ h4>input {
     margin: auto;
     text-align: center;
     margin-top: 2em;
+
 }
 
 #e-c {
