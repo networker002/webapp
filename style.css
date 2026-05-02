@@ -48,6 +48,9 @@
     --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
     --event-color: linear-gradient(90deg, var(--tg-theme-accent-text-color), var(--tg-theme-text-color));
     --days-selected-filter: none;
+    --lst-btn-color:  var(--tg-theme-button-color);
+    --lst-btn-filter: none;
+    --days-selected-bg: var(----tg-theme-button-color);
 }
 
 [data-theme="neon"] {
@@ -67,14 +70,15 @@
     --shadows: rgba(0, 242, 255, 0.2);
     --anti-shadows: rgba(0, 0, 0, 0.6);
     --anti-super-shadows: rgba(0, 0, 0, 0.85);
-    --star-sh: drop-shadow(0 0 15px rgba(0, 242, 255, 0.8));
+    --star-sh: drop-shadow(0 0 25px rgba(255, 0, 0, 0.514));
     --acdeac-btn: #00f2ff33;
     --runner-sk: linear-gradient(90deg, #ff00ff05, #00f2ff44, #ff00ff05);
     --rotation-line: 90deg;
     --btn-opacity: 0.85;
     --ch-room-bg: rgba(45, 0, 77, 0.5);
     --menu-bg-bg: #050505cc;
-    --room-green: #39ff14aa;
+    --room-green: #d998ffcb;
+    --days-bg: #10041354;
     /* --dark-theme-btn: .2em .2em 1em #ff00ffc2, inset -.2em -.2em 1em #00f2ff, inset .2em .2em 1em #ff00ff, -2px -2px 4px #0000007c, inset 2px 2px 8px #ffffffc0; */
     --star-background-day: 0;
     --only-dark: block;
@@ -84,6 +88,9 @@
     --chat-bg: linear-gradient(to bottom, #120129cc, #050505cc);
     --event-color: linear-gradient(90deg, #00f2ff, #bc13fe);
     --days-selected-filter: drop-shadow(0 0 6px #d3fdffc0);
+    --lst-btn-color:  #ff00d4ab;
+    --lst-btn-filter: drop-shadow(0 2px 6px rgba(98, 0, 255, 0.6));
+    --days-selected-bg: #f8fcbe60;
 }
 /* [data-theme="light"] {
     --over-color: #000;
@@ -229,7 +236,7 @@ header.scrolling {
 .days .selected {
     /* background-color: rgb(0, 200, 200); */
     color: var(--tg-theme-button-text-color);
-    background-color: var(--tg-theme-button-color);
+    background-color: var(--days-selected-bg);
     filter: var(--days-selected-filter); 
     padding: .5em 1em;
 }
@@ -281,10 +288,11 @@ header.scrolling {
         font-size: x-large;
         transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s ease-out;
         user-select: none;
-        color: var(--tg-theme-button-color);
+        color: var(--lst-btn-color);
         /* opacity: var(--btn-opacity); */
         /* filter: drop-shadow(4px 4px 4px var(--anti-super-shadows)); */
         outline: none !important;
+        filter: var(--lst-btn-filter);
 
         &:active {
             scale: 1.2;
