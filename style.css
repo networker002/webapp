@@ -83,7 +83,7 @@
     --star-background-day: 0;
     --only-dark: block;
     --only-light-color: none;
-    --day-card-bg: rgb(15, 5, 35);
+    --day-card-bg: rgba(15, 5, 35, 0.95);
     --menu-liq-glass: blur(15px);
     --chat-bg: linear-gradient(to bottom, #120129cc, #050505cc);
     --event-color: linear-gradient(90deg, #00f2ff, #bc13fe);
@@ -91,6 +91,46 @@
     --lst-btn-color:  #ff00d4ab;
     --lst-btn-filter: drop-shadow(0 2px 6px rgba(98, 0, 255, 0.6));
     --days-selected-bg: #f8fcbe60;
+}
+
+[data-theme="retro"] {
+    --over-color: #1a1a1a;
+    --main-bg-color: linear-gradient(-180deg, #e6e6e6, #d4d4d49a);
+    --header-bg-color: #727272; 
+    --header-glass: rgba(0, 0, 0, 0.05);
+    --menu-bg: linear-gradient(70deg, #81808063, #242121);
+    --menu-color: #000000;
+    --text-shadow-c: none;
+    --alert-bg: rgba(255, 235, 156, 0.5);
+    --time-color: #4d4d4d;
+    --accent: #0052aa;
+    --accent-bg: rgba(0, 74, 153, 0.15);
+    --lessons-b-c: #0000001a;
+    --days-o-color: #000000;
+    --shadows: rgba(0, 0, 0, 0.2);
+    --anti-shadows: rgba(255, 255, 255, 0.8);
+    --anti-super-shadows: rgba(0, 0, 0, 0.4);
+    --star-sh: none;
+    --acdeac-btn: #bbbbbb;
+    --runner-sk: linear-gradient(90deg, #d1d1d1, #b3b3b3, #d1d1d1);
+    --rotation-line: 0deg;
+    --btn-opacity: 1.0;
+    --ch-room-bg: rgba(85, 85, 85, 0.247);
+    --menu-bg-bg: #ffffffcc;
+    --room-green: #5da853;
+    --days-bg: #f0f0f0;
+    /* --dark-theme-btn: .1em .1em .3em #00000040, inset -1px -1px 2px #ffffff; */
+    --star-background-day: 0;
+    --only-dark: none;
+    --only-light-color: block;
+    --day-card-bg: linear-gradient(110deg, #ffffff, #d3d2cee1);
+    --menu-liq-glass: none;
+    --chat-bg: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    --event-color: linear-gradient(90deg, #555555, #222222);
+    --days-selected-filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+    --lst-btn-color: #333333;
+    --lst-btn-filter: none;
+    --days-selected-bg: #fffbd2;
 }
 /* [data-theme="light"] {
     --over-color: #000;
