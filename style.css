@@ -220,6 +220,7 @@ body {
     color: var(--over-color);
     scroll-behavior: smooth;
     font-family: "DejaVuSans";
+    min-height: 100vh;
 
     /*&::before {
         position: fixed;
@@ -824,6 +825,7 @@ header.scrolling {
 #burger-menu.closed-btn {
     transform: scaleY(1);
 }
+
 
 
 
