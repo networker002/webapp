@@ -132,6 +132,47 @@
     --lst-btn-filter: none;
     --days-selected-bg: #fffbd2;
 }
+
+
+[data-theme="sky"] {
+    --over-color: #2c3e50;
+    --main-bg-color: linear-gradient(-180deg, #aaddff, #eef9ff);
+    --header-bg-color: #f0f8ff; 
+    --header-glass: rgba(255, 255, 255, 0.4);
+    --menu-bg: linear-gradient(70deg, #ffffff80, #cae9ff80);
+    --menu-color: #0077b6;
+    --text-shadow-c: 0 1px 2px rgba(255, 255, 255, 0.8);
+    --alert-bg: rgba(255, 183, 77, 0.3);
+    --time-color: #5a7d9a;
+    --accent: #00b4d8;
+    --accent-bg: rgba(0, 180, 216, 0.15);
+    --lessons-b-c: rgba(0, 119, 182, 0.1);
+    --days-o-color: #023e8a;
+    --shadows: rgba(0, 119, 182, 0.15);
+    --anti-shadows: rgba(255, 255, 255, 0.9);
+    --anti-super-shadows: rgba(0, 75, 110, 0.2);
+    --star-sh: drop-shadow(0 0 16px #ffea0060);
+    --acdeac-btn: #90e0ef80;
+    --runner-sk: linear-gradient(90deg, #ffffff00, #ffffffcc, #ffffff00);
+    --rotation-line: 90deg;
+    --btn-opacity: 0.9;
+    --ch-room-bg: rgba(255, 255, 255, 0.5);
+    --menu-bg-bg: #f8fdffcc;
+    --room-green: #4caf50;
+    --days-bg: #f0faff;
+    /* --dark-theme-btn: .1em .1em .3em #00b4d840, inset -1px -1px 2px #ffffff; */
+    --star-background-day: 0;
+    --only-dark: none;
+    --only-light-color: block;
+    --day-card-bg: linear-gradient(110deg, #ffffff, #f0f9ff);
+    --menu-liq-glass: blur(8px);
+    --chat-bg: linear-gradient(to bottom, #ffffffcc, #f0faffcc);
+    --event-color: linear-gradient(90deg, #48cae4, #0077b6);
+    --days-selected-filter: drop-shadow(0 2px 4px rgba(0, 180, 216, 0.4));
+    --lst-btn-color: #0077b6;
+    --lst-btn-filter: none;
+    --days-selected-bg: #caf0f8;
+}
 /* [data-theme="light"] {
     --over-color: #000;
     --main-bg-color: linear-gradient(-180deg, #f0f2f5, #ffffff);
