@@ -70,7 +70,7 @@
     --shadows: rgba(0, 242, 255, 0.2);
     --anti-shadows: rgba(0, 0, 0, 0.6);
     --anti-super-shadows: rgba(0, 0, 0, 0.85);
-    --star-sh: drop-shadow(0 0 25px rgba(255, 0, 0, 0.514));
+    --star-sh: drop-shadow(0 0 25px rgba(255, 0, 0, 0.37));
     --acdeac-btn: #00f2ff33;
     --runner-sk: linear-gradient(90deg, #ff00ff05, #00f2ff44, #ff00ff05);
     --rotation-line: 90deg;
