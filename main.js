@@ -1,3 +1,140 @@
+function openGroupChangeModal() {
+  document.getElementById("alerter").style.display = "block";
+  document.getElementById("alerter").style.animation = "OpenObj .5s ease";
+  document.getElementById("shocked-assistant").style.display = "block";
+  document.getElementById("shocked-assistant").style.animation =
+    "OpenObj .5s ease, opq1 1s ease-in";
+  document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
+            <h3>Обновление данных</h3>
+            <h6>Давайте сделаем это сейчас:</h6>
+            <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
+            <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
+}
+
+function closee(id) {
+  var el = document.getElementById(id);
+  el.style.animation = "closing .5s normal";
+  burgerBtn.classList.remove("opened-btn");
+  burgerBtn.classList.add("closed-btn");
+  setTimeout(function () {
+    el.style.display = "none";
+  }, 80);
+}
+
+function openn(id, displ) {
+  var el = document.getElementById(id);
+  el.style.display = displ;
+  el.style.animation = "opening .5s normal";
+}
+function closeN(id, id2 = false) {
+  var el = document.getElementById(id);
+  if (id2) {
+    var el2 = document.getElementById(id2);
+    el2.style.animation = "CloseObj .5s ease";
+    setTimeout(function () {
+      el2.style.display = "none";
+      el2.style.animation = "none";
+    }, 400);
+  }
+  el.style.animation = "CloseObj .5s ease";
+  setTimeout(function () {
+    el.style.display = "none";
+  }, 440);
+}
+
+function CloseBG() {
+  document.getElementById("black-bg").style.animation =
+    "popupBtnText2 1s ease forwards";
+  document.getElementById("event-input").style.animation =
+    "popupBtnText2 1s ease forwards";
+  setTimeout(() => {
+    document.getElementById("black-bg").style.display = "none";
+    document.getElementById("event-input").style.display = "none";
+    document.getElementById("event-input").removeAttribute("data-uuid");
+  }, 900);
+}
+
+function saveTeacherData() {
+  var errR = false;
+  var allTeachers = document.querySelectorAll(".teacher");
+  var myElement = document.getElementById("event-input");
+  var TitleEvent = document.getElementById("name-event").value ?? "Безымянный";
+  var TimePeriodEvent = document.getElementById("time-event").value;
+  var ExtraEvent = document.getElementById("extra-event").value;
+  var UUID = myElement.getAttribute("data-uuid");
+  var UTeacher = document.getElementById(UUID);
+
+  function escapeX(string) {
+    var htmlEscapes = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+    };
+
+    return string.replace(/[&<>"']/g, function (match) {
+      return htmlEscapes[match];
+    });
+  }
+  function testLetters(str) {
+    return /[a-zA-Zа-яА-ЯёЁ]/.test(str);
+  }
+
+  TitleEvent = escapeX(TitleEvent);
+  ExtraEvent = escapeX(ExtraEvent);
+  TimePeriodEvent = escapeX(TimePeriodEvent);
+
+  if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
+    document.getElementById("save-event-btn").innerHTML =
+      "<b>Неверный ввод!</b>";
+    document.getElementById("save-event-btn").style.pointerEvents = "none";
+    document.getElementById("save-event-btn").style.background =
+      "var(--tg-theme-destructive-text-color)";
+    document.getElementById("save-event-btn").style.boxShadow = "none";
+    haptic.notificationOccurred("error");
+    errR = true;
+    setTimeout(() => {
+      document.getElementById("save-event-btn").innerHTML = "Сохранить";
+      document.getElementById("save-event-btn").style.pointerEvents = "all";
+      document.getElementById("save-event-btn").style.background =
+        "var(--tg-theme-button-color)";
+
+      document.getElementById("save-event-btn").style.color =
+        "var(--tg-theme-button-text-color)";
+      document.getElementById("save-event-btn").style.boxShadow = "none";
+    }, 2000);
+  } else {
+    CloseBG();
+  }
+  if (!errR) {
+    if (ExtraEvent) {
+      UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
+    } else {
+      UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
+    }
+
+    document.getElementById("event-input").removeAttribute("data-uuid");
+    localStorage.setItem("schedule", container.innerHTML);
+    // allTeachers.forEach((teacher) => {
+    //   if (teacher.style.display === "block") {
+    //     if (ExtraEvent) {
+    //     teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+    //     } else {
+    //       teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+    //     }
+    //   }
+    // });
+    // if (TeacherOnly.style.display === "block") {
+    //        if (ExtraEvent) {
+    //        TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+    //        } else {
+    //         TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
+    //        }
+    //      }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const unauthcont = document.querySelector("#unauthorized-container");
   const unauthtext = document.querySelector(".loading-error");
@@ -197,8 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
               if (response.status === 401) {
                 unauthcont.style.display = "block";
-                unauthtext.innerHTML =
-                  "Пожалуйста, перезапустите приложение.";
+                unauthtext.innerHTML = "Пожалуйста, перезапустите приложение.";
               } else {
                 throw new Error("Error: " + response.status);
               }
@@ -880,53 +1016,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function openGroupChangeModal() {
-    document.getElementById("alerter").style.display = "block";
-    document.getElementById("alerter").style.animation = "OpenObj .5s ease";
-    document.getElementById("shocked-assistant").style.display = "block";
-    document.getElementById("shocked-assistant").style.animation =
-      "OpenObj .5s ease, opq1 1s ease-in";
-    document.getElementById("alerter").innerHTML = `<h1>Смена группы</h1>
-            <h3>Обновление данных</h3>
-            <h6>Давайте сделаем это сейчас:</h6>
-            <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
-            <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
-  }
-
-  function closeN(id, id2 = false) {
-    var el = document.getElementById(id);
-    if (id2) {
-      var el2 = document.getElementById(id2);
-      el2.style.animation = "CloseObj .5s ease";
-      setTimeout(function () {
-        el2.style.display = "none";
-        el2.style.animation = "none";
-      }, 400);
-    }
-    el.style.animation = "CloseObj .5s ease";
-    setTimeout(function () {
-      el.style.display = "none";
-    }, 440);
-  }
-
-  function openn(id, displ) {
-    var el = document.getElementById(id);
-    el.style.display = displ;
-    el.style.animation = "opening .5s normal";
-  }
-
-  function closee(id) {
-    var el = document.getElementById(id);
-    el.style.animation = "closing .5s normal";
-    burgerBtn.classList.remove("opened-btn");
-    burgerBtn.classList.add("closed-btn");
-    setTimeout(function () {
-      el.style.display = "none";
-    }, 80);
-  }
-
   // function applyTheme(theme) {
   //   const root = document.documentElement;
   //   const themeNameDisplay = document.getElementById("d-s-t");
@@ -1166,18 +1255,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("event-input").setAttribute("data-uuid", id);
   }
 
-  function CloseBG() {
-    document.getElementById("black-bg").style.animation =
-      "popupBtnText2 1s ease forwards";
-    document.getElementById("event-input").style.animation =
-      "popupBtnText2 1s ease forwards";
-    setTimeout(() => {
-      document.getElementById("black-bg").style.display = "none";
-      document.getElementById("event-input").style.display = "none";
-      document.getElementById("event-input").removeAttribute("data-uuid");
-    }, 900);
-  }
-
   function CloseBG2() {
     document.getElementById("black-bg").style.animation =
       "popupBtnText 1s ease forwards";
@@ -1211,86 +1288,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 100);
 
     haptic.notificationOccurred("success");
-  }
-
-  function saveTeacherData() {
-    var errR = false;
-    var allTeachers = document.querySelectorAll(".teacher");
-    var myElement = document.getElementById("event-input");
-    var TitleEvent =
-      document.getElementById("name-event").value ?? "Безымянный";
-    var TimePeriodEvent = document.getElementById("time-event").value;
-    var ExtraEvent = document.getElementById("extra-event").value;
-    var UUID = myElement.getAttribute("data-uuid");
-    var UTeacher = document.getElementById(UUID);
-
-    function escapeX(string) {
-      var htmlEscapes = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-      };
-
-      return string.replace(/[&<>"']/g, function (match) {
-        return htmlEscapes[match];
-      });
-    }
-    function testLetters(str) {
-      return /[a-zA-Zа-яА-ЯёЁ]/.test(str);
-    }
-
-    TitleEvent = escapeX(TitleEvent);
-    ExtraEvent = escapeX(ExtraEvent);
-    TimePeriodEvent = escapeX(TimePeriodEvent);
-
-    if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
-      document.getElementById("save-event-btn").innerHTML =
-        "<b>Неверный ввод!</b>";
-      document.getElementById("save-event-btn").style.pointerEvents = "none";
-      document.getElementById("save-event-btn").style.background =
-        "var(--tg-theme-destructive-text-color)";
-      document.getElementById("save-event-btn").style.boxShadow = "none";
-      haptic.notificationOccurred("error");
-      errR = true;
-      setTimeout(() => {
-        document.getElementById("save-event-btn").innerHTML = "Сохранить";
-        document.getElementById("save-event-btn").style.pointerEvents = "all";
-        document.getElementById("save-event-btn").style.background =
-          "var(--tg-theme-button-color)";
-
-        document.getElementById("save-event-btn").style.color =
-          "var(--tg-theme-button-text-color)";
-        document.getElementById("save-event-btn").style.boxShadow = "none";
-      }, 2000);
-    } else {
-      CloseBG();
-    }
-    if (!errR) {
-      if (ExtraEvent) {
-        UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
-      } else {
-        UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick="DelEvent(this);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
-      }
-
-      document.getElementById("event-input").removeAttribute("data-uuid");
-      localStorage.setItem("schedule", container.innerHTML);
-      // allTeachers.forEach((teacher) => {
-      //   if (teacher.style.display === "block") {
-      //     if (ExtraEvent) {
-      //     teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-      //     } else {
-      //       teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-      //     }
-      //   }
-      // });
-      // if (TeacherOnly.style.display === "block") {
-      //        if (ExtraEvent) {
-      //        TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-      //        } else {
-      //         TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-      //        }
-      //      }
-    }
   }
 
   function toBtoa(str) {
