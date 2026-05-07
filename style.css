@@ -532,6 +532,7 @@ header.scrolling {
     position: relative;
     overflow: hidden !important;
     cursor: pointer;
+    pointer-events: none;
 
     &::before {
         content: "";
