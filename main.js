@@ -183,9 +183,28 @@ function getSchedule1(reqNeed = false) {
         //fetch("http://127.0.0.1:8000/group", {headers: authHeaders})
         .then((response) => {
           if (!response.ok) throw new Error("Error: " + response.status);
-          else if (response.status === 401) {
-            
-            document.getElementById("alerter").style.display = "block";
+          return response.json();
+        })
+        .then((userGroup) => {
+          if (userGroup !== null) {
+            var Group = userGroup?.group_name;
+            if (Group !== null) {
+              if (localStorage.getItem("userGroup") !== Group) {
+                localStorage.setItem("userGroup", Group);
+              }
+              document.getElementById("gr").innerHTML = Group;
+              document.getElementById("group-name-menu").innerHTML = Group;
+
+              return fetch("https://boost.rorosin.ru/schedule", {
+                headers: authHeaders,
+              });
+              //return fetch("http://127.0.0.1:8000/schedule", {headers: authHeaders});
+            }
+          }
+          
+          console.log(userGroup)
+          console.log(Group);
+          document.getElementById("alerter").style.display = "block";
 
           document.getElementById("alerter").innerHTML =
             `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
@@ -199,59 +218,6 @@ function getSchedule1(reqNeed = false) {
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
           throw new Error("Group not found!");
-          }
-          return response.json();
-        })
-        .then((userGroup) => {
-          console.log("206: "+userGroup);
-          if (userGroup !== null) {
-            var Group = userGroup?.group_name;
-            if (Group !== null || Group !== "") {
-              if (localStorage.getItem("userGroup") !== Group) {
-                localStorage.setItem("userGroup", Group);
-              }
-              document.getElementById("gr").innerHTML = Group;
-              document.getElementById("group-name-menu").innerHTML = Group;
-
-              return fetch("https://boost.rorosin.ru/schedule", {
-                headers: authHeaders,
-              });
-              //return fetch("http://127.0.0.1:8000/schedule", {headers: authHeaders});
-            }
-            else {
-          //console.log(userGroup)
-          //console.log(Group);
-          document.getElementById("alerter").style.display = "block";
-
-          document.getElementById("alerter").innerHTML =
-            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
-                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-                <h6>Давайте сделаем это сейчас:</h6>
-                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-          //
-          loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          throw new Error("Group not found!");}
-          } else {
-          //console.log(userGroup)
-          //console.log(Group);
-          document.getElementById("alerter").style.display = "block";
-
-          document.getElementById("alerter").innerHTML =
-            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
-                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-                <h6>Давайте сделаем это сейчас:</h6>
-                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-          //
-          loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          throw new Error("Group not found!");}
         })
         .then((resp) => {
           if (resp && resp.ok) {
@@ -301,11 +267,11 @@ function getSchedule1(reqNeed = false) {
             dayParseOnline();
             cacheData(container.innerHTML);
             attachDaySwipeEvents();
-            // if (!document.querySelectorAll(".day").length) {
-            //   showEmptySchedule();
-            // } else {
-            //   hideEmptySchedule();
-            // }
+            if (!document.querySelectorAll(".day").length) {
+              showEmptySchedule();
+            } else {
+              hideEmptySchedule();
+            }
             teacherHide();
           }
         })
@@ -329,51 +295,36 @@ function getSchedule1(reqNeed = false) {
           const menuElement = document.getElementById("group-name-menu");
           if (grElement) grElement.innerHTML = Group;
           if (menuElement) menuElement.innerHTML = Group;
-        } else if (!Group || Group === "") {
-          document.getElementById("alerter").style.display = "block";
-
-          document.getElementById("alerter").innerHTML =
-            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
-                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-                <h6>Давайте сделаем это сейчас:</h6>
-                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-          //
-          loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          throw new Error("Group not found!");}
         }
         teacherHide();
         dayParseOnline();
         attachDaySwipeEvents();
-        // if (!document.querySelectorAll(".day").length || localStorage.getItem("schedule") === "Пока что пусто") {
-        //   showEmptySchedule();
-        // } else {
-        //   hideEmptySchedule();
-        // }
+        if (!document.querySelectorAll(".day").length) {
+          showEmptySchedule();
+        } else {
+          hideEmptySchedule();
+        }
       } else {
         getSchedule1(true);
       }
     }
-  // } 
-  //   //console.warn("userId не определен, запрос отменен.");
-  //   document.getElementById("alerter").style.display = "block";
+  } else {
+    //console.warn("userId не определен, запрос отменен.");
+    document.getElementById("alerter").style.display = "block";
 
-  //   document.getElementById("alerter").innerHTML =
-  //     `<h1 style="color: #fff;">Неизвестный пользователь</h1>
-  //       <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-  //       <h6>Давайте сделаем это сейчас:</h6>
-  //       <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-  //       <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-  //       <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-  //   //
-  //   loader.style.display = "none";
-  //   loaderContainer.style.display = "none";
-  //   assistant.style.display = "block";
+    document.getElementById("alerter").innerHTML =
+      `<h1 style="color: #fff;">Неизвестный пользователь</h1>
+        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+        <h6>Давайте сделаем это сейчас:</h6>
+        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+    //
+    loader.style.display = "none";
+    loaderContainer.style.display = "none";
+    assistant.style.display = "block";
+  }
 }
-
 getSchedule1();
 
 function cacheData(data) {
@@ -1521,9 +1472,8 @@ function groupSet0() {
                 "none";
               burgerBtn.classList.remove("opened-btn");
               burgerBtn.classList.add("closed-btn");
-              closeBG();
               closeN("user-menu-display");
-              getSchedule1(true);  
+              getSchedule1(true);
             } else {
               document.getElementById("alerter").style.display = "none";
               document.getElementById("shocked-assistant").style.display =
@@ -1532,7 +1482,6 @@ function groupSet0() {
               burgerBtn.classList.add("closed-btn");
               localStorage.setItem("userGroup", userGroup);
               closeN("user-menu-display");
-              closeBG();
               getSchedule1(true);
             }
           }
