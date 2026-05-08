@@ -816,6 +816,11 @@ updater.addEventListener("click", function () {
       al.style.display = "none";
     }, 1900);
     upsSV();
+    
+    document.querySelectorAll(".day, #empty-container").forEach((el) => {
+      if (el) delete el.dataset.swipeAttached;
+    });
+    
     getSchedule1(true);
 
     timeout = 5000;
@@ -1655,6 +1660,7 @@ function swipe(obj, rotation) {
 }
 function attachDaySwipeEvents() {
   var e = document.getElementById("empty-container");
+  if (!e) return;
   if (e.dataset.swipeAttached === "true") return;
   e.dataset.swipeAttached = "true";
   let sX = 0;
