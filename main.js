@@ -187,7 +187,7 @@ function getSchedule1(reqNeed = false) {
         })
         .then((userGroup) => {
           if (userGroup !== null) {
-            var Group = userGroup.group_name;
+            var Group = userGroup?.group_name;
             if (Group !== null) {
               if (localStorage.getItem("userGroup") !== Group) {
                 localStorage.setItem("userGroup", Group);
