@@ -1471,8 +1471,9 @@ function groupSet0() {
                 "none";
               burgerBtn.classList.remove("opened-btn");
               burgerBtn.classList.add("closed-btn");
+              closeBG();
               closeN("user-menu-display");
-              getSchedule1(true);
+              getSchedule1(true);  
             } else {
               document.getElementById("alerter").style.display = "none";
               document.getElementById("shocked-assistant").style.display =
@@ -1481,6 +1482,7 @@ function groupSet0() {
               burgerBtn.classList.add("closed-btn");
               localStorage.setItem("userGroup", userGroup);
               closeN("user-menu-display");
+              closeBG();
               getSchedule1(true);
             }
           }
