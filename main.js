@@ -175,7 +175,7 @@ function getSchedule1(reqNeed = false) {
     document.getElementById("tg-id-menu").innerHTML =
       userId.toString().slice(0, 4) + m;
     //found = false;
-
+    attachDaySwipeEvents();
     if (reqNeed) {
       //let forMessageFrom = Date.now();
       const authHeaders = { Authorization: tg.initData };
@@ -324,7 +324,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  attachDaySwipeEvents();
+  
 }
 getSchedule1();
 
