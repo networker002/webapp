@@ -265,6 +265,12 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
+            attachDaySwipeEvents();
+            if (!document.querySelectorAll(".day").length) {
+              showEmptySchedule();
+            } else {
+              hideEmptySchedule();
+            }
             teacherHide();
           }
         })
@@ -282,24 +288,16 @@ function getSchedule1(reqNeed = false) {
         assistant.style.display = "block";
         if (nowBtn) upsSV();
         //console.log("cache!");
-        loader.style.display = "none";
-        loaderContainer.style.display = "none";
-        assistant.style.display = "block";
         var Group = localStorage.getItem("userGroup");
         teacherHide();
         dayParseOnline();
-
-        if (Group) {
-          document.getElementById("gr").innerHTML = Group;
-          document.getElementById("group-name-menu").innerHTML = Group;
-        } else if (!Group) {
-          getSchedule1(true);
+        attachDaySwipeEvents();
+        if (!document.querySelectorAll(".day").length) {
+          showEmptySchedule();
+        } else {
+          hideEmptySchedule();
         }
-      } else if (Date.now() - dataLastUpd >= ttl) {
-        getSchedule1(true);
-      }
-
-      if (!cachedData && !reqNeed) {
+      } else {
         getSchedule1(true);
       }
     }
@@ -600,10 +598,23 @@ function hideRoomShown() {
   localStorage.setItem("roomShown", roomShown);
 }
 
+function showEmptySchedule() {
+  const empty = document.getElementById("empty-container");
+  if (!empty) return;
+  empty.style.display = "flex";
+  empty.style.animation = "nothingFly 1s ease";
+}
+
+function hideEmptySchedule() {
+  const empty = document.getElementById("empty-container");
+  if (!empty) return;
+  empty.style.display = "none";
+}
+
 let rr = true;
 let clickedAi = false;
 
-function upsSV() {
+function upsSV(from=false, n=0) {
   let found = false;
   var ch = false;
   lm = new Map();
@@ -622,6 +633,55 @@ function upsSV() {
       ПТ: "Пятница",
       СБ: "Суббота",
     };
+
+    btnMappingNext = {
+      "Понедельник": "Вторник",
+      "Вторник": "Среда",
+      "Среда": "Четверг",
+      "Четверг": "Пятница",
+      "Пятница": "Суббота",
+      "Суббота": "Понедельник",
+    };
+
+    btnMappingPrev = {
+      "Понедельник": "Суббота",
+      "Вторник": "Понедельник",
+      "Среда": "Вторник",
+      "Четверг": "Среда",
+      "Пятница": "Четверг",
+      "Суббота": "Пятница",
+    };
+
+    function getDayNameFromSource(source) {
+      if (!source) return null;
+      if (source.classList && source.classList.contains("btnD")) {
+        return btnMapping[source.innerHTML.trim()] || null;
+      }
+      var label = source.querySelector?.(".day-name");
+      return label ? label.textContent.trim() : null;
+    }
+
+    if (n) {
+      var dnFrom = getDayNameFromSource(from) || getDayNameFromSource(nowBtn);
+      if (dnFrom) {
+        var swipeTarget = n > 0 ? btnMappingNext[dnFrom] : btnMappingPrev[dnFrom];
+        if (swipeTarget) {
+          var targetKey = Object.keys(btnMapping).find(
+            (key) => btnMapping[key] === swipeTarget,
+          );
+          if (targetKey) {
+            var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
+              (btn) => btn.innerHTML.trim() === targetKey,
+            );
+            if (nextBtn) {
+              nowBtn?.classList.remove("selected");
+              nextBtn.classList.add("selected");
+              nowBtn = nextBtn;
+            }
+          }
+        }
+      }
+    }
 
     if (dayName === btnMapping[nowBtn.innerHTML]) {
       de.style.display = "block";
@@ -1157,7 +1217,7 @@ function ShowAdd(id) {
 
 function CloseBG() {
   document.getElementById("black-bg").style.animation =
-    "popupBtnText2 1s ease forwards";
+    "popupBtnText 1s ease forwards";
   document.getElementById("event-input").style.animation = "popupBtnText2 1s ease forwards";
   setTimeout(() => {
     document.getElementById("black-bg").style.display = "none";
@@ -1534,3 +1594,48 @@ document.querySelectorAll("#theme-container input[name='theme']").forEach((radio
     }, 50);
   });
 });
+
+const swipeDistance = 70;
+
+function swipe(obj, rotation) {
+  if (Math.abs(rotation) >= swipeDistance) {
+    if (rotation < 0) {
+      obj.style.transform = `translateX(-${window.innerWidth}px)`;
+    } else {
+      obj.style.transform = `translateX(${window.innerWidth}px)`;
+    }
+    setTimeout(function () {
+      obj.style.display = "none";
+      upsSV(obj, rotation < 0 ? 1 : -1);
+      obj.style.transform = "";
+    }, 300);
+  } else {
+    obj.style.transform = "";
+  }
+}
+function attachDaySwipeEvents() {
+  document.querySelectorAll(".day").forEach((day) => {
+    if (day.dataset.swipeAttached === "true") return;
+    day.dataset.swipeAttached = "true";
+
+    let startX = 0;
+
+    day.addEventListener(
+      "touchstart",
+      (e) => {
+        startX = e.touches[0].clientX;
+      },
+      { passive: true },
+    );
+
+    day.addEventListener(
+      "touchend",
+      (e) => {
+        const endX = e.changedTouches[0].clientX;
+        swipe(day, endX - startX);
+      },
+      { passive: true },
+    );
+  });
+}
+attachDaySwipeEvents();
