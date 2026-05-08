@@ -183,12 +183,29 @@ function getSchedule1(reqNeed = false) {
         //fetch("http://127.0.0.1:8000/group", {headers: authHeaders})
         .then((response) => {
           if (!response.ok) throw new Error("Error: " + response.status);
+          else if (response.status === 401) {
+            
+            document.getElementById("alerter").style.display = "block";
+
+          document.getElementById("alerter").innerHTML =
+            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
+                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+                <h6>Давайте сделаем это сейчас:</h6>
+                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+          //
+          loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          throw new Error("Group not found!");
+          }
           return response.json();
         })
         .then((userGroup) => {
           if (userGroup !== null) {
             var Group = userGroup?.group_name;
-            if (Group !== null) {
+            if (Group !== null || Group !== "") {
               if (localStorage.getItem("userGroup") !== Group) {
                 localStorage.setItem("userGroup", Group);
               }
@@ -200,7 +217,7 @@ function getSchedule1(reqNeed = false) {
               });
               //return fetch("http://127.0.0.1:8000/schedule", {headers: authHeaders});
             }
-          }
+          } else {
           //console.log(userGroup)
           //console.log(Group);
           document.getElementById("alerter").style.display = "block";
@@ -216,7 +233,7 @@ function getSchedule1(reqNeed = false) {
           loader.style.display = "none";
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
-          throw new Error("Group not found!");
+          throw new Error("Group not found!");}
         })
         .then((resp) => {
           if (resp && resp.ok) {
