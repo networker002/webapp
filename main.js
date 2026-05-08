@@ -348,11 +348,11 @@ function getSchedule1(reqNeed = false) {
         teacherHide();
         dayParseOnline();
         attachDaySwipeEvents();
-        if (!document.querySelectorAll(".day").length || localStorage.getItem("schedule") === "Пока что пусто") {
-          showEmptySchedule();
-        } else {
-          hideEmptySchedule();
-        }
+        // if (!document.querySelectorAll(".day").length || localStorage.getItem("schedule") === "Пока что пусто") {
+        //   showEmptySchedule();
+        // } else {
+        //   hideEmptySchedule();
+        // }
       } else {
         getSchedule1(true);
       }
