@@ -1701,3 +1701,4 @@ function attachDaySwipeEvents() {
   });
 }
 
+attachDaySwipeEvents();
