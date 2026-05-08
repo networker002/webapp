@@ -203,6 +203,7 @@ function getSchedule1(reqNeed = false) {
           return response.json();
         })
         .then((userGroup) => {
+          console.log("206: "+userGroup);
           if (userGroup !== null) {
             var Group = userGroup?.group_name;
             if (Group !== null || Group !== "") {
