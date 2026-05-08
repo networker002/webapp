@@ -217,6 +217,23 @@ function getSchedule1(reqNeed = false) {
               });
               //return fetch("http://127.0.0.1:8000/schedule", {headers: authHeaders});
             }
+            else {
+          //console.log(userGroup)
+          //console.log(Group);
+          document.getElementById("alerter").style.display = "block";
+
+          document.getElementById("alerter").innerHTML =
+            `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
+                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+                <h6>Давайте сделаем это сейчас:</h6>
+                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+          //
+          loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          throw new Error("Group not found!");}
           } else {
           //console.log(userGroup)
           //console.log(Group);
