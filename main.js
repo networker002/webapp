@@ -201,8 +201,8 @@ function getSchedule1(reqNeed = false) {
               //return fetch("http://127.0.0.1:8000/schedule", {headers: authHeaders});
             }
           }
-          
-          console.log(userGroup)
+
+          console.log(userGroup);
           console.log(Group);
           document.getElementById("alerter").style.display = "block";
 
@@ -602,12 +602,13 @@ function hideRoomShown() {
   var message = document.getElementById("ctx-assistant-say");
   message.style.display = "none";
   var roomShown = true;
-  localStorage.setItem("roomShown", roomShown);}
+  localStorage.setItem("roomShown", roomShown);
+}
 
 let rr = true;
 let clickedAi = false;
 
-function upsSV(from=false, n=0) {
+function upsSV(from = false, n = 0) {
   let found = false;
   var ch = false;
   lm = new Map();
@@ -627,26 +628,67 @@ function upsSV(from=false, n=0) {
       СБ: "Суббота",
     };
 
+    btnRevMapping = {
+      Понедельник: "ПН",
+      Вторник: "ВТ",
+      Среда: "СР",
+      Четверг: "ЧТ",
+      Пятница: "ПТ",
+      Суббота: "СБ",
+    };
+
     btnMappingNext = {
-      "Понедельник": "Вторник",
-      "Вторник": "Среда",
-      "Среда": "Четверг",
-      "Четверг": "Пятница",
-      "Пятница": "Суббота",
-      "Суббота": "Понедельник",
+      Понедельник: "Вторник",
+      Вторник: "Среда",
+      Среда: "Четверг",
+      Четверг: "Пятница",
+      Пятница: "Суббота",
+      Суббота: "Понедельник",
     };
 
     btnMappingPrev = {
-      "Понедельник": "Суббота",
-      "Вторник": "Понедельник",
-      "Среда": "Вторник",
-      "Четверг": "Среда",
-      "Пятница": "Четверг",
-      "Суббота": "Пятница"
-    }
+      Понедельник: "Суббота",
+      Вторник: "Понедельник",
+      Среда: "Вторник",
+      Четверг: "Среда",
+      Пятница: "Четверг",
+      Суббота: "Пятница",
+    };
 
     if (from && n) {
-      var dnFrom = from.querySelector(".day-name").textContent.trim();
+      if (from.id !== "empty-container") {
+        var dnFrom = from.querySelector(".day-name").textContent.trim();
+      } else if (from.id === "empty-container") {
+        //console.log(0);
+        if (n < 0) {
+          var targetKey1 = btnMappingNext[btnMapping[nowBtn.innerHTML]];
+          //console.log(targetKey1);
+          var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
+            (btn) => btn.innerHTML.trim() === btnRevMapping[targetKey1],
+          );
+
+          if (nextBtn) {
+            nowBtn?.classList.remove("selected");
+            nextBtn.classList.add("selected");
+            nowBtn = nextBtn;
+            from.style.display = "none";
+          }
+        } else if (n > 0) {
+          var targetKey1 = btnMappingPrev[btnMapping[nowBtn.innerHTML]];
+          //console.log(targetKey1);
+          var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
+            (btn) => btn.innerHTML.trim() === btnRevMapping[targetKey1],
+          );
+
+          if (nextBtn) {
+            nowBtn?.classList.remove("selected");
+            nextBtn.classList.add("selected");
+            nowBtn = nextBtn;
+          }
+        }
+
+        upsSV();
+      }
       var swipeTarget = n > 0 ? btnMappingNext[dnFrom] : btnMappingPrev[dnFrom];
       if (swipeTarget) {
         var targetKey = Object.keys(btnMapping).find(
@@ -1208,7 +1250,8 @@ function CloseBG() {
     "popupBtnText 1s ease forwards";
   document.getElementById("event-input").style.animation =
     "popupBtnText2 1s ease forwards";
-  document.getElementById("event-input").style.animation = "popupBtnText2 1s ease forwards";
+  document.getElementById("event-input").style.animation =
+    "popupBtnText2 1s ease forwards";
   setTimeout(() => {
     document.getElementById("black-bg").style.display = "none";
     document.getElementById("event-input").style.display = "none";
@@ -1217,7 +1260,8 @@ function CloseBG() {
 }
 
 function CloseBG2() {
-  document.getElementById("black-bg").style.animation = "popupBtnText 1s ease forwards";
+  document.getElementById("black-bg").style.animation =
+    "popupBtnText 1s ease forwards";
   setTimeout(() => {
     document.getElementById("black-bg").style.display = "none";
     document.getElementById("black-bg").style.zIndex = "1999";
@@ -1274,7 +1318,7 @@ function saveTeacherData() {
   }
   function testLetters(str) {
     return /[a-zA-Zа-яА-ЯёЁ]/.test(str);
-}
+  }
 
   TitleEvent = escapeX(TitleEvent);
   ExtraEvent = escapeX(ExtraEvent);
@@ -1292,9 +1336,11 @@ function saveTeacherData() {
     setTimeout(() => {
       document.getElementById("save-event-btn").innerHTML = "Сохранить";
       document.getElementById("save-event-btn").style.pointerEvents = "all";
-      document.getElementById("save-event-btn").style.background = "var(--tg-theme-button-color)";
+      document.getElementById("save-event-btn").style.background =
+        "var(--tg-theme-button-color)";
 
-document.getElementById("save-event-btn").style.color = "var(--tg-theme-button-text-color)";
+      document.getElementById("save-event-btn").style.color =
+        "var(--tg-theme-button-text-color)";
       document.getElementById("save-event-btn").style.boxShadow = "none";
     }, 2000);
   } else {
@@ -1457,7 +1503,7 @@ function groupSet0() {
     tg.openTelegramLink(url);
 
     setTimeout(function () {
-      const authHeaders = {Authorization: tg.initData};
+      const authHeaders = { Authorization: tg.initData };
       fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
         .then((response) => {
           if (!response.ok) throw new Error("Error: " + response.status);
@@ -1560,7 +1606,6 @@ if (savedTheme) {
   setTheme(savedTheme);
 }
 
-
 document.getElementById("themes-btn").addEventListener("click", function () {
   document.getElementById("black-bg").style.animation = "none";
   document.getElementById("black-bg").style.animation = "opq1 1s ease";
@@ -1569,22 +1614,24 @@ document.getElementById("themes-btn").addEventListener("click", function () {
   openn("themes", "block");
 });
 
-document.querySelectorAll("#theme-container input[name='theme']").forEach((radio) => {
-  if (radio.id === savedTheme) {
-    radio.checked = true;
-  }
-  radio.addEventListener("change", function () {
-    console.log(this.id);
-    if (this.checked) {
-      setTheme(this.id);
-      localStorage.setItem("theme", this.id);
+document
+  .querySelectorAll("#theme-container input[name='theme']")
+  .forEach((radio) => {
+    if (radio.id === savedTheme) {
+      radio.checked = true;
     }
-    setTimeout(() => {
-      closee('themes');
-    CloseBG2();
-    }, 50);
+    radio.addEventListener("change", function () {
+      console.log(this.id);
+      if (this.checked) {
+        setTheme(this.id);
+        localStorage.setItem("theme", this.id);
+      }
+      setTimeout(() => {
+        closee("themes");
+        CloseBG2();
+      }, 50);
+    });
   });
-});
 
 const swipeDistance = 70;
 
@@ -1605,6 +1652,28 @@ function swipe(obj, rotation) {
   }
 }
 function attachDaySwipeEvents() {
+  var e = document.getElementById("empty-container");
+  if (e.dataset.swipeAttached === "true") return;
+  e.dataset.swipeAttached = "true";
+  let sX = 0;
+
+  e.addEventListener(
+    "touchstart",
+    (ev) => {
+      sX = ev.touches[0].clientX;
+    },
+    { passive: true },
+  );
+
+  e.addEventListener(
+    "touchend",
+    (ev) => {
+      const eX = ev.changedTouches[0].clientX;
+      swipe(e, eX - sX);
+    },
+    { passive: true },
+  );
+
   document.querySelectorAll(".day").forEach((day) => {
     if (day.dataset.swipeAttached === "true") return;
     day.dataset.swipeAttached = "true";
