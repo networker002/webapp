@@ -324,6 +324,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
+  attachDaySwipeEvents();
 }
 getSchedule1();
 
@@ -1548,6 +1549,7 @@ assistant.addEventListener("click", function () {
 });
 
 window.addEventListener("DOMContentLoaded", function () {
+  attachDaySwipeEvents();
   Chat.style.display = "none";
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
@@ -1699,4 +1701,3 @@ function attachDaySwipeEvents() {
   });
 }
 
-attachDaySwipeEvents();
