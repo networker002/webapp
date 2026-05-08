@@ -1549,11 +1549,10 @@ assistant.addEventListener("click", function () {
 });
 
 window.addEventListener("DOMContentLoaded", function () {
-  attachDaySwipeEvents();
   Chat.style.display = "none";
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
-});
+});а
 
 const Header = document.querySelector("header");
 window.addEventListener("scroll", function () {
