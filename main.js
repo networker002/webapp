@@ -301,11 +301,11 @@ function getSchedule1(reqNeed = false) {
             dayParseOnline();
             cacheData(container.innerHTML);
             attachDaySwipeEvents();
-            if (!document.querySelectorAll(".day").length) {
-              showEmptySchedule();
-            } else {
-              hideEmptySchedule();
-            }
+            // if (!document.querySelectorAll(".day").length) {
+            //   showEmptySchedule();
+            // } else {
+            //   hideEmptySchedule();
+            // }
             teacherHide();
           }
         })
