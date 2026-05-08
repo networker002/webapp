@@ -289,6 +289,12 @@ function getSchedule1(reqNeed = false) {
         if (nowBtn) upsSV();
         //console.log("cache!");
         var Group = localStorage.getItem("userGroup");
+        if (Group) {
+          const grElement = document.getElementById("gr");
+          const menuElement = document.getElementById("group-name-menu");
+          if (grElement) grElement.innerHTML = Group;
+          if (menuElement) menuElement.innerHTML = Group;
+        }
         teacherHide();
         dayParseOnline();
         attachDaySwipeEvents();
@@ -1450,7 +1456,8 @@ function groupSet0() {
     tg.openTelegramLink(url);
 
     setTimeout(function () {
-      fetch("https://boost.rorosin.ru/group/" + userId)
+      const authHeaders = {Authorization: tg.initData};
+      fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
         .then((response) => {
           if (!response.ok) throw new Error("Error: " + response.status);
           return response.json();
