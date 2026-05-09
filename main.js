@@ -266,10 +266,12 @@ function getSchedule1(reqNeed = false) {
             dayParseOnline();
             cacheData(container.innerHTML);
             if (!document.querySelectorAll(".day").length) {
+              upsSV();
             } else {
               hideEmptySchedule();
             }
             teacherHide();
+            if (nowBtn) upsSV();
             attachDaySwipeEvents();
           }
           
@@ -298,9 +300,10 @@ function getSchedule1(reqNeed = false) {
         }
         teacherHide();
         dayParseOnline();
+        if (nowBtn) upsSV();
         attachDaySwipeEvents();
         if (!document.querySelectorAll(".day").length) {
-          showEmptySchedule();
+          upsSV();
         } else {
           hideEmptySchedule();
         }
