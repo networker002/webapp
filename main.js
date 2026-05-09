@@ -827,7 +827,6 @@ updater.addEventListener("click", function () {
     });
     
     getSchedule1(true);
-    attachDaySwipeEvents();
 
     timeout = 5000;
     setTimeout(function () {
@@ -1665,52 +1664,57 @@ function swipe(obj, rotation) {
   }
 }
 function attachDaySwipeEvents() {
-  var e = document.getElementById("empty-container");
-  if (!e) return;
-  if (e.dataset.swipeAttached === "true") return;
-  e.dataset.swipeAttached = "true";
-  let sX = 0;
+    const ct = document.getElementById("schedule-container");
+    
+    ct.removeEventListener('touchstart', handleTouchStart);
+    ct.removeEventListener('touchend', handleTouchEnd);
 
-  e.addEventListener(
-    "touchstart",
-    (ev) => {
-      sX = ev.touches[0].clientX;
-    },
-    { passive: true },
-  );
+    let xDown = null;
+    let yDown = null;
 
-  e.addEventListener(
-    "touchend",
-    (ev) => {
-      const eX = ev.changedTouches[0].clientX;
-      swipe(e, eX - sX);
-    },
-    { passive: true },
-  );
+    function handleTouchStart(evt) {
+        xDown = evt.touches[0].clientX;
+        yDown = evt.touches[0].clientY;
+    }
 
-  document.querySelectorAll(".day").forEach((day) => {
-    if (day.dataset.swipeAttached === "true") return;
-    day.dataset.swipeAttached = "true";
+    function handleTouchEnd(evt) {
+        if (!xDown || !yDown) return;
 
-    let startX = 0;
+        let xUp = evt.changedTouches[0].clientX;
+        let yUp = evt.changedTouches[0].clientY;
 
-    day.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-      },
-      { passive: true },
-    );
+        let xDiff = xDown - xUp;
+        let yDiff = yDown - yUp;
 
-    day.addEventListener(
-      "touchend",
-      (e) => {
-        const endX = e.changedTouches[0].clientX;
-        swipe(day, endX - startX);
-      },
-      { passive: true },
-    );
-  });
+        if (Math.abs(xDiff) > 70 && Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (xDiff > 0) {
+                navigateDay(1);
+            } else {
+                navigateDay(-1);
+            }
+        }
+        xDown = null;
+        yDown = null;
+    }
+
+    ct.addEventListener('touchstart', handleTouchStart, {passive: true});
+    ct.addEventListener('touchend', handleTouchEnd, {passive: true});
+}
+
+function navigateDay(direction) {
+
+    const activeDay = document.querySelector(".day[style*='display: block']") 
+                   || document.getElementById("empty-container");
+    
+
+    upsSV(activeDay, direction);
+
+    document.getElementById("schedule-container").scrollTop = 0;
+    
+
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
 }
 
 attachDaySwipeEvents();
