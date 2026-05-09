@@ -265,14 +265,14 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
-            attachDaySwipeEvents();
             if (!document.querySelectorAll(".day").length) {
-              showEmptySchedule();
             } else {
               hideEmptySchedule();
             }
             teacherHide();
+            attachDaySwipeEvents();
           }
+          
         })
         .catch((err) => {
           console.error("Ошибка:", err);
@@ -280,6 +280,7 @@ function getSchedule1(reqNeed = false) {
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
         });
+
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
         container.innerHTML = cachedData;
@@ -323,7 +324,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  attachDaySwipeEvents();
+  
   
 }
 getSchedule1();
@@ -1557,7 +1558,6 @@ window.addEventListener("DOMContentLoaded", function () {
   Chat.style.display = "none";
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
-    attachDaySwipeEvents();
 });
 
 const Header = document.querySelector("header");
@@ -1640,7 +1640,7 @@ document
     });
   });
 
-const swipeDistance = 70;
+const swipeDistance = 50;
 
 function swipe(obj, rotation) {
   if (Math.abs(rotation) >= swipeDistance) {

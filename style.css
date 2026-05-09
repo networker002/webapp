@@ -222,6 +222,7 @@ body {
     scroll-behavior: smooth;
     font-family: "DejaVuSans";
     min-height: 100vh;
+    overflow-x: hidden !important;
 
     /*&::before {
         position: fixed;
@@ -242,8 +243,16 @@ body {
 
 }
 
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+    width: 100%;
+    position: relative;
+}
+
 .sun {
     position: relative;
+    pointer-events: none;
 
     &::after {
         position: fixed;
@@ -259,10 +268,11 @@ body {
         background: #ffffff7c;
         border-radius: 50%;
         filter: drop-shadow(2em .5em 6em #ff8411);
-        z-index: -100;
+        z-index: -1000;
         box-shadow: inset 0 0 2.5em #ff8411a2;
         display: var(--only-dark);
         opacity: .9;
+        pointer-events: none;
     }
 }
 
