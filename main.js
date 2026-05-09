@@ -1663,11 +1663,7 @@ function swipe(obj, rotation) {
     obj.style.transform = "";
   }
 }
-function attachDaySwipeEvents() {
-    const ct = document.getElementById("schedule-container");
-    
-    ct.removeEventListener('touchstart', handleTouchStart);
-    ct.removeEventListener('touchend', handleTouchEnd);
+
 
     let xDown = null;
     let yDown = null;
@@ -1697,6 +1693,13 @@ function attachDaySwipeEvents() {
         yDown = null;
     }
 
+    function attachDaySwipeEvents() {
+    const ct = document.getElementById("schedule-container");
+    if (!ct) return;
+
+    ct.removeEventListener('touchstart', handleTouchStart);
+    ct.removeEventListener('touchend', handleTouchEnd);
+
     ct.addEventListener('touchstart', handleTouchStart, {passive: true});
     ct.addEventListener('touchend', handleTouchEnd, {passive: true});
 }
@@ -1707,14 +1710,16 @@ function navigateDay(direction) {
                    || document.getElementById("empty-container");
     
 
-    upsSV(activeDay, direction);
-
-    document.getElementById("schedule-container").scrollTop = 0;
-    
-
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
+    if (activeDay) {
+        upsSV(activeDay, direction);
+        const ct = document.getElementById("schedule-container");
+        if (ct) ct.scrollTop = 0;
+        
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
     }
 }
 
 attachDaySwipeEvents();
+console.log("test" + 1)

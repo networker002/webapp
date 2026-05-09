@@ -695,11 +695,11 @@ header.scrolling {
     }
 }
 
-/* #schedule-container {
+#schedule-container {
     touch-action: pan-y;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
-    min-height: 40vh;
-} */
 
 .menu-display {
     position: fixed;
