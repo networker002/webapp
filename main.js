@@ -689,8 +689,7 @@ function upsSV(from = false, n = 0) {
           if (nextBtn) {
             nowBtn?.classList.remove("selected");
             nextBtn.classList.add("selected");
-            nowBtn.click();
-            return;
+            nowBtn = nextBtn;
           }
         }
 
@@ -824,7 +823,8 @@ updater.addEventListener("click", function () {
     upsSV();
     
     document.querySelectorAll(".day, #empty-container").forEach((el) => {
-      if (el) delete el.dataset.swipeAttached;
+      if (el) 
+      delete el.dataset.swipeAttached;
     });
     
     getSchedule1(true);
