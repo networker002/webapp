@@ -327,7 +327,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  
+  attachDaySwipeEvents();
   
 }
 getSchedule1();
@@ -1715,9 +1715,6 @@ function navigateDay(direction) {
         const ct = document.getElementById("schedule-container");
         if (ct) ct.scrollTop = 0;
         
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
     }
 }
 
