@@ -822,11 +822,12 @@ updater.addEventListener("click", function () {
     setTimeout(function () {
       al.style.display = "none";
     }, 1900);
+
     upsSV();
     
-    document.querySelectorAll(".day, #empty-container").forEach((el) => {
-      if (el) delete el.dataset.swipeAttached;
-    });
+    // document.querySelectorAll(".day, #empty-container").forEach((el) => {
+    //   if (el) delete el.dataset.swipeAttached;
+    // });
     
     getSchedule1(true);
     //attachDaySwipeEvents();
@@ -1653,16 +1654,24 @@ const swipeDistance = 50;
 function swipe(obj, rotation) {
   console.log("-"*25);
   console.log(obj);
+  if (obj.dataset.isSwiping === "true") return;
+
   if (Math.abs(rotation) >= swipeDistance) {
+
+    obj.dataset.isSwiping = "true"; 
+
     if (rotation < 0) {
       obj.style.transform = `translateX(-${window.innerWidth}px)`;
     } else {
       obj.style.transform = `translateX(${window.innerWidth}px)`;
     }
+    
     setTimeout(function () {
       obj.style.display = "none";
       upsSV(obj, rotation < 0 ? 1 : -1);
       obj.style.transform = "";
+
+      obj.dataset.isSwiping = "false"; 
     }, 300);
   } else {
     obj.style.transform = "";
