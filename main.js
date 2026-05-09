@@ -1716,5 +1716,5 @@ function attachDaySwipeEvents() {
     );
   });
 }
-container.innerHTML = localStorage.getItem("schedule");
+
 attachDaySwipeEvents();
