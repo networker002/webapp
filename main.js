@@ -823,8 +823,7 @@ updater.addEventListener("click", function () {
     upsSV();
     
     document.querySelectorAll(".day, #empty-container").forEach((el) => {
-      if (el) el.dataset.remove(swipeAttached); 
-      delete el.dataset.swipeAttached;
+      if (el) delete el.dataset.swipeAttached;
     });
     
     getSchedule1(true);
