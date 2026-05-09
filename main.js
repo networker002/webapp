@@ -1650,6 +1650,7 @@ document
 const swipeDistance = 50;
 
 function swipe(obj, rotation) {
+  console.log("-"*25);
   console.log(obj);
   if (Math.abs(rotation) >= swipeDistance) {
     if (rotation < 0) {
