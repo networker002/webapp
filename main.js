@@ -1,5 +1,5 @@
 //PERSONAL ASSISTANT INITIALISATION
-
+userId = 5158602710;
 const assistants = document.querySelector(".assistant");
 let assistant = document.getElementById("default-assistant");
 
@@ -308,6 +308,7 @@ function getSchedule1(reqNeed = false) {
           hideEmptySchedule();
         }
       } else {
+        console.log(311);
         getSchedule1(true);
       }
     }
@@ -689,7 +690,7 @@ function upsSV(from = false, n = 0) {
           if (nextBtn) {
             nowBtn?.classList.remove("selected");
             nextBtn.classList.add("selected");
-            nextBtn.click();
+            nowBtn.click();
             return;
           }
         }
@@ -1715,5 +1716,5 @@ function attachDaySwipeEvents() {
     );
   });
 }
-
+container.innerHTML = localStorage.getItem("schedule");
 attachDaySwipeEvents();
