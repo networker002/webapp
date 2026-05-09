@@ -265,11 +265,11 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
-            if (!document.querySelectorAll(".day").length) {
-              upsSV();
-            } else {
-              hideEmptySchedule();
-            }
+            // if (!document.querySelectorAll(".day").length) {
+            //   upsSV();
+            // } else {
+            //   hideEmptySchedule();
+            // }
             teacherHide();
             if (nowBtn) upsSV();
             attachDaySwipeEvents();
@@ -663,6 +663,7 @@ function upsSV(from = false, n = 0) {
     if (from && n) {
       if (from.id !== "empty-container") {
         var dnFrom = from.querySelector(".day-name").textContent.trim();
+        document.getElementById("empty-container").style.display = "none";
       } else if (from.id === "empty-container") {
         //console.log(0);
         if (n < 0) {
@@ -714,13 +715,13 @@ function upsSV(from = false, n = 0) {
 
     if (dayName === btnMapping[nowBtn.innerHTML]) {
       de.style.display = "block";
+      document.getElementById("empty-container").style.display = "none";
       found = true;
       ch = false;
       lm.set(de, ch);
       document
         .querySelectorAll(".teacher")
         .forEach((t) => (t.style.display = "none"));
-      document.getElementById("empty-container").style.display = "none";
       if (dayName === days[n]) {
         dayParseOnline();
       }
