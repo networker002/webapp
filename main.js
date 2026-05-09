@@ -689,7 +689,8 @@ function upsSV(from = false, n = 0) {
           if (nextBtn) {
             nowBtn?.classList.remove("selected");
             nextBtn.classList.add("selected");
-            nowBtn = nextBtn;
+            nextBtn.click();
+            return;
           }
         }
 
