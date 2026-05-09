@@ -827,6 +827,7 @@ updater.addEventListener("click", function () {
     });
     
     getSchedule1(true);
+    attachDaySwipeEvents();
 
     timeout = 5000;
     setTimeout(function () {
