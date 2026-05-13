@@ -231,11 +231,12 @@ function getSchedule1(reqNeed = false) {
               const items = data[1][day];
               console.log(day, items);
               if (!items || items?.length === 0) {
+                console.log("len = 0, empty");
                 newHTML += `
-                <div class='swiper-slide'>
-                  <div class='day' class='empty'>
+                <div class="swiper-slide">
+                  <div class="day" class="empty">
                     <h3 class="day-name">${day}</h3>
-                    <div id=empty-container>
+                    <div id="empty-container">
                       <div id="e-c">
                         <div class="sad-starry">
                           <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -303,7 +304,6 @@ function getSchedule1(reqNeed = false) {
                     </div>
                   </div>
                 </div>`;
-                continue;
               } 
               else {
                 newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
