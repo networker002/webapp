@@ -312,7 +312,7 @@ function getSchedule1(reqNeed = false) {
                     newHTML += `
                     <div class="lesson-row">
                       <h4 class="lesson">${item.time}</h4>
-                      <h6 class="time">${data[2][(item.time_code).toString()]}</h6>
+                      <h6 class="time">${data[2][(item.time_code).replace(",", " - ")]}</h6>
                       <span class="subject">${item.subject}</span>
                       <span class="room">(${item.room})</span>
                       <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
@@ -526,14 +526,14 @@ function cleanDaySchedule(dayElement) {
         : "";
 
     newHTML += `
-            <div class="lesson-row">
-                <h4 class="lesson">${l.num}</h4>
-                <h6 class="time">${l.time}</h6>
-                <button class="list-btn"></button>
-                <span class="subject">${l.name}</span>${roomsDisplay}
-                <div class="teacher"><h5 class="tname">${l.teacher}</h5></div>
-            </div>
-        `;
+      <div class="lesson-row">
+        <h4 class="lesson">${l.num}</h4>
+        <h6 class="time">${l.time}</h6>
+        <button class="list-btn"></button>
+        <span class="subject">${l.name}</span>${roomsDisplay}
+        <div class="teacher"><h5 class="tname">${l.teacher}</h5></div>
+      </div>
+    `;
   });
 
   dayElement.innerHTML = newHTML;
