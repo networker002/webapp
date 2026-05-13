@@ -1653,6 +1653,7 @@ function initSwiper() {
       } else {
         b.classList.remove("selected");
       }
+      nowBtn = b;
     });
   });
 }
