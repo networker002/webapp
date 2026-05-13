@@ -306,6 +306,7 @@ function getSchedule1(reqNeed = false) {
                   </div>
                 </div>
               </div>`;
+              console.log(newHTML);
               continue;
             } 
               newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
@@ -323,7 +324,7 @@ function getSchedule1(reqNeed = false) {
             newHTML += "</div></div>";
           }
           container.innerHTML = newHTML;
-            console.log(newHTML);
+            // console.log(newHTML);
             if (nowBtn) upsSV();
             const dayss = document.querySelectorAll(".day");
             dayss.forEach((DAY) => {
@@ -772,14 +773,11 @@ function upsSV () {
       cleanDaySchedule(de);
       de.dataset.cleaned = "true";
     }
-
-    //if (!ch[0]) {
-    //}
   });
 }
 
 var btns = document.querySelectorAll(".btnD");
-btns.forEach((btn) => {
+btns.forEach((btn, index) => {
   if (btn.innerHTML === daysShort[n]) {
     btn.classList.add("selected");
     nowBtn = btn;
@@ -790,9 +788,9 @@ btns.forEach((btn) => {
       nowBtn.classList.remove("selected");
     }
     btn.classList.add("selected");
+    document.querySelector(".swiper").swiper.slideTo(index);
     nowBtn = btn;
     upsSV();
-    //console.log(ch);
   });
 });
 
