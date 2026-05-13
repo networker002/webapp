@@ -257,7 +257,6 @@ function getSchedule1(reqNeed = false) {
             ]) {
               const items = data[1][day];
               if (!items || items?.length === 0) {
-                console.log(day, "empty");
                 newHTML += `
                 <div class="swiper-slide">
                   <div class="day" data-cleaned="true">
@@ -495,7 +494,6 @@ function cleanDaySchedule(dayElement) {
 
   const lessonsData = {};
   const dayNameEl = dayElement.querySelector(".day-name");
-  console.log(dayNameEl);
 
   const lessonHeaders = dayElement.querySelectorAll(".lesson");
 
@@ -1648,6 +1646,11 @@ function initSwiper() {
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   swiper.on("slideChange", (e) => {
     btns.forEach((b) => {
+      console.log(
+        swiper.realIndex + 1,
+        days[swiper.realIndex + 1],
+        btnRevMapping[days[swiper.realIndex + 1]],
+      );
       if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
         b.classList.add("selected");
       } else {
