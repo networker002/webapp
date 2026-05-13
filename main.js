@@ -1737,4 +1737,4 @@ function initSwiper() {
     loop: true
   });
 }
-initSwiper();
+window.addEventListener("DOMContentLoaded", initSwiper());
