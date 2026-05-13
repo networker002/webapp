@@ -1645,6 +1645,6 @@ function initSwiper() {
     direction: "horizontal",
     loop: true,
   });
-  swiper.slideToLoop(n);
+  swiper.slideToLoop(n > 0 ? n - 1 : 0);
 }
 window.addEventListener("DOMContentLoaded", initSwiper());
