@@ -233,12 +233,12 @@ function getSchedule1(reqNeed = false) {
         })
         .then((data) => {
           if (data) {
-            let newHTML = "<div class='swiper'><div class='swiper-wrapper'>";
+            let newHTML = "<div class='swiper-wrapper'>";
             let dayType = data[0];
             for (const day of ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"]) {
             const items = data[1][day];
             if (!items || items.length === 0) {
-              newHTML += `<div class='swiper-slide'>
+              newHTML += `
                             <div class='day'>
                               <div id=empty-container>
                                 <div id="e-c">
@@ -308,10 +308,10 @@ function getSchedule1(reqNeed = false) {
                                 </div>
                               </div>
                             </div>
-                          </div>`;
+                          `;
                           continue;
             } 
-              newHTML += `<div class="swiper-slide"><div class="day"><div class="day-name">${day}</div>`;
+              newHTML += `<div class="day"><div class="day-name">${day}</div>`;
 
             items.forEach((item) => {
                 newHTML += `<div class="lesson-row">
@@ -322,9 +322,9 @@ function getSchedule1(reqNeed = false) {
                 <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
                 </div>`
             });
-            newHTML += "</div></div>";
+            newHTML += "</div>";
           }
-          newHTML += "</div></div>";
+          newHTML += "</div>";
           container.innerHTML = newHTML;
             console.log(newHTML);
             if (nowBtn) upsSV();
@@ -1731,8 +1731,8 @@ document
 function initSwiper() {
   var swiperEl = document.querySelector(".swiper"); 
   var wrapper = swiperEl.querySelector("#schedule-container"); 
-  wrapper.classlist.add("swiper-wrapper");
-  wrapper.querySelectorAll(".day").forEach(el => {el.classlist.add("swiper-slide")})
+  wrapper.classList.add("swiper-wrapper");
+  wrapper.querySelectorAll(".day").forEach(el => {el.classList.add("swiper-slide")})
   const swiper = new Swiper(".swiper", {
     direction: 'horizontal',
     loop: true
