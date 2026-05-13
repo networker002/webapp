@@ -1647,73 +1647,13 @@ document
     });
   });
 
-const swipeDistance = 50;
-
-function swipe(obj, rotation) {
-  console.log("-"*25);
-  console.log(obj);
-  if (Math.abs(rotation) >= swipeDistance) {
-    if (rotation < 0) {
-      obj.style.transform = `translateX(-${window.innerWidth}px)`;
-    } else {
-      obj.style.transform = `translateX(${window.innerWidth}px)`;
-    }
-    setTimeout(function () {
-      obj.style.display = "none";
-      upsSV(obj, rotation < 0 ? 1 : -1);
-      obj.style.transform = "";
-    }, 300);
-  } else {
-    obj.style.transform = "";
-  }
-}
-function attachDaySwipeEvents() {
-  var e = document.getElementById("empty-container");
-  if (!e) return;
-  if (e.dataset.swipeAttached === "true") return;
-  e.dataset.swipeAttached = "true";
-  let sX = 0;
-
-  e.addEventListener(
-    "touchstart",
-    (ev) => {
-      sX = ev.touches[0].clientX;
-    },
-    { passive: true },
-  );
-
-  e.addEventListener(
-    "touchend",
-    (ev) => {
-      const eX = ev.changedTouches[0].clientX;
-      swipe(e, eX - sX);
-    },
-    { passive: true },
-  );
-
-  document.querySelectorAll(".day").forEach((day) => {
-    if (day.dataset.swipeAttached === "true") return;
-    day.dataset.swipeAttached = "true";
-
-    let startX = 0;
-
-    day.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-      },
-      { passive: true },
-    );
-
-    day.addEventListener(
-      "touchend",
-      (e) => {
-        const endX = e.changedTouches[0].clientX;
-        swipe(day, endX - startX);
-      },
-      { passive: true },
-    );
+function initSwiper() {
+  var swiperEl = document.querySelector(".swiper"); 
+  var wrapper = swiperEl.querySelector("#schedule-container"); 
+  wrapper.classlist.add("swiper-wrapper");
+  wrapper.querySelectorAll(".day").forEach(el => {el.classlist.add("swiper-slide")})
+  const swiper = new Swiper(".swiper", {
+    
   });
 }
-
-attachDaySwipeEvents();
+initSwiper()
