@@ -229,6 +229,7 @@ function getSchedule1(reqNeed = false) {
             let dayType = data[0];
             for (const day of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
             const items = data[1][day];
+            console.log(day, items);
             if (!items || items.length === 0) {
               newHTML += `
               <div class='swiper-slide'>
@@ -302,7 +303,6 @@ function getSchedule1(reqNeed = false) {
                   </div>
                 </div>
               </div>`;
-              console.log(newHTML);
               continue;
             } 
               newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
