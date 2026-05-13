@@ -700,12 +700,17 @@ let rr = true;
 let clickedAi = false;
 
 function upsSV () {
+  if (!nowBtn) return;
   let found = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
   DAYS.forEach((de) => {
-    var dayName = de.querySelector(".day-name")?.textContent.trim();
+    try
+    {var dayName = de.querySelector(".day-name")?.textContent.trim();}
+    catch {
+      var dayName = de.querySelector(".day-name").textContent.trim();
+    }
     var dayLesson = de.querySelector(".lesson");
     var dayLessons = de.querySelectorAll(".lesson");
 
@@ -716,6 +721,7 @@ function upsSV () {
       ЧТ: "Четверг",
       ПТ: "Пятница",
       СБ: "Суббота",
+      ВС: "Воскресенье",
     };
 
     btnRevMapping = {
@@ -725,9 +731,13 @@ function upsSV () {
       Четверг: "ЧТ",
       Пятница: "ПТ",
       Суббота: "СБ",
+      Воскресенье: "ВС",
     };
 
-    if (dayName === btnMapping[nowBtn.innerHTML]) {
+    const currentDay = nowBtn?.innerHTML ? btnMapping[nowBtn.innerHTML] : null;
+    if (!currentDay) return;
+
+    if (dayName === currentDay) {
       found = true;
       ch = false;
       lm.set(de, ch);
