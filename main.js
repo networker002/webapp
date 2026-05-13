@@ -231,7 +231,7 @@ function getSchedule1(reqNeed = false) {
               const items = data[1][day];
               console.log(day, items);
               if (!items || items?.length === 0) {
-                console.log("len = 0, empty");
+                console.log(day, "len = 0, empty");
                 newHTML += `
                 <div class="swiper-slide">
                   <div class="day" class="empty">

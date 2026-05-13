@@ -334,12 +334,9 @@ header.scrolling {
 
 .day {
     background: var(--day-card-bg);
-    border-radius: 2em;
-    padding: .5em;
-    padding-bottom: 1em;
+    border-radius: 1em;
+    padding: 1em;
     font-family: "DejaVuSans";
-    padding-left: 1em;
-    padding-right: 1em;
     margin-left: 1em;
     margin-right: 1em;
     margin-bottom: 2em;
@@ -348,8 +345,6 @@ header.scrolling {
     user-select: none;
     overflow-x: hidden;
     transition: transform cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
-    /* backdrop-filter: blur(8px) brightness(50%); */
-    /* box-shadow: 2px 6px 8px var(--only-light-color); */
 
     .day-name {
         text-align: center;
@@ -997,9 +992,6 @@ h4>input {
 
 }
 
-
-
-#empty-container,
 #unauthorized-container {
     display: none;
     justify-content: center;
@@ -1012,7 +1004,15 @@ h4>input {
 }
 
 #empty-container {
-    padding-bottom: 8em;
+    justify-content: center;
+    flex-direction: row;
+    color: var(--over-color);
+    margin: auto;
+    margin-top: 1em;
+    padding-top: 2em;
+    border-top: 2px solid var(--lessons-b-c);
+    text-align: center;
+    touch-action: pan-y;
 }
 
 #e-c {
