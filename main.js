@@ -235,8 +235,9 @@ function getSchedule1(reqNeed = false) {
             const items = data[1][day];
             if (!items || items.length === 0) {
               newHTML += `
-              <div class='swiper-slider'>
+              <div class='swiper-slide'>
                 <div class='day'>
+                  <h3 class="day-name">${day}</h3>
                   <div id=empty-container>
                     <div id="e-c">
                       <div class="sad-starry">
@@ -354,11 +355,6 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
-            // if (!document.querySelectorAll(".day").length) {
-            //   upsSV();
-            // } else {
-            //   hideEmptySchedule();
-            // }
             teacherHide();
             if (nowBtn) upsSV();
           }
@@ -391,8 +387,6 @@ function getSchedule1(reqNeed = false) {
         if (nowBtn) upsSV();
         if (!document.querySelectorAll(".day").length) {
           upsSV();
-        } else {
-          hideEmptySchedule();
         }
       } else {
         getSchedule1(true);
@@ -782,12 +776,6 @@ function upsSV () {
     //if (!ch[0]) {
     //}
   });
-}
-
-function hideEmptySchedule() {
-  const empty = document.getElementById("empty-container");
-  if (!empty) return;
-  empty.style.display = "none";
 }
 
 var btns = document.querySelectorAll(".btnD");
