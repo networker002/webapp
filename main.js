@@ -312,7 +312,7 @@ function getSchedule1(reqNeed = false) {
                     newHTML += `
                     <div class="lesson-row">
                       <h4 class="lesson">${item.time}</h4>
-                      <h6 class="time">${data[2][(item.time_code).replace(",", " - ")]}</h6>
+                      <h6 class="time">${data[2][item.time_code]}</h6>
                       <span class="subject">${item.subject}</span>
                       <span class="room">(${item.room})</span>
                       <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
