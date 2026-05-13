@@ -310,15 +310,16 @@ function getSchedule1(reqNeed = false) {
               newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
 
             items.forEach((item) => {
-                newHTML += `<div class="lesson-row">
-                <h4 class="lesson">${item.time}</h4>
-                <h6 class="time">${data[2][(item.time_code).toString()]}</h6>
-                <span class="subject">${item.subject}</span>
-                <span class="room">(${item.room})</span>
-                <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
+                newHTML += `
+                <div class="lesson-row">
+                  <h4 class="lesson">${item.time}</h4>
+                  <h6 class="time">${data[2][(item.time_code).toString()]}</h6>
+                  <span class="subject">${item.subject}</span>
+                  <span class="room">(${item.room})</span>
+                  <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
                 </div>`
             });
-            newHTML += "</div>";
+            newHTML += "</div></div>";
           }
           container.innerHTML = newHTML;
             console.log(newHTML);
