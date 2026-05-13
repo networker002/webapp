@@ -1648,7 +1648,6 @@ function initSwiper() {
   var swiperEl = document.querySelector(".swiper"); 
   var wrapper = swiperEl.querySelector("#schedule-container"); 
   wrapper.classList.add("swiper-wrapper");
-  wrapper.querySelectorAll(".day").forEach(el => {el.classList.add("swiper-slide")})
   const swiper = new Swiper(".swiper", {
     direction: 'horizontal',
     loop: true
