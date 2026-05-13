@@ -495,6 +495,7 @@ function cleanDaySchedule(dayElement) {
 
   const lessonsData = {};
   const dayNameEl = dayElement.querySelector(".day-name");
+  console.log(dayNameEl);
 
   const lessonHeaders = dayElement.querySelectorAll(".lesson");
 
@@ -767,7 +768,7 @@ function upsSV() {
       ch = true;
     }
 
-    if (!de.dataset.cleaned) {
+    if (!de.dataset.cleaned && !de.classList.contains("empty")) {
       cleanDaySchedule(de);
       de.dataset.cleaned = "true";
     }
