@@ -236,7 +236,7 @@ function getSchedule1(reqNeed = false) {
             if (!items || items.length === 0) {
               newHTML += `
               <div class='swiper-slide'>
-                <div class='day'>
+                <div class='day' class='empty'>
                   <h3 class="day-name">${day}</h3>
                   <div id=empty-container>
                     <div id="e-c">
