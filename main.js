@@ -611,12 +611,11 @@ function hideRoomShown() {
 let rr = true;
 let clickedAi = false;
 
-function upsSV(from = false, n = 0) {
+function upsSV) {
   let found = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
-  document.getElementById("empty-container").style.display = "none";
   DAYS.forEach((de) => {
     var dayName = de.querySelector(".day-name")?.textContent.trim();
     var dayLesson = de.querySelector(".lesson");
@@ -640,80 +639,7 @@ function upsSV(from = false, n = 0) {
       Суббота: "СБ",
     };
 
-    btnMappingNext = {
-      Понедельник: "Вторник",
-      Вторник: "Среда",
-      Среда: "Четверг",
-      Четверг: "Пятница",
-      Пятница: "Суббота",
-      Суббота: "Понедельник",
-    };
-
-    btnMappingPrev = {
-      Понедельник: "Суббота",
-      Вторник: "Понедельник",
-      Среда: "Вторник",
-      Четверг: "Среда",
-      Пятница: "Четверг",
-      Суббота: "Пятница",
-    };
-
-    if (from && n) {
-      if (from.id !== "empty-container") {
-        var dnFrom = from.querySelector(".day-name").textContent.trim();
-        document.getElementById("empty-container").style.display = "none";
-      } else if (from.id === "empty-container") {
-        //console.log(0);
-        if (n < 0) {
-          var targetKey1 = btnMappingNext[btnMapping[nowBtn.innerHTML]];
-          //console.log(targetKey1);
-          var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
-            (btn) => btn.innerHTML.trim() === btnRevMapping[targetKey1],
-          );
-
-          if (nextBtn) {
-            nowBtn?.classList.remove("selected");
-            nextBtn.classList.add("selected");
-            nowBtn = nextBtn;
-            from.style.display = "none";
-          }
-        } else if (n > 0) {
-          var targetKey1 = btnMappingPrev[btnMapping[nowBtn.innerHTML]];
-          //console.log(targetKey1);
-          var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
-            (btn) => btn.innerHTML.trim() === btnRevMapping[targetKey1],
-          );
-
-          if (nextBtn) {
-            nowBtn?.classList.remove("selected");
-            nextBtn.classList.add("selected");
-            nowBtn = nextBtn;
-          }
-        }
-
-        upsSV();
-      }
-      var swipeTarget = n > 0 ? btnMappingNext[dnFrom] : btnMappingPrev[dnFrom];
-      if (swipeTarget) {
-        var targetKey = Object.keys(btnMapping).find(
-          (key) => btnMapping[key] === swipeTarget,
-        );
-        if (targetKey) {
-          var nextBtn = Array.from(document.querySelectorAll(".btnD")).find(
-            (btn) => btn.innerHTML.trim() === targetKey,
-          );
-          if (nextBtn) {
-            nowBtn?.classList.remove("selected");
-            nextBtn.classList.add("selected");
-            nowBtn = nextBtn;
-          }
-        }
-      }
-    }
-
     if (dayName === btnMapping[nowBtn.innerHTML]) {
-      de.style.display = "block";
-      document.getElementById("empty-container").style.display = "none";
       found = true;
       ch = false;
       lm.set(de, ch);
@@ -746,7 +672,6 @@ function upsSV(from = false, n = 0) {
         message.style.display = "none";
       }
     } else {
-      de.style.display = "none";
       ch = true;
     }
 
@@ -760,12 +685,77 @@ function upsSV(from = false, n = 0) {
   });
 
   if (!found && !document.querySelector(".skeleton")) {
-    document.getElementById("empty-container").style.display = "flex";
-    document.getElementById("empty-container").style.animation =
-      "nothingFly 1s ease";
-  } else {
-    document.getElementById("empty-container").style.display = "none";
-  }
+    const newDay = new HTMLElement("div"); 
+    newDay.outerHTML = `
+    <div id="empty-container">
+            <div id="e-c">
+                <div class="sad-starry">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g filter="url(#filter0_i_20_85)">
+                            <path
+                                d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
+                                fill="url(#paint0_linear_20_85)" />
+                        </g>
+                        <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_20_85)" />
+                        <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_20_85)" />
+                        <circle cx="41" cy="28.5" r="4" fill="black" />
+                        <circle cx="39" cy="26.5" r="2" fill="white" />
+                        <circle cx="23" cy="28.5" r="4" fill="black" />
+                        <circle cx="21" cy="26.5" r="2" fill="white" />
+                        <g filter="url(#filter1_i_20_85)">
+                            <path
+                                d="M32.5371 37.6855H32.7812C34.1419 37.6855 35.3789 37.8255 36.4922 38.1055C37.612 38.3919 38.5918 38.7695 39.4316 39.2383C40.278 39.7135 40.9811 40.2376 41.541 40.8105C42.1009 41.3835 42.5013 41.9596 42.7422 42.5391L41.1895 43.125C40.916 42.7539 40.5449 42.3926 40.0762 42.041C39.6139 41.696 39.041 41.3802 38.3574 41.0938C37.6738 40.8138 36.873 40.5892 35.9551 40.4199C35.0371 40.2572 33.9857 40.1758 32.8008 40.1758H32.5176C31.3327 40.1758 30.2812 40.2572 29.3633 40.4199C28.4453 40.5892 27.6445 40.8138 26.9609 41.0938C26.2773 41.3802 25.7012 41.696 25.2324 42.041C24.7572 42.3926 24.3828 42.7539 24.1094 43.125L22.5762 42.5391C22.8236 41.9596 23.2272 41.3835 23.7871 40.8105C24.3405 40.2376 25.0404 39.7135 25.8867 39.2383C26.7266 38.7695 27.7031 38.3919 28.8164 38.1055C29.9362 37.8255 31.1764 37.6855 32.5371 37.6855Z"
+                                fill="#996402" fill-opacity="0.49" />
+                        </g>
+                        <defs>
+                            <filter id="filter0_i_20_85" x="6.18713" y="5.27429" width="55.6257" height="58.8802"
+                                filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix"
+                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                <feOffset dx="4" dy="9" />
+                                <feGaussianBlur stdDeviation="6.1" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85" />
+                            </filter>
+                            <filter id="filter1_i_20_85" x="22.5762" y="37.6855" width="20.166" height="6.13945"
+                                filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix"
+                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                <feOffset dy="1" />
+                                <feGaussianBlur stdDeviation="0.35" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_20_85" />
+                            </filter>
+                            <linearGradient id="paint0_linear_20_85" x1="32" y1="0" x2="32" y2="64"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FFC404" />
+                                <stop offset="1" stop-color="#996402" />
+                            </linearGradient>
+                            <linearGradient id="paint1_linear_20_85" x1="23" y1="23.5" x2="23" y2="33.5"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#D8C3BD" />
+                                <stop offset="1" stop-color="#DBDBDB" />
+                            </linearGradient>
+                            <linearGradient id="paint2_linear_20_85" x1="41" y1="23.5" x2="41" y2="33.5"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#D8C3BD" />
+                                <stop offset="1" stop-color="#DBDBDB" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                </div>
+                <h1>Пусто</h1>
+            </div>
+        </div>`;
+    document.querySelector("#schedule-container").append(newDay);
+  } 
 }
 
 function hideEmptySchedule() {
