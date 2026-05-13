@@ -256,12 +256,11 @@ function getSchedule1(reqNeed = false) {
               "Суббота",
             ]) {
               const items = data[1][day];
-              console.log(day, items);
               if (!items || items?.length === 0) {
-                console.log(day, "len = 0, empty");
+                console.log(day, "empty");
                 newHTML += `
                 <div class="swiper-slide">
-                  <div class="day" class="empty">
+                  <div class="day" data-cleaned="true">
                     <h3 class="day-name">${day}</h3>
                     <div id="empty-container">
                       <div id="e-c">
