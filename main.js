@@ -233,7 +233,7 @@ function getSchedule1(reqNeed = false) {
         })
         .then((data) => {
           if (data) {
-            let newHTML = "<div class='swiper-wrapper'>";
+            let newHTML = "";
             let dayType = data[0];
             for (const day of ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"]) {
             const items = data[1][day];
@@ -324,7 +324,6 @@ function getSchedule1(reqNeed = false) {
             });
             newHTML += "</div>";
           }
-          newHTML += "</div>";
           container.innerHTML = newHTML;
             console.log(newHTML);
             if (nowBtn) upsSV();
