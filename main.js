@@ -780,7 +780,7 @@ btns.forEach((btn, index) => {
       nowBtn.classList.remove("selected");
     }
     btn.classList.add("selected");
-    document.querySelector(".swiper").swiper.slideTo(index);
+    console.log(btn, index, document.querySelector(".swiper").swiper.slideTo(index));
     nowBtn = btn;
     upsSV();
   });
