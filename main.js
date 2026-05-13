@@ -203,11 +203,11 @@ function getSchedule1(reqNeed = false) {
 
           document.getElementById("alerter").innerHTML =
             `<h1 style="color: var(--tg-theme-text-color);">Неизвестный пользователь</h1>
-                <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-                <h6>Давайте сделаем это сейчас:</h6>
-                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-                <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-                <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+            <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+            <h6>Давайте сделаем это сейчас:</h6>
+            <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
           //
           loader.style.display = "none";
           loaderContainer.style.display = "none";
@@ -216,13 +216,9 @@ function getSchedule1(reqNeed = false) {
         })
         .then((resp) => {
           if (resp && resp.ok) {
-            //let messageEnd = Date.now();
             loader.style.display = "none";
             loaderContainer.style.display = "none";
             assistant.style.display = "block";
-
-            //message_start = message_start + (messageEnd - forMessageFrom - message_start);
-            //console.log(messageEnd - forMessageFrom );
 
             return resp.json();
           }
@@ -231,7 +227,7 @@ function getSchedule1(reqNeed = false) {
           if (data) {
             let newHTML = "";
             let dayType = data[0];
-            for (const day of ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"]) {
+            for (const day of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
             const items = data[1][day];
             if (!items || items.length === 0) {
               newHTML += `
@@ -334,7 +330,6 @@ function getSchedule1(reqNeed = false) {
               });
 
               var rooms = DAY.querySelectorAll(".room");
-              //rooms.forEach((r) => {console.log(r)});
 
               for (var i = 0; i < rooms.length; i++) {
                 try {
@@ -342,9 +337,6 @@ function getSchedule1(reqNeed = false) {
                     rooms[i].innerHTML.toString()[1] !==
                     rooms[i + 1].innerHTML.toString()[1]
                   ) {
-                    //console.log(rooms[i].innerHTML.toString()[1]);
-                    //console.log(rooms[i+1].innerHTML.toString()[1]);
-                    //console.log(rooms[i].parentElement.parentElement.style.display);
                     rooms[i].style.color = "yellow";
                     rooms[i].classList.add("changing-rooms");
                     rooms[i + 1].classList.add("changing-rooms");
@@ -375,7 +367,6 @@ function getSchedule1(reqNeed = false) {
         loaderContainer.style.display = "none";
         assistant.style.display = "block";
         if (nowBtn) upsSV();
-        //console.log("cache!");
         var Group = localStorage.getItem("userGroup");
         if (Group) {
           const grElement = document.getElementById("gr");
@@ -394,17 +385,16 @@ function getSchedule1(reqNeed = false) {
       }
     }
   } else {
-    //console.warn("userId не определен, запрос отменен.");
     document.getElementById("alerter").style.display = "block";
 
     document.getElementById("alerter").innerHTML =
       `<h1 style="color: #fff;">Неизвестный пользователь</h1>
-        <h3>Вы еще не зарегистрировались в нашей системе!</h3>
-        <h6>Давайте сделаем это сейчас:</h6>
-        <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-        <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
-        <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-    //
+      <h3>Вы еще не зарегистрировались в нашей системе!</h3>
+      <h6>Давайте сделаем это сейчас:</h6>
+      <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+      <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+      <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+
     loader.style.display = "none";
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
