@@ -1648,11 +1648,6 @@ function initSwiper() {
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   swiper.on("slideChange", (e) => {
     btns.forEach((b) => {
-      console.log(
-        swiper.realIndex + 1,
-        days[swiper.realIndex + 1],
-        btnRevMapping[days[swiper.realIndex + 1]],
-      );
       if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
         b.classList.add("selected");
       } else {
