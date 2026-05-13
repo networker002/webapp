@@ -802,32 +802,33 @@ burgerBtn.addEventListener("click", function () {
 
 let timeout = 0;
 updater.addEventListener("click", function () {
-  if (timeout === 0) {
-    if (message.style.display === "block") {
-      message.style.display = "none";
-      setTimeout(function () {
-        message.style.display = "block";
-      }, 2000);
-    }
-    r += 360;
-    updater.style.transform = `rotate(${r}deg)`;
-    var al = document.getElementById("fast-alert");
-    al.style.display = "flex";
-    al.style.animation = "flyUP 2s normal";
-    setTimeout(function () {
-      al.style.display = "none";
-    }, 1900);
-    upsSV();
+  window.location.reload();
+  // if (timeout === 0) {
+  //   if (message.style.display === "block") {
+  //     message.style.display = "none";
+  //     setTimeout(function () {
+  //       message.style.display = "block";
+  //     }, 2000);
+  //   }
+  //   r += 360;
+  //   updater.style.transform = `rotate(${r}deg)`;
+  //   var al = document.getElementById("fast-alert");
+  //   al.style.display = "flex";
+  //   al.style.animation = "flyUP 2s normal";
+  //   setTimeout(function () {
+  //     al.style.display = "none";
+  //   }, 1900);
+  //   upsSV();
 
-    getSchedule1(true);
+  //   getSchedule1(true);
 
-    document.querySelector(".swiper").swiper.realIndex = 0;
+  //   document.querySelector(".swiper").swiper.realIndex = 0;
 
-    timeout = 5000;
-    setTimeout(function () {
-      timeout = 0;
-    }, 5000);
-  }
+  //   timeout = 5000;
+  //   setTimeout(function () {
+  //     timeout = 0;
+  //   }, 5000);
+  // }
 });
 
 //var burger = document.getElementById("burger-menu");
