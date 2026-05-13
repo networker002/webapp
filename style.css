@@ -333,7 +333,6 @@ header.scrolling {
 
 
 .day {
-    display: none;
     background: var(--day-card-bg);
     border-radius: 2em;
     padding: .5em;
