@@ -490,6 +490,10 @@ function dayParseOnline() {
 }
 
 function cleanDaySchedule(dayElement) {
+  if (dayElement.classList.contains("empty")) {
+    return
+  }
+
   const lessonsData = {};
   const dayNameEl = dayElement.querySelector(".day-name");
 
