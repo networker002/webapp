@@ -489,7 +489,7 @@ function dayParseOnline() {
 
 function cleanDaySchedule(dayElement) {
   if (dayElement.classList.contains("empty")) {
-    return
+    return;
   }
 
   const lessonsData = {};
@@ -820,7 +820,8 @@ updater.addEventListener("click", function () {
     upsSV();
 
     getSchedule1(true);
-    //attachDaySwipeEvents();
+
+    document.querySelector(".swiper").swiper.realIndex = 0;
 
     timeout = 5000;
     setTimeout(function () {
