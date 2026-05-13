@@ -786,7 +786,7 @@ btns.forEach((btn, index) => {
     console.log(
       btn,
       index,
-      document.querySelector(".swiper").swiper.slideTo(index),
+      document.querySelector(".swiper").swiper.slideToLoop(index),
     );
     nowBtn = btn;
     upsSV();
@@ -1645,5 +1645,6 @@ function initSwiper() {
     direction: "horizontal",
     loop: true,
   });
+  swiper.slideToLoop(n);
 }
 window.addEventListener("DOMContentLoaded", initSwiper());
