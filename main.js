@@ -25,6 +25,26 @@ let msgS = [
 let timeouts = [];
 let message_start = 5000;
 
+const btnMapping = {
+  ПН: "Понедельник",
+  ВТ: "Вторник",
+  СР: "Среда",
+  ЧТ: "Четверг",
+  ПТ: "Пятница",
+  СБ: "Суббота",
+  ВС: "Воскресенье",
+};
+
+const btnRevMapping = {
+  Понедельник: "ПН",
+  Вторник: "ВТ",
+  Среда: "СР",
+  Четверг: "ЧТ",
+  Пятница: "ПТ",
+  Суббота: "СБ",
+  Воскресенье: "ВС",
+};
+
 message.style.display = "none";
 const initialDelay = setTimeout(function () {
   message.style.display = "block";
@@ -227,7 +247,14 @@ function getSchedule1(reqNeed = false) {
           if (data) {
             let newHTML = "";
             let dayType = data[0];
-            for (const day of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
+            for (const day of [
+              "Понедельник",
+              "Вторник",
+              "Среда",
+              "Четверг",
+              "Пятница",
+              "Суббота",
+            ]) {
               const items = data[1][day];
               console.log(day, items);
               if (!items || items?.length === 0) {
@@ -304,19 +331,18 @@ function getSchedule1(reqNeed = false) {
                     </div>
                   </div>
                 </div>`;
-              } 
-              else {
+              } else {
                 newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
 
                 items.forEach((item) => {
-                    newHTML += `
+                  newHTML += `
                     <div class="lesson-row">
                       <h4 class="lesson">${item.time}</h4>
-                      <h6 class="time">${(data[2][item.time_code]).toString().replace(",", " - ")}</h6>
+                      <h6 class="time">${data[2][item.time_code].toString().replace(",", " - ")}</h6>
                       <span class="subject">${item.subject}</span>
                       <span class="room">(${item.room})</span>
                       <div class="teacher"><h5 class="tname">${item.teacher}</h5></div>
-                    </div>`
+                    </div>`;
                 });
 
                 newHTML += "</div></div>";
@@ -361,7 +387,6 @@ function getSchedule1(reqNeed = false) {
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
         });
-
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
         container.innerHTML = cachedData;
@@ -401,8 +426,6 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  
-  
 }
 getSchedule1();
 
@@ -687,40 +710,20 @@ function hideRoomShown() {
 let rr = true;
 let clickedAi = false;
 
-function upsSV () {
+function upsSV() {
   if (!nowBtn) return;
   let found = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
   DAYS.forEach((de) => {
-    try
-    {var dayName = de.querySelector(".day-name")?.textContent.trim();}
-    catch {
+    try {
+      var dayName = de.querySelector(".day-name")?.textContent.trim();
+    } catch {
       var dayName = de.querySelector(".day-name").textContent.trim();
     }
     var dayLesson = de.querySelector(".lesson");
     var dayLessons = de.querySelectorAll(".lesson");
-
-    btnMapping = {
-      ПН: "Понедельник",
-      ВТ: "Вторник",
-      СР: "Среда",
-      ЧТ: "Четверг",
-      ПТ: "Пятница",
-      СБ: "Суббота",
-      ВС: "Воскресенье",
-    };
-
-    btnRevMapping = {
-      Понедельник: "ПН",
-      Вторник: "ВТ",
-      Среда: "СР",
-      Четверг: "ЧТ",
-      Пятница: "ПТ",
-      Суббота: "СБ",
-      Воскресенье: "ВС",
-    };
 
     const currentDay = nowBtn?.innerHTML ? btnMapping[nowBtn.innerHTML] : null;
     if (!currentDay) return;
@@ -780,7 +783,11 @@ btns.forEach((btn, index) => {
       nowBtn.classList.remove("selected");
     }
     btn.classList.add("selected");
-    console.log(btn, index, document.querySelector(".swiper").swiper.slideTo(index));
+    console.log(
+      btn,
+      index,
+      document.querySelector(".swiper").swiper.slideTo(index),
+    );
     nowBtn = btn;
     upsSV();
   });
@@ -813,7 +820,7 @@ updater.addEventListener("click", function () {
       al.style.display = "none";
     }, 1900);
     upsSV();
-    
+
     getSchedule1(true);
     //attachDaySwipeEvents();
 
@@ -1542,7 +1549,7 @@ assistant.addEventListener("click", function () {
   tg.BackButton.show();
   tg.BackButton.onClick(() => {
     Chat.style.display = "none";
-    tg.BackButton.hide(); 
+    tg.BackButton.hide();
   });
 });
 
@@ -1635,8 +1642,8 @@ document
 
 function initSwiper() {
   const swiper = new Swiper(".swiper", {
-    direction: 'horizontal',
-    loop: true
+    direction: "horizontal",
+    loop: true,
   });
 }
 window.addEventListener("DOMContentLoaded", initSwiper());
