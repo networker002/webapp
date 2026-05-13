@@ -783,11 +783,7 @@ btns.forEach((btn, index) => {
       nowBtn.classList.remove("selected");
     }
     btn.classList.add("selected");
-    console.log(
-      btn,
-      index,
-      document.querySelector(".swiper").swiper.slideToLoop(index),
-    );
+    document.querySelector(".swiper").swiper.slideToLoop(index);
     nowBtn = btn;
     upsSV();
   });
@@ -1646,5 +1642,14 @@ function initSwiper() {
     loop: true,
   });
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
+  swiper.on("slideChange", (e) => {
+    btns.forEach((b) => {
+      if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
+        b.classList.add("selected");
+      } else {
+        b.classList.remove("selected");
+      }
+    });
+  });
 }
 window.addEventListener("DOMContentLoaded", initSwiper());
