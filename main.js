@@ -823,7 +823,12 @@ updater.addEventListener("click", function () {
         }, 1900);
       }
 
-      getSchedule1(true);
+      document.body.style.pointerEvents = "none";
+        getSchedule1(true);
+    
+      setTimeout(() => {
+        document.body.style.pointerEvents = "all";
+      }, 2000);
       
       try {
           initSwiper();
