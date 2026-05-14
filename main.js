@@ -802,14 +802,45 @@ burgerBtn.addEventListener("click", function () {
 
 let timeout = 0;
 updater.addEventListener("click", function () {
-  window.location.reload();
+  //window.location.reload();
+  if (timeout === 0) {
+
+    if (message.style.display !== "none") {
+      message.style.display = "none";
+      setTimeout(function () {
+             message.style.display = "block";
+           }, 2000);
+
+    }
+
+    r+= 360;
+
+    if (updater) updater.style.transform = `rotate(${r}deg)`;
+    var al = document.getElementById("fast-alert");
+    if (al) {
+      al.style.display = "flex";
+      al.style.animation = "flyUP 2s normal";
+      setTimeout(function () {
+        al.style.display = "none";
+      }, 1900);
+        }
+      
+        getSchedule1(true);
+        window.addEventListener("DOMContentLoaded", initSwiper());
+        if (nowBtn) upsSV()  
+        }
+
+
+
+
+  //var burger = document.getElementById("burger-menu");
   // if (timeout === 0) {
   //   if (message.style.display === "block") {
-  //     message.style.display = "none";
-  //     setTimeout(function () {
-  //       message.style.display = "block";
-  //     }, 2000);
-  //   }
+    //     message.style.display = "none";
+    //     setTimeout(function () {
+      //       message.style.display = "block";
+      //     }, 2000);
+      //   }
   //   r += 360;
   //   updater.style.transform = `rotate(${r}deg)`;
   //   var al = document.getElementById("fast-alert");
@@ -820,7 +851,6 @@ updater.addEventListener("click", function () {
   //   }, 1900);
   //   upsSV();
 
-  //   getSchedule1(true);
 
   //   document.querySelector(".swiper").swiper.realIndex = 0;
 
@@ -830,8 +860,6 @@ updater.addEventListener("click", function () {
   //   }, 5000);
   // }
 });
-
-//var burger = document.getElementById("burger-menu");
 
 //burger.addEventListener("click", function() {
 //    let menu;
