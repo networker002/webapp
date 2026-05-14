@@ -791,75 +791,18 @@ btns.forEach((btn, index) => {
   });
 });
 
-//let r = 0;
+let r = 0;
 const burgerBtn = document.getElementById("burger-menu");
-//const updater = document.getElementById("upd-b");
+const updater = document.getElementById("upd-b");
 
 burgerBtn.addEventListener("click", function () {
   burgerBtn.classList.remove("closed-btn");
   burgerBtn.classList.add("opened-btn");
 });
 
-
-//let timeout = 0;
-//updater.addEventListener("click", function () {
-  //window.location.reload();
-
-
-let r = 0;
-const updater = document.getElementById("upd-b");
-let isUpdating = false;
-
+let timeout = 0;
 updater.addEventListener("click", function () {
-  
-  if (isUpdating) return; 
-  isUpdating = true;
-
-  
-  r += 360;
-  updater.style.transform = `rotate(${r}deg)`;
-  updater.style.transition = "transform 0.5s ease";
-  haptic.notificationOccurred("success");
-
- 
-  container.innerHTML = `
-    <div id="sk">
-      <h2 class="skeleton"></h2>
-      <h3 class="skeleton"></h3>
-      <h4 class="skeleton"></h4>
-      <h6 class="skeleton"></h6>
-      <h4 class="skeleton"></h4>
-      <h6 class="skeleton"></h6>
-    </div>`;
-
-  
-  loaderContainer.style.display = "block";
-  loader.style.display = "flex";
-  assistant.style.display = "none";
- 
-  var al = document.getElementById("fast-alert");
-  if (al) {
-    al.style.display = "flex";
-    al.style.animation = "flyUP 2s normal";
-    setTimeout(function () {
-      al.style.display = "none";
-    }, 1900);
-  
-  getSchedule1(true);
-
-  });
-  const swiperInstance = document.querySelector(".swiper")?.swiper;
-  if (swiperInstance) {
-    swiperInstance.slideToLoop(0); 
-  }
-
- 
-  setTimeout(function () {
-    isUpdating = false;
-  }, 3000);
-});
-
-
+  window.location.reload();
   // if (timeout === 0) {
   //   if (message.style.display === "block") {
   //     message.style.display = "none";
