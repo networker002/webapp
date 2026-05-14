@@ -802,33 +802,41 @@ burgerBtn.addEventListener("click", function () {
 
 let timeout = 0;
 updater.addEventListener("click", function () {
-  //window.location.reload();
   if (timeout === 0) {
-
-    if (message.style.display !== "none") {
-      message.style.display = "none";
-      setTimeout(function () {
-             message.style.display = "block";
-           }, 2000);
-
-    }
-
-    r+= 360;
-
-    if (updater) updater.style.transform = `rotate(${r}deg)`;
-    var al = document.getElementById("fast-alert");
-    if (al) {
-      al.style.display = "flex";
-      al.style.animation = "flyUP 2s normal";
-      setTimeout(function () {
-        al.style.display = "none";
-      }, 1900);
-        }
       
-        getSchedule1(true);
-        window.addEventListener("DOMContentLoaded", initSwiper());
-        if (nowBtn) upsSV()  
-        }
+      if (message.style.display !== "none") {
+        message.style.display = "none";
+        setTimeout(function () {
+          message.style.display = "block";
+        }, 2000);
+      }
+
+      r += 360;
+      if (updater) updater.style.transform = `rotate(${r}deg)`;
+      
+      var al = document.getElementById("fast-alert");
+      if (al) {
+        al.style.display = "flex";
+        al.style.animation = "flyUP 2s normal";
+        setTimeout(function () {
+          al.style.display = "none";
+        }, 1900);
+      }
+
+      getSchedule1(true);
+      
+      try {
+          initSwiper(); 
+      } catch (e) {
+          console.warn(e);
+      }
+
+      timeout = 5000;
+      setTimeout(function () {
+        timeout = 0;
+      }, 5000);
+   }
+});
 
 
 
@@ -859,7 +867,6 @@ updater.addEventListener("click", function () {
   //     timeout = 0;
   //   }, 5000);
   // }
-});
 
 //burger.addEventListener("click", function() {
 //    let menu;
