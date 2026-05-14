@@ -348,7 +348,7 @@ function getSchedule1(reqNeed = false) {
             }
             container.innerHTML = newHTML;
 
-
+            if (nowBtn) upsSV();
             const dayss = document.querySelectorAll(".day");
             dayss.forEach((DAY) => {
               var dayNAMES = DAY.querySelectorAll(".day-name");
@@ -824,25 +824,7 @@ updater.addEventListener("click", function () {
       }
 
       document.body.style.pointerEvents = "none";
-          let rr = true;
-          let clickedAi = false;
         getSchedule1(true);
-        var btns = document.querySelectorAll(".btnD");
-        btns.forEach((btn, index) => {
-          if (btn.innerHTML === daysShort[n]) {
-            btn.classList.add("selected");
-            nowBtn = btn;
-            s = true;
-          }
-          btn.addEventListener("click", function () {
-            if (s) {
-              nowBtn.classList.remove("selected");
-            }
-            btn.classList.add("selected");
-            document.querySelector(".swiper").swiper.slideToLoop(index);
-            nowBtn = btn;
-          });
-        });
     
       setTimeout(() => {
         document.body.style.pointerEvents = "all";
@@ -850,7 +832,6 @@ updater.addEventListener("click", function () {
       
       try {
           initSwiper();
-          //upsSV(); 
       } catch (e) {
           console.warn(e);
       }
