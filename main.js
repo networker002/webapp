@@ -348,7 +348,7 @@ function getSchedule1(reqNeed = false) {
             }
             container.innerHTML = newHTML;
 
-            if (nowBtn) upsSV();
+
             const dayss = document.querySelectorAll(".day");
             dayss.forEach((DAY) => {
               var dayNAMES = DAY.querySelectorAll(".day-name");
@@ -841,7 +841,6 @@ updater.addEventListener("click", function () {
             btn.classList.add("selected");
             document.querySelector(".swiper").swiper.slideToLoop(index);
             nowBtn = btn;
-            upsSV();
           });
         });
     
