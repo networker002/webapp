@@ -847,7 +847,7 @@ updater.addEventListener("click", function () {
   
   getSchedule1(true);
 
-  
+  });
   const swiperInstance = document.querySelector(".swiper")?.swiper;
   if (swiperInstance) {
     swiperInstance.slideToLoop(0); 
