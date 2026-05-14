@@ -826,7 +826,8 @@ updater.addEventListener("click", function () {
       getSchedule1(true);
       
       try {
-          initSwiper(); 
+          initSwiper();
+          upsSV(); 
       } catch (e) {
           console.warn(e);
       }
