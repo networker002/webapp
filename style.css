@@ -1023,7 +1023,19 @@ h4>input {
 }
 
 .sad-starry {
-    filter: var(--star-sh);
+    animation: sh1 infinite 9s;
+}
+
+@keyframes sh1 {
+    0% {
+        filter:  none;
+    }
+    50% {
+        filter: var(--star-sh);
+    }
+    100% {
+        filter:  none;
+    }
 }
 
 @keyframes flyUP {
