@@ -830,6 +830,7 @@ updater.addEventListener("click", function () {
     
       setTimeout(() => {
         document.body.style.pointerEvents = "all";
+        upsSV();
       }, 2000);
       
       // try {
