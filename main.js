@@ -832,11 +832,11 @@ updater.addEventListener("click", function () {
         document.body.style.pointerEvents = "all";
       }, 2000);
       
-      try {
-          initSwiper();
-      } catch (e) {
-          console.warn(e);
-      }
+      // try {
+      //     initSwiper();
+      // } catch (e) {
+      //     console.warn(e);
+      // }
 
       timeout = 5000;
       setTimeout(function () {
