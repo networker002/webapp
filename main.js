@@ -377,6 +377,7 @@ function getSchedule1(reqNeed = false) {
             cacheData(container.innerHTML);
             teacherHide();
             if (nowBtn) upsSV();
+            initSwiper();
           }
         })
         .catch((err) => {
@@ -402,6 +403,7 @@ function getSchedule1(reqNeed = false) {
         teacherHide();
         dayParseOnline();
         if (nowBtn) upsSV();
+        initSwiper();
         if (!document.querySelectorAll(".day").length) {
           upsSV();
         }
@@ -1594,7 +1596,7 @@ assistant.addEventListener("click", function () {
 });
 
 window.addEventListener("DOMContentLoaded", function () {
-  if (nowBtn) upsSV();
+  upsSV();
   Chat.style.display = "none";
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
@@ -1697,4 +1699,4 @@ function initSwiper() {
     });
   });
 }
-window.addEventListener("DOMContentLoaded", initSwiper());
+// window.addEventListener("DOMContentLoaded", initSwiper());
