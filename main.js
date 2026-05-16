@@ -1684,14 +1684,17 @@ document
   });
 
 function initSwiper() {
-  const swiper = new Swiper(".swiper", {
-    direction: "horizontal",
-    loop: true,
-  });
+
+  const swiperContainer = document.querySelector(".swiper");
 
   if (swiperContainer && swiperContainer.swiper) {
     swiperContainer.swiper.destroy(true, true);
   }
+
+  const swiper = new Swiper(".swiper", {
+    direction: "horizontal",
+    loop: true,
+  });
 
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   swiper.on("slideChange", (e) => {
