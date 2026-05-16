@@ -1688,6 +1688,11 @@ function initSwiper() {
     direction: "horizontal",
     loop: true,
   });
+
+  if (swiperContainer && swiperContainer.swiper) {
+    swiperContainer.swiper.destroy(true, true);
+  }
+
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   swiper.on("slideChange", (e) => {
     btns.forEach((b) => {
