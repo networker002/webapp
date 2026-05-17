@@ -86,7 +86,7 @@ function applyAIState(isActive) {
   const stateStr = isActive ? "true" : "false";
   localStorage.setItem("isActiveAI", stateStr);
 
-  btnAI.innerHTML = isActive ? "<b>ВЫКЛ</b>" : "<b>ВКЛ</b>";
+  btnAI.innerHTML = isActive ? "<b>ВКЛ</b>" : "<b>ВЫКЛ</b>";
 
   if (isActive) {
     assistantBlock.style.display = "block";
@@ -880,23 +880,6 @@ updater.addEventListener("click", function () {
 //    let menu;
 //});
 
-function setOtherBtns() {
-  var chatInput = document.querySelectorAll(".user-input-btn");
-  fetch("ctx.json")
-    .then((response) => response.json())
-    .then((data) => {
-      for (const key in data) {
-        if (key !== "Привет!") {
-          chatInput.forEach((btn) => {
-            if (btn.innerHTML === key) {
-              btn.style.display = "inline-block";
-            }
-          });
-        }
-      }
-    });
-}
-
 function getDays() {
   var daYS = document.querySelectorAll(".day");
   let ans = {};
@@ -943,70 +926,6 @@ function getDays() {
   ans["week"] = newWeek;
   return ans;
 }
-
-var btnUserIput = document.querySelectorAll(".user-input-btn");
-let clickedToAI = false;
-
-btnUserIput.forEach((btn) => {
-  btn.addEventListener("click", function () {
-    //console.log(btn.innerHTML);
-    var btnCtx = btn.innerHTML;
-    fetch("ctx.json")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data[btnCtx]) {
-          var answerText = data[btnCtx];
-          let keys = Object.keys(data);
-          //console.log(btnCtx);
-
-          var daysData = getDays();
-
-          if (btnCtx === "Что сегодня?") {
-            answerText = answerText.replace(
-              "{today_schedule}",
-              daysData["now"] ?? "На сегодня ничего нет!",
-            );
-          } else if (btnCtx === "Что завтра?") {
-            answerText = answerText.replace(
-              "{tomorrow_schedule}",
-              daysData["tommorrow"] ?? "На завтра ничего нет!",
-            );
-          } else if (btnCtx === "Группа") {
-            answerText = answerText.replace(
-              "{current_group}",
-              `<b>${document.getElementById("gr").innerHTML}</b>`,
-            );
-          } else if (btnCtx === "На неделю") {
-            answerText = answerText.replace(
-              "{week_schedule}",
-              daysData["week"],
-            );
-          }
-
-          var msg = document.getElementById("chat-messages");
-          msg.innerHTML += `<div class="from-user"><p>${btnCtx}</p></div>`;
-          setTimeout(
-            () => {
-              msg.innerHTML += `<div class="from-bot"><p>${answerText}</p></div>`;
-            },
-            500 * (Math.random() + 1),
-          );
-
-          btn.style.animation =
-            "popupBtnText .5s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
-          setTimeout(function () {
-            btn.style.display = "none";
-          }, 500);
-          clickedToAI = true;
-        }
-        if (clickedToAI) {
-          setTimeout(() => {
-            setOtherBtns();
-          }, 500);
-        }
-      });
-  });
-});
 
 function openGroupChangeModal() {
   document.getElementById("alerter").style.display = "block";
@@ -1584,17 +1503,6 @@ function groupSet0() {
     }, 5000);
   }
 }
-
-var Chat = document.querySelector(".chat");
-
-assistant.addEventListener("click", function () {
-  Chat.style.display = "flex";
-  tg.BackButton.show();
-  tg.BackButton.onClick(() => {
-    Chat.style.display = "none";
-    tg.BackButton.hide();
-  });
-});
 
 window.addEventListener("DOMContentLoaded", function () {
   upsSV();
