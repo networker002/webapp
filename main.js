@@ -1621,33 +1621,14 @@ const ICON_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
 
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
+  if (!r) return;
   const isActive = status === "TRUE" || status === true;
   r.innerHTML = isActive ? ICON_ON : ICON_OFF;
+  r.style.cssText = "flex-shrink: 0; width: 32px; height: 32px;";
 }
 
 function noti() {
   const authHeaders = { Authorization: tg.initData };
-
-  fetch("https://boost.rorosin.ru/extra", { headers: authHeaders2 })
-  .then((response) => {
-    if (!response.ok) throw new Error("Error: " + response.status);
-          return response.json();
-  })
-  .then((extraData) => {
-    var nS01 = extraData.notifications;
-
-    if (nS01) {
-      
-      if (nS01 === "TRUE") {
-        r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #32CD32 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10"/></svg>`;
-      } else if (nS01 === "FALSE") {
-        r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #8B0000 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22"/></svg>`
-      }
-      r.style = `flex-shrink: 0; width: 32px; height: 32px;`;
-
-    }
-  })
-}
 
   fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
     .then((response) => {
@@ -1655,7 +1636,7 @@ function noti() {
       return response.json();
     })
     .then((extraData) => {
-      if (extraData.notifications) {
+      if (extraData?.notifications) {
         updateNotificationIcon(extraData.notifications);
       }
     })
@@ -1663,27 +1644,24 @@ function noti() {
 }
 
 function toggleNotifications() {
-  const authHeaders = { 
-    Authorization: tg.initData
-  };
-  
   const authHeaders = { Authorization: tg.initData };
 
   fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) throw new Error("Error: " + response.status);
+      return response.json();
+    })
     .then((data) => {
       const currentStatus = data.notifications === "TRUE";
       const newStatus = !currentStatus;
 
       const formData = new URLSearchParams();
-      formData.append('notifications', newStatus);
+      formData.append("notifications", String(newStatus));
 
       return fetch("https://boost.rorosin.ru/extra/notifications", {
         method: "POST",
-        headers: {
-          Authorization: tg.initData,
-        },
-        body: formData
+        headers: authHeaders,
+        body: formData,
       });
     })
     .then((response) => {
@@ -1692,8 +1670,6 @@ function toggleNotifications() {
     })
     .then((result) => {
       updateNotificationIcon(result.notifications);
-
-      
       haptic.notificationOccurred("success");
     })
     .catch((error) => {
@@ -1701,18 +1677,6 @@ function toggleNotifications() {
       haptic.notificationOccurred("error");
     });
 }
-
-function updateNotificationIcon(status) {
-  var r = document.getElementById("notify-btn");
-  
-  if (status === "TRUE" || status === true) {
-    r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #32CD32 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10"/></svg>`;
-  } else {
-    r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #8B0000 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22"/></svg>`;
-  }
-  r.style = `flex-shrink: 0; width: 32px; height: 32px;`
-}
-
 
 document.getElementById("notify-btn").addEventListener("click", function() {
   haptic.notificationOccurred("success");
