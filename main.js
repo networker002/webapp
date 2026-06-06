@@ -1506,7 +1506,6 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   upsSV();
-  Chat.style.display = "none";
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
 });
