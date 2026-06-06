@@ -1635,6 +1635,7 @@ function noti() {
       } else if (nS01 === "FALSE") {
         r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #8B0000 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22"/></svg>`
       }
+      r.style = `flex-shrink: 0; width: 32px; height: 32px;`;
 
     }
   })
@@ -1643,8 +1644,7 @@ function noti() {
 
 function toggleNotifications() {
   const authHeaders = { 
-    Authorization: tg.initData,
-    "Content-Type": "application/json"
+    Authorization: tg.initData
   };
   
   fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
@@ -1668,7 +1668,7 @@ function toggleNotifications() {
       
       updateNotificationIcon(result.notifications);
 
-      haptic.notificationOccurred("success");
+      
     })
     .catch(error => {
       console.error("Error toggling notifications:", error);
@@ -1684,10 +1684,12 @@ function updateNotificationIcon(status) {
   } else {
     r.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" id="notify-btn" style="color: #8B0000 !important;"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22"/></svg>`;
   }
+  r.style = `flex-shrink: 0; width: 32px; height: 32px;`
 }
 
 
 document.getElementById("notify-btn").addEventListener("click", function() {
+  haptic.notificationOccurred("success");
   toggleNotifications();
 });
 
