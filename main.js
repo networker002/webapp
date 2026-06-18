@@ -1616,7 +1616,8 @@ const ICON_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
   if (!r) return;
-  const isActive = status === "TRUE" || status === true;
+  const isActive = status === true;
+  //console.log(isActive);
   r.innerHTML = isActive ? ICON_ON : ICON_OFF;
   r.style.cssText = "flex-shrink: 0; width: 32px; height: 32px;";
 }
@@ -1630,7 +1631,10 @@ function noti() {
       return response.json();
     })
     .then((extraData) => {
-      if (extraData?.notifications) {
+
+      console.log("Extra Data:", extraData);
+      if (extraData.notifications) {
+        //console.log("Extra Data:", extraData);
         updateNotificationIcon(extraData.notifications);
       }
     })
