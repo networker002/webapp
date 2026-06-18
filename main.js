@@ -1610,18 +1610,25 @@ function initSwiper() {
   });
 }
 
-const ICON_ON_PATH = `<path fill="currentColor" d="M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10"/>`;
-const ICON_OFF_PATH = `<path fill="currentColor" d="M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22"/>`;
-
+const ICON_ON_D = "M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10";
+const ICON_OFF_D = "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
-  const isActive = status === true;
+  const isActive = status === true || status === "true";
   if (!r) return;
+  const path = r.querySelector("path");
+  if (!path) {
+    const newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    newPath.setAttribute("fill", "currentColor");
+    r.appendChild(newPath);
+  }
+  const finalPath = r.querySelector("path");
+  finalPath.setAttribute("d", isActive ? ICON_ON_D : ICON_OFF_D);
   r.style.color = isActive ? "#32CD32" : "#8B0000";
   r.style.width = "32px";
   r.style.height = "32px";
-  r.innerHTML = isActive ? ICON_ON_PATH : ICON_OFF_PATH;
+  r.style.transition = "color 0.15s ease";
 }
 
 function noti() {
@@ -1633,10 +1640,7 @@ function noti() {
       return response.json();
     })
     .then((extraData) => {
-
-      //console.log("Extra Data:", extraData);
       if (extraData) {
-        //console.log("Extra Data:", extraData);
         updateNotificationIcon(extraData.notifications);
       }
     })
@@ -1652,7 +1656,7 @@ function toggleNotifications() {
       return response.json();
     })
     .then((data) => {
-      const currentStatus = data.notifications === true;
+      const currentStatus = data.notifications === true || data.notifications === "true";
       const newStatus = !currentStatus;
 
       const formData = new URLSearchParams();
@@ -1678,9 +1682,15 @@ function toggleNotifications() {
     });
 }
 
-document.getElementById("notify-btn").addEventListener("click", function() {
-  haptic.notificationOccurred("success");
-  toggleNotifications();
+document.addEventListener("DOMContentLoaded", function () {
+  const notifyBtn = document.getElementById("notify-btn");
+  if (notifyBtn) {
+    notifyBtn.addEventListener("click", function () {
+      haptic.notificationOccurred("success");
+      toggleNotifications();
+    });
+  }
+  noti();
 });
 
 document.addEventListener("DOMContentLoaded", function() {
