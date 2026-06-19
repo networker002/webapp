@@ -1656,7 +1656,7 @@ function toggleNotifications() {
       return response.json();
     })
     .then((data) => {
-      const currentStatus = data.notifications === true || data.notifications === TRUE";
+      const currentStatus = data.notifications === true || data.notifications === "TRUE";
       const newStatus = !currentStatus;
 
       const formData = new URLSearchParams();
