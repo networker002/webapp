@@ -1615,7 +1615,7 @@ const ICON_OFF_D = "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.82
 
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
-  const isActive = status === true || status === "true";
+  const isActive = status === true || status === "TRUE";
   if (!r) return;
   const path = r.querySelector("path");
   if (!path) {
