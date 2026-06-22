@@ -799,76 +799,71 @@ burgerBtn.addEventListener("click", function () {
 let timeout = 0;
 updater.addEventListener("click", function () {
   if (timeout === 0) {
-      
-      if (message.style.display !== "none") {
-        message.style.display = "none";
-        setTimeout(function () {
-          message.style.display = "block";
-        }, 2000);
-      }
-
-      r += 360;
-      if (updater) updater.style.transform = `rotate(${r}deg)`;
-      
-      var al = document.getElementById("fast-alert");
-      if (al) {
-        al.style.display = "flex";
-        al.style.animation = "flyUP 2s normal";
-        setTimeout(function () {
-          al.style.display = "none";
-        }, 1900);
-      }
-
-      document.body.style.pointerEvents = "none";
-        getSchedule1(true);
-    
-      setTimeout(() => {
-        document.body.style.pointerEvents = "all";
-        upsSV();
-      }, 2000);
-      
-      // try {
-      //     initSwiper();
-      // } catch (e) {
-      //     console.warn(e);
-      // }
-
-      timeout = 5000;
+    if (message.style.display !== "none") {
+      message.style.display = "none";
       setTimeout(function () {
-        timeout = 0;
-      }, 5000);
-   }
+        message.style.display = "block";
+      }, 2000);
+    }
+
+    r += 360;
+    if (updater) updater.style.transform = `rotate(${r}deg)`;
+
+    var al = document.getElementById("fast-alert");
+    if (al) {
+      al.style.display = "flex";
+      al.style.animation = "flyUP 2s normal";
+      setTimeout(function () {
+        al.style.display = "none";
+      }, 1900);
+    }
+
+    document.body.style.pointerEvents = "none";
+    getSchedule1(true);
+
+    setTimeout(() => {
+      document.body.style.pointerEvents = "all";
+      upsSV();
+    }, 2000);
+
+    // try {
+    //     initSwiper();
+    // } catch (e) {
+    //     console.warn(e);
+    // }
+
+    timeout = 5000;
+    setTimeout(function () {
+      timeout = 0;
+    }, 5000);
+  }
 });
 
+//var burger = document.getElementById("burger-menu");
+// if (timeout === 0) {
+//   if (message.style.display === "block") {
+//     message.style.display = "none";
+//     setTimeout(function () {
+//       message.style.display = "block";
+//     }, 2000);
+//   }
+//   r += 360;
+//   updater.style.transform = `rotate(${r}deg)`;
+//   var al = document.getElementById("fast-alert");
+//   al.style.display = "flex";
+//   al.style.animation = "flyUP 2s normal";
+//   setTimeout(function () {
+//     al.style.display = "none";
+//   }, 1900);
+//   upsSV();
 
+//   document.querySelector(".swiper").swiper.realIndex = 0;
 
-
-  //var burger = document.getElementById("burger-menu");
-  // if (timeout === 0) {
-  //   if (message.style.display === "block") {
-    //     message.style.display = "none";
-    //     setTimeout(function () {
-      //       message.style.display = "block";
-      //     }, 2000);
-      //   }
-  //   r += 360;
-  //   updater.style.transform = `rotate(${r}deg)`;
-  //   var al = document.getElementById("fast-alert");
-  //   al.style.display = "flex";
-  //   al.style.animation = "flyUP 2s normal";
-  //   setTimeout(function () {
-  //     al.style.display = "none";
-  //   }, 1900);
-  //   upsSV();
-
-
-  //   document.querySelector(".swiper").swiper.realIndex = 0;
-
-  //   timeout = 5000;
-  //   setTimeout(function () {
-  //     timeout = 0;
-  //   }, 5000);
-  // }
+//   timeout = 5000;
+//   setTimeout(function () {
+//     timeout = 0;
+//   }, 5000);
+// }
 
 //burger.addEventListener("click", function() {
 //    let menu;
@@ -1585,7 +1580,6 @@ document
   });
 
 function initSwiper() {
-
   const swiperContainer = document.querySelector(".swiper");
 
   if (swiperContainer && swiperContainer.swiper) {
@@ -1610,8 +1604,10 @@ function initSwiper() {
   });
 }
 
-const ICON_ON_D = "M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10";
-const ICON_OFF_D = "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
+const ICON_ON_D =
+  "M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10";
+const ICON_OFF_D =
+  "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
@@ -1619,7 +1615,10 @@ function updateNotificationIcon(status) {
   if (!r) return;
   const path = r.querySelector("path");
   if (!path) {
-    const newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const newPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
     newPath.setAttribute("fill", "currentColor");
     r.appendChild(newPath);
   }
@@ -1656,7 +1655,8 @@ function toggleNotifications() {
       return response.json();
     })
     .then((data) => {
-      const currentStatus = data.notifications === true || data.notifications === "TRUE";
+      const currentStatus =
+        data.notifications === true || data.notifications === "TRUE";
       const newStatus = !currentStatus;
 
       const formData = new URLSearchParams();
@@ -1693,7 +1693,7 @@ document.addEventListener("DOMContentLoaded", function () {
   noti();
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   noti();
 });
 
@@ -1703,171 +1703,171 @@ document.getElementById("user-menu-display");
 
 function sendExtra() {
   const authHeaders = { Authorization: tg.initData };
-  
-  const payload = {
-    note: JSON.parse(localStorage.getItem("notes") || "[]"),
-    theme: JSON.parse(localStorage.getItem("customThemeColors") || "[]")
-  };
+
+  const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+  const theme = JSON.parse(localStorage.getItem("customThemeColors") || "[]");
 
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
     headers: authHeaders,
-    body: JSON.stringify(payload)
+    body: JSON.stringify({
+      note: notes,
+      theme: theme,
+    }),
   })
-  .then((response) => {
-    if (!response.ok) throw new Error("Error: " + response.status);
+    .then((response) => {
+      if (!response.ok) throw new Error("Error: " + response.status);
       return response.json();
-  }
-  )
-  .then(
-    (status) => {
+    })
+    .then((status) => {
       if (status && status.status === true) {
-              var al = document.getElementById("fast-alert");
-            if (al) {
-              al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`
-              al.style.display = "flex";
-              al.style.animation = "flyUP 2s normal";
-              setTimeout(function () {
-                al.style.display = "none";
-                al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-              }, 1900);
-            }
+      const al = document.getElementById("fast-alert");
+      if (al) {
+        al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
+        const newAl = document.getElementById("fast-alert");
+        newAl.style.display = "flex";
+        newAl.style.animation = "flyUP 2s normal";
+        setTimeout(() => {
+          newAl.style.display = "none";
+          newAl.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+        }, 1900);
       }
     }
-  )
-  .catch((error) => {
+    })
+    .catch((error) => {
       console.error("Error toggling notifications:", error);
       haptic.notificationOccurred("error");
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const slots = document.querySelectorAll('.color-slot');
-    const colorValue = document.getElementById('colorValue');
-    const colorLabel = document.getElementById('colorLabel');
-    const resetBtn = document.querySelector('.buttons-cont1 button:first-child');
-    const saveBtn = document.getElementById('saveColorsBtn');
+document.addEventListener("DOMContentLoaded", () => {
+  const slots = document.querySelectorAll(".color-slot");
+  const colorValue = document.getElementById("colorValue");
+  const colorLabel = document.getElementById("colorLabel");
+  const resetBtn = document.querySelector(".buttons-cont1 button:first-child");
+  const saveBtn = document.getElementById("saveColorsBtn");
 
-    const tg = window.Telegram?.WebApp;
-    const tgTheme = tg?.themeParams || {};
+  const tg = window.Telegram?.WebApp;
+  const tgTheme = tg?.themeParams || {};
 
-    const defaultColors = [
-        tgTheme.bg_color || '#171F30',
-        tgTheme.secondary_bg_color || '#242F43',
-        tgTheme.button_color || '#3390ec'
-    ];
+  const defaultColors = [
+    tgTheme.bg_color || "#171F30",
+    tgTheme.secondary_bg_color || "#242F43",
+    tgTheme.button_color || "#3390ec",
+  ];
 
-    let colorsData = JSON.parse(localStorage.getItem('customThemeColors')) || [...defaultColors];
-    let activeIndex = 0;
-    const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
+  let colorsData = JSON.parse(localStorage.getItem("customThemeColors")) || [
+    ...defaultColors,
+  ];
+  let activeIndex = 0;
+  const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
 
-    const colorPicker = new iro.ColorPicker("#colorPicker", {
-        width: 260,
-        color: colorsData[activeIndex],
-        borderWidth: 1,
-        borderColor: "#fff",
-        handleSvg: '#handle',
-        handleProps: { x: -8, y: -20 },
-        layout: [
-            { component: iro.ui.Wheel },
-            { component: iro.ui.Slider, options: { sliderType: 'value' } }
-        ]
+  const colorPicker = new iro.ColorPicker("#colorPicker", {
+    width: 260,
+    color: colorsData[activeIndex],
+    borderWidth: 1,
+    borderColor: "#fff",
+    handleSvg: "#handle",
+    handleProps: { x: -8, y: -20 },
+    layout: [
+      { component: iro.ui.Wheel },
+      { component: iro.ui.Slider, options: { sliderType: "value" } },
+    ],
+  });
+
+  function applyTheme(colors) {
+    document.body.setAttribute("data-theme", "custom");
+    const root = document.documentElement.style;
+
+    root.setProperty("--tg-theme-bg-color", colors[0]);
+    root.setProperty("--tg-theme-header-bg-color", colors[0]);
+    root.setProperty("--tg-theme-secondary-bg-color", colors[1]);
+    root.setProperty("--tg-theme-accent-text-color", colors[2]);
+    root.setProperty("--tg-theme-button-color", colors[2]);
+
+    root.setProperty("--main-bg-color", colors[0]);
+    root.setProperty("--header-bg-color", colors[0]);
+    root.setProperty("--header-glass", colors[0] + "80");
+    root.setProperty("--accent-bg", colors[1]);
+    root.setProperty("--days-bg", colors[1]);
+    root.setProperty("--day-card-bg", colors[1]);
+    root.setProperty("--accent", colors[2]);
+    root.setProperty("--alert-bg", colors[2]);
+    root.setProperty("--room-green", colors[2]);
+    root.setProperty("--lst-btn-color", colors[2]);
+    root.setProperty("--days-selected-bg", colors[2]);
+  }
+
+  function initSlots() {
+    slots.forEach((slot, index) => {
+      slot.style.backgroundColor = colorsData[index];
     });
+    colorValue.value = colorsData[activeIndex];
+  }
 
+  colorPicker.on(["color:init", "color:change"], function (color) {
+    const hex = color.hexString.toUpperCase();
+    colorsData[activeIndex] = hex;
+    slots[activeIndex].style.backgroundColor = hex;
+    colorValue.value = hex;
+  });
 
-    function applyTheme(colors) {
-        document.body.setAttribute('data-theme', 'custom');
-        const root = document.documentElement.style;
-        
-        root.setProperty('--tg-theme-bg-color', colors[0]);
-        root.setProperty('--tg-theme-header-bg-color', colors[0]);
-        root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
-        root.setProperty('--tg-theme-accent-text-color', colors[2]);
-        root.setProperty('--tg-theme-button-color', colors[2]);
+  saveBtn.addEventListener("click", () => {
+    applyTheme(colorsData);
+    localStorage.setItem("customThemeColors", JSON.stringify(colorsData));
+    if (typeof closee === "function") closee("themes");
+    if (typeof CloseBG2 === "function") CloseBG2();
+    sendExtra();
+  });
 
-        root.setProperty('--main-bg-color', colors[0]);
-        root.setProperty('--header-bg-color', colors[0]);
-        root.setProperty('--header-glass', colors[0] + '80');
-        root.setProperty('--accent-bg', colors[1]);
-        root.setProperty('--days-bg', colors[1]);
-        root.setProperty('--day-card-bg', colors[1]);
-        root.setProperty('--accent', colors[2]);
-        root.setProperty('--alert-bg', colors[2]);
-        root.setProperty('--room-green', colors[2]);
-        root.setProperty('--lst-btn-color', colors[2]);
-        root.setProperty('--days-selected-bg', colors[2]);
-    }
+  resetBtn.textContent = "Сбросить";
+  resetBtn.onclick = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("customThemeColors");
+    colorsData = [...defaultColors];
 
-    function initSlots() {
-        slots.forEach((slot, index) => {
-            slot.style.backgroundColor = colorsData[index];
-        });
-        colorValue.value = colorsData[activeIndex];
-    }
+    document.body.removeAttribute("data-theme");
+    const root = document.documentElement.style;
 
-    colorPicker.on(['color:init', 'color:change'], function(color) {
-        const hex = color.hexString.toUpperCase();
-        colorsData[activeIndex] = hex;
-        slots[activeIndex].style.backgroundColor = hex;
-        colorValue.value = hex;
-    });
+    root.removeProperty("--tg-theme-bg-color");
+    root.removeProperty("--tg-theme-header-bg-color");
+    root.removeProperty("--tg-theme-secondary-bg-color");
+    root.removeProperty("--tg-theme-accent-text-color");
+    root.removeProperty("--tg-theme-button-color");
 
-    saveBtn.addEventListener('click', () => {
-        applyTheme(colorsData);
-        localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
-        if (typeof closee === 'function') closee('themes');
-        if (typeof CloseBG2 === 'function') CloseBG2();
-        sendExtra();
-    });
+    root.removeProperty("--main-bg-color");
+    root.removeProperty("--header-bg-color");
+    root.removeProperty("--header-glass");
+    root.removeProperty("--accent-bg");
+    root.removeProperty("--days-bg");
+    root.removeProperty("--day-card-bg");
+    root.removeProperty("--accent");
+    root.removeProperty("--alert-bg");
+    root.removeProperty("--room-green");
+    root.removeProperty("--lst-btn-color");
+    root.removeProperty("--days-selected-bg");
 
-    resetBtn.textContent = "Сбросить";
-    resetBtn.onclick = (e) => {
-        e.preventDefault();
-        localStorage.removeItem('customThemeColors');
-        colorsData = [...defaultColors];
-
-        document.body.removeAttribute('data-theme');
-        const root = document.documentElement.style;
-        
-        root.removeProperty('--tg-theme-bg-color');
-        root.removeProperty('--tg-theme-header-bg-color');
-        root.removeProperty('--tg-theme-secondary-bg-color');
-        root.removeProperty('--tg-theme-accent-text-color');
-        root.removeProperty('--tg-theme-button-color');
-
-        root.removeProperty('--main-bg-color');
-        root.removeProperty('--header-bg-color');
-        root.removeProperty('--header-glass');
-        root.removeProperty('--accent-bg');
-        root.removeProperty('--days-bg');
-        root.removeProperty('--day-card-bg');
-        root.removeProperty('--accent');
-        root.removeProperty('--alert-bg');
-        root.removeProperty('--room-green');
-        root.removeProperty('--lst-btn-color');
-        root.removeProperty('--days-selected-bg');
-
-        colorPicker.color.set(colorsData[activeIndex]);
-        initSlots();
-        applyTheme(colorsData);
-        if (typeof closee === 'function') closee('themes');
-        if (typeof CloseBG2 === 'function') CloseBG2();
-    };
-
-    slots.forEach(slot => {
-        slot.addEventListener('click', () => {
-            slots.forEach(s => s.classList.remove('active'));
-            slot.classList.add('active');
-            activeIndex = parseInt(slot.dataset.index);
-            colorLabel.textContent = typeNames[activeIndex];
-            colorPicker.color.set(colorsData[activeIndex]);
-        });
-    });
-
-    if (localStorage.getItem('customThemeColors')) {
-        applyTheme(colorsData);
-    }
-
-    if (tg) tg.expand();
+    colorPicker.color.set(colorsData[activeIndex]);
     initSlots();
+    applyTheme(colorsData);
+    if (typeof closee === "function") closee("themes");
+    if (typeof CloseBG2 === "function") CloseBG2();
+  };
+
+  slots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      slots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
+      activeIndex = parseInt(slot.dataset.index);
+      colorLabel.textContent = typeNames[activeIndex];
+      colorPicker.color.set(colorsData[activeIndex]);
+    });
+  });
+
+  if (localStorage.getItem("customThemeColors")) {
+    applyTheme(colorsData);
+  }
+
+  if (tg) tg.expand();
+  initSlots();
 });
