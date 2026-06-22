@@ -1703,14 +1703,16 @@ document.getElementById("user-menu-display");
 
 function sendExtra() {
   const authHeaders = { Authorization: tg.initData };
-  const formData = new URLSearchParams();
-  formData.append("note", localStorage.getItem("notes") || []);
-  formData.append("theme", localStorage.getItem("customThemeColors") || []);
+  
+  const payload = {
+    note: JSON.parse(localStorage.getItem("notes") || "[]"),
+    theme: JSON.parse(localStorage.getItem("customThemeColors") || "[]")
+  };
 
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
     headers: authHeaders,
-    body: formData
+    body: JSON.stringify(payload)
   })
   .then((response) => {
     if (!response.ok) throw new Error("Error: " + response.status);
