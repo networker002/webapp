@@ -1769,10 +1769,10 @@ document.addEventListener('DOMContentLoaded', () => {
         colorsData[activeIndex] = hex;
         slots[activeIndex].style.backgroundColor = hex;
         colorValue.value = hex;
-        applyTheme(colorsData);
     });
 
     saveBtn.addEventListener('click', () => {
+        applyTheme(colorsData);
         localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
         if (typeof closee === 'function') closee('themes');
         if (typeof CloseBG2 === 'function') CloseBG2();
