@@ -1701,6 +1701,44 @@ document.getElementById("user-menu-display");
 
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
+function sendExtra() {
+  const authHeaders = { Authorization: tg.initData };
+  const formData = new URLSearchParams();
+  formData.append("note", localStorage.getItem("notes") || []);
+  formData.append("theme", localStorage.getItem("customThemeColors") || []);
+
+  fetch("https://boost.rorosin.ru/extra/theme", {
+    method: "POST",
+    headers: authHeaders,
+    body: formData
+  })
+  .then((response) => {
+    if (!response.ok) throw new Error("Error: " + response.status);
+      return response.json();
+  }
+  )
+  .then(
+    (status) => {
+      if (status && status.status === true) {
+              var al = document.getElementById("fast-alert");
+            if (al) {
+              al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`
+              al.style.display = "flex";
+              al.style.animation = "flyUP 2s normal";
+              setTimeout(function () {
+                al.style.display = "none";
+                al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+              }, 1900);
+            }
+      }
+    }
+  )
+  .catch((error) => {
+      console.error("Error toggling notifications:", error);
+      haptic.notificationOccurred("error");
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const slots = document.querySelectorAll('.color-slot');
     const colorValue = document.getElementById('colorValue');
@@ -1733,6 +1771,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { component: iro.ui.Slider, options: { sliderType: 'value' } }
         ]
     });
+
 
     function applyTheme(colors) {
         document.body.setAttribute('data-theme', 'custom');
@@ -1776,6 +1815,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
         if (typeof closee === 'function') closee('themes');
         if (typeof CloseBG2 === 'function') CloseBG2();
+        sendExtra();
     });
 
     resetBtn.textContent = "Сбросить";
@@ -1807,7 +1847,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         colorPicker.color.set(colorsData[activeIndex]);
         initSlots();
-
+        applyTheme(colorsData);
         if (typeof closee === 'function') closee('themes');
         if (typeof CloseBG2 === 'function') CloseBG2();
     };
