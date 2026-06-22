@@ -1705,17 +1705,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const slots = document.querySelectorAll('.color-slot');
     const colorValue = document.getElementById('colorValue');
     const colorLabel = document.getElementById('colorLabel');
+    const resetBtn = document.querySelector('.buttons-cont1 button:first-child');
+    const saveBtn = document.getElementById('saveColorsBtn');
     
     const tg = window.Telegram?.WebApp;
     const tgTheme = tg?.themeParams || {};
     
     const defaultColors = [
-        tgTheme.bg_color || '#ffffff',
-        tgTheme.secondary_bg_color || '#f4f4f5',
+        tgTheme.bg_color || '#171F30',
+        tgTheme.secondary_bg_color || '#242F43',
         tgTheme.button_color || '#3390ec'
     ];
 
-    let colorsData = JSON.parse(localStorage.getItem('customThemeColors')) || defaultColors;
+    let colorsData = JSON.parse(localStorage.getItem('customThemeColors')) || [...defaultColors];
     let activeIndex = 0;
     const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
 
@@ -1732,6 +1734,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     });
 
+    function applyTheme(colors) {
+        document.body.setAttribute('data-theme', 'custom');
+        document.body.style.setProperty('--tg-theme-bg-color', colors[0]);
+        document.body.style.setProperty('--tg-theme-header-bg-color', colors[0]);
+        document.body.style.setProperty('--tg-theme-secondary-bg-color', colors[1]);
+        document.body.style.setProperty('--tg-theme-accent-text-color', colors[2]);
+        document.body.style.setProperty('--tg-theme-button-color', colors[2]);
+    }
+
     function initSlots() {
         slots.forEach((slot, index) => {
             slot.style.backgroundColor = colorsData[index];
@@ -1744,8 +1755,34 @@ document.addEventListener('DOMContentLoaded', () => {
         colorsData[activeIndex] = hex;
         slots[activeIndex].style.backgroundColor = hex;
         colorValue.value = hex;
-        localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
+        applyTheme(colorsData);
     });
+
+    saveBtn.addEventListener('click', () => {
+        localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
+        if (typeof closee === 'function') closee('themes');
+        if (typeof CloseBG2 === 'function') CloseBG2();
+    });
+
+    resetBtn.textContent = "Сбросить";
+    resetBtn.onclick = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('customThemeColors');
+        colorsData = [...defaultColors];
+        
+        document.body.removeAttribute('data-theme');
+        document.body.style.removeProperty('--tg-theme-bg-color');
+        document.body.style.removeProperty('--tg-theme-header-bg-color');
+        document.body.style.removeProperty('--tg-theme-secondary-bg-color');
+        document.body.style.removeProperty('--tg-theme-accent-text-color');
+        document.body.style.removeProperty('--tg-theme-button-color');
+
+        colorPicker.color.set(colorsData[activeIndex]);
+        initSlots();
+        
+        if (typeof closee === 'function') closee('themes');
+        if (typeof CloseBG2 === 'function') CloseBG2();
+    };
 
     slots.forEach(slot => {
         slot.addEventListener('click', () => {
@@ -1757,7 +1794,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    if (localStorage.getItem('customThemeColors')) {
+        applyTheme(colorsData);
+    }
+
     if (tg) tg.expand();
-    
     initSlots();
 });
