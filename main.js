@@ -423,81 +423,6 @@ function getSchedule1(reqNeed = false) {
 }
 getSchedule1();
 
-function sendExtra() {
-  const authHeaders = {
-    Authorization: tg.initData,
-    "Content-Type": "application/json"
-  };
-
-  let notesRaw = localStorage.getItem("notes");
-  let themeRaw = localStorage.getItem("customThemeColors");
-  let notes;
-  let theme;
-  try {
-    notes = notesRaw ? JSON.parse(notesRaw) : [];
-  } catch (e) {
-    notes = [];
-  }
-  try {
-    theme = themeRaw ? JSON.parse(themeRaw) : [];
-  } catch (e) {
-    theme = [];
-  }
-
-  fetch("https://boost.rorosin.ru/extra/theme", {
-    method: "POST",
-    headers: authHeaders,
-    body: JSON.stringify({ note: notes, theme: theme })
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Error: " + response.status);
-      return response.json();
-    })
-    .then((status) => {
-      if (status && status.status === true) {
-        var al = document.getElementById("fast-alert");
-        if (al) {
-          al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
-          const newAl = document.getElementById("fast-alert");
-          if (newAl) {
-            newAl.style.display = "flex";
-            newAl.style.animation = "flyUP 2s normal";
-            setTimeout(function () {
-              newAl.style.display = "none";
-              newAl.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-            }, 1900);
-          }
-        }
-      }
-    })
-    .catch((error) => {
-      console.error("Error saving theme/notes:", error);
-      haptic.notificationOccurred("error");
-    });
-}
-                timeeText.split("-")[0].split(":"),
-                timeeText.split("-")[1].split(":"),
-              ];
-
-              D1.setHours(HRSMINS[0][0]);
-              D1.setMinutes(HRSMINS[0][1]);
-
-              D2.setHours(HRSMINS[1][0]);
-              D2.setMinutes(HRSMINS[1][1]);
-
-              if (timeNow >= D1 && timeNow <= D2) {
-                timee.classList.add("now");
-              } else {
-                timee.classList.remove("now");
-              }
-            }
-          } catch {}
-        });
-      });
-    }
-  });
-}
-
 function cleanDaySchedule(dayElement) {
   if (dayElement.classList.contains("empty")) {
     return;
@@ -1717,10 +1642,34 @@ document.getElementById("user-menu-display");
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
 function sendExtra() {
-  const authHeaders = { Authorization: tg.initData };
+  const authHeaders = {
+    Authorization: tg.initData,
+    "Content-Type": "application/json"
+  };
 
-  const notes = JSON.parse(localStorage.getItem("notes") || "[]");
-  const theme = JSON.parse(localStorage.getItem("customThemeColors") || "[]");
+  let notes = [];
+  let theme = [];
+
+  const notesRaw = localStorage.getItem("notes");
+  const themeRaw = localStorage.getItem("customThemeColors");
+
+  if (notesRaw) {
+    try {
+      const parsedNotes = JSON.parse(notesRaw);
+      notes = Array.isArray(parsedNotes) ? parsedNotes : [parsedNotes];
+    } catch (e) {
+      notes = [notesRaw];
+    }
+  }
+
+  if (themeRaw) {
+    try {
+      const parsedTheme = JSON.parse(themeRaw);
+      theme = Array.isArray(parsedTheme) ? parsedTheme : [];
+    } catch (e) {
+      theme = [];
+    }
+  }
 
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
