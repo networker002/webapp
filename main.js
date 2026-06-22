@@ -1700,3 +1700,64 @@ document.addEventListener("DOMContentLoaded", function() {
 document.getElementById("user-menu-display");
 
 // window.addEventListener("DOMContentLoaded", initSwiper());
+
+document.addEventListener('DOMContentLoaded', () => {
+    const slots = document.querySelectorAll('.color-slot');
+    const colorValue = document.getElementById('colorValue');
+    const colorLabel = document.getElementById('colorLabel');
+    
+    const tg = window.Telegram?.WebApp;
+    const tgTheme = tg?.themeParams || {};
+    
+    const defaultColors = [
+        tgTheme.bg_color || '#ffffff',
+        tgTheme.secondary_bg_color || '#f4f4f5',
+        tgTheme.button_color || '#3390ec'
+    ];
+
+    let colorsData = JSON.parse(localStorage.getItem('customThemeColors')) || defaultColors;
+    let activeIndex = 0;
+    const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
+
+    const colorPicker = new iro.ColorPicker("#colorPicker", {
+        width: 260,
+        color: colorsData[activeIndex],
+        borderWidth: 1,
+        borderColor: "#fff",
+        handleSvg: '#handle',
+        handleProps: { x: -8, y: -20 },
+        layout: [
+            { component: iro.ui.Wheel },
+            { component: iro.ui.Slider, options: { sliderType: 'value' } }
+        ]
+    });
+
+    function initSlots() {
+        slots.forEach((slot, index) => {
+            slot.style.backgroundColor = colorsData[index];
+        });
+        colorValue.value = colorsData[activeIndex];
+    }
+
+    colorPicker.on(['color:init', 'color:change'], function(color) {
+        const hex = color.hexString.toUpperCase();
+        colorsData[activeIndex] = hex;
+        slots[activeIndex].style.backgroundColor = hex;
+        colorValue.value = hex;
+        localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
+    });
+
+    slots.forEach(slot => {
+        slot.addEventListener('click', () => {
+            slots.forEach(s => s.classList.remove('active'));
+            slot.classList.add('active');
+            activeIndex = parseInt(slot.dataset.index);
+            colorLabel.textContent = typeNames[activeIndex];
+            colorPicker.color.set(colorsData[activeIndex]);
+        });
+    });
+
+    if (tg) tg.expand();
+    
+    initSlots();
+});
