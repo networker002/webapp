@@ -1685,18 +1685,18 @@ function sendExtra() {
     })
     .then((status) => {
       if (status && status.status === true) {
-      const al = document.getElementById("fast-alert");
-      if (al) {
-        al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
-        const newAl = document.getElementById("fast-alert");
-        newAl.style.display = "flex";
-        newAl.style.animation = "flyUP 2s normal";
-        setTimeout(() => {
-          newAl.style.display = "none";
-          newAl.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-        }, 1900);
+        const al = document.getElementById("fast-alert");
+        if (al) {
+          al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
+          const newAl = document.getElementById("fast-alert");
+          newAl.style.display = "flex";
+          newAl.style.animation = "flyUP 2s normal";
+          setTimeout(() => {
+            newAl.style.display = "none";
+            newAl.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+          }, 1900);
+        }
       }
-    }
     })
     .catch((error) => {
       console.error("Error toggling notifications:", error);
