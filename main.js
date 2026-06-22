@@ -1689,10 +1689,12 @@ function sendExtra() {
       if (al) {
         al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
         const newAl = document.getElementById("fast-alert");
+        newAl.style.zIndex = "999999999";
         newAl.style.display = "flex";
         newAl.style.animation = "flyUP 2s normal";
         setTimeout(() => {
           newAl.style.display = "none";
+          newAl.style.zIndex = "1000";
           newAl.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
         }, 1900);
       }
