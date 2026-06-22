@@ -1702,11 +1702,13 @@ document.getElementById("user-menu-display");
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
 function sendExtra() {
-  const authHeaders = { Authorization: tg.initData };
 
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
-    headers: authHeaders,
+    headers: {
+    "Authorization": tg.initData,
+    "Content-Type": "application/json"
+  },
     body: JSON.stringify({
     note: JSON.parse(localStorage.getItem("notes") || "[]"),
     theme: JSON.parse(localStorage.getItem("customThemeColors") || "[]")
