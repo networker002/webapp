@@ -1707,10 +1707,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const colorLabel = document.getElementById('colorLabel');
     const resetBtn = document.querySelector('.buttons-cont1 button:first-child');
     const saveBtn = document.getElementById('saveColorsBtn');
-    
+
     const tg = window.Telegram?.WebApp;
     const tgTheme = tg?.themeParams || {};
-    
+
     const defaultColors = [
         tgTheme.bg_color || '#171F30',
         tgTheme.secondary_bg_color || '#242F43',
@@ -1736,11 +1736,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyTheme(colors) {
         document.body.setAttribute('data-theme', 'custom');
-        document.body.style.setProperty('--tg-theme-bg-color', colors[0]);
-        document.body.style.setProperty('--tg-theme-header-bg-color', colors[0]);
-        document.body.style.setProperty('--tg-theme-secondary-bg-color', colors[1]);
-        document.body.style.setProperty('--tg-theme-accent-text-color', colors[2]);
-        document.body.style.setProperty('--tg-theme-button-color', colors[2]);
+        const root = document.documentElement.style;
+        
+        root.setProperty('--tg-theme-bg-color', colors[0]);
+        root.setProperty('--tg-theme-header-bg-color', colors[0]);
+        root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
+        root.setProperty('--tg-theme-accent-text-color', colors[2]);
+        root.setProperty('--tg-theme-button-color', colors[2]);
+
+        root.setProperty('--main-bg-color', colors[0]);
+        root.setProperty('--header-bg-color', colors[0]);
+        root.setProperty('--header-glass', colors[0] + '80');
+        root.setProperty('--accent-bg', colors[1]);
+        root.setProperty('--days-bg', colors[1]);
+        root.setProperty('--day-card-bg', colors[1]);
+        root.setProperty('--accent', colors[2]);
+        root.setProperty('--alert-bg', colors[2]);
+        root.setProperty('--room-green', colors[2]);
+        root.setProperty('--lst-btn-color', colors[2]);
+        root.setProperty('--days-selected-bg', colors[2]);
     }
 
     function initSlots() {
@@ -1769,17 +1783,31 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         localStorage.removeItem('customThemeColors');
         colorsData = [...defaultColors];
-        
+
         document.body.removeAttribute('data-theme');
-        document.body.style.removeProperty('--tg-theme-bg-color');
-        document.body.style.removeProperty('--tg-theme-header-bg-color');
-        document.body.style.removeProperty('--tg-theme-secondary-bg-color');
-        document.body.style.removeProperty('--tg-theme-accent-text-color');
-        document.body.style.removeProperty('--tg-theme-button-color');
+        const root = document.documentElement.style;
+        
+        root.removeProperty('--tg-theme-bg-color');
+        root.removeProperty('--tg-theme-header-bg-color');
+        root.removeProperty('--tg-theme-secondary-bg-color');
+        root.removeProperty('--tg-theme-accent-text-color');
+        root.removeProperty('--tg-theme-button-color');
+
+        root.removeProperty('--main-bg-color');
+        root.removeProperty('--header-bg-color');
+        root.removeProperty('--header-glass');
+        root.removeProperty('--accent-bg');
+        root.removeProperty('--days-bg');
+        root.removeProperty('--day-card-bg');
+        root.removeProperty('--accent');
+        root.removeProperty('--alert-bg');
+        root.removeProperty('--room-green');
+        root.removeProperty('--lst-btn-color');
+        root.removeProperty('--days-selected-bg');
 
         colorPicker.color.set(colorsData[activeIndex]);
         initSlots();
-        
+
         if (typeof closee === 'function') closee('themes');
         if (typeof CloseBG2 === 'function') CloseBG2();
     };
