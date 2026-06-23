@@ -1779,7 +1779,7 @@ function sendExtra() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      note: { notes },
+      notes,
       theme,
     }),
   })
