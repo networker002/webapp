@@ -931,7 +931,7 @@ function openGroupChangeModal() {
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
-            <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
+            <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 3em; letter-spacing: 0.1em; outline: none;" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
 }
 
 function closeN(id, id2 = false) {
