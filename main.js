@@ -1868,6 +1868,7 @@ function showFastAlert0(text) {
         }
 }
 
+window.addEventListener("DOMContentLoaded", function() {
   if (localStorage.getItem("notes")) {
     stopAll();
     message.style.display = "block";
@@ -1879,6 +1880,7 @@ function showFastAlert0(text) {
       message.style.display = "none";
     }, 7500);
   }
+});
 
 
 document.addEventListener('DOMContentLoaded', () => {
