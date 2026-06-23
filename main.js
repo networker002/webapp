@@ -1558,6 +1558,7 @@ if (savedTheme) {
 }
 
 document.getElementById("themes-btn").addEventListener("click", function () {
+  tg.BackButton.show(); tg.BackButton.onClick(function(){closee('themes'); CloseBG2(); tg.BackButton.hide()});
   document.getElementById("black-bg").style.animation = "none";
   document.getElementById("black-bg").style.animation = "opq1 1s ease";
   document.getElementById("black-bg").style.display = "block";
