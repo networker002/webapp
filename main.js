@@ -1720,7 +1720,7 @@ function sendExtra() {
     "Content-Type": "application/json"
   },
     body: JSON.stringify({
-    note: JSON.parse(localStorage.getItem("notes") || "[]"),
+    note: JSON.parse(`{"notes": ${localStorage.getItem("notes").split("<SEP>") || "[]"}}`),
     theme: JSON.parse(localStorage.getItem("customThemeColors") || "[]")
   })
   })
