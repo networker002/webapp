@@ -841,6 +841,18 @@ updater.addEventListener("click", function () {
 });
 
 
+window.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("notes")) {
+    stopAll();
+    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`
+
+    setTimeout(() => {
+      message.parentElement.style.transform = "translate(0)";
+      message.innerHTML = "";
+      message.style.display = "none";
+    }, 5000);
+  }
+})
 
 
   //var burger = document.getElementById("burger-menu");

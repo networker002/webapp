@@ -631,6 +631,14 @@ header.scrolling {
     overflow-wrap: anywhere;
     max-width: calc(100vw - 5em - 70px);
 }
+
+.msg-btn12 {
+    display: flex;
+    text-align: right;
+    gap: 1em;
+
+}
+
 #shocked-assistant {
     position: absolute;
     z-index: 2000000;
