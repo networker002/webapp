@@ -1961,6 +1961,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
         if (typeof closee === 'function') closee('themes');
         if (typeof CloseBG2 === 'function') CloseBG2();
+        tg.BackButton.hide();
         sendExtra();
     });
 
