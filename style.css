@@ -635,8 +635,8 @@ header.scrolling {
 .msg-btn12 {
     display: flex;
     text-align: right;
+    justify-content: end;
     gap: 1em;
-
 }
 
 #shocked-assistant {

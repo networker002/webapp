@@ -841,20 +841,6 @@ updater.addEventListener("click", function () {
 });
 
 
-window.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("notes")) {
-    stopAll();
-    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`
-
-    setTimeout(() => {
-      message.parentElement.style.transform = "translate(0)";
-      message.innerHTML = "";
-      message.style.display = "none";
-    }, 5000);
-  }
-})
-
-
   //var burger = document.getElementById("burger-menu");
   // if (timeout === 0) {
   //   if (message.style.display === "block") {
@@ -1867,6 +1853,35 @@ function sendExtra() {
       haptic.notificationOccurred("error");
     });
 }
+
+
+function showFastAlert0(text) {
+  var al = document.getElementById("fast-alert");
+        if (al) {
+          al.outerHTML = `<div id="fast-alert"><h2>${text}</h2></div>`;
+          al.style.display = "flex";
+          al.style.animation = "flyUP 2s normal";
+          setTimeout(function () {
+            al.style.display = "none";
+            al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+          }, 1900);
+        }
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  if (localStorage.getItem("notes")) {
+    stopAll();
+    message.style.display = "block";
+    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); showFastAlert0('Успешно!');">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`
+
+    setTimeout(() => {
+      message.parentElement.style.transform = "translate(0)";
+      message.innerHTML = "";
+      message.style.display = "none";
+    }, 7500);
+  }
+});
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const slots = document.querySelectorAll('.color-slot');
