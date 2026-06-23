@@ -1317,9 +1317,9 @@ function saveTeacherData() {
     }
 
     var notesEx = localStorage.getItem("notse");
-    if (!notesEx) {localStorage.setItem("notes", `{"title": ${TitleEvent}, "time": ${TimePeriodEvent}, "description": ${ExtraEvent || ""}}`)}
+    if (!notesEx) {localStorage.setItem("notes", `{"title": "${TitleEvent}", "time": "${TimePeriodEvent}", "description": "${ExtraEvent}"`)}
     else if (notesEx) {
-      notesEx += `<sep> {"title": ${TitleEvent}, "time": ${TimePeriodEvent}, "description": ${ExtraEvent || ""}}`;
+      notesEx += `<sep> {"title": "${TitleEvent}", "time": "${TimePeriodEvent}", "description": "${ExtraEvent}"}`;
       localStorage.setItem("notes", notesEx);
     }
 
