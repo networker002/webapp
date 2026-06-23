@@ -1712,39 +1712,50 @@ document.getElementById("user-menu-display");
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
 function sendExtra() {
+  const notesRaw = localStorage.getItem("notes") || "";
+  const notes = notesRaw
+    .split("<SEP>")
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
+
+  let theme = [];
+  try {
+    theme = JSON.parse(localStorage.getItem("customThemeColors") || "[]") || [];
+  } catch (err) {
+    console.error("Failed to parse customThemeColors:", err);
+    theme = [];
+  }
 
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
     headers: {
-    "Authorization": tg.initData,
-    "Content-Type": "application/json"
-  },
+      "Authorization": tg.initData,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
-    note: JSON.parse(`{"notes": ${localStorage.getItem("notes").split("<SEP>") || "[]"}}`),
-    theme: JSON.parse(localStorage.getItem("customThemeColors") || "[]")
+      note: { notes },
+      theme,
+    }),
   })
-  })
-  .then((response) => {
-    if (!response.ok) throw new Error("Error: " + response.status);
+    .then((response) => {
+      if (!response.ok) throw new Error("Error: " + response.status);
       return response.json();
-  }
-  )
-  .then(
-    (status) => {
+    })
+    .then((status) => {
       if (status && status.status === true) {
-              var al = document.getElementById("fast-alert");
-            if (al) {
-              al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`
-              al.style.display = "flex";
-              al.style.animation = "flyUP 2s normal";
-              setTimeout(function () {
-                al.style.display = "none";
-                al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-              }, 1900);
-            }
+        var al = document.getElementById("fast-alert");
+        if (al) {
+          al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
+          al.style.display = "flex";
+          al.style.animation = "flyUP 2s normal";
+          setTimeout(function () {
+            al.style.display = "none";
+            al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+          }, 1900);
+        }
       }
-    }
-  )
+    })
+
   .catch((error) => {
       console.error("Error toggling notifications:", error);
       haptic.notificationOccurred("error");
