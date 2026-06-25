@@ -1777,9 +1777,9 @@ document.addEventListener("DOMContentLoaded", function () {
   noti();
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-  noti();
-});
+// document.addEventListener("DOMContentLoaded", function() {
+//   noti();
+// });
 
 document.getElementById("user-menu-display");
 
