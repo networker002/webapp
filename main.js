@@ -1641,11 +1641,11 @@ if (savedTheme) {
 }
 
 document.getElementById("themes-btn").addEventListener("click", function () {
-  tg.BackButton.show(); tg.BackButton.onClick(function(){closee('themes'); CloseBG2(); tg.BackButton.hide()});
-  document.getElementById("black-bg").style.animation = "none";
-  document.getElementById("black-bg").style.animation = "opq1 1s ease";
-  document.getElementById("black-bg").style.display = "block";
-  document.getElementById("black-bg").style.zIndex = "2002";
+  tg.BackButton.show(); tg.BackButton.onClick(function(){closee('themes');  tg.BackButton.hide()}); // + CloseBG2();
+  // document.getElementById("black-bg").style.animation = "none";
+  // document.getElementById("black-bg").style.animation = "opq1 1s ease";
+  // document.getElementById("black-bg").style.display = "block";
+  // document.getElementById("black-bg").style.zIndex = "2002";
   openn("themes", "block");
 });
 
@@ -1960,7 +1960,7 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTheme(colorsData);
         localStorage.setItem('customThemeColors', JSON.stringify(colorsData));
         if (typeof closee === 'function') closee('themes');
-        if (typeof CloseBG2 === 'function') CloseBG2();
+        //if (typeof CloseBG2 === 'function') CloseBG2();
         tg.BackButton.hide();
         sendExtra();
     });
