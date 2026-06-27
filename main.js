@@ -771,7 +771,7 @@ function upsSV() {
 
 var btns = document.querySelectorAll(".btnD");
 btns.forEach((btn, index) => {
-  if (btn.innerHTML === daysShort[n]) {
+  if (btn.innerHTML.startsWith(daysShort[n])) {
     btn.classList.add("selected");
     nowBtn = btn;
     s = true;
