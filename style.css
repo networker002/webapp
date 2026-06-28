@@ -686,27 +686,28 @@ h4.skeleton { margin-top: 22px; opacity: .8; }
 h6.skeleton { opacity: .5; }
 
 .skeleton {
+    display: block;
+    width: min(100%, calc(100% - 2rem));
+    max-width: 760px;
     height: 1.5em;
-    background: #ffffff1c;
-    margin-bottom: 16px;
-    border-radius: 9px;
-    margin-left: 5vw;
-    margin-right: 5vw;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 16px;
+    background: #ffffff15;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
 }
 .skeleton::before {
-    border-radius: 9px;
+    border-radius: 14px;
     position: absolute;
     content: "";
-    background: var(--runner-sk);
-    left: 0;
-    top: 50%;
-    transform: translate(-150%, -50%);
-    height: 90%;
-    width: 30%;
-    animation: skelet 2s infinite ease-in-out;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
+    left: -35%;
+    top: 0;
+    height: 100%;
+    width: 35%;
+    animation: skelet 1.6s infinite ease-in-out;
 }
 
 .changing-rooms {
