@@ -1434,9 +1434,9 @@ function toBtoa(str) {
 
   return b64.replace(/\//g, "_").replace(/\+/g, "-").replace(/=+$/, "");
 }
-
 function groupSet0() {
   var D = document.getElementById("group-set").value.trim();
+  
   //console.log(D);
   var erDisplay = document.getElementById("errs-reg");
   erDisplay.style = "font-weight:600;color:red";
@@ -1545,10 +1545,13 @@ function groupSet0() {
           </defs>
       </svg>`;
     }, 3000);
+  
   } else {
     const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
     tg.openTelegramLink(url);
 
+    loader.style.display = "flex";
+    loaderContainer.style.display = "block";
     setTimeout(function () {
       const authHeaders = { Authorization: tg.initData };
       fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
@@ -1580,9 +1583,14 @@ function groupSet0() {
           }
         });
         CloseBG2();
+        setTimeout(function () {
+            loader.style.display = "none";
+        loaderContainer.style.display = "none";
+        }, 1000);
     }, 3000);
-  }
+  };
 }
+
 
 window.addEventListener("DOMContentLoaded", function () {
   upsSV();
