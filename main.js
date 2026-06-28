@@ -1727,7 +1727,7 @@ function noti() {
     .then((extraData) => {
       if (extraData) {
         updateNotificationIcon(extraData.notifications);
-        if (extraData.theme_colors) applyTheme(extraData.theme_colors);
+        if (extraData.theme_colors) {applyTheme(extraData.theme_colors); localStorage.setItem('customThemeColors', extraData.theme_colors)}
         if (extraData.notes.length > 0 && !localStorage.getItem("notes")) localStorage.setItem("notes", extraData.notes);
       }
     })
