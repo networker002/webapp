@@ -1579,7 +1579,8 @@ function groupSet0() {
             }
           }
         });
-    }, 5000);
+        CloseBG2();
+    }, 3000);
   }
 }
 
