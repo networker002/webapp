@@ -1928,7 +1928,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tgTheme.button_color || '#3390ec'
     ];
 
-    try{let colorsData = JSON.parse(localStorage.getItem('customThemeColors')) || [...defaultColors];} catch {let colorsData = localStorage.getItem('customThemeColors').split(",")}
+    let colorsData = localStorage.getItem('customThemeColors').split(",")
     let activeIndex = 0;
     const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
 
