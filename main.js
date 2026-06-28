@@ -1946,28 +1946,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    function applyTheme(colors) {
-        document.body.setAttribute('data-theme', 'custom');
-        const root = document.documentElement.style;
+    // function applyTheme(colors) {
+    //     document.body.setAttribute('data-theme', 'custom');
+    //     const root = document.documentElement.style;
         
-        root.setProperty('--tg-theme-bg-color', colors[0]);
-        root.setProperty('--tg-theme-header-bg-color', colors[0]);
-        root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
-        root.setProperty('--tg-theme-accent-text-color', colors[2]);
-        root.setProperty('--tg-theme-button-color', colors[2]);
+    //     root.setProperty('--tg-theme-bg-color', colors[0]);
+    //     root.setProperty('--tg-theme-header-bg-color', colors[0]);
+    //     root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
+    //     root.setProperty('--tg-theme-accent-text-color', colors[2]);
+    //     root.setProperty('--tg-theme-button-color', colors[2]);
 
-        root.setProperty('--main-bg-color', colors[0]);
-        root.setProperty('--header-bg-color', colors[0]);
-        root.setProperty('--header-glass', colors[0] + '80');
-        root.setProperty('--accent-bg', colors[1]);
-        root.setProperty('--days-bg', colors[1]);
-        root.setProperty('--day-card-bg', colors[1]);
-        root.setProperty('--accent', colors[2]);
-        root.setProperty('--alert-bg', colors[2]);
-        root.setProperty('--room-green', colors[2]);
-        root.setProperty('--lst-btn-color', colors[2]);
-        root.setProperty('--days-selected-bg', colors[2]);
-    }
+    //     root.setProperty('--main-bg-color', colors[0]);
+    //     root.setProperty('--header-bg-color', colors[0]);
+    //     root.setProperty('--header-glass', colors[0] + '80');
+    //     root.setProperty('--accent-bg', colors[1]);
+    //     root.setProperty('--days-bg', colors[1]);
+    //     root.setProperty('--day-card-bg', colors[1]);
+    //     root.setProperty('--accent', colors[2]);
+    //     root.setProperty('--alert-bg', colors[2]);
+    //     root.setProperty('--room-green', colors[2]);
+    //     root.setProperty('--lst-btn-color', colors[2]);
+    //     root.setProperty('--days-selected-bg', colors[2]);
+    // }
 
     function initSlots() {
         slots.forEach((slot, index) => {
