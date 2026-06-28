@@ -1331,6 +1331,7 @@ function saveTeacherData() {
   ExtraEvent = escapeX(ExtraEvent);
   TimePeriodEvent = escapeX(TimePeriodEvent);
 
+
   if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
     document.getElementById("save-event-btn").innerHTML =
       "<b>Неверный ввод!</b>";
@@ -1385,6 +1386,7 @@ function saveTeacherData() {
       title: TitleEvent,
       time: TimePeriodEvent,
       description: ExtraEvent,
+      subject: UTeacher.parentElement.querySelector(".subject").innerHTML
     };
 
     notes.push(infoExtra);
@@ -1817,7 +1819,7 @@ function sendExtra() {
 
   let theme = [];
   try {
-    theme = JSON.parse(localStorage.getItem("customThemeColors") || "[]") || [];
+    theme = localStorage.getItem("customThemeColors").split(",") || [];
   } catch (err) {
     console.error("Failed to parse customThemeColors:", err);
     theme = [];
