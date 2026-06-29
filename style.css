@@ -201,7 +201,7 @@ header.scrolling {
     height: 2px;
     width: 100%;
     margin: auto;
-    background: linear-gradient(to right, var(--tg-theme-hint-color), var(--tg-theme-secondary-bg-color));
+    background: var(--ch-room-bg);
 }
 
 .lesson {
