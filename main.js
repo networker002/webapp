@@ -420,7 +420,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  newToRep()
+  newToRep();
 }
 getSchedule1();
 
@@ -798,83 +798,85 @@ burgerBtn.addEventListener("click", function () {
   burgerBtn.classList.add("opened-btn");
 });
 
-  let timeout = 0;
-  updater.addEventListener("click", function () {
-    if (timeout === 0) {
-        
-        if (message.style.display !== "none") {
-          message.style.display = "none";
-          setTimeout(function () {
-            
-            message.style.display = "block";
-            }, 2000);
-        }
-        if (localStorage.getItem("isActiveAI") === "true" && localStorage.getItem("notes")) {
-              stopAll();
-              message.style.display = "block";
-              message.innerHTML = `<div><h4>Ваши заметки перенеслись в отдельную категорию!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;
-            setTimeout(() => {message.innerHTML = ""; message.style.display = "none";}, 7000);
-          }
-        r += 360;
-        if (updater) updater.style.transform = `rotate(${r}deg)`;
-        
-        var al = document.getElementById("fast-alert");
-        if (al) {
-          al.style.display = "flex";
-          al.style.animation = "flyUP 2s normal";
-          setTimeout(function () {
-            al.style.display = "none";
-          }, 1900);
-        }
-
-        document.body.style.pointerEvents = "none";
-          getSchedule1(true);
-      
-        setTimeout(() => {
-          document.body.style.pointerEvents = "all";
-          upsSV();
-        }, 2000);
-        
-        // try {
-        //     initSwiper();
-        // } catch (e) {
-        //     console.warn(e);
-        // }
-
-        timeout = 5000;
-        setTimeout(function () {
-          timeout = 0;
-        }, 5000);
+let timeout = 0;
+updater.addEventListener("click", function () {
+  if (timeout === 0) {
+    if (message.style.display !== "none") {
+      message.style.display = "none";
+      setTimeout(function () {
+        message.style.display = "block";
+      }, 2000);
     }
-  });
+    if (
+      localStorage.getItem("isActiveAI") === "true" &&
+      localStorage.getItem("notes")
+    ) {
+      stopAll();
+      message.style.display = "block";
+      message.innerHTML = `<div><h4>Ваши заметки перенеслись в отдельную категорию!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;
+      setTimeout(() => {
+        message.innerHTML = "";
+        message.style.display = "none";
+      }, 7000);
+    }
+    r += 360;
+    if (updater) updater.style.transform = `rotate(${r}deg)`;
 
+    var al = document.getElementById("fast-alert");
+    if (al) {
+      al.style.display = "flex";
+      al.style.animation = "flyUP 2s normal";
+      setTimeout(function () {
+        al.style.display = "none";
+      }, 1900);
+    }
 
-  //var burger = document.getElementById("burger-menu");
-  // if (timeout === 0) {
-  //   if (message.style.display === "block") {
-    //     message.style.display = "none";
-    //     setTimeout(function () {
-      //       message.style.display = "block";
-      //     }, 2000);
-      //   }
-  //   r += 360;
-  //   updater.style.transform = `rotate(${r}deg)`;
-  //   var al = document.getElementById("fast-alert");
-  //   al.style.display = "flex";
-  //   al.style.animation = "flyUP 2s normal";
-  //   setTimeout(function () {
-  //     al.style.display = "none";
-  //   }, 1900);
-  //   upsSV();
+    document.body.style.pointerEvents = "none";
+    getSchedule1(true);
 
+    setTimeout(() => {
+      document.body.style.pointerEvents = "all";
+      upsSV();
+    }, 2000);
 
-  //   document.querySelector(".swiper").swiper.realIndex = 0;
+    // try {
+    //     initSwiper();
+    // } catch (e) {
+    //     console.warn(e);
+    // }
 
-  //   timeout = 5000;
-  //   setTimeout(function () {
-  //     timeout = 0;
-  //   }, 5000);
-  // }
+    timeout = 5000;
+    setTimeout(function () {
+      timeout = 0;
+    }, 5000);
+  }
+});
+
+//var burger = document.getElementById("burger-menu");
+// if (timeout === 0) {
+//   if (message.style.display === "block") {
+//     message.style.display = "none";
+//     setTimeout(function () {
+//       message.style.display = "block";
+//     }, 2000);
+//   }
+//   r += 360;
+//   updater.style.transform = `rotate(${r}deg)`;
+//   var al = document.getElementById("fast-alert");
+//   al.style.display = "flex";
+//   al.style.animation = "flyUP 2s normal";
+//   setTimeout(function () {
+//     al.style.display = "none";
+//   }, 1900);
+//   upsSV();
+
+//   document.querySelector(".swiper").swiper.realIndex = 0;
+
+//   timeout = 5000;
+//   setTimeout(function () {
+//     timeout = 0;
+//   }, 5000);
+// }
 
 //burger.addEventListener("click", function() {
 //    let menu;
@@ -1248,7 +1250,7 @@ function SetUUID() {
   });
 }
 
-function DelEvent(el, infoExtra={}) {
+function DelEvent(el, infoExtra = {}) {
   const eventElement = el.parentElement;
 
   setTimeout(function () {
@@ -1266,31 +1268,46 @@ function DelEvent(el, infoExtra={}) {
             var filtered = parsed.filter(function (n) {
               if (!n) return false;
               var match = true;
-              if (infoExtra.title !== undefined) match = match && (n.title === infoExtra.title);
-              if (infoExtra.time !== undefined) match = match && (n.time === infoExtra.time);
-              if (infoExtra.description !== undefined) match = match && (n.description === infoExtra.description);
+              if (infoExtra.title !== undefined)
+                match = match && n.title === infoExtra.title;
+              if (infoExtra.time !== undefined)
+                match = match && n.time === infoExtra.time;
+              if (infoExtra.description !== undefined)
+                match = match && n.description === infoExtra.description;
               return !match;
             });
             localStorage.setItem("notes", JSON.stringify(filtered));
           } else {
-            if (typeof parsed === 'object' && parsed !== null) {
+            if (typeof parsed === "object" && parsed !== null) {
               var shouldRemove = true;
-              if (infoExtra.title !== undefined) shouldRemove = shouldRemove && (parsed.title === infoExtra.title);
-              if (infoExtra.time !== undefined) shouldRemove = shouldRemove && (parsed.time === infoExtra.time);
-              if (infoExtra.description !== undefined) shouldRemove = shouldRemove && (parsed.description === infoExtra.description);
+              if (infoExtra.title !== undefined)
+                shouldRemove = shouldRemove && parsed.title === infoExtra.title;
+              if (infoExtra.time !== undefined)
+                shouldRemove = shouldRemove && parsed.time === infoExtra.time;
+              if (infoExtra.description !== undefined)
+                shouldRemove =
+                  shouldRemove && parsed.description === infoExtra.description;
               if (shouldRemove) localStorage.removeItem("notes");
             }
           }
         } catch (e) {
           try {
-            var parts = ls.split("<sep>").map(function (s) { return s.trim(); }).filter(Boolean);
+            var parts = ls
+              .split("<sep>")
+              .map(function (s) {
+                return s.trim();
+              })
+              .filter(Boolean);
             var newParts = parts.filter(function (item) {
               try {
                 var obj = JSON.parse(item);
                 var match = true;
-                if (infoExtra.title !== undefined) match = match && (obj.title === infoExtra.title);
-                if (infoExtra.time !== undefined) match = match && (obj.time === infoExtra.time);
-                if (infoExtra.description !== undefined) match = match && (obj.description === infoExtra.description);
+                if (infoExtra.title !== undefined)
+                  match = match && obj.title === infoExtra.title;
+                if (infoExtra.time !== undefined)
+                  match = match && obj.time === infoExtra.time;
+                if (infoExtra.description !== undefined)
+                  match = match && obj.description === infoExtra.description;
                 return !match;
               } catch (_err) {
                 return true;
@@ -1339,11 +1356,11 @@ function saveTeacherData() {
   ExtraEvent = escapeX(ExtraEvent);
   TimePeriodEvent = escapeX(TimePeriodEvent);
   let infoExtra = {
-        title: TitleEvent,
-        time: TimePeriodEvent,
-        description: ExtraEvent,
-        subject: UTeacher.parentElement.querySelector(".subject").innerHTML
-      };
+    title: TitleEvent,
+    time: TimePeriodEvent,
+    description: ExtraEvent,
+    subject: UTeacher.parentElement.querySelector(".subject").innerHTML,
+  };
 
   if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
     document.getElementById("save-event-btn").innerHTML =
@@ -1366,52 +1383,53 @@ function saveTeacherData() {
     }, 2000);
   } else {
     CloseBG();
-      var notesEx = localStorage.getItem("notes");
-      var notes = [];
-      if (notesEx) {
-        try {
-          var parsed = JSON.parse(notesEx);
-          if (Array.isArray(parsed)) {
-            notes = parsed;
-          } else if (typeof parsed === "object" && parsed !== null && parsed.title) {
-            notes = [parsed];
-          }
-        } catch (err) {
-          notes = notesEx
-            .split("<sep>")
-            .map((item) => item.trim())
-            .filter((item) => item)
-            .map((item) => {
-              try {
-                return JSON.parse(item);
-              } catch (_err) {
-                return null;
-              }
-            })
-            .filter((item) => item);
+    var notesEx = localStorage.getItem("notes");
+    var notes = [];
+    if (notesEx) {
+      try {
+        var parsed = JSON.parse(notesEx);
+        if (Array.isArray(parsed)) {
+          notes = parsed;
+        } else if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          parsed.title
+        ) {
+          notes = [parsed];
         }
+      } catch (err) {
+        notes = notesEx
+          .split("<sep>")
+          .map((item) => item.trim())
+          .filter((item) => item)
+          .map((item) => {
+            try {
+              return JSON.parse(item);
+            } catch (_err) {
+              return null;
+            }
+          })
+          .filter((item) => item);
       }
+    }
 
+    notes.push(infoExtra);
+    localStorage.setItem("notes", JSON.stringify(notes));
 
-      notes.push(infoExtra);
-      localStorage.setItem("notes", JSON.stringify(notes));
-
-      sendExtra();
+    sendExtra();
   }
-  
 
-    
-
-    if (!errR) {
+  if (!errR) {
     if (ExtraEvent) {
-
       UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick='DelEvent(this, ${JSON.stringify(infoExtra)});' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
     } else {
       UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick='DelEvent(this, ${JSON.stringify(infoExtra)});' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
     }
 
     document.getElementById("event-input").removeAttribute("data-uuid");
-    setTimeout(() => {localStorage.setItem("schedule", container.innerHTML);}, 100);
+    setTimeout(() => {
+      localStorage.setItem("schedule", container.innerHTML);
+    }, 100);
     // allTeachers.forEach((teacher) => {
     //   if (teacher.style.display === "block") {
     //     if (ExtraEvent) {
@@ -1445,7 +1463,7 @@ function toBtoa(str) {
 }
 function groupSet0() {
   var D = document.getElementById("group-set").value.trim();
-  
+
   //console.log(D);
   var erDisplay = document.getElementById("errs-reg");
   erDisplay.style = "font-weight:600;color:red";
@@ -1554,7 +1572,6 @@ function groupSet0() {
           </defs>
       </svg>`;
     }, 3000);
-  
   } else {
     const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
     tg.openTelegramLink(url);
@@ -1591,15 +1608,14 @@ function groupSet0() {
             }
           }
         });
-        CloseBG2();
-        setTimeout(function () {
-            loader.style.display = "none";
+      CloseBG2();
+      setTimeout(function () {
+        loader.style.display = "none";
         loaderContainer.style.display = "none";
-        }, 1000);
+      }, 1000);
     }, 3000);
-  };
+  }
 }
-
 
 window.addEventListener("DOMContentLoaded", function () {
   upsSV();
@@ -1661,7 +1677,11 @@ if (savedTheme) {
 }
 
 document.getElementById("themes-btn").addEventListener("click", function () {
-  tg.BackButton.show(); tg.BackButton.onClick(function(){closee('themes');  tg.BackButton.hide()}); // + CloseBG2();
+  tg.BackButton.show();
+  tg.BackButton.onClick(function () {
+    closee("themes");
+    tg.BackButton.hide();
+  }); // + CloseBG2();
   // document.getElementById("black-bg").style.animation = "none";
   // document.getElementById("black-bg").style.animation = "opq1 1s ease";
   // document.getElementById("black-bg").style.display = "block";
@@ -1689,7 +1709,6 @@ document
   });
 
 function initSwiper() {
-
   const swiperContainer = document.querySelector(".swiper");
 
   if (swiperContainer && swiperContainer.swiper) {
@@ -1705,7 +1724,7 @@ function initSwiper() {
   swiper.on("slideChange", (e) => {
     btns.forEach((b) => {
       if (b.innerText.startsWith(btnRevMapping[days[swiper.realIndex + 1]])) {
-      //if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
+        //if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
         b.classList.add("selected");
       } else {
         b.classList.remove("selected");
@@ -1715,8 +1734,10 @@ function initSwiper() {
   });
 }
 
-const ICON_ON_D = "M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10";
-const ICON_OFF_D = "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
+const ICON_ON_D =
+  "M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M3 10q-.425 0-.712-.325t-.238-.75q.2-1.875 1.05-3.488t2.175-2.812q.325-.275.738-.25t.662.375t.2.75t-.375.7q-.975.925-1.6 2.15T4.075 9q-.05.425-.35.713T3 10m18 0q-.425 0-.725-.288T19.925 9q-.2-1.425-.825-2.65T17.5 4.2q-.325-.3-.375-.7t.2-.75t.663-.375t.737.25q1.325 1.2 2.175 2.812t1.05 3.488q.05.425-.237.75T21 10";
+const ICON_OFF_D =
+  "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 function updateNotificationIcon(status) {
   const r = document.getElementById("notify-btn");
@@ -1724,7 +1745,10 @@ function updateNotificationIcon(status) {
   if (!r) return;
   const path = r.querySelector("path");
   if (!path) {
-    const newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const newPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
     newPath.setAttribute("fill", "currentColor");
     r.appendChild(newPath);
   }
@@ -1747,8 +1771,12 @@ function noti() {
     .then((extraData) => {
       if (extraData) {
         updateNotificationIcon(extraData.notifications);
-        if (extraData.theme_colors.length > 0) {localStorage.setItem('customThemeColors', extraData.theme_colors); applyTheme(extraData.theme_colors)}
-        if (extraData.notes.length > 0 && !localStorage.getItem("notes")) localStorage.setItem("notes", JSON.stringify(extraData.notes));//
+        if (extraData.theme_colors.length > 0) {
+          localStorage.setItem("customThemeColors", extraData.theme_colors);
+          applyTheme(extraData.theme_colors);
+        }
+        if (extraData.notes.length > 0 && !localStorage.getItem("notes"))
+          localStorage.setItem("notes", JSON.stringify(extraData.notes)); //
       }
     })
     .catch((error) => console.error("Error loading notifications:", error));
@@ -1763,7 +1791,8 @@ function toggleNotifications() {
       return response.json();
     })
     .then((data) => {
-      const currentStatus = data.notifications === true || data.notifications === "TRUE";
+      const currentStatus =
+        data.notifications === true || data.notifications === "TRUE";
       const newStatus = !currentStatus;
 
       const formData = new URLSearchParams();
@@ -1846,7 +1875,7 @@ function sendExtra() {
   fetch("https://boost.rorosin.ru/extra/theme", {
     method: "POST",
     headers: {
-      "Authorization": tg.initData,
+      Authorization: tg.initData,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -1873,12 +1902,11 @@ function sendExtra() {
       }
     })
 
-  .catch((error) => {
+    .catch((error) => {
       console.error("Error toggling notifications:", error);
       haptic.notificationOccurred("error");
     });
 }
-
 
 // function showFastAlert0(text) {
 //   var al = document.getElementById("fast-alert");
@@ -1893,11 +1921,11 @@ function sendExtra() {
 //         }
 // }
 
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("notes")) {
     stopAll();
     message.style.display = "block";
-    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`
+    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`;
 
     setTimeout(() => {
       message.parentElement.style.transform = "translate(0)";
@@ -1908,193 +1936,197 @@ window.addEventListener("DOMContentLoaded", function() {
 });
 
 function applyTheme(colors) {
-        document.body.setAttribute('data-theme', 'custom');
-        const root = document.documentElement.style;
-        
-        root.setProperty('--tg-theme-bg-color', colors[0]);
-        root.setProperty('--tg-theme-header-bg-color', colors[0]);
-        root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
-        root.setProperty('--tg-theme-accent-text-color', colors[2]);
-        root.setProperty('--tg-theme-button-color', colors[2]);
+  document.body.setAttribute("data-theme", "custom");
+  const root = document.documentElement.style;
 
-        root.setProperty('--main-bg-color', colors[0]);
-        root.setProperty('--header-bg-color', colors[0]);
-        root.setProperty('--header-glass', colors[0] + '80');
-        root.setProperty('--accent-bg', colors[1]);
-        root.setProperty('--days-bg', colors[1]);
-        root.setProperty('--day-card-bg', colors[1]);
-        root.setProperty('--accent', colors[2]);
-        root.setProperty('--alert-bg', colors[2]);
-        root.setProperty('--room-green', colors[2]);
-        root.setProperty('--lst-btn-color', colors[2]);
-        root.setProperty('--days-selected-bg', colors[2]);
-    }
+  root.setProperty("--tg-theme-bg-color", colors[0]);
+  root.setProperty("--tg-theme-header-bg-color", colors[0]);
+  root.setProperty("--tg-theme-secondary-bg-color", colors[1]);
+  root.setProperty("--tg-theme-accent-text-color", colors[2]);
+  root.setProperty("--tg-theme-button-color", colors[2]);
 
-document.addEventListener('DOMContentLoaded', () => {
-  
+  root.setProperty("--main-bg-color", colors[0]);
+  root.setProperty("--header-bg-color", colors[0]);
+  root.setProperty("--header-glass", colors[0] + "80");
+  root.setProperty("--accent-bg", colors[1]);
+  root.setProperty("--days-bg", colors[1]);
+  root.setProperty("--day-card-bg", colors[1]);
+  root.setProperty("--accent", colors[2]);
+  root.setProperty("--alert-bg", colors[2]);
+  root.setProperty("--room-green", colors[2]);
+  root.setProperty("--lst-btn-color", colors[2]);
+  root.setProperty("--days-selected-bg", colors[2]);
+}
 
-    const slots = document.querySelectorAll('.color-slot');
-    const colorValue = document.getElementById('colorValue');
-    const colorLabel = document.getElementById('colorLabel');
-    const resetBtn = document.querySelector('.buttons-cont1 button:first-child');
-    const saveBtn = document.getElementById('saveColorsBtn');
+document.addEventListener("DOMContentLoaded", () => {
+  const slots = document.querySelectorAll(".color-slot");
+  const colorValue = document.getElementById("colorValue");
+  const colorLabel = document.getElementById("colorLabel");
+  const resetBtn = document.querySelector(".buttons-cont1 button:first-child");
+  const saveBtn = document.getElementById("saveColorsBtn");
 
-    const tg = window.Telegram?.WebApp;
-    const tgTheme = tg?.themeParams || {};
+  const tg = window.Telegram?.WebApp;
+  const tgTheme = tg?.themeParams || {};
 
-    const defaultColors = [
-        tgTheme.bg_color || '#171F30',
-        tgTheme.secondary_bg_color || '#242F43',
-        tgTheme.button_color || '#3390ec'
-    ];
+  const defaultColors = [
+    tgTheme.bg_color || "#171F30",
+    tgTheme.secondary_bg_color || "#242F43",
+    tgTheme.button_color || "#3390ec",
+  ];
 
-    let colorsData = localStorage.getItem('customThemeColors').split(",")
-    let activeIndex = 0;
-    const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
+  let colorsData = localStorage.getItem("customThemeColors").split(",");
+  let activeIndex = 0;
+  const typeNames = ["Основной цвет", "Вторичный цвет", "Акцентный цвет"];
 
-    const colorPicker = new iro.ColorPicker("#colorPicker", {
-        width: 260,
-        color: colorsData[activeIndex],
-        borderWidth: 1,
-        borderColor: "#fff",
-        handleSvg: '#handle',
-        handleProps: { x: -8, y: -20 },
-        layout: [
-            { component: iro.ui.Wheel },
-            { component: iro.ui.Slider, options: { sliderType: 'value' } }
-        ]
+  const colorPicker = new iro.ColorPicker("#colorPicker", {
+    width: 260,
+    color: colorsData[activeIndex],
+    borderWidth: 1,
+    borderColor: "#fff",
+    handleSvg: "#handle",
+    handleProps: { x: -8, y: -20 },
+    layout: [
+      { component: iro.ui.Wheel },
+      { component: iro.ui.Slider, options: { sliderType: "value" } },
+    ],
+  });
+
+  // function applyTheme(colors) {
+  //     document.body.setAttribute('data-theme', 'custom');
+  //     const root = document.documentElement.style;
+
+  //     root.setProperty('--tg-theme-bg-color', colors[0]);
+  //     root.setProperty('--tg-theme-header-bg-color', colors[0]);
+  //     root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
+  //     root.setProperty('--tg-theme-accent-text-color', colors[2]);
+  //     root.setProperty('--tg-theme-button-color', colors[2]);
+
+  //     root.setProperty('--main-bg-color', colors[0]);
+  //     root.setProperty('--header-bg-color', colors[0]);
+  //     root.setProperty('--header-glass', colors[0] + '80');
+  //     root.setProperty('--accent-bg', colors[1]);
+  //     root.setProperty('--days-bg', colors[1]);
+  //     root.setProperty('--day-card-bg', colors[1]);
+  //     root.setProperty('--accent', colors[2]);
+  //     root.setProperty('--alert-bg', colors[2]);
+  //     root.setProperty('--room-green', colors[2]);
+  //     root.setProperty('--lst-btn-color', colors[2]);
+  //     root.setProperty('--days-selected-bg', colors[2]);
+  // }
+
+  function initSlots() {
+    slots.forEach((slot, index) => {
+      slot.style.backgroundColor = colorsData[index];
     });
+    colorValue.value = colorsData[activeIndex];
+  }
 
+  colorPicker.on(["color:init", "color:change"], function (color) {
+    const hex = color.hexString.toUpperCase();
+    colorsData[activeIndex] = hex;
+    slots[activeIndex].style.backgroundColor = hex;
+    colorValue.value = hex;
+  });
 
-    // function applyTheme(colors) {
-    //     document.body.setAttribute('data-theme', 'custom');
-    //     const root = document.documentElement.style;
-        
-    //     root.setProperty('--tg-theme-bg-color', colors[0]);
-    //     root.setProperty('--tg-theme-header-bg-color', colors[0]);
-    //     root.setProperty('--tg-theme-secondary-bg-color', colors[1]);
-    //     root.setProperty('--tg-theme-accent-text-color', colors[2]);
-    //     root.setProperty('--tg-theme-button-color', colors[2]);
+  saveBtn.addEventListener("click", () => {
+    applyTheme(colorsData);
+    localStorage.setItem("customThemeColors", colorsData);
+    if (typeof closee === "function") closee("themes");
+    //if (typeof CloseBG2 === 'function') CloseBG2();
+    tg.BackButton.hide();
+    sendExtra();
+  });
 
-    //     root.setProperty('--main-bg-color', colors[0]);
-    //     root.setProperty('--header-bg-color', colors[0]);
-    //     root.setProperty('--header-glass', colors[0] + '80');
-    //     root.setProperty('--accent-bg', colors[1]);
-    //     root.setProperty('--days-bg', colors[1]);
-    //     root.setProperty('--day-card-bg', colors[1]);
-    //     root.setProperty('--accent', colors[2]);
-    //     root.setProperty('--alert-bg', colors[2]);
-    //     root.setProperty('--room-green', colors[2]);
-    //     root.setProperty('--lst-btn-color', colors[2]);
-    //     root.setProperty('--days-selected-bg', colors[2]);
-    // }
+  resetBtn.textContent = "Сбросить";
+  resetBtn.onclick = (e) => {
+    e.preventDefault();
+    tg.BackButton.hide();
+    localStorage.removeItem("customThemeColors");
+    colorsData = [...defaultColors];
 
-    function initSlots() {
-        slots.forEach((slot, index) => {
-            slot.style.backgroundColor = colorsData[index];
-        });
-        colorValue.value = colorsData[activeIndex];
-    }
+    document.body.removeAttribute("data-theme");
+    const root = document.documentElement.style;
 
-    colorPicker.on(['color:init', 'color:change'], function(color) {
-        const hex = color.hexString.toUpperCase();
-        colorsData[activeIndex] = hex;
-        slots[activeIndex].style.backgroundColor = hex;
-        colorValue.value = hex;
-    });
+    root.removeProperty("--tg-theme-bg-color");
+    root.removeProperty("--tg-theme-header-bg-color");
+    root.removeProperty("--tg-theme-secondary-bg-color");
+    root.removeProperty("--tg-theme-accent-text-color");
+    root.removeProperty("--tg-theme-button-color");
 
-    saveBtn.addEventListener('click', () => {
-        applyTheme(colorsData);
-        localStorage.setItem('customThemeColors', colorsData);
-        if (typeof closee === 'function') closee('themes');
-        //if (typeof CloseBG2 === 'function') CloseBG2();
-        tg.BackButton.hide();
-        sendExtra();
-    });
+    root.removeProperty("--main-bg-color");
+    root.removeProperty("--header-bg-color");
+    root.removeProperty("--header-glass");
+    root.removeProperty("--accent-bg");
+    root.removeProperty("--days-bg");
+    root.removeProperty("--day-card-bg");
+    root.removeProperty("--accent");
+    root.removeProperty("--alert-bg");
+    root.removeProperty("--room-green");
+    root.removeProperty("--lst-btn-color");
+    root.removeProperty("--days-selected-bg");
 
-    resetBtn.textContent = "Сбросить";
-    resetBtn.onclick = (e) => {
-        e.preventDefault();
-        tg.BackButton.hide();
-        localStorage.removeItem('customThemeColors');
-        colorsData = [...defaultColors];
-
-        document.body.removeAttribute('data-theme');
-        const root = document.documentElement.style;
-        
-        root.removeProperty('--tg-theme-bg-color');
-        root.removeProperty('--tg-theme-header-bg-color');
-        root.removeProperty('--tg-theme-secondary-bg-color');
-        root.removeProperty('--tg-theme-accent-text-color');
-        root.removeProperty('--tg-theme-button-color');
-
-        root.removeProperty('--main-bg-color');
-        root.removeProperty('--header-bg-color');
-        root.removeProperty('--header-glass');
-        root.removeProperty('--accent-bg');
-        root.removeProperty('--days-bg');
-        root.removeProperty('--day-card-bg');
-        root.removeProperty('--accent');
-        root.removeProperty('--alert-bg');
-        root.removeProperty('--room-green');
-        root.removeProperty('--lst-btn-color');
-        root.removeProperty('--days-selected-bg');
-
-        colorPicker.color.set(colorsData[activeIndex]);
-        initSlots();
-        applyTheme(colorsData);
-        if (typeof closee === 'function') closee('themes');
-        if (typeof CloseBG2 === 'function') CloseBG2();
-    };
-
-    slots.forEach(slot => {
-        slot.addEventListener('click', () => {
-            slots.forEach(s => s.classList.remove('active'));
-            slot.classList.add('active');
-            activeIndex = parseInt(slot.dataset.index);
-            colorLabel.textContent = typeNames[activeIndex];
-            colorPicker.color.set(colorsData[activeIndex]);
-        });
-    });
-
-    if (localStorage.getItem('customThemeColors')) {
-        applyTheme(colorsData);
-    }
-
-    if (tg) tg.expand();
+    colorPicker.color.set(colorsData[activeIndex]);
     initSlots();
+    applyTheme(colorsData);
+    if (typeof closee === "function") closee("themes");
+    if (typeof CloseBG2 === "function") CloseBG2();
+  };
+
+  slots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      slots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
+      activeIndex = parseInt(slot.dataset.index);
+      colorLabel.textContent = typeNames[activeIndex];
+      colorPicker.color.set(colorsData[activeIndex]);
+    });
+  });
+
+  if (localStorage.getItem("customThemeColors")) {
+    applyTheme(colorsData);
+  }
+
+  if (tg) tg.expand();
+  initSlots();
 });
 
-
- function newToRep() {document.querySelectorAll(".day").forEach((d) => {
+function newToRep() {
+  document.querySelectorAll(".day").forEach((d) => {
     d.style.outline = "2px var(--accent) double";
-    d.style.filter = "drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5))";
-    d.style.background = "rgb( from var(--day-card-bg) r g b / 0.7)"; 
-});
-    document.getElementById("gr").style.outline = "4px var(--accent) double";
-    document.querySelectorAll(".tname").forEach((TN) => {
+    d.style.filter =
+      "drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5))";
+    d.style.background = "rgb( from var(--day-card-bg) r g b / 0.7)";
+  });
+  document.getElementById("gr").style.outline = "4px var(--accent) double";
+  document.querySelectorAll(".tname").forEach((TN) => {
     const oldTN = TN.innerHTML;
-    TN.innerHTML = `<svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>` + oldTN;
-        TN.style.display = "flex";
-        TN.style.alignItems = "center";
-        TN.style.gap = ".5em";
-});
-                   
-        //document.querySelectorAll(".lesson").forEach((l) => {
-           // l.style.borderTop = "2px solid var(--accent-bg) !important";
-        //});
-                     //document.getElementById("empty-container").style.borderTop = "2px solid var(--accent-bg) !important";
-                    }
+    TN.innerHTML =
+      `<svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>` +
+      oldTN;
+    TN.style.display = "flex";
+    TN.style.alignItems = "center";
+    TN.style.gap = ".5em";
+  });
+
+  //document.querySelectorAll(".lesson").forEach((l) => {
+  // l.style.borderTop = "2px solid var(--accent-bg) !important";
+  //});
+  //document.getElementById("empty-container").style.borderTop = "2px solid var(--accent-bg) !important";
+}
 
 function newUIFeatures() {
- 
-newToRep();
-document.querySelector("header h1").innerHTML = "Мой дневник";
-document.querySelector(".days ul").style.gap = "2.25vw";
-document.querySelector("#event-input textarea").style.maxHeight = "180px";
-document.querySelector("#event-input textarea").setAttribute("maxlength", 128);
-document.querySelectorAll(".btnD").forEach((btn, idx) => {
-    if (idx === 6) {btn.style.display = "none"; return}
+  newToRep();
+  document.querySelector("header h1").innerHTML = "Мой дневник";
+  document.querySelector(".days ul").style.gap = "2.25vw";
+  document.querySelector("#event-input textarea").style.maxHeight = "180px";
+  document
+    .querySelector("#event-input textarea")
+    .setAttribute("maxlength", 128);
+  document.querySelectorAll(".btnD").forEach((btn, idx) => {
+    if (idx === 6) {
+      btn.style.display = "none";
+      return;
+    }
     btn.style.display = "flex";
     btn.style.flexDirection = "column";
     btn.style.flex = "1 1 0";
@@ -2102,28 +2134,28 @@ document.querySelectorAll(".btnD").forEach((btn, idx) => {
     btn.style.aspectRaito = "1 / 1";
     btn.style.textAlign = "center";
     btn.style.gap = ".25em";
-    
-    //console.log(dt - (n - idx ) + 1); 
-    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small;'>${new Date(new Date().setDate(dt - (n - idx ) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx ) + 1)).getMonth()+ 1).toString().padStart(2, '0')}</span>`;
-});
-upsSV();;
 
+    //console.log(dt - (n - idx ) + 1);
+    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small;'>${new Date(new Date().setDate(dt - (n - idx) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx) + 1)).getMonth() + 1).toString().padStart(2, "0")}</span>`;
+  });
+  upsSV();
 
-//var menu2 = document.createElement("div");
-//menu2.classList.add("menu-swiper");
-//document.body.appendChild(menu2);
-//menu2.style.position = "fixed";
-//menu2.style.bottom = "1em";
-//menu2.innerHTML = <ul style="display:flex; flex: 1 1 0; min-width: 0; gap: .5em; font-size: smaller;"><li>Расписание</li><li>Заметки</li><li>Задания</li><li>Профиль</li></ul>;
-document.querySelectorAll("h5").forEach ((r)=> {
- if (r.innerHTML.startsWith("Корпус")) {
-r.innerHTML += '<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>';
-r.style.display = "flex";
-r.style.flexDirection = "row-reverse";
-r.style.gap = ".5em";
-r.style.justifyContent = "start";
-}
-})
+  //var menu2 = document.createElement("div");
+  //menu2.classList.add("menu-swiper");
+  //document.body.appendChild(menu2);
+  //menu2.style.position = "fixed";
+  //menu2.style.bottom = "1em";
+  //menu2.innerHTML = <ul style="display:flex; flex: 1 1 0; min-width: 0; gap: .5em; font-size: smaller;"><li>Расписание</li><li>Заметки</li><li>Задания</li><li>Профиль</li></ul>;
+  document.querySelectorAll("h5").forEach((r) => {
+    if (r.innerHTML.startsWith("Корпус")) {
+      r.innerHTML +=
+        '<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>';
+      r.style.display = "flex";
+      r.style.flexDirection = "row-reverse";
+      r.style.gap = ".5em";
+      r.style.justifyContent = "start";
+    }
+  });
 }
 
 newUIFeatures();
