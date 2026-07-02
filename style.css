@@ -49,7 +49,8 @@
 
 body {
     background-blend-mode: overlay;
-    background: var(--main-bg-color) url(image.png) no-repeat center center fixed;
+    background: var(--main-bg-color) url(image.png) center;
+    background-size: contain;
     color: var(--over-color);
     scroll-behavior: smooth;
     font-family: "DejaVuSans";
