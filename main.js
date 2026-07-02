@@ -420,6 +420,7 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
+  newToRep()
 }
 getSchedule1();
 
@@ -2063,3 +2064,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tg) tg.expand();
     initSlots();
 });
+
+
+ function newToRep() {document.querySelectorAll(".day").forEach((d) => {
+    d.style.outline = "2px var(--accent) double";
+    d.style.filter = "drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5))";
+    d.style.background = "rgb( from var(--day-card-bg) r g b / 0.7)"; 
+});
+    document.getElementById("gr").style.outline = "4px var(--accent) double";
+    document.querySelectorAll(".tname").forEach((TN) => {
+    const oldTN = TN.innerHTML;
+    TN.innerHTML = `<svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>` + oldTN;
+        TN.style.display = "flex";
+        TN.style.alignItems = "center";
+        TN.style.gap = ".5em";
+});
+                   
+        //document.querySelectorAll(".lesson").forEach((l) => {
+           // l.style.borderTop = "2px solid var(--accent-bg) !important";
+        //});
+                     //document.getElementById("empty-container").style.borderTop = "2px solid var(--accent-bg) !important";
+                    }
+
+function newUIFeatures() {
+ 
+newToRep();
+document.querySelector("header h1").innerHTML = "Мой дневник";
+document.querySelector(".days ul").style.gap = "2.25vw";
+document.querySelector("#event-input textarea").style.maxHeight = "180px";
+document.querySelector("#event-input textarea").setAttribute("maxlength", 128);
+document.querySelectorAll(".btnD").forEach((btn, idx) => {
+    if (idx === 6) {btn.style.display = "none"; return}
+    btn.style.display = "flex";
+    btn.style.flexDirection = "column";
+    btn.style.flex = "1 1 0";
+    btn.style.minWidth = "0";
+    btn.style.aspectRaito = "1 / 1";
+    btn.style.textAlign = "center";
+    btn.style.gap = ".25em";
+    
+    //console.log(dt - (n - idx ) + 1); 
+    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small;'>${new Date(new Date().setDate(dt - (n - idx ) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx ) + 1)).getMonth()+ 1).toString().padStart(2, '0')}</span>`;
+});
+upsSV();;
+
+
+//var menu2 = document.createElement("div");
+//menu2.classList.add("menu-swiper");
+//document.body.appendChild(menu2);
+//menu2.style.position = "fixed";
+//menu2.style.bottom = "1em";
+//menu2.innerHTML = <ul style="display:flex; flex: 1 1 0; min-width: 0; gap: .5em; font-size: smaller;"><li>Расписание</li><li>Заметки</li><li>Задания</li><li>Профиль</li></ul>;
+document.querySelectorAll("h5").forEach ((r)=> {
+ if (r.innerHTML.startsWith("Корпус")) {
+r.innerHTML += '<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>';
+r.style.display = "flex";
+r.style.flexDirection = "row-reverse";
+r.style.gap = ".5em";
+r.style.justifyContent = "start";
+}
+})
+}
+
+newUIFeatures();

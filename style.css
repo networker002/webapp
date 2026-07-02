@@ -48,7 +48,8 @@
 }
 
 body {
-    background: var(--main-bg-color);
+    background-blend-mode: overlay;
+    background: var(--main-bg-color) url(image.png) no-repeat center center fixed;
     color: var(--over-color);
     scroll-behavior: smooth;
     font-family: "DejaVuSans";
@@ -125,7 +126,6 @@ header.scrolling {
     color: var(--tg-theme-button-text-color);
     background-color: var(--days-selected-bg);
     filter: var(--days-selected-filter);
-    padding: .5em 1em;
 }
 
 .day {
@@ -366,6 +366,8 @@ header.scrolling {
 .btns:active { scale: .75; }
 
 .btnD { color: #fff; }
+
+.btnD span { font-weight: 500; }
 
 @keyframes opening {
     0% { transform: translate(-50%, -40%); opacity: .5; }
@@ -854,6 +856,7 @@ h6.skeleton { opacity: .5; }
     transition: all .1s;
     opacity: 1;
     color: var(--tg-theme-button-color);
+    transform: translateX(10%);
 }
 .input-svg:active {
     scale: .9;
