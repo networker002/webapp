@@ -760,6 +760,7 @@ function upsSV() {
       }
     } else {
       ch = true;
+      assistant.style.transform = "translate(0)";
     }
 
     if (!de.dataset.cleaned && !de.classList.contains("empty")) {
@@ -796,49 +797,55 @@ burgerBtn.addEventListener("click", function () {
   burgerBtn.classList.add("opened-btn");
 });
 
-let timeout = 0;
-updater.addEventListener("click", function () {
-  if (timeout === 0) {
+  let timeout = 0;
+  updater.addEventListener("click", function () {
+    if (timeout === 0) {
+        
+        if (message.style.display !== "none") {
+          message.style.display = "none";
+          setTimeout(function () {
+            
+            message.style.display = "block";
+            }, 2000);
+        }
+        if (localStorage.getItem("isActiveAI") === "true" && localStorage.getItem("notes")) {
+              stopAll();
+              message.style.display = "block";
+              message.innerHTML = `<div><h4>Ваши заметки перенеслись в отдельную категорию!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;
+            setTimeout(() => {message.innerHTML = ""; message.style.display = "none";}, 7000);
+          }
+        r += 360;
+        if (updater) updater.style.transform = `rotate(${r}deg)`;
+        
+        var al = document.getElementById("fast-alert");
+        if (al) {
+          al.style.display = "flex";
+          al.style.animation = "flyUP 2s normal";
+          setTimeout(function () {
+            al.style.display = "none";
+          }, 1900);
+        }
+
+        document.body.style.pointerEvents = "none";
+          getSchedule1(true);
       
-      if (message.style.display !== "none") {
-        message.style.display = "none";
-        setTimeout(function () {
-          message.style.display = "block";
+        setTimeout(() => {
+          document.body.style.pointerEvents = "all";
+          upsSV();
         }, 2000);
-      }
+        
+        // try {
+        //     initSwiper();
+        // } catch (e) {
+        //     console.warn(e);
+        // }
 
-      r += 360;
-      if (updater) updater.style.transform = `rotate(${r}deg)`;
-      
-      var al = document.getElementById("fast-alert");
-      if (al) {
-        al.style.display = "flex";
-        al.style.animation = "flyUP 2s normal";
+        timeout = 5000;
         setTimeout(function () {
-          al.style.display = "none";
-        }, 1900);
-      }
-
-      document.body.style.pointerEvents = "none";
-        getSchedule1(true);
-    
-      setTimeout(() => {
-        document.body.style.pointerEvents = "all";
-        upsSV();
-      }, 2000);
-      
-      // try {
-      //     initSwiper();
-      // } catch (e) {
-      //     console.warn(e);
-      // }
-
-      timeout = 5000;
-      setTimeout(function () {
-        timeout = 0;
-      }, 5000);
-   }
-});
+          timeout = 0;
+        }, 5000);
+    }
+  });
 
 
   //var burger = document.getElementById("burger-menu");
@@ -1330,7 +1337,12 @@ function saveTeacherData() {
   TitleEvent = escapeX(TitleEvent);
   ExtraEvent = escapeX(ExtraEvent);
   TimePeriodEvent = escapeX(TimePeriodEvent);
-
+  let infoExtra = {
+        title: TitleEvent,
+        time: TimePeriodEvent,
+        description: ExtraEvent,
+        subject: UTeacher.parentElement.querySelector(".subject").innerHTML
+      };
 
   if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
     document.getElementById("save-event-btn").innerHTML =
@@ -1353,6 +1365,37 @@ function saveTeacherData() {
     }, 2000);
   } else {
     CloseBG();
+      var notesEx = localStorage.getItem("notes");
+      var notes = [];
+      if (notesEx) {
+        try {
+          var parsed = JSON.parse(notesEx);
+          if (Array.isArray(parsed)) {
+            notes = parsed;
+          } else if (typeof parsed === "object" && parsed !== null && parsed.title) {
+            notes = [parsed];
+          }
+        } catch (err) {
+          notes = notesEx
+            .split("<sep>")
+            .map((item) => item.trim())
+            .filter((item) => item)
+            .map((item) => {
+              try {
+                return JSON.parse(item);
+              } catch (_err) {
+                return null;
+              }
+            })
+            .filter((item) => item);
+        }
+      }
+
+
+      notes.push(infoExtra);
+      localStorage.setItem("notes", JSON.stringify(notes));
+
+      sendExtra();
   }
   
 
@@ -1360,44 +1403,6 @@ function saveTeacherData() {
 
     if (!errR) {
     if (ExtraEvent) {
-var notesEx = localStorage.getItem("notes");
-    var notes = [];
-    if (notesEx) {
-      try {
-        var parsed = JSON.parse(notesEx);
-        if (Array.isArray(parsed)) {
-          notes = parsed;
-        } else if (typeof parsed === "object" && parsed !== null && parsed.title) {
-          notes = [parsed];
-        }
-      } catch (err) {
-        notes = notesEx
-          .split("<sep>")
-          .map((item) => item.trim())
-          .filter((item) => item)
-          .map((item) => {
-            try {
-              return JSON.parse(item);
-            } catch (_err) {
-              return null;
-            }
-          })
-          .filter((item) => item);
-      }
-    }
-
-    let infoExtra = {
-      title: TitleEvent,
-      time: TimePeriodEvent,
-      description: ExtraEvent,
-      subject: UTeacher.parentElement.querySelector(".subject").innerHTML
-    };
-
-    notes.push(infoExtra);
-    localStorage.setItem("notes", JSON.stringify(notes));
-
-    sendExtra();
-
 
       UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick='DelEvent(this, ${JSON.stringify(infoExtra)});' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
     } else {
@@ -1405,7 +1410,7 @@ var notesEx = localStorage.getItem("notes");
     }
 
     document.getElementById("event-input").removeAttribute("data-uuid");
-    localStorage.setItem("schedule", container.innerHTML);
+    setTimeout(() => {localStorage.setItem("schedule", container.innerHTML);}, 100);
     // allTeachers.forEach((teacher) => {
     //   if (teacher.style.display === "block") {
     //     if (ExtraEvent) {
