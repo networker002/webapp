@@ -2006,6 +2006,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resetBtn.textContent = "Сбросить";
     resetBtn.onclick = (e) => {
         e.preventDefault();
+        tg.BackButton.hide();
         localStorage.removeItem('customThemeColors');
         colorsData = [...defaultColors];
 
