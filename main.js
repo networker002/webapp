@@ -420,7 +420,6 @@ function getSchedule1(reqNeed = false) {
     loaderContainer.style.display = "none";
     assistant.style.display = "block";
   }
-  newToRep();
 }
 getSchedule1();
 
@@ -837,6 +836,7 @@ updater.addEventListener("click", function () {
     setTimeout(() => {
       document.body.style.pointerEvents = "all";
       upsSV();
+      newToRep();
     }, 2000);
 
     // try {
