@@ -2157,5 +2157,4 @@ function newUIFeatures() {
     }
   });
 }
-
 newUIFeatures();
