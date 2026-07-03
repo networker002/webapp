@@ -109,7 +109,7 @@ header.scrolling {
     justify-content: center;
     list-style: none;
     margin: 1em;
-    gap: 5vw;
+    gap: 2.25vw;
     user-select: none;
 }
 .days ul li {
@@ -130,7 +130,7 @@ header.scrolling {
 }
 
 .day {
-    background: var(--day-card-bg);
+    background: rgb( from var(--day-card-bg) r g b / 0.7);
     border-radius: 1em;
     padding: 1em;
     font-family: "DejaVuSans";
@@ -142,6 +142,8 @@ header.scrolling {
     user-select: none;
     overflow-x: hidden;
     transition: transform cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
+    outline: 2px var(--accent) double;
+    filter: drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5));
 }
 .day .day-name {
     text-align: center;
@@ -176,7 +178,12 @@ header.scrolling {
     scale: 1.2;
     opacity: 1;
 }
-.day .tname { font-weight: 500; }
+.day .tname { 
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: .5em;
+ }
 .day .tname::before {
     position: absolute;
     content: "ФИО преподавателя";
@@ -293,6 +300,7 @@ header.scrolling {
     overflow: hidden !important;
     cursor: pointer;
     pointer-events: none;
+    outline: 4px var(--accent) double;
 }
 #gr::before {
     content: "";
@@ -366,7 +374,7 @@ header.scrolling {
 }
 .btns:active { scale: .75; }
 
-.btnD { color: #fff; }
+.btnD { color: #fff; display: flex; justify-content: center; align-items: center; border: none; transition: all .3s ease, transform .1s ease; outline: none !important; user-select: none; }
 
 .btnD span { font-weight: 500; }
 
@@ -927,7 +935,7 @@ h6.skeleton { opacity: .5; }
 }
 #event-input input:placeholder-shown, #event-input textarea:placeholder-shown { background: var(--accent-bg); }
 #event-input input:focus, #event-input textarea:focus { outline: none; }
-#event-input textarea { min-height: 100px; resize: vertical; }
+#event-input textarea { min-height: 100px; resize: vertical; max-height: 180px;}
 #event-input br { display: none; }
 
 .btbtns {

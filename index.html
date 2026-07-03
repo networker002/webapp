@@ -83,7 +83,7 @@
             <h4>Добавление события</h4><br>
             <div>
             <span>Название</span>
-            <input type="text" placeholder="Как назовём событие?" id="name-event"><br>
+            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="64"><br>
             </div>
          </label>
          <div style="position: relative;">
@@ -91,7 +91,7 @@
             <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00"><b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ' : ' + new Date().getMinutes();">now</b><br></div>
             <div>
             <span>Дополнительно</span>
-            <textarea placeholder="Заметки..." id="extra-event"></textarea><br></div>
+            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea><br></div>
             <div class="btbtns">
             <button id="save-event-btn" onclick="saveTeacherData()">Сохранить</button>
             <button id="cancel-event-btn" onclick="closeN('event-input'); CloseBG();">Отмена</button>
@@ -99,7 +99,7 @@
     </div>
 
     <header>
-        <h1>Расписание занятий</h1>
+        <h1>Мой дневник</h1>
         <h5 id="date-time"></h5>
     </header>
 
