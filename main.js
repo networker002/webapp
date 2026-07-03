@@ -1618,6 +1618,7 @@ function groupSet0() {
 }
 
 window.addEventListener("DOMContentLoaded", function () {
+  newUIFeatures();
   upsSV();
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
@@ -2157,4 +2158,3 @@ function newUIFeatures() {
     }
   });
 }
-newUIFeatures();
