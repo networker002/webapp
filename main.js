@@ -602,7 +602,7 @@ function teacherHide(element = document, del = true) {
           let room = Number(test.slice(2, 4));
           if (!notAdd) {
             btnX.parentElement.querySelector(".teacher").innerHTML +=
-              `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; gap: .5em"; justify-content: start;><svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg> Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
+              `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; flex-direction: row-reverse; gap: .5em"; justify-content: start;>Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room} <svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
           }
         } else if (test.length > 6 && test[1] !== "Н") {
           let tests = test.split("/", 2);
@@ -613,7 +613,7 @@ function teacherHide(element = document, del = true) {
             let room = Number(test.slice(2, 4));
             if (!notAdd) {
               btnX.parentElement.querySelector(".teacher").innerHTML +=
-                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; gap: .5em; justify-content: start;"><svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg> Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}</h5>`;
+                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; flex-direction: row-reverse; gap: .5em; justify-content: start;">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
             }
           });
         }
