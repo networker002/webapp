@@ -1619,6 +1619,8 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   newUIFeatures();
+
+  teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
