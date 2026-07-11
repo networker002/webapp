@@ -2159,3 +2159,5 @@ function newUIFeatures() {
   //   }
   // });
 }
+
+document.addEventListener("DOMContentLoaded", function () {upsSV(); teacherHide()});
