@@ -107,7 +107,106 @@ initAI();
 const container = document.getElementById("schedule-wrapper");
 
 var loaderContainer = document.querySelector(".loader-container");
-var loader = document.getElementById("loader");
+var loader = document.querySelector(".loader");
+document.querySelector(".starry").innerHTML = `<svg width="147" height="147" viewBox="0 0 147 147" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_140_42)">
+<path d="M58.837 19.4154C66.1888 9.68074 80.8112 9.68072 88.163 19.4153L97.3446 31.5726C99.5434 34.4839 102.559 36.6746 106.007 37.866L120.406 42.8415C131.936 46.8255 136.455 60.7321 129.469 70.7322L120.744 83.2213C118.654 86.212 117.503 89.7568 117.435 93.4045L117.153 108.637C116.927 120.834 105.097 129.428 93.4275 125.874L78.8536 121.436C75.3637 120.373 71.6363 120.373 68.1464 121.436L53.5725 125.874C41.9028 129.428 30.073 120.834 29.8472 108.637L29.5649 93.4045C29.4974 89.7568 28.3455 86.212 26.2563 83.2213L17.5313 70.7322C10.545 60.7321 15.0636 46.8255 26.5937 42.8415L40.993 37.866C44.4413 36.6746 47.4567 34.4839 49.6552 31.5726L58.837 19.4154Z" fill="url(#paint0_linear_140_42)"/>
+</g>
+<path d="M52.8281 76.9453C59.1708 76.9453 64.3125 71.8036 64.3125 65.4609C64.3125 59.1183 59.1708 53.9766 52.8281 53.9766C46.4855 53.9766 41.3438 59.1183 41.3438 65.4609C41.3438 71.8036 46.4855 76.9453 52.8281 76.9453Z" fill="url(#paint1_linear_140_42)"/>
+<path d="M94.1719 76.9453C100.515 76.9453 105.656 71.8036 105.656 65.4609C105.656 59.1183 100.515 53.9766 94.1719 53.9766C87.8292 53.9766 82.6875 59.1183 82.6875 65.4609C82.6875 71.8036 87.8292 76.9453 94.1719 76.9453Z" fill="url(#paint2_linear_140_42)"/>
+<path d="M94.1719 74.6484C99.246 74.6484 103.359 70.5351 103.359 65.4609C103.359 60.3868 99.246 56.2734 94.1719 56.2734C89.0978 56.2734 84.9844 60.3868 84.9844 65.4609C84.9844 70.5351 89.0978 74.6484 94.1719 74.6484Z" fill="black"/>
+<path d="M89.5781 65.4609C92.1152 65.4609 94.1719 63.4042 94.1719 60.8672C94.1719 58.3301 92.1152 56.2734 89.5781 56.2734C87.0411 56.2734 84.9844 58.3301 84.9844 60.8672C84.9844 63.4042 87.0411 65.4609 89.5781 65.4609Z" fill="white"/>
+<path d="M52.8281 74.6484C57.9022 74.6484 62.0156 70.5351 62.0156 65.4609C62.0156 60.3868 57.9022 56.2734 52.8281 56.2734C47.754 56.2734 43.6406 60.3868 43.6406 65.4609C43.6406 70.5351 47.754 74.6484 52.8281 74.6484Z" fill="black"/>
+<path d="M48.2344 65.4609C50.7714 65.4609 52.8281 63.4042 52.8281 60.8672C52.8281 58.3301 50.7714 56.2734 48.2344 56.2734C45.6973 56.2734 43.6406 58.3301 43.6406 60.8672C43.6406 63.4042 45.6973 65.4609 48.2344 65.4609Z" fill="white"/>
+<defs>
+<filter id="filter0_i_140_42" x="14.211" y="12.1144" width="122.578" height="123.568" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="4" dy="9"/>
+<feGaussianBlur stdDeviation="6.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_140_42"/>
+</filter>
+<linearGradient id="paint0_linear_140_42" x1="73.5" y1="-1.50394e-05" x2="73.5" y2="147" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EFB701"/>
+</linearGradient>
+<linearGradient id="paint1_linear_140_42" x1="52.8281" y1="53.9766" x2="52.8281" y2="76.9453" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+<linearGradient id="paint2_linear_140_42" x1="94.1719" y1="53.9766" x2="94.1719" y2="76.9453" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8C3BD"/>
+<stop offset="1" stop-color="#DBDBDB"/>
+</linearGradient>
+</defs>
+</svg>`;
+document.querySelector(".ground").innerHTML = `<svg width="2108" height="220" viewBox="0 0 2108 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_148_88)">
+<path d="M132 220C55.4712 220 0 110 0 110V220L264 223V110C264 110 208.529 220 132 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M395.5 0C319.261 0 264 110 264 110V220.5H527V110C527 110 471.739 0 395.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip1_148_88)">
+<path d="M659 220C582.471 220 527 110 527 110V220L791 223V110C791 110 735.529 220 659 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M922.5 0C846.261 0 791 110 791 110V220.5H1054V110C1054 110 998.739 0 922.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip2_148_88)">
+<path d="M1186 220C1109.47 220 1054 110 1054 110V220L1318 223V110C1318 110 1262.53 220 1186 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M1449.5 0C1373.26 0 1318 110 1318 110V220.5H1581V110C1581 110 1525.74 0 1449.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip3_148_88)">
+<path d="M1713 220C1636.47 220 1581 110 1581 110V220L1845 223V110C1845 110 1789.53 220 1713 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M1976.5 0C1900.26 0 1845 110 1845 110V220.5H2108V110C2108 110 2052.74 0 1976.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<defs>
+<clipPath id="clip0_148_88">
+<rect width="527" height="220" fill="white"/>
+</clipPath>
+<clipPath id="clip1_148_88">
+<rect width="527" height="220" fill="white" transform="translate(527)"/>
+</clipPath>
+<clipPath id="clip2_148_88">
+<rect width="527" height="220" fill="white" transform="translate(1054)"/>
+</clipPath>
+<clipPath id="clip3_148_88">
+<rect width="527" height="220" fill="white" transform="translate(1581)"/>
+</clipPath>
+</defs>
+</svg>
+
+<svg width="2108" height="220" viewBox="0 0 2108 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_148_88)">
+<path d="M132 220C55.4712 220 0 110 0 110V220L264 223V110C264 110 208.529 220 132 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M395.5 0C319.261 0 264 110 264 110V220.5H527V110C527 110 471.739 0 395.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip1_148_88)">
+<path d="M659 220C582.471 220 527 110 527 110V220L791 223V110C791 110 735.529 220 659 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M922.5 0C846.261 0 791 110 791 110V220.5H1054V110C1054 110 998.739 0 922.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip2_148_88)">
+<path d="M1186 220C1109.47 220 1054 110 1054 110V220L1318 223V110C1318 110 1262.53 220 1186 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M1449.5 0C1373.26 0 1318 110 1318 110V220.5H1581V110C1581 110 1525.74 0 1449.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<g clip-path="url(#clip3_148_88)">
+<path d="M1713 220C1636.47 220 1581 110 1581 110V220L1845 223V110C1845 110 1789.53 220 1713 220Z" fill="#EFB701" stroke="#EFB701"/>
+<path d="M1976.5 0C1900.26 0 1845 110 1845 110V220.5H2108V110C2108 110 2052.74 0 1976.5 0Z" fill="#EFB701" stroke="#EFB701"/>
+</g>
+<defs>
+<clipPath id="clip0_148_88">
+<rect width="527" height="220" fill="white"/>
+</clipPath>
+<clipPath id="clip1_148_88">
+<rect width="527" height="220" fill="white" transform="translate(527)"/>
+</clipPath>
+<clipPath id="clip2_148_88">
+<rect width="527" height="220" fill="white" transform="translate(1054)"/>
+</clipPath>
+<clipPath id="clip3_148_88">
+<rect width="527" height="220" fill="white" transform="translate(1581)"/>
+</clipPath>
+</defs>
+</svg>`;
 loader.style.display = "flex";
 loaderContainer.style.display = "block";
 assistant.style.display = "none";
@@ -219,6 +318,12 @@ function getSchedule1(reqNeed = false) {
 
           console.log(userGroup);
           console.log(Group);
+          
+          //
+          setTimeout(() => {
+            loader.style.display = "none";
+            loaderContainer.style.display = "none";
+          assistant.style.display = "block";
           document.getElementById("alerter").style.display = "block";
 
           document.getElementById("alerter").innerHTML =
@@ -228,17 +333,16 @@ function getSchedule1(reqNeed = false) {
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-          //
-          loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
+          }, 1500);
           throw new Error("Group not found!");
         })
         .then((resp) => {
           if (resp && resp.ok) {
+            setTimeout(() => {
             loader.style.display = "none";
-            loaderContainer.style.display = "none";
-            assistant.style.display = "block";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          }, 1500);
 
             return resp.json();
           }
@@ -376,16 +480,20 @@ function getSchedule1(reqNeed = false) {
         })
         .catch((err) => {
           console.error("Ошибка:", err);
-          loader.style.display = "none";
+          setTimeout(() => {
+            loader.style.display = "none";
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
+          }, 1500);
         });
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
         container.innerHTML = cachedData;
-        loader.style.display = "none";
-        loaderContainer.style.display = "none";
-        assistant.style.display = "block";
+        setTimeout(() => {
+            loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          }, 1500);
         if (nowBtn) upsSV();
         var Group = localStorage.getItem("userGroup");
         if (Group) {
@@ -406,7 +514,12 @@ function getSchedule1(reqNeed = false) {
       }
     }
   } else {
-    document.getElementById("alerter").style.display = "block";
+    
+    setTimeout(() => {
+            loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          document.getElementById("alerter").style.display = "block";
 
     document.getElementById("alerter").innerHTML =
       `<h1 style="color: #fff;">Неизвестный пользователь</h1>
@@ -416,9 +529,7 @@ function getSchedule1(reqNeed = false) {
       <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
       <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
 
-    loader.style.display = "none";
-    loaderContainer.style.display = "none";
-    assistant.style.display = "block";
+          }, 1500);
   }
 }
 getSchedule1();
@@ -1612,7 +1723,7 @@ function groupSet0() {
       setTimeout(function () {
         loader.style.display = "none";
         loaderContainer.style.display = "none";
-      }, 1000);
+      }, 1500);
     }, 3000);
   }
 }
@@ -2159,5 +2270,3 @@ function newUIFeatures() {
   //   }
   // });
 }
-
-document.addEventListener("DOMContentLoaded", function () {upsSV(); teacherHide()});
