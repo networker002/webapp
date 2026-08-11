@@ -2333,6 +2333,7 @@ function newUIFeatures() {
   // document
   //   .querySelector("#event-input textarea")
   //   .setAttribute("maxlength", 128);
+  document.querySelector("header").style.marginTop = tg.safeAreaInset.top + "px";
   document.querySelectorAll(".btnD").forEach((btn, idx) => {
     if (idx === 6) {
       btn.style.display = "none";
