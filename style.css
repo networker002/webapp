@@ -97,7 +97,7 @@ header {
     top: 0;
     z-index: 999;
     padding: 10px !important;
-    padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
+    margin-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
     border-radius: 35px;
     width: 90%;
     margin: 5%;
