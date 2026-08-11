@@ -2373,3 +2373,8 @@ function newUIFeatures() {
   //   }
   // });
 }
+
+function swipeBtns(btn) {
+  document.querySelectorAll(".bottom-btn").forEach((b) => b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
