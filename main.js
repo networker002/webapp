@@ -603,9 +603,10 @@ function getSchedule1(reqNeed = false) {
         dayParseOnline();
         if (nowBtn) upsSV();
         initSwiper();
-        if (!document.querySelectorAll(".day").length) {
-          upsSV();
-        }
+        // if (!document.querySelectorAll(".day").length) {
+        //   upsSV();
+        // }
+        upsSV();
       } else {
         getSchedule1(true);
       }
@@ -2379,4 +2380,4 @@ function swipeBtns(btn) {
   btn.classList.add("selected");
 }
 
-window.addEventListener("DOMContentLoaded", upsSV());
+window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) upsSV()});
