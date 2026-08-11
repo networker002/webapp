@@ -2249,7 +2249,7 @@ function newUIFeatures() {
     btn.style.gap = ".25em";
 
     //console.log(dt - (n - idx ) + 1);
-    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small;'>${new Date(new Date().setDate(dt - (n - idx) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx) + 1)).getMonth() + 1).toString().padStart(2, "0")}</span>`;
+    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small; letter-spacing: 0 !important;'>${new Date(new Date().setDate(dt - (n - idx) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx) + 1)).getMonth() + 1).toString().padStart(2, "0")}</span>`;
   });
 
   //var menu2 = document.createElement("div");
