@@ -272,16 +272,15 @@ function getSchedule1(reqNeed = false) {
 
   if (userId) {
     container.innerHTML = `
-    <div id="sk"><h2 class="skeleton"></h2>
+    <div id="sk">
             <h3 class="skeleton"></h3>
             <h4 class="skeleton"></h4>
-            <h6 class="skeleton"></h6>
 
+            <h3 class="skeleton"></h3>
             <h4 class="skeleton"></h4>
-            <h6 class="skeleton"></h6>
 
+            <h3 class="skeleton"></h3>
             <h4 class="skeleton"></h4>
-            <h6 class="skeleton"></h6>
             </div>`;
     m = "";
     for (let i = 0; i < userId.toString().length - 4; i++) {
