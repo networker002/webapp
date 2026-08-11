@@ -1304,7 +1304,20 @@ h6.skeleton { opacity: .4; }
 }
 
 .bottom-btn.selected {
-    filter: drop-shadow(0 2px 12px var(--accent));
+    filter: drop-shadow(0 2px 10px var(--accent));
+}
+
+#runner-menu {
+    position: absolute;
+    width: calc(100% / 4);
+    height: 100%;
+    content: "";
+    background: rgb( from var(--accent) r g b / 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 35px;
+    left: 0;
+    z-index: -1 !important;
+    transition: left 0.3s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .loader {

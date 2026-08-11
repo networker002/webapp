@@ -2378,6 +2378,14 @@ function newUIFeatures() {
 function swipeBtns(btn) {
   document.querySelectorAll(".bottom-btn").forEach((b) => b.classList.remove("selected"));
   btn.classList.add("selected");
+  
+  const buttons = document.querySelectorAll(".bottom-btn");
+  const btnIndex = Array.from(buttons).indexOf(btn);
+  const buttonCount = buttons.length;
+  const leftPercentage = (btnIndex / buttonCount) * 100;
+  
+  const runner = document.getElementById("runner-menu");
+  runner.style.left = leftPercentage + "%";
 }
 
 window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) upsSV()});
