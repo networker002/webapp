@@ -133,7 +133,6 @@ header.scrolling {
     letter-spacing: 2px;
     padding: .5em;
     border-radius: .5em;
-    transition: scale .1s, background .45s ease, padding .5s ease, color .5s;
     cursor: pointer;
     user-select: none;
     border: 1px solid rgb( from var(--days-o-color) r g b / 0.35);
@@ -144,6 +143,8 @@ header.scrolling {
     position: relative;
     z-index: 1;
     border-radius: 15px;
+    transition: transform .15s ease, color .3s ease, background-color .3s ease;
+    will-change: transform;
 
     &::before {
         content: "";
@@ -174,15 +175,20 @@ header.scrolling {
         border-radius: 15px;
         box-shadow: var(--btn-shadows-1);
         opacity: var(--btn-opacity-days);
-        transition: all .5s ease;
+        transition: opacity .3s ease;
+        will-change: opacity;
     }
 }
+
+.days ul li:active {
+    transform: scale(0.96);
+}
+
 .days .selected {
     color: var(--tg-theme-button-text-color);
     background-color: var(--days-selected-bg);
     filter: var(--days-selected-filter);
     --btn-opacity-days: 0.8;
-    --btn-shadows-1: inset -4px -4px 12px rgb(from var(--accent) r g b / 0.35), inset 4px 4px 5px rgb(from var(--accent) r g b / 0.45), inset 1px 1px 18px rgba(0, 0, 0, 0.2);
 }
 
 
