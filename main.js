@@ -219,6 +219,14 @@ var d = new Date();
 let n = d.getDay();
 let m = d.getMonth();
 let dt = d.getDate();
+const dayMapping2 = {
+      "Понедельник": 1,
+      "Вторник": 2,
+      "Среда": 3,
+      "Четверг": 4,
+      "Пятница": 5,
+      "Суббота": 6
+    };
 ((days = {
   1: "Понедельник",
   2: "Вторник",
@@ -355,25 +363,14 @@ function getSchedule1(reqNeed = false) {
             let newHTML = "";
             //let dayType = data[0];
 
-            const items = [];
-
-              data[1].forEach((d) => {
-                if (d.day_number === weekType) {
-                  items.push(d);
-                }
-              });
+            const weekLessons = data[1].filter(d => d.day_number === weekType);
             
-            for (const day, dayKey of {
-              "Понедельник": 1,
-              "Вторник": 2,
-              "Среда": 3,
-              "Четверг": 4,
-              "Пятница": 5,
-              "Суббота": 6,
-            }) {
+            for (const dayName of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
+              const dayKey = dayMapping[dayName];
+
+              const dayItems = weekLessons.filter(item => item.day_of_week === dayKey);
               
-              
-              if (!items || items?.length === 0) {
+              if (!dayItems || dayItems?.length === 0) {
                 newHTML += `
                 <div class="swiper-slide">
                   <div class="day" data-cleaned="true">
@@ -441,9 +438,9 @@ function getSchedule1(reqNeed = false) {
                   </div>
                 </div>`;
               } else {
-                newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${day}</h3>`;
+                newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${dayName}</h3>`;
 
-                items.forEach((item) => {
+                dayItems.forEach((item) => {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
                     <div class="lesson-row">
