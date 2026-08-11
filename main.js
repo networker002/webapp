@@ -444,11 +444,11 @@ function getSchedule1(reqNeed = false) {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
                     <div class="lesson-row">
-                      <h4 class="lesson">${item.lesson_code} пара</h4>
+                      <h4 class="lesson">${item.lesson_code}</h4>
                       <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
                       <span class="subject">${item.subject_name}</span>
                       <span class="room">(${item.room_name})</span>
-                      <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg> ${item.teacher_full}</h5></div>
+                      <div class="teacher"><h5 class="tname">${item.teacher_full}</h5></div>
                     </div>`;
                   }
                 });
@@ -570,7 +570,7 @@ function getSchedule1(reqNeed = false) {
 
             dayParseOnline();
             cacheData(container.innerHTML);
-            teacherHide();
+            //teacherHide();
             if (nowBtn) upsSV();
             initSwiper();
           }
@@ -756,154 +756,158 @@ function cleanDaySchedule(dayElement) {
 
     newHTML += `
       <div class="lesson-row">
+        <div>
         <h4 class="lesson">${l.num}</h4>
+        </div>
+        <div>
         <h6 class="time">${l.time}</h6>
         <button class="list-btn"></button>
         <span class="subject">${l.name}</span>${roomsDisplay}
         <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${l.teacher}</h5></div>
+        </div>
       </div>
     `;
   });
 
   dayElement.innerHTML = newHTML;
 
-  teacherHide(dayElement, false);
+  //teacherHide(dayElement, false);
 }
 
 function teacherHide(element = document, del = true) {
-  //let notAdd = true;
-  if (del) {
-    localStorage.setItem("added-teacher", "false");
-  }
-  var btnsList = element.querySelectorAll(".list-btn");
-  var eventsAll = document.querySelectorAll(".custom-events");
-  if (eventsAll) {
-    eventsAll.forEach((ev) => {
-      if (ev) {
-        ev.style.display = "none";
-      }
-    });
-  }
-  var cDataTeacher = container.querySelectorAll(".teacher svg");
+  // //let notAdd = true;
+  // if (del) {
+  //   localStorage.setItem("added-teacher", "false");
+  // }
+  // var btnsList = element.querySelectorAll(".list-btn");
+  // var eventsAll = document.querySelectorAll(".custom-events");
+  // if (eventsAll) {
+  //   eventsAll.forEach((ev) => {
+  //     if (ev) {
+  //       ev.style.display = "none";
+  //     }
+  //   });
+  // }
+  // var cDataTeacher = container.querySelectorAll(".teacher svg");
 
-  //if (cDataTeacher.length === 0) {
-  //  notAdd = false;
-  //}
-  btnsList.forEach((btnX) => {
-    btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+  // //if (cDataTeacher.length === 0) {
+  // //  notAdd = false;
+  // //}
+  // btnsList.forEach((btnX) => {
+  //   btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
 
-    btnX.parentElement.querySelector(".teacher").style.display = "none";
+  //   btnX.parentElement.querySelector(".teacher").style.display = "none";
 
-    var newUUID = SetUUID();
-    btnX.parentElement.querySelector(".teacher").id = newUUID;
-    let shown = false;
-    let addedNotesBtn = false;
-    //console.log("working...");
-    if (localStorage.getItem("added-teacher") !== "true") {
-      //console.log("not true! adding rooms");
-      var test = btnX.parentElement.querySelector(".room").innerHTML;
-      if (test) {
-        if (test.length < 7) {
-          test = test.replace(/[()]/g, "");
-          let corpus = Number(test[0]);
-          let floor = Number(test[1]);
-          let room = Number(test.slice(2, 4));
+  //   var newUUID = SetUUID();
+  //   btnX.parentElement.querySelector(".teacher").id = newUUID;
+  //   let shown = false;
+  //   let addedNotesBtn = false;
+  //   //console.log("working...");
+  //   if (localStorage.getItem("added-teacher") !== "true") {
+  //     //console.log("not true! adding rooms");
+  //     var test = btnX.parentElement.querySelector(".room").innerHTML;
+  //     if (test) {
+  //       if (test.length < 7) {
+  //         test = test.replace(/[()]/g, "");
+  //         let corpus = Number(test[0]);
+  //         let floor = Number(test[1]);
+  //         let room = Number(test.slice(2, 4));
           
-            btnX.parentElement.querySelector(".teacher").innerHTML +=
-              `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em";>Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room} <svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
+  //           btnX.parentElement.querySelector(".teacher").innerHTML +=
+  //             `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em";>Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room} <svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
           
-        } else if (test.length > 6 && test[1] !== "Н") {
-          let tests = test.split("/", 2);
-          tests.forEach((test) => {
-            test = test.replace(/[()]/g, "").trim();
-            let corpus = Number(test[0]);
-            let floor = Number(test[1]);
-            let room = Number(test.slice(2, 4));
+  //       } else if (test.length > 6 && test[1] !== "Н") {
+  //         let tests = test.split("/", 2);
+  //         tests.forEach((test) => {
+  //           test = test.replace(/[()]/g, "").trim();
+  //           let corpus = Number(test[0]);
+  //           let floor = Number(test[1]);
+  //           let room = Number(test.slice(2, 4));
             
-              btnX.parentElement.querySelector(".teacher").innerHTML +=
-                `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em; ">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
+  //             btnX.parentElement.querySelector(".teacher").innerHTML +=
+  //               `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em; ">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
             
-          });
-        }
-      }
-      if (btnX.parentElement.querySelector(".time.now")) {
-        btnX.parentElement
-          .querySelector(".time.now")
-          .parentElement.querySelector(".teacher").innerHTML +=
-          `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
-      }
-    }
+  //         });
+  //       }
+  //     }
+  //     if (btnX.parentElement.querySelector(".time.now")) {
+  //       btnX.parentElement
+  //         .querySelector(".time.now")
+  //         .parentElement.querySelector(".teacher").innerHTML +=
+  //         `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
+  //     }
+  //   }
 
-    btnX.addEventListener("click", function () {
-      var test = btnX.parentElement.querySelector(".room").innerHTML;
-      if (test) {
-        if (
-          btnX.parentElement
-            .querySelector(".room")
-            .classList.contains("changing-rooms")
-        ) {
-          if (!localStorage.getItem("roomShown")) {
-            localStorage.setItem("roomShown", false);
-          }
-          if (localStorage.getItem("roomShown") === "false") {
-            var message = document.getElementById("ctx-assistant-say");
-            stopAll();
-            message.style.display = "block";
-            message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" class="ai-btn">ОК</button></div>`;
-            setTimeout(function () {
-              message.style.display = "none";
-            }, 10000);
-          }
-        }
-      }
-      let events = btnX.parentElement.querySelectorAll(".custom-events");
+  //   btnX.addEventListener("click", function () {
+  //     var test = btnX.parentElement.querySelector(".room").innerHTML;
+  //     if (test) {
+  //       if (
+  //         btnX.parentElement
+  //           .querySelector(".room")
+  //           .classList.contains("changing-rooms")
+  //       ) {
+  //         if (!localStorage.getItem("roomShown")) {
+  //           localStorage.setItem("roomShown", false);
+  //         }
+  //         if (localStorage.getItem("roomShown") === "false") {
+  //           var message = document.getElementById("ctx-assistant-say");
+  //           stopAll();
+  //           message.style.display = "block";
+  //           message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" class="ai-btn">ОК</button></div>`;
+  //           setTimeout(function () {
+  //             message.style.display = "none";
+  //           }, 10000);
+  //         }
+  //       }
+  //     }
+  //     let events = btnX.parentElement.querySelectorAll(".custom-events");
 
-      if (events) {
-        events.forEach((e) => {
-          //console.log(e);
-          if (e) {
-            e.style.display = "block";
-          }
-        });
-      }
+  //     if (events) {
+  //       events.forEach((e) => {
+  //         //console.log(e);
+  //         if (e) {
+  //           e.style.display = "block";
+  //         }
+  //       });
+  //     }
 
-      if (!shown) {
-        btnX.parentElement.querySelector(".teacher").style.display = "block";
+  //     if (!shown) {
+  //       btnX.parentElement.querySelector(".teacher").style.display = "block";
 
-        if (!addedNotesBtn) {
-          if (
-            btnX.parentElement
-              .querySelector(".teacher")
-              .querySelector(".input-svg")
-          ) {
-            btnX.parentElement
-              .querySelector(".teacher")
-              .querySelector(".input-svg")
-              .remove();
-          }
-          btnX.parentElement.querySelector(".teacher").innerHTML +=
-            `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd('${newUUID}');" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
-          addedNotesBtn = true;
-        }
+  //       if (!addedNotesBtn) {
+  //         if (
+  //           btnX.parentElement
+  //             .querySelector(".teacher")
+  //             .querySelector(".input-svg")
+  //         ) {
+  //           btnX.parentElement
+  //             .querySelector(".teacher")
+  //             .querySelector(".input-svg")
+  //             .remove();
+  //         }
+  //         btnX.parentElement.querySelector(".teacher").innerHTML +=
+  //           `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd('${newUUID}');" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
+  //         addedNotesBtn = true;
+  //       }
 
-        btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
-        shown = true;
-      } else {
-        btnX.parentElement.querySelector(".teacher").style.display = "none";
-        if (events) {
-          events.forEach((e) => {
-            //console.log(e);
-            if (e) {
-              e.style.display = "none";
-            }
-          });
-        }
-        btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-        shown = false;
-      }
-    });
-  });
-  localStorage.setItem("added-teacher", "true");
+  //       btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
+  //       shown = true;
+  //     } else {
+  //       btnX.parentElement.querySelector(".teacher").style.display = "none";
+  //       if (events) {
+  //         events.forEach((e) => {
+  //           //console.log(e);
+  //           if (e) {
+  //             e.style.display = "none";
+  //           }
+  //         });
+  //       }
+  //       btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
+  //       shown = false;
+  //     }
+  //   });
+  // });
+  // localStorage.setItem("added-teacher", "true");
 }
 
 function hideRoomShown() {
@@ -997,13 +1001,13 @@ btns.forEach((btn, index) => {
 });
 
 let r = 0;
-const burgerBtn = document.getElementById("burger-menu");
+// const burgerBtn = document.getElementById("burger-menu");
 const updater = document.getElementById("upd-b");
 
-burgerBtn.addEventListener("click", function () {
-  burgerBtn.classList.remove("closed-btn");
-  burgerBtn.classList.add("opened-btn");
-});
+// burgerBtn.addEventListener("click", function () {
+//   burgerBtn.classList.remove("closed-btn");
+//   burgerBtn.classList.add("opened-btn");
+// });
 
 let timeout = 0;
 updater.addEventListener("click", function () {
@@ -1177,8 +1181,8 @@ function openn(id, displ) {
 function closee(id) {
   var el = document.getElementById(id);
   el.style.animation = "closing .5s normal";
-  burgerBtn.classList.remove("opened-btn");
-  burgerBtn.classList.add("closed-btn");
+  // burgerBtn.classList.remove("opened-btn");
+  // burgerBtn.classList.add("closed-btn");
   setTimeout(function () {
     el.style.display = "none";
   }, 80);
@@ -1800,16 +1804,16 @@ function groupSet0() {
               document.getElementById("alerter").style.display = "none";
               document.getElementById("shocked-assistant").style.display =
                 "none";
-              burgerBtn.classList.remove("opened-btn");
-              burgerBtn.classList.add("closed-btn");
+              // burgerBtn.classList.remove("opened-btn");
+              // burgerBtn.classList.add("closed-btn");
               closeN("user-menu-display");
               getSchedule1(true);
             } else {
               document.getElementById("alerter").style.display = "none";
               document.getElementById("shocked-assistant").style.display =
                 "none";
-              burgerBtn.classList.remove("opened-btn");
-              burgerBtn.classList.add("closed-btn");
+              // burgerBtn.classList.remove("opened-btn");
+              // burgerBtn.classList.add("closed-btn");
               localStorage.setItem("userGroup", userGroup);
               closeN("user-menu-display");
               getSchedule1(true);
@@ -1828,7 +1832,7 @@ function groupSet0() {
 window.addEventListener("DOMContentLoaded", function () {
   newUIFeatures();
 
-  teacherHide();
+  //teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
@@ -2325,6 +2329,9 @@ document.addEventListener("DOMContentLoaded", () => {
 //   //document.getElementById("empty-container").style.borderTop = "2px solid var(--accent-bg) !important";
 // }
 
+// document.querySelector("header").style.marginTop = tg.safeAreaInset.top + "px";
+
+
 function newUIFeatures() {
   // newToRep();
   // document.querySelector("header h1").innerHTML = "Мой дневник";
@@ -2333,7 +2340,6 @@ function newUIFeatures() {
   // document
   //   .querySelector("#event-input textarea")
   //   .setAttribute("maxlength", 128);
-  document.querySelector("header").style.marginTop = tg.safeAreaInset.top + "px";
   document.querySelectorAll(".btnD").forEach((btn, idx) => {
     if (idx === 6) {
       btn.style.display = "none";

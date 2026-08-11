@@ -50,8 +50,7 @@
 }
 
 body {
-    background-blend-mode: overlay;
-    background: var(--main-bg-color) url(image.png) center;
+    background: var(--main-bg-color);
     background-size: contain;
     color: var(--over-color);
     scroll-behavior: smooth;
@@ -97,12 +96,23 @@ header {
     top: 0;
     z-index: 999;
     padding: 10px !important;
-    margin-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
-    border-radius: 35px;
-    width: 90%;
-    margin: 5%;
-    margin-top: 2%;
+    border-radius: 0 0 35px 35px;
+    padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top)) !important;
 }
+
+header h1 {
+    display: flex;
+    gap: .2em;
+    
+    svg {
+        align-self: center;
+        align-items: center;
+        align-content: center;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
 
 header h5 {
     color: var(--tg-theme-hint-color)
@@ -210,12 +220,15 @@ header.scrolling {
     filter: drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5));
 }
 .day .day-name {
+    display: flex;
     text-align: center;
     padding: 4px;
     letter-spacing: 1px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     margin: auto;
     gap: .4em;
 }
@@ -223,7 +236,14 @@ header.scrolling {
     margin: auto 0;
     scale: 1.25;
 }
-.day .lesson-row { position: relative; }
+.day .lesson-row { position: relative;
+    display: flex;
+    gap: 15px;
+    background: linear-gradient(45deg, rgba(from var(--over-color) r g b / 0.1), rgba(from var(--over-color) r g b / 0.35));
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 15px !important;
+}
 .day .list-btn {
     position: absolute;
     right: .5em;
@@ -279,7 +299,17 @@ header.scrolling {
 .lesson {
     margin-top: 1em;
     padding-top: 1em;
-    border-top: 2px solid var(--lessons-b-c);
+    width: 1em;
+    height: 1em;
+    font-size: larger;
+    background: var(--accent);
+    border-radius: 50%;
+    padding: 7px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    /* border-top: 2px solid var(--lessons-b-c); */
 }
 
 @keyframes raise {
@@ -356,7 +386,7 @@ header.scrolling {
     letter-spacing: 2px;
     color: var(--accent);
     background: var(--accent-bg);
-    padding: 6px;
+    padding: 6px 18px;
     border-radius: 36px;
     font-weight: 800;
     backdrop-filter: blur(8px);
