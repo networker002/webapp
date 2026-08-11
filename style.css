@@ -205,7 +205,7 @@ header.scrolling {
 
 .day {
     background: rgb( from var(--day-card-bg) r g b / 0.7);
-    border-radius: 1em;
+    border-radius: 35px;
     padding: 1em;
     font-family: "DejaVuSans";
     margin-left: 1em;
@@ -231,6 +231,8 @@ header.scrolling {
     text-align: center;
     margin: auto;
     gap: .4em;
+    font-weight: 600;
+    font-size: medium
 }
 .day .day-name svg {
     margin: auto 0;
@@ -238,13 +240,19 @@ header.scrolling {
 }
 .day .lesson-row { position: relative;
     display: flex;
+    align-items: center;
     gap: 15px;
     background: linear-gradient(45deg, rgba(from var(--over-color) r g b / 0.1), rgba(from var(--over-color) r g b / 0.35));
     padding: 15px;
     border-radius: 15px;
     margin-top: 15px !important;
 }
-.day .list-btn {
+
+.lesson-row h4 {
+    margin: 0;
+    padding: 0;
+}
+/* .day .list-btn {
     position: absolute;
     right: .5em;
     top: .5em;
@@ -261,30 +269,32 @@ header.scrolling {
 .day .list-btn:active {
     scale: 1.2;
     opacity: 1;
-}
+} */
+
+
 .day .tname { 
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: .5em;
  }
-.day .tname::before {
+/* .day .tname::before {
     position: absolute;
-    content: "ФИО преподавателя";
     top: 0;
     color: var(--tg-theme-hint-color);
     opacity: .9;
-}
+} */
 .day .teacher {
     font-family: "DejaVuSans";
     word-wrap: balance;
-    padding-top: 1.2em;
-    margin-top: 1.5em;
     position: relative;
     transition: all 2s;
     animation: raise 0.4s ease forwards;
+    text-align: center;
+    padding-top: .25em;
+    opacity: .75 !important;
 }
-.day .teacher::after {
+/* .day .teacher::after {
     position: absolute;
     top: -.5em;
     content: "";
@@ -294,7 +304,7 @@ header.scrolling {
     width: 100%;
     margin: auto;
     background: var(--ch-room-bg);
-}
+} */
 
 .lesson {
     margin-top: 1em;
@@ -304,7 +314,7 @@ header.scrolling {
     font-size: larger;
     background: var(--accent);
     border-radius: 50%;
-    padding: 7px;
+    padding: 5px !important;
     text-align: center;
     align-items: center;
     display: flex;
