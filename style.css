@@ -738,7 +738,7 @@ header.scrolling {
     position: fixed;
     right: calc(2em + 70px);
     z-index: 1000;
-    bottom: 6em;
+    bottom: 8em;
     background: rgb(from var(--tg-theme-header-bg-color) r g b / 0.75);
     font-family: monospace;
     font-weight: 200;
