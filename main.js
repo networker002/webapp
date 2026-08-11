@@ -366,7 +366,7 @@ function getSchedule1(reqNeed = false) {
             const weekLessons = data[1].filter(d => d.day_number === weekType);
             
             for (const dayName of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
-              const dayKey = dayMapping[dayName];
+              const dayKey = dayMapping2[dayName];
 
               const dayItems = weekLessons.filter(item => item.day_of_week === dayKey);
               
