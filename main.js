@@ -374,7 +374,7 @@ function getSchedule1(reqNeed = false) {
                 newHTML += `
                 <div class="swiper-slide">
                   <div class="day" data-cleaned="true">
-                    <h3 class="day-name">${day}</h3>
+                    <h3 class="day-name">${dayName}</h3>
                     <div id="empty-container">
                       <div id="e-c">
                         <div class="empty-starry">
