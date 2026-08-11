@@ -727,7 +727,7 @@ header.scrolling {
     position: fixed;
     right: 1.5em;
     z-index: 1000;
-    bottom: 1em;
+    bottom: 4em;
     background: none;
     transition: all 1s cubic-bezier(0.77, 0, 0.175, 1);
     animation: glow 30s infinite;
@@ -738,7 +738,7 @@ header.scrolling {
     position: fixed;
     right: calc(2em + 70px);
     z-index: 1000;
-    bottom: 5em;
+    bottom: 6em;
     background: rgb(from var(--tg-theme-header-bg-color) r g b / 0.75);
     font-family: monospace;
     font-weight: 200;
