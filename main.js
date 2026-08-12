@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            initApp();
+            //initApp();
           }
         })
         .catch((err) => {
@@ -1568,7 +1568,7 @@ function delNote(id) {
     return !(
       note.title === titleText &&
       note.time === timeText &&
-      note.lesson === lessonText
+      note.subject === lessonText
     );
   });
 
