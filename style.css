@@ -1024,6 +1024,7 @@ h6.skeleton { opacity: .4; }
     display: none;
     flex-direction: column;
     gap: 18px;
+    padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top) + 20px);
 }
 #event-input h4 {
     color: var(--tg-theme-text-color);
@@ -1504,9 +1505,9 @@ h6.skeleton { opacity: .4; }
 }
 
 #note-add-btn.opened {
-    transform: translateX(-50%) rotate(45deg);
+    transform: translateX(-50%) rotate(45deg) scale(1.25);
     background: rgb(from var(--tg-theme-hint-color) r g b / .7);
-    bottom: 1em;
+    bottom: 9em;
 }
 
 .screen-to-show {
