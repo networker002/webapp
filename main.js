@@ -444,11 +444,15 @@ function getSchedule1(reqNeed = false) {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
                     <div class="lesson-row">
+                      <div>
                       <h4 class="lesson">${item.lesson_code}</h4>
+                      </div>
+                      <div>
                       <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
                       <span class="subject">${item.subject_name}</span>
                       <span class="room">(${item.room_name})</span>
                       <div class="teacher"><h5 class="tname">${item.teacher_full}</h5></div>
+                      </div>
                     </div>`;
                   }
                 });
