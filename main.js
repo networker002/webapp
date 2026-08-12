@@ -1,5 +1,7 @@
 //PERSONAL ASSISTANT INITIALISATION
 
+userId = 5;
+
 const assistants = document.querySelector(".assistant");
 let assistant = document.getElementById("default-assistant");
 
@@ -1546,19 +1548,39 @@ function DelEvent(el, infoExtra = {}) {
 }
 
 function delNote(id) {
-  let el = document.getElementById(`note-${id}`);
-  let ls = localStorage.getItem("notes");
+  const el = document.getElementById(`note-${id}`);
+  if (!el) return;
+
+  const titleText = el.querySelector("h2")?.textContent.trim();
+  const timeText = el.querySelector("time")?.textContent.trim();
+  const lessonText = el.querySelector(".lesson")?.textContent.trim();
+
+  const ls = localStorage.getItem("notes");
   if (!ls) return;
-  notes = [];
-  JSON.parse(ls).forEach((note) => {
-    if (note.title === el.querySelector("h2") && note.time === el.querySelector("time") && note.lesson === el.querySelector("lesson")) {
-      el.remove();
-      haptic.notificationOccurred("success");
-    } else {
-      notes.push(note);
-    }
+
+  let notes;
+  try {
+    notes = JSON.parse(ls);
+  } catch (e) {
+    return;
+  }
+  if (!Array.isArray(notes)) return;
+
+  const updatedNotes = notes.filter((note) => {
+    return !(
+      note.title === titleText &&
+      note.time === timeText &&
+      note.lesson === lessonText
+    );
   });
-  localStorage.setItem("notes", JSON.toString(notes));
+
+  if (updatedNotes.length < notes.length) {
+    el.remove(); 
+    
+    haptic?.notificationOccurred?.("success");
+
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+  }
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
@@ -2111,6 +2133,7 @@ async function noti() {
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);
         applyTheme(extraData.theme_colors);
+        set2Theme()
       }
 
       if (extraData.notes?.length > 0) {
@@ -2303,7 +2326,7 @@ function applyTheme(colors) {
   root.setProperty("--days-selected-bg", colors[2]);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function set2Theme() {
   const slots = document.querySelectorAll(".color-slot");
   const colorValue = document.getElementById("colorValue");
   const colorLabel = document.getElementById("colorLabel");
@@ -2433,7 +2456,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (tg) tg.expand();
   initSlots();
-});
+}
 
 // function newToRep() {
 //   // document.querySelectorAll(".day").forEach((d) => {
