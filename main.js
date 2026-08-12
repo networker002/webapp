@@ -569,10 +569,10 @@ function getSchedule1(reqNeed = false) {
             });
 
             dayParseOnline();
-            cacheData(container.innerHTML);
             //teacherHide();
             if (nowBtn) upsSV();
             initSwiper();
+            cacheData(container.innerHTML);
           }
         })
         .catch((err) => {
@@ -599,7 +599,7 @@ function getSchedule1(reqNeed = false) {
           if (grElement) grElement.innerHTML = Group;
           if (menuElement) menuElement.innerHTML = Group;
         }
-        teacherHide();
+        //teacherHide();
         dayParseOnline();
         if (nowBtn) upsSV();
         initSwiper();
@@ -633,10 +633,10 @@ function getSchedule1(reqNeed = false) {
 getSchedule1();
 
 function cacheData(data) {
-  const NOW = Date.now();
+  const NOW_ = Date.now();
   try {
     localStorage.setItem("schedule", data.toString());
-    localStorage.setItem("updated_at", NOW);
+    localStorage.setItem("updated_at", NOW_);
     return true;
   } catch {
     return false;
