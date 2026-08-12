@@ -2126,7 +2126,7 @@ async function noti() {
     const extraData = await response.json();
 
     if (extraData) {
-      updateNotificationIcon(extraData.notifications);
+      //updateNotificationIcon(extraData.notifications);
 
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);
