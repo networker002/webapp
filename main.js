@@ -2566,15 +2566,15 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 }
 });
 
-document.getElementById("cancel-event-btn").addEventListener("click", function(){
- if (document.getElementById("note-add-btn").classList.contains("opened")) {
-    document.getElementById("note-add-btn").classList.remove("opened");
-    CloseBG();
-  } else {
-    ShowAdd();
-  document.getElementById("note-add-btn").classList.add("opened");
-}
-});
+// document.getElementById("cancel-event-btn").addEventListener("click", function(){
+//  if (document.getElementById("note-add-btn").classList.contains("opened")) {
+//     document.getElementById("note-add-btn").classList.remove("opened");
+//     CloseBG();
+//   } else {
+//     ShowAdd();
+//   document.getElementById("note-add-btn").classList.add("opened");
+// }
+// });
 
 document.getElementById("attach-event").addEventListener("click", function() {
 
