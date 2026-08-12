@@ -1,5 +1,7 @@
 //PERSONAL ASSISTANT INITIALISATION
 
+userId= 5;
+
 const assistants = document.querySelector(".assistant");
 let assistant = document.getElementById("default-assistant");
 
@@ -1558,7 +1560,7 @@ function delNote(id) {
       notes.push(note);
     }
   });
-  localStorage.setItem("notes", JSON.parse(notes));
+  localStorage.setItem("notes", JSON.toString(notes));
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
