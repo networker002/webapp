@@ -577,6 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
+            getNotes();
           }
         })
         .catch((err) => {
@@ -611,6 +612,7 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
+        getNotes();
       } else {
         getSchedule1(true);
       }
@@ -1636,7 +1638,7 @@ function getNotes() {
     })
   }
 }
-getNotes();
+
 
 function saveTeacherData() {
   // //console.log("saving data");

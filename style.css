@@ -1393,6 +1393,7 @@ h6.skeleton { opacity: .4; }
         align-items: center;
         justify-content: center;
         gap: 10px;
+        padding-top: var(--tg-content-safe-area-inset-top);
     }
 }
 
@@ -1400,7 +1401,7 @@ h6.skeleton { opacity: .4; }
     display: flex;
     flex-direction: column;
     padding: 15px;
-    height: calc(100vh - 90px);
+    height: calc(100vh - 90px - var(--tg-content-safe-area-inset-top));
     width: calc(100vw - 60px) !important;
     border-radius: 35px 35px 0 0;
     background: linear-gradient(0, rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.35), rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.5));
@@ -1492,7 +1493,7 @@ h6.skeleton { opacity: .4; }
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform .2s ease, background .4s ease;
+    transition: transform .2s ease, background .4s ease, bottom .5s ease-in-out;
     scale: 1.25;
     z-index: 99999;
 }
@@ -1505,6 +1506,7 @@ h6.skeleton { opacity: .4; }
 #note-add-btn.opened {
     transform: translateX(-50%) rotate(45deg);
     background: rgb(from var(--tg-theme-hint-color) r g b / .7);
+    bottom: 1em;
 }
 
 .screen-to-show {
