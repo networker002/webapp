@@ -2131,7 +2131,7 @@ async function noti() {
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);
         applyTheme(extraData.theme_colors);
-        set2Theme()
+        set2Theme();
       }
 
       if (extraData.notes?.length > 0) {
@@ -2192,6 +2192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       toggleNotifications();
     });
   }
+  initApp();
 
 });
 
@@ -2357,6 +2358,8 @@ function set2Theme() {
       { component: iro.ui.Slider, options: { sliderType: "value" } },
     ],
   });
+
+  set2Theme();
 
   // function applyTheme(colors) {
   //     document.body.setAttribute('data-theme', 'custom');
