@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            getNotes();
+            initApp();
           }
         })
         .catch((err) => {
@@ -612,7 +612,7 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
-        getNotes();
+        initApp();
       } else {
         getSchedule1(true);
       }
@@ -2077,26 +2077,38 @@ function updateNotificationIcon(status) {
   r.style.transition = "color 0.15s ease";
 }
 
-function noti() {
+async function noti() {
   const authHeaders = { Authorization: tg.initData };
 
-  fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
-    .then((response) => {
-      if (!response.ok) throw new Error("Error: " + response.status);
-      return response.json();
-    })
-    .then((extraData) => {
-      if (extraData) {
-        updateNotificationIcon(extraData.notifications);
-        if (extraData.theme_colors.length > 0) {
-          localStorage.setItem("customThemeColors", extraData.theme_colors);
-          applyTheme(extraData.theme_colors);
-        }
-        if (extraData.notes.length > 0 && !localStorage.getItem("notes"))
-          localStorage.setItem("notes", JSON.stringify(extraData.notes)); //
+  try {
+    const response = await fetch("https://boost.rorosin.ru/extra", { headers: authHeaders });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const extraData = await response.json();
+
+    if (extraData) {
+      updateNotificationIcon(extraData.notifications);
+
+      if (extraData.theme_colors?.length > 0) {
+        localStorage.setItem("customThemeColors", extraData.theme_colors);
+        applyTheme(extraData.theme_colors);
       }
-    })
-    .catch((error) => console.error("Error loading notifications:", error));
+
+      if (extraData.notes?.length > 0) {
+        localStorage.setItem("notes", JSON.stringify(extraData.notes));
+      }
+    }
+  } catch (error) {
+    console.error("Error loading notifications:", error);
+  }
+}
+
+async function initApp() {
+  await noti(); 
+  getNotes();
 }
 
 function toggleNotifications() {
@@ -2143,7 +2155,7 @@ document.addEventListener("DOMContentLoaded", function () {
       toggleNotifications();
     });
   }
-  noti();
+
 });
 
 // document.addEventListener("DOMContentLoaded", function() {
