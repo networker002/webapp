@@ -1582,7 +1582,7 @@ function delNote(id) {
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
- existingNotes = localStorage.getItem("notes");
+ let existingNotes = localStorage.getItem("notes");
  
  if (!existingNotes) {
   notes = [];
@@ -2232,7 +2232,8 @@ function sendExtra() {
 
   let theme = [];
   try {
-    theme = localStorage.getItem("customThemeColors").split(",") || [];
+    const storedTheme = localStorage.getItem("customThemeColors");
+    theme = storedTheme ? storedTheme.split(",") : [];
   } catch (err) {
     console.error("Failed to parse customThemeColors:", err);
     theme = [];
@@ -2645,6 +2646,6 @@ function initBtns() {
       document.getElementById("notes-show").click();
       document.getElementById("note-add-btn").click();
       document.getElementById("note-add-btn").click();
-    })
-  })
+    }, {once: true});
+  });
 }
