@@ -1551,7 +1551,7 @@ function delNote(id) {
 
   const titleText = el.querySelector("h2")?.textContent.trim();
   const timeText = el.querySelector("time")?.textContent.trim();
-  const lessonText = el.querySelector(".lesson")?.textContent.trim();
+  const lessonText = el.querySelector("lesson")?.textContent.trim();
 
   const ls = localStorage.getItem("notes");
   if (!ls) return;
