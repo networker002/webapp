@@ -697,83 +697,83 @@ function dayParseOnline() {
 }
 
 function cleanDaySchedule(dayElement) {
-  if (dayElement.classList.contains("empty")) {
-    return;
-  }
+  // if (dayElement.classList.contains("empty")) {
+  //   return;
+  // }
 
-  const lessonsData = {};
-  const dayNameEl = dayElement.querySelector(".day-name");
+  // const lessonsData = {};
+  // const dayNameEl = dayElement.querySelector(".day-name");
 
-  const lessonHeaders = dayElement.querySelectorAll(".lesson");
+  // const lessonHeaders = dayElement.querySelectorAll(".lesson");
 
-  lessonHeaders.forEach((header) => {
-    //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
+  // lessonHeaders.forEach((header) => {
+  //   //const Teacher = header.parentElement.parentElement.querySelector(".teacher");
 
-    const lessonNum = header.textContent.trim();
+  //   const lessonNum = header.textContent.trim();
 
-    const timeEl = header.nextElementSibling;
-    const timeText = timeEl?.classList.contains("time")
-      ? timeEl.textContent.trim()
-      : "";
+  //   const timeEl = header.nextElementSibling;
+  //   const timeText = timeEl?.classList.contains("time")
+  //     ? timeEl.textContent.trim()
+  //     : "";
 
-    const subjectEl = timeEl?.nextElementSibling;
-    const roomEl = subjectEl?.nextElementSibling;
+  //   const subjectEl = timeEl?.nextElementSibling;
+  //   const roomEl = subjectEl?.nextElementSibling;
 
-    const subjectName = subjectEl?.classList.contains("subject")
-      ? subjectEl.textContent.trim()
-      : "";
-    let roomText = roomEl?.classList.contains("room")
-      ? roomEl.textContent.trim()
-      : "";
+  //   const subjectName = subjectEl?.classList.contains("subject")
+  //     ? subjectEl.textContent.trim()
+  //     : "";
+  //   let roomText = roomEl?.classList.contains("room")
+  //     ? roomEl.textContent.trim()
+  //     : "";
 
-    const Teacher = roomEl?.nextElementSibling;
+  //   const Teacher = roomEl?.nextElementSibling;
 
-    let teacherText = Teacher?.classList.contains("teacher")
-      ? Teacher.textContent.trim()
-      : "Не указано";
+  //   let teacherText = Teacher?.classList.contains("teacher")
+  //     ? Teacher.textContent.trim()
+  //     : "Не указано";
 
-    roomText = roomText.replace(/[()]/g, "");
+  //   roomText = roomText.replace(/[()]/g, "");
 
-    const key = `${lessonNum}_${timeText}_${subjectName}`;
+  //   const key = `${lessonNum}_${timeText}_${subjectName}`;
 
-    if (!lessonsData[key]) {
-      lessonsData[key] = {
-        num: lessonNum,
-        time: timeText,
-        name: subjectName,
-        rooms: roomText ? [roomText] : [],
-        teacher: teacherText,
-      };
-    } else {
-      if (roomText && !lessonsData[key].rooms.includes(roomText)) {
-        lessonsData[key].rooms.push(roomText);
-      }
-    }
-  });
+  //   if (!lessonsData[key]) {
+  //     lessonsData[key] = {
+  //       num: lessonNum,
+  //       time: timeText,
+  //       name: subjectName,
+  //       rooms: roomText ? [roomText] : [],
+  //       teacher: teacherText,
+  //     };
+  //   } else {
+  //     if (roomText && !lessonsData[key].rooms.includes(roomText)) {
+  //       lessonsData[key].rooms.push(roomText);
+  //     }
+  //   }
+  // });
 
-  let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
+  // let newHTML = `<h3 class="day-name">${dayNameEl ? dayNameEl.innerHTML : ""}</h3>`;
 
-  Object.values(lessonsData).forEach((l) => {
-    const roomsDisplay =
-      l.rooms.length > 0
-        ? ` <span class="room">(${l.rooms.join(" / ")})</span>`
-        : "";
+  // Object.values(lessonsData).forEach((l) => {
+  //   const roomsDisplay =
+  //     l.rooms.length > 0
+  //       ? ` <span class="room">(${l.rooms.join(" / ")})</span>`
+  //       : "";
 
-    newHTML += `
-      <div class="lesson-row">
-        <div>
-        <h4 class="lesson">${l.num}</h4>
-        </div>
-        <div>
-        <h6 class="time">${l.time}</h6>
-        <span class="subject">${l.name}</span><b>${roomsDisplay}</b>
-        <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${l.teacher}</h5></div>
-        </div>
-        </div>
-    `;
-  });
+  //   newHTML += `
+  //     <div class="lesson-row">
+  //       <div>
+  //       <h4 class="lesson">${l.num}</h4>
+  //       </div>
+  //       <div>
+  //       <h6 class="time">${l.time}</h6>
+  //       <span class="subject">${l.name}</span><b>${roomsDisplay}</b>
+  //       <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${l.teacher}</h5></div>
+  //       </div>
+  //       </div>
+  //   `;
+  // });
 
-  dayElement.innerHTML = newHTML;
+  // dayElement.innerHTML = newHTML;
 
   //teacherHide(dayElement, false);
 }
