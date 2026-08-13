@@ -1610,7 +1610,7 @@ function saveNoteNew() {
   //document.getElementById("event-input");
   let error = false;
 
-  let newNote = {title: null, subject: null, description: null, time: null, uuid};
+  let newNote = {title: null, subject: null, description: null, time: null, uuid: null};
   if (!document.getElementById("name-event").value) {
     //error
     haptic.notificationOccurred("error");
