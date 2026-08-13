@@ -1599,6 +1599,7 @@ function saveNotes(newNote = {title: null, subject: null, description: null, tim
  }
   console.log(existingNotes);
  sendExtra();
+ getNotes();
 }
 
 function saveNoteNew() {
