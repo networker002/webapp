@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            initApp();
+            //initApp();
           }
         })
         .catch((err) => {
@@ -612,7 +612,7 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
-        initApp();
+        //initApp();
       } else {
         getSchedule1(true);
       }
@@ -1220,6 +1220,7 @@ function closee(id) {
 // });
 
 window.addEventListener("DOMContentLoaded", () => {
+  initApp();
   let dayPeriodMapping = {
     0: "0",
     1: "0",
@@ -1647,6 +1648,7 @@ function saveNoteNew() {
 function getNotes() {
   let nowNotes = localStorage.getItem("notes");
   let notesArea = document.querySelector(".notes-area");
+  notesArea.innerHTML = ``;
   if (!nowNotes) {
     notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="empty-note" class="note">
                 <h2 style="color: var(--tg-theme-section-header-text-color)">Пока заметок нет</h2>
