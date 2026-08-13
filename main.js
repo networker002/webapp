@@ -1972,7 +1972,6 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   newUIFeatures();
-  initApp();
   //teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
@@ -2550,7 +2549,7 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 
 // document.getElementById("schedule-show")
 // document.getElementById("marks-show")
-// document.getElementById("notes-show")
+document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
 // document.getElementById("profile-show")
 
 const screensButtonsMapping = {
