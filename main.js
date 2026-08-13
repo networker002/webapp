@@ -1579,6 +1579,8 @@ function delNote(id) {
 
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   }
+
+  getNotes();
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
