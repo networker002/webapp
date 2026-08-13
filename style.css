@@ -1398,6 +1398,21 @@ h6.skeleton { opacity: .4; }
     }
 }
 
+.note.pinned {
+    border: 3px dashed rgb( from var(--accent) r g b / .6);
+    position: relative;
+    order: -1;
+    &::before {
+        content: "📌";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        font-size: larger;
+        background: none;
+        transform: rotateY(180deg);
+    }
+}
+
 .notes-area {
     display: flex;
     flex-direction: column;
