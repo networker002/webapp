@@ -1559,6 +1559,7 @@ function delNote(id) {
   let notes;
   try {
     notes = JSON.parse(ls);
+    console.log(notes);
   } catch (e) {
     return;
   }
