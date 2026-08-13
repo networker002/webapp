@@ -1220,7 +1220,6 @@ function closee(id) {
 // });
 
 window.addEventListener("DOMContentLoaded", () => {
-  initApp();
   let dayPeriodMapping = {
     0: "0",
     1: "0",
@@ -1973,7 +1972,7 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   newUIFeatures();
-
+  initApp();
   //teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
