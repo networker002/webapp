@@ -955,6 +955,10 @@ function upsSV() {
         dayParseOnline();
       }
 
+      if (de.querySelectorAll(".lesson-row").length >= 4) {
+        de.style.marginBottom = "6em !important";
+      }
+
       if (
         dayName === days[tommorrow.getDay()] &&
         rr &&

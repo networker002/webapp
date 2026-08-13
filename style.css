@@ -1477,6 +1477,7 @@ h6.skeleton { opacity: .4; }
 
     button {
         padding: 2.5px 10px;
+        scale: .9;
         border-radius: 15px;
         outline: none;
         border: none;
