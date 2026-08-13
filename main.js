@@ -1546,6 +1546,7 @@ function DelEvent(el, infoExtra = {}) {
 }
 
 function pinNote(id) {
+  if (document.getElementById(`note-${id}`).classList.contains("pinned")) {document.getElementById(`note-${id}`).classList.remove("pinned"); return}
   document.querySelectorAll(".note").forEach((n) => {if (n.classList.contains("pinned")) n.classList.remove("pinned")});
   document.getElementById(`note-${id}`).classList.add("pinned"); haptic?.notificationOccurred?.("success");
 }
@@ -1576,20 +1577,19 @@ function delNote(id) {
       // note.title === titleText &&
       // note.time === timeText &&
       // note.subject === lessonText
-      note.uuid === id
+      String(note.uuid) === String(id)
     );
   });
 
   if (updatedNotes.length < notes.length) {
     el.remove(); 
-    
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
     haptic?.notificationOccurred?.("success");
     console.log(`[${Date.now()}] ${updatedNotes}`)
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
     setTimeout(() => {
       initApp();
       sendExtra();
-    }, 100);
+    }, 200);
   }
 
 }

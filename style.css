@@ -1402,6 +1402,7 @@ h6.skeleton { opacity: .4; }
     border: 3px dashed rgb( from var(--accent) r g b / .6);
     position: relative;
     order: -1;
+    animation: start-pin 1s ease;
     &::before {
         content: "📌";
         position: absolute;
@@ -1410,6 +1411,13 @@ h6.skeleton { opacity: .4; }
         font-size: larger;
         background: none;
         transform: rotateY(180deg);
+    }
+}
+
+@keyframes start-pin {
+    0% {
+        opacity: .5;
+        transform: scaleX(1.05) scaleY(0.95);
     }
 }
 
