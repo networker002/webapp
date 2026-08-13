@@ -1579,7 +1579,8 @@ function delNote(id) {
     haptic?.notificationOccurred?.("success");
     console.log(`[${Date.now()}] ${updatedNotes}`)
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
-    initApp();   
+    initApp();
+    sendExtra();
   }
 
 }
