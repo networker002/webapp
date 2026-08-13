@@ -1579,9 +1579,11 @@ function delNote(id) {
     haptic?.notificationOccurred?.("success");
 
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
+    setTimeout(() => {
+      initApp();
+    }, 100);
   }
 
-  initApp();
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
