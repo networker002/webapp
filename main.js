@@ -1564,7 +1564,7 @@ function delNote(id) {
     return;
   }
   if (!Array.isArray(notes)) return;
-
+  console.log([titleText, timeText, lessonText]);
   const updatedNotes = notes.filter((note) => {
     return !(
       note.title === titleText &&
