@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            //initApp();
+            initApp();
           }
         })
         .catch((err) => {
@@ -1580,7 +1580,7 @@ function delNote(id) {
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   }
 
-  getNotes();
+  initApp();
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null}) {
@@ -2186,17 +2186,17 @@ function toggleNotifications() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const notifyBtn = document.getElementById("notify-btn");
-  if (notifyBtn) {
-    notifyBtn.addEventListener("click", function () {
-      haptic.notificationOccurred("success");
-      toggleNotifications();
-    });
-  }
-  initApp();
+// document.addEventListener("DOMContentLoaded", function () {
+//   const notifyBtn = document.getElementById("notify-btn");
+//   if (notifyBtn) {
+//     notifyBtn.addEventListener("click", function () {
+//       haptic.notificationOccurred("success");
+//       toggleNotifications();
+//     });
+//   }
+//   //initApp();
 
-});
+// });
 
 // document.addEventListener("DOMContentLoaded", function() {
 //   noti();
