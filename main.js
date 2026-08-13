@@ -2359,7 +2359,7 @@ function set2Theme() {
     ],
   });
 
-  set2Theme();
+  //set2Theme();
 
   // function applyTheme(colors) {
   //     document.body.setAttribute('data-theme', 'custom');
