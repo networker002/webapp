@@ -956,7 +956,7 @@ function upsSV() {
       }
 
       if (de.querySelectorAll(".lesson-row").length >= 4) {
-        de.style.marginBottom = "6em !important";
+        de.style = "margin-bottom: 6em !important";
       }
 
       if (
