@@ -2153,8 +2153,8 @@ async function noti() {
 
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);
-        applyTheme(extraData.theme_colors);
-        console.log("theme was applied (func noti)");
+        // applyTheme(extraData.theme_colors);
+        // console.log("theme was applied (func noti)");
         //set2Theme();
       }
 
@@ -2171,7 +2171,11 @@ async function noti() {
 async function initApp() {
   await noti(); 
   getNotes();
+  if (localStorage.getItem("customThemeColors")) {
+    applyTheme(localStorage.getItem("customThemeColors").split(","))
+  }
 }
+initApp();
 
 function toggleNotifications() {
   const authHeaders = { Authorization: tg.initData };
