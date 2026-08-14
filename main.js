@@ -642,6 +642,13 @@ function waitForInitData(retries = 10) {
    }
 waitForInitData();
 
+tg.onEvent('themeChanged', () => {
+  const savedTheme = localStorage.getItem("customThemeColors");
+  if (savedTheme) {
+    applyTheme(savedTheme.split(","));
+  }
+});
+
 function cacheData(data) {
   const NOW_ = Date.now();
   try {
