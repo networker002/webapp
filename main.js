@@ -1550,7 +1550,7 @@ function DelEvent(el, infoExtra = {}) {
 }
 
 function pinNote(id) {
-  if (document.getElementById(`note-${id}`).classList.contains("pinned")) {document.getElementById(`note-${id}`).classList.remove("pinned"); return}
+  if (document.getElementById(`note-${id}`).classList.contains("pinned")) {document.getElementById(`note-${id}`).classList.remove("pinned");localStorage.setItem("pin-note", ""); return}
   document.querySelectorAll(".note").forEach((n) => {if (n.classList.contains("pinned")) n.classList.remove("pinned")});
   document.getElementById(`note-${id}`).classList.add("pinned"); haptic?.notificationOccurred?.("success"); localStorage.setItem("pin-note", String(id));
 }
