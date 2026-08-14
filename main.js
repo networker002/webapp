@@ -612,7 +612,6 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
-        initApp();
       } else {
         getSchedule1(true);
       }
@@ -637,6 +636,8 @@ function getSchedule1(reqNeed = false) {
   }
 }
 getSchedule1();
+
+window.addEventListener("DOMContentLoaded", () => {initApp();})
 
 function cacheData(data) {
   const NOW_ = Date.now();
