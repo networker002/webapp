@@ -575,7 +575,6 @@ function getSchedule1(reqNeed = false) {
             dayParseOnline();
             //teacherHide();
             if (nowBtn) upsSV();
-            adjustDaysScrollSpace();
             initSwiper();
             cacheData(container.innerHTML);
             //initApp();
@@ -608,7 +607,6 @@ function getSchedule1(reqNeed = false) {
         //teacherHide();
         dayParseOnline();
         if (nowBtn) upsSV();
-        adjustDaysScrollSpace();
         initSwiper();
         // if (!document.querySelectorAll(".day").length) {
         //   upsSV();
@@ -638,21 +636,11 @@ function getSchedule1(reqNeed = false) {
           }, 1500);
   }
 }
-// if (tg.initData) {
-// getSchedule1();
-// initApp();
-// }
 function waitForInitData(retries = 10) {
      if (tg.initData) { getSchedule1(); initApp(); return; }
-     if (retries > 0) setTimeout(() => waitForInitData(retries - 1), 150);
+     if (retries > 0) setTimeout(() => waitForInitData(retries - 1), 10);
    }
 waitForInitData();
-
-window.addEventListener('resize', () => {
-  adjustDaysScrollSpace();
-  const swiperEl = document.querySelector('.swiper');
-  if (swiperEl?.swiper) swiperEl.swiper.updateAutoHeight(300);
-});
 
 function cacheData(data) {
   const NOW_ = Date.now();
@@ -1706,7 +1694,7 @@ function getNotes() {
   let notesArea = document.querySelector(".notes-area");
   notesArea.innerHTML = ``;
   if (!nowNotes || String(nowNotes) === "[]") {
-    notesArea.insertAdjacentHTML('beforeend', `<div id="empty-note" class="note">
+    nnotesArea.insertAdjacentHTML('beforeend', `<div id="empty-note" class="note">
                 <h2 style="color: var(--tg-theme-section-header-text-color)">Пока заметок нет</h2>
                 <time>12:00</time>
                 <lesson>Математика</lesson>
@@ -2137,13 +2125,6 @@ if (savedTheme) {
 //     });
 //   });
 
-tg.onEvent('themeChanged', () => {
-  const savedTheme = localStorage.getItem("customThemeColors");
-  if (savedTheme) {
-    applyTheme(savedTheme.split(","));
-  }
-});
-
 function initSwiper() {
   const swiperContainer = document.querySelector(".swiper");
 
@@ -2239,30 +2220,12 @@ async function noti() {
   }
 }
 
-function adjustDaysScrollSpace() {
-  const bottomMenu = document.querySelector('.bottom-menu');
-  if (!bottomMenu) return;
-
-  const reserveSpace = bottomMenu.offsetHeight + 20;
-
-  document.querySelectorAll('.day').forEach((day) => {
-    day.style.paddingBottom = '';
-
-    const top = day.getBoundingClientRect().top;
-    const availableHeight = window.innerHeight - top;
-
-    if (day.scrollHeight > availableHeight) {
-      day.style.paddingBottom = reserveSpace + 'px';
-    }
-  });
-}
-
 async function initApp() {
   await noti(); 
   getNotes();
-  // if (localStorage.getItem("customThemeColors")) {
-  //   applyTheme(localStorage.getItem("customThemeColors").split(","))
-  // }
+  if (localStorage.getItem("customThemeColors")) {
+    applyTheme(localStorage.getItem("customThemeColors").split(","))
+  }
 }
 // initApp();
 
@@ -2439,6 +2402,7 @@ function set2Theme() {
   const resetBtn = document.querySelector(".buttons-cont1 button:first-child");
   //const saveBtn = document.getElementById("saveColorsBtn");
 
+  const tg = window.Telegram?.WebApp;
   const tgTheme = tg?.themeParams || {};
 
   const defaultColors = [
