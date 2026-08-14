@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            //initApp();
+            initApp();
           }
         })
         .catch((err) => {
@@ -612,7 +612,7 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
-        //initApp();
+        initApp();
       } else {
         getSchedule1(true);
       }
@@ -2159,8 +2159,18 @@ async function noti() {
       }
 
       if (extraData.notes) {
+        const savedPinnedUuid = localStorage.getItem("pin-note");
+        
         localStorage.setItem("notes", JSON.stringify(extraData.notes));
         console.log("got notes (func noti)");
+        
+        if (savedPinnedUuid) {
+          const notesExist = extraData.notes.some(note => String(note.uuid) === String(savedPinnedUuid));
+          if (!notesExist) {
+            localStorage.setItem("pin-note", "");
+            console.log("pinned note no longer exists, clearing pin-note");
+          }
+        }
       }
     }
   } catch (error) {
@@ -2175,7 +2185,7 @@ async function initApp() {
     applyTheme(localStorage.getItem("customThemeColors").split(","))
   }
 }
-initApp();
+// initApp();
 
 function toggleNotifications() {
   const authHeaders = { Authorization: tg.initData };
