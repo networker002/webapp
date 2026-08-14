@@ -577,7 +577,7 @@ function getSchedule1(reqNeed = false) {
             if (nowBtn) upsSV();
             initSwiper();
             cacheData(container.innerHTML);
-            initApp();
+            //initApp();
           }
         })
         .catch((err) => {
@@ -612,7 +612,7 @@ function getSchedule1(reqNeed = false) {
         //   upsSV();
         // }
         upsSV();
-        initApp();
+        //initApp();
       } else {
         getSchedule1(true);
       }
@@ -636,8 +636,10 @@ function getSchedule1(reqNeed = false) {
           }, 1500);
   }
 }
+if (tg.initData) {
 getSchedule1();
-
+initApp();
+}
 function cacheData(data) {
   const NOW_ = Date.now();
   try {
@@ -1550,9 +1552,33 @@ function DelEvent(el, infoExtra = {}) {
 }
 
 function pinNote(id) {
-  if (document.getElementById(`note-${id}`).classList.contains("pinned")) {document.getElementById(`note-${id}`).classList.remove("pinned");localStorage.setItem("pin-note", ""); return}
-  document.querySelectorAll(".note").forEach((n) => {if (n.classList.contains("pinned")) n.classList.remove("pinned")});
-  document.getElementById(`note-${id}`).classList.add("pinned"); haptic?.notificationOccurred?.("success"); localStorage.setItem("pin-note", String(id));
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  const el = document.getElementById(`note-${id}`);
+  if (!el) return;
+
+  const isPinned = el.classList.contains("pinned");
+
+  if (isPinned) {
+    el.classList.remove("pinned");
+    localStorage.setItem("pin-note", "");
+    
+    const note = notes.find(n => String(n.uuid) === String(id));
+    if (note) note.pin = false;
+
+  } else {
+    document.querySelectorAll(".note").forEach((n) => n.classList.remove("pinned"));
+    
+    el.classList.add("pinned");
+    haptic?.notificationOccurred?.("success");
+    localStorage.setItem("pin-note", String(id));
+
+    notes.forEach((n) => {
+      n.pin = (String(n.uuid) === String(id));
+    });
+  }
+
+  localStorage.setItem("notes", JSON.stringify(notes));
+  sendExtra();
 }
 
 function delNote(id) {
@@ -1666,23 +1692,24 @@ function getNotes() {
   let notesArea = document.querySelector(".notes-area");
   notesArea.innerHTML = ``;
   if (!nowNotes || String(nowNotes) === "[]") {
-    notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="empty-note" class="note">
+    nnotesArea.insertAdjacentHTML('beforeend', `<div id="empty-note" class="note">
                 <h2 style="color: var(--tg-theme-section-header-text-color)">Пока заметок нет</h2>
                 <time>12:00</time>
                 <lesson>Математика</lesson>
                 <p>Составляйте заметки, шпаргалки, напоминания для облегчения учебы</p>
                 <div class="note-btn-container">
                     <button class="note-btn-edit"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-1 2q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/></svg></button>
-                    <button class="note-btn-pin" onlcick="document.querySelectorAll('.note').forEach((n) => {if (n.classList.contains('pinned')) n.classList.remove('pinned')}); document.getElementById('empty-note').classList.add('pinned');"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" fill-rule="evenodd" d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1l1-1v-7H19v-2c-1.66 0-3-1.34-3-3"/></svg></button>
+                    <button class="note-btn-pin" onclick="document.querySelectorAll('.note').forEach((n) => {if (n.classList.contains('pinned')) n.classList.remove('pinned')}); document.getElementById('empty-note').classList.add('pinned');"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" fill-rule="evenodd" d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1l1-1v-7H19v-2c-1.66 0-3-1.34-3-3"/></svg></button>
                     <button class="note-btn-del" onclick="document.getElementById('empty-note').remove(); haptic.notificationOccurred('success');"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                 </div>
-            </div>`;
+            </div>`);
   } else {
     nowNotes = JSON.parse(nowNotes);
     nowNotes.forEach((note, idx) => {
       let clasS = "note";
       if (localStorage.getItem("pin-note") === String(note.uuid)) clasS += " pinned";
-      notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="note-${note.uuid}" class="${clasS}">
+      else if (String(note?.pin) === String(true)) clasS += " pinned";
+      notesArea.insertAdjacentHTML('beforeend', `<div id="note-${note.uuid}" class="${clasS}">
                 <h2>${note.title}</h2>
                 <time>${note.time}</time>
                 <lesson>${note.subject}</lesson>
@@ -1692,7 +1719,7 @@ function getNotes() {
                     <button class="note-btn-pin" pinid="${note.uuid}" onclick="pinNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" fill-rule="evenodd" d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1l1-1v-7H19v-2c-1.66 0-3-1.34-3-3"/></svg></button>
                     <button class="note-btn-del" delid="${note.uuid}" onclick="delNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                 </div>
-            </div>`;
+            </div>`);
     })
   }
 }
@@ -1991,12 +2018,24 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded");
-  initApp();
+  
   newUIFeatures();
   //teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
     tg.initDataUnsafe.user.photo_url;
+
+    if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
+    stopAll();
+    message.style.display = "block";
+    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`;
+
+    setTimeout(() => {
+      message.parentElement.style.transform = "translate(0)";
+      message.innerHTML = "";
+      message.style.display = "none";
+    }, 7500);
+  }
 });
 
 const Header = document.querySelector("header");
@@ -2329,19 +2368,6 @@ function sendExtra() {
 //         }
 // }
 
-window.addEventListener("DOMContentLoaded", function () {
-  if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
-    stopAll();
-    message.style.display = "block";
-    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`;
-
-    setTimeout(() => {
-      message.parentElement.style.transform = "translate(0)";
-      message.innerHTML = "";
-      message.style.display = "none";
-    }, 7500);
-  }
-});
 
 function applyTheme(colors) {
   document.body.setAttribute("data-theme", "custom");
