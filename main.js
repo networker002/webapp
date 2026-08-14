@@ -2142,7 +2142,6 @@ function initSwiper() {
   const swiper = new Swiper(".swiper", {
     direction: "horizontal",
     loop: true,
-    autoHeight: true,
   });
 
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
