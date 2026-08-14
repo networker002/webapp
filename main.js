@@ -1661,6 +1661,7 @@ function saveNoteNew() {
 }
 
 function getNotes() {
+  console.log("getNotes was started")
   let nowNotes = localStorage.getItem("notes");
   let notesArea = document.querySelector(".notes-area");
   notesArea.innerHTML = ``;
@@ -1989,6 +1990,7 @@ function groupSet0() {
 }
 
 window.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded");
   newUIFeatures();
   //teacherHide();
   upsSV();
@@ -2151,11 +2153,13 @@ async function noti() {
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);
         applyTheme(extraData.theme_colors);
-        set2Theme();
+        console.log("theme was applied (func noti)");
+        //set2Theme();
       }
 
       if (extraData.notes) {
         localStorage.setItem("notes", JSON.stringify(extraData.notes));
+        console.log("got notes (func noti)");
       }
     }
   } catch (error) {
@@ -2227,28 +2231,28 @@ document.getElementById("user-menu-display");
 function sendExtra() {
   let notes = [];
   const notesRaw = localStorage.getItem("notes");
-  if (notesRaw) {
-    try {
+  if (notesRaw || String(notesRaw) === "[]") {
+    
       const parsedNotes = JSON.parse(notesRaw);
       if (Array.isArray(parsedNotes)) {
         notes = parsedNotes;
       } else if (parsedNotes && typeof parsedNotes === "object") {
         notes = [parsedNotes];
       }
-    } catch (err) {
-      notes = notesRaw
-        .split("<sep>")
-        .map((item) => item.trim())
-        .filter((item) => item !== "")
-        .map((item) => {
-          try {
-            return JSON.parse(item);
-          } catch (_err) {
-            return null;
-          }
-        })
-        .filter((item) => item !== null);
-    }
+    //  catch (err) {
+    //   notes = notesRaw
+    //     .split("<sep>")
+    //     .map((item) => item.trim())
+    //     .filter((item) => item !== "")
+    //     .map((item) => {
+    //       try {
+    //         return JSON.parse(item);
+    //       } catch (_err) {
+    //         return null;
+    //       }
+    //     })
+    //     .filter((item) => item !== null);
+    // }
   }
 
   let theme = [];
@@ -2277,16 +2281,17 @@ function sendExtra() {
     })
     .then((status) => {
       if (status && status.status === true) {
-        var al = document.getElementById("fast-alert");
-        if (al) {
-          al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
-          al.style.display = "flex";
-          al.style.animation = "flyUP 2s normal";
-          setTimeout(function () {
-            al.style.display = "none";
-            al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-          }, 1900);
-        }
+        console.log("sendExtra done")
+        // var al = document.getElementById("fast-alert");
+        // if (al) {
+        //   al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
+        //   al.style.display = "flex";
+        //   al.style.animation = "flyUP 2s normal";
+        //   setTimeout(function () {
+        //     al.style.display = "none";
+        //     al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
+        //   }, 1900);
+        // }
       }
     })
 
@@ -2310,7 +2315,7 @@ function sendExtra() {
 // }
 
 window.addEventListener("DOMContentLoaded", function () {
-  if (localStorage.getItem("notes")) {
+  if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
     stopAll();
     message.style.display = "block";
     message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`;
@@ -2351,7 +2356,7 @@ function set2Theme() {
   const colorValue = document.getElementById("colorValue");
   const colorLabel = document.getElementById("colorLabel");
   const resetBtn = document.querySelector(".buttons-cont1 button:first-child");
-  const saveBtn = document.getElementById("saveColorsBtn");
+  //const saveBtn = document.getElementById("saveColorsBtn");
 
   const tg = window.Telegram?.WebApp;
   const tgTheme = tg?.themeParams || {};
@@ -2418,14 +2423,14 @@ function set2Theme() {
     colorValue.value = hex;
   });
 
-  saveBtn.addEventListener("click", () => {
-    applyTheme(colorsData);
-    localStorage.setItem("customThemeColors", colorsData);
-    if (typeof closee === "function") closee("themes");
-    //if (typeof CloseBG2 === 'function') CloseBG2();
-    tg.BackButton.hide();
-    sendExtra();
-  });
+  // saveBtn.addEventListener("click", () => {
+  //   applyTheme(colorsData);
+  //   localStorage.setItem("customThemeColors", colorsData);
+  //   if (typeof closee === "function") closee("themes");
+  //   //if (typeof CloseBG2 === 'function') CloseBG2();
+  //   tg.BackButton.hide();
+  //   sendExtra();
+  // });
 
   resetBtn.textContent = "Сбросить";
   resetBtn.onclick = (e) => {
