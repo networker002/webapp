@@ -1401,7 +1401,7 @@ h6.skeleton { opacity: .4; }
 .note.pinned {
     border: 3px dashed rgb( from var(--accent) r g b / .6);
     position: relative;
-    order: -1;
+    order: -999;
     animation: start-pin .3s ease-in-out;
     &::before {
         content: "📌";
