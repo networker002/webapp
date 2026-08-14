@@ -1596,7 +1596,7 @@ function delNote(id) {
 
 }
 
-function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
+function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}, ExistingNoteUUID = null) {
  let existingNotes = localStorage.getItem("notes");
  
  if (!existingNotes) {
@@ -1605,15 +1605,27 @@ function saveNotes(newNote = {title: null, subject: null, description: null, tim
   localStorage.setItem("notes", JSON.stringify(notes));
  } else {
   existingNotes = JSON.parse(existingNotes);
+  if (ExistingNoteUUID !== null) {
+
+    let delNotes = existingNotes.filter((n) => {
+      return !(
+        String(n.uuid) === String(ExistingNoteUUID)
+      )
+    });
+    let notes = [];
+    notes.push(newNote);
+    delNotes.forEach((n) => {notes.push(n)})
+    localStorage.setItem("notes", JSON.stringify(notes));
+  } else {
   existingNotes.push(newNote);
-  localStorage.setItem("notes", JSON.stringify(existingNotes));
+  localStorage.setItem("notes", JSON.stringify(existingNotes));}
  }
   console.log(existingNotes);
  sendExtra();
  getNotes();
 }
 
-function saveNoteNew() {
+function saveNoteNew(uuid = null) {
   //document.getElementById("event-input");
   let error = false;
 
@@ -1652,11 +1664,39 @@ function saveNoteNew() {
     newNote.description = "";
   }
 
-  newNote.uuid = SetUUID();
+  if (uuid !== null) {newNote.uuid = uuid} else {newNote.uuid = SetUUID(newNote, uuid);}
 
   if (!error) {
-    saveNotes(newNote);
+    saveNotes(newNote, uuid);
   document.getElementById("note-add-btn").click();
+  document.getElementById("event-input").outerHTML = `<div id="event-input">
+        <label class="event-header">
+            <h4>Добавление события</h4>
+        </label>
+        <div class="event-field">
+            <span>Название</span>
+            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="64">
+        </div>
+        <div class="event-field time-field">
+            <span>Время</span>
+            <div class="time-row">
+                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
+                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
+            </div>
+        </div>
+        <div class="event-field">
+            <span>Предмет / прикрепление</span>
+            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
+        </div>
+        <div class="event-field">
+            <span>Дополнительно</span>
+            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
+        </div>
+        <div class="btbtns">
+            <button id="save-event-btn" onclick="saveNoteNew()">Сохранить</button>
+            <!-- <button id="cancel-event-btn">Отмена</button> -->
+        </div>
+    </div>`;
   }
 }
 
@@ -1696,6 +1736,44 @@ function getNotes() {
     })
   }
 }
+
+document.querySelectorAll(".note-btn-edit").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.getElementById("note-add-btn").classList.add("opened");
+    ShowAdd();
+    let uuid = btn.getAttribute("editid");
+    let obj = document.getElementById(`note-${uuid}`);
+    document.getElementById("event-input").outerHTML = `<div id="event-input">
+        <label class="event-header">
+            <h4>Редактирование события</h4>
+        </label>
+        <div class="event-field">
+            <span>Новое название</span>
+            <input type="text" placeholder="Как перерименуем событие?" id="name-event" maxlength="64">
+        </div>
+        <div class="event-field time-field">
+            <span>Время</span>
+            <div class="time-row">
+                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
+                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
+            </div>
+        </div>
+        <div class="event-field">
+            <span>Предмет / прикрепление</span>
+            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
+        </div>
+        <div class="event-field">
+            <span>Дополнительно</span>
+            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
+        </div>
+        <div class="btbtns">
+            <button id="save-event-btn" onclick="saveNoteNew('${uuid}')">Сохранить изменения</button>
+            <!-- <button id="cancel-event-btn">Отмена</button> -->
+        </div>
+    </div>`;
+    
+  });
+});
 
 
 function saveTeacherData() {
