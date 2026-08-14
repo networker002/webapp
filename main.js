@@ -2052,37 +2052,37 @@ if (savedTheme) {
   setTheme(savedTheme);
 }
 
-document.getElementById("themes-btn").addEventListener("click", function () {
-  tg.BackButton.show();
-  tg.BackButton.onClick(function () {
-    closee("themes");
-    tg.BackButton.hide();
-  }); // + CloseBG2();
-  // document.getElementById("black-bg").style.animation = "none";
-  // document.getElementById("black-bg").style.animation = "opq1 1s ease";
-  // document.getElementById("black-bg").style.display = "block";
-  // document.getElementById("black-bg").style.zIndex = "2002";
-  openn("themes", "block");
-});
+// document.getElementById("themes-btn").addEventListener("click", function () {
+//   tg.BackButton.show();
+//   tg.BackButton.onClick(function () {
+//     closee("themes");
+//     tg.BackButton.hide();
+//   }); // + CloseBG2();
+//   // document.getElementById("black-bg").style.animation = "none";
+//   // document.getElementById("black-bg").style.animation = "opq1 1s ease";
+//   // document.getElementById("black-bg").style.display = "block";
+//   // document.getElementById("black-bg").style.zIndex = "2002";
+//   openn("themes", "block");
+// });
 
-document
-  .querySelectorAll("#theme-container input[name='theme']")
-  .forEach((radio) => {
-    if (radio.id === savedTheme) {
-      radio.checked = true;
-    }
-    radio.addEventListener("change", function () {
-      console.log(this.id);
-      if (this.checked) {
-        setTheme(this.id);
-        localStorage.setItem("theme", this.id);
-      }
-      setTimeout(() => {
-        closee("themes");
-        CloseBG2();
-      }, 50);
-    });
-  });
+// document
+//   .querySelectorAll("#theme-container input[name='theme']")
+//   .forEach((radio) => {
+//     if (radio.id === savedTheme) {
+//       radio.checked = true;
+//     }
+//     radio.addEventListener("change", function () {
+//       console.log(this.id);
+//       if (this.checked) {
+//         setTheme(this.id);
+//         localStorage.setItem("theme", this.id);
+//       }
+//       setTimeout(() => {
+//         closee("themes");
+//         CloseBG2();
+//       }, 50);
+//     });
+//   });
 
 function initSwiper() {
   const swiperContainer = document.querySelector(".swiper");
@@ -2170,10 +2170,10 @@ async function noti() {
 
 async function initApp() {
   await noti(); 
-  getNotes();
   if (localStorage.getItem("customThemeColors")) {
     applyTheme(localStorage.getItem("customThemeColors").split(","))
   }
+  getNotes();
 }
 initApp();
 
