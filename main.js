@@ -2170,10 +2170,10 @@ async function noti() {
 
 async function initApp() {
   await noti(); 
+  getNotes();
   if (localStorage.getItem("customThemeColors")) {
     applyTheme(localStorage.getItem("customThemeColors").split(","))
   }
-  getNotes();
 }
 initApp();
 
