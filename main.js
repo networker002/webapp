@@ -1552,7 +1552,7 @@ function DelEvent(el, infoExtra = {}) {
 function pinNote(id) {
   if (document.getElementById(`note-${id}`).classList.contains("pinned")) {document.getElementById(`note-${id}`).classList.remove("pinned"); return}
   document.querySelectorAll(".note").forEach((n) => {if (n.classList.contains("pinned")) n.classList.remove("pinned")});
-  document.getElementById(`note-${id}`).classList.add("pinned"); haptic?.notificationOccurred?.("success");
+  document.getElementById(`note-${id}`).classList.add("pinned"); haptic?.notificationOccurred?.("success"); localStorage.setItem("pin-note", String(id));
 }
 
 function delNote(id) {
@@ -1590,9 +1590,8 @@ function delNote(id) {
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
     haptic?.notificationOccurred?.("success");
     console.log(`[${Date.now()}] ${updatedNotes}`)
-    
-      initApp();
       sendExtra();
+      initApp();
   }
 
 }
@@ -1665,7 +1664,7 @@ function getNotes() {
   let nowNotes = localStorage.getItem("notes");
   let notesArea = document.querySelector(".notes-area");
   notesArea.innerHTML = ``;
-  if (!nowNotes) {
+  if (!nowNotes || String(nowNotes) === "[]") {
     notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="empty-note" class="note">
                 <h2 style="color: var(--tg-theme-section-header-text-color)">Пока заметок нет</h2>
                 <time>12:00</time>
@@ -1680,7 +1679,9 @@ function getNotes() {
   } else {
     nowNotes = JSON.parse(nowNotes);
     nowNotes.forEach((note, idx) => {
-      notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="note-${note.uuid}" class="note">
+      let clasS = "note";
+      if (localStorage.getItem("pin-note") === String(note.uuid)) clasS += " pinned";
+      notesArea.appendChild(document.createElement("div")).outerHTML = `<div id="note-${note.uuid}" class="${clasS}">
                 <h2>${note.title}</h2>
                 <time>${note.time}</time>
                 <lesson>${note.subject}</lesson>
@@ -2153,7 +2154,7 @@ async function noti() {
         set2Theme();
       }
 
-      if (extraData.notes?.length > 0) {
+      if (extraData.notes) {
         localStorage.setItem("notes", JSON.stringify(extraData.notes));
       }
     }
@@ -2568,6 +2569,7 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 // document.getElementById("marks-show")
 document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
 // document.getElementById("profile-show")
+window.addEventListener("DOMContentLoaded", ()=> initApp());
 
 const screensButtonsMapping = {
   "schedule-show": [document.querySelector("main"), document.querySelector("header")],
