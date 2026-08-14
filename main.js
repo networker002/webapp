@@ -1991,6 +1991,7 @@ function groupSet0() {
 
 window.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded");
+  initApp();
   newUIFeatures();
   //teacherHide();
   upsSV();
@@ -2572,7 +2573,7 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 
 // document.getElementById("schedule-show")
 // document.getElementById("marks-show")
-document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
+//document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
 // document.getElementById("profile-show")
 //window.addEventListener("DOMContentLoaded", ()=> initApp());
 
