@@ -2569,7 +2569,7 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 // document.getElementById("marks-show")
 document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
 // document.getElementById("profile-show")
-window.addEventListener("DOMContentLoaded", ()=> initApp());
+//window.addEventListener("DOMContentLoaded", ()=> initApp());
 
 const screensButtonsMapping = {
   "schedule-show": [document.querySelector("main"), document.querySelector("header")],
