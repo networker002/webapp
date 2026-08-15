@@ -2111,7 +2111,7 @@ window.addEventListener("DOMContentLoaded", function () {
 const Header = document.querySelector("header");
 window.addEventListener("scroll", function () {
   if (tg.platform !== "tdesktop") {
-    if (window.scrollY > 50) {
+    if (window.scrollY > 20) {
       setTimeout(function () {
         Header.classList.add("scrolling");
       }, 100);

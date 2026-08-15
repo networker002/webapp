@@ -225,7 +225,7 @@ header.scrolling {
     outline: 2px var(--accent) double;
     filter: drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5));
     --dynamic-day-bottom-space: 0px;
-    margin-bottom: calc(1em + var(--dynamic-day-bottom-space));
+    margin-bottom: var(--dynamic-day-bottom-space);
 }
 .day .day-name {
     display: flex;
