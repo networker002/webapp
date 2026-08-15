@@ -1710,36 +1710,12 @@ function getEdinNoteData(id) {
 
   console.log("updated:", note);
 
-  document.getElementById("event-input").innerHTML = `
-        <label class="event-header">
-            <h4>Добавление события</h4>
-        </label>
-        <div class="event-field">
-            <span>Название</span>
-            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="64">
-        </div>
-        <div class="event-field time-field">
-            <span>Время</span>
-            <div class="time-row">
-                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
-                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
-            </div>
-        </div>
-        <div class="event-field">
-            <span>Предмет / прикрепление</span>
-            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
-        </div>
-        <div class="event-field">
-            <span>Дополнительно</span>
-            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
-        </div>
-        <div class="btbtns">
-            <button id="save-event-btn" onclick="saveNoteNew()">Сохранить</button>
-            <!-- <button id="cancel-event-btn">Отмена</button> -->
-        </div>`;
+      //  document.getElementById("event-input")
+      document.getElementById("event-input").querySelector(".event-header h4").textContent = "Добавление события";
         CloseBG();
         document.getElementById("note-add-btn").style.display = "flex";
-
+      document.getElementById("save-event-btn").removeEventListener("click", () => {getEdinNoteData(id)}) 
+      document.getElementById("save-event-btn").addEventListener("click", saveNoteNew())
   
   sendExtra();
 }
@@ -1748,33 +1724,7 @@ function editNote(id) {
   document.getElementById("note-add-btn").style.display = "none";
     ShowAdd();
 
-      document.getElementById("event-input").innerHTML = `
-        <label class="event-header">
-            <h4>Редактирование события</h4>
-        </label>
-        <div class="event-field">
-            <span>Новое название</span>
-            <input type="text" placeholder="Как переименуем событие?" id="name-event" maxlength="64">
-        </div>
-        <div class="event-field time-field">
-            <span>Время</span>
-            <div class="time-row">
-                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
-                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
-            </div>
-        </div>
-        <div class="event-field">
-            <span>Предмет / прикрепление</span>
-            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
-        </div>
-        <div class="event-field">
-            <span>Дополнительно</span>
-            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
-        </div>
-        <div class="btbtns">
-            <button id="edit-event-btn">Сохранить изменения</button>
-            <!-- <button id="cancel-event-btn">Отмена</button> -->
-        </div>`;
+    document.getElementById("event-input").querySelector(".event-header h4").textContent = "Редактирование события";
 
     const title = document.getElementById("name-event");
     const time = document.getElementById("time-event");
@@ -1791,7 +1741,8 @@ function editNote(id) {
     subject.value = needNoteData?.subject || "";
     description.value = needNoteData?.description || "";
 
-    document.getElementById("edit-event-btn").addEventListener("click", () => {getEdinNoteData(id)})
+    document.getElementById("save-event-btn").removeEventListener("click", saveNoteNew())
+    document.getElementById("save-event-btn").addEventListener("click", () => {getEdinNoteData(id)})
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
