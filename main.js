@@ -1692,74 +1692,106 @@ function delNote(id) {
 }
 
 function getEdinNoteData(id) {
-  const ev = document.getElementById("event-input");
   const title = document.getElementById("name-event");
   const time = document.getElementById("time-event");
   const subject = document.getElementById("attach-event");
   const description = document.getElementById("extra-event");
 
-  let existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
-  
+  let existingNotes = [];
+  try {
+    existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  } catch (_err) {
+    existingNotes = [];
+  }
+
   const note = existingNotes.find((note) => String(note.uuid) === String(id));
+  if (!note) return;
+
   note.title = title.value;
   note.time = time.value;
   note.subject = subject.value;
   note.description = description.value;
 
   localStorage.setItem("notes", JSON.stringify(existingNotes));
-
   console.log("updated:", note);
 
-      //  document.getElementById("event-input")
-      document.getElementById("event-input").querySelector(".event-header h4").textContent = "Добавление события";
-        CloseBG();
-        document.getElementById("note-add-btn").style.display = "flex";
-      document.getElementById("save-event-btn").removeEventListener("click", () => {getEdinNoteData(id)}) 
-      document.getElementById("save-event-btn").addEventListener("click", saveNoteNew())
-  
+  const eventInput = document.getElementById("event-input");
+  if (eventInput?.querySelector(".event-header h4")) {
+    eventInput.querySelector(".event-header h4").textContent = "Добавление события";
+  }
+
+  CloseBG();
+  const addBtn = document.getElementById("note-add-btn");
+  if (addBtn) addBtn.style.display = "flex";
+
+  const saveBtn = document.getElementById("save-event-btn");
+  if (saveBtn) {
+    saveBtn.onclick = saveNoteNew;
+  }
+
   sendExtra();
 }
 
 function editNote(id) {
-  document.getElementById("note-add-btn").style.display = "none";
-    ShowAdd();
+  const addBtn = document.getElementById("note-add-btn");
+  if (addBtn) addBtn.style.display = "none";
 
-    document.getElementById("event-input").querySelector(".event-header h4").textContent = "Редактирование события";
+  ShowAdd();
 
-    const title = document.getElementById("name-event");
-    const time = document.getElementById("time-event");
-    const subject = document.getElementById("attach-event");
-    const description = document.getElementById("extra-event");
+  const eventInput = document.getElementById("event-input");
+  if (eventInput?.querySelector(".event-header h4")) {
+    eventInput.querySelector(".event-header h4").textContent = "Редактирование события";
+  }
 
-    let existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
-    var needNoteData = existingNotes.find(note => String(note.uuid) === String(id));
+  const title = document.getElementById("name-event");
+  const time = document.getElementById("time-event");
+  const subject = document.getElementById("attach-event");
+  const description = document.getElementById("extra-event");
 
-    if (!needNoteData) console.warn("not found", existingNotes); return;
-    
-    title.value = needNoteData?.title || "";
-    time.value = needNoteData?.time || "";
-    subject.value = needNoteData?.subject || "";
-    description.value = needNoteData?.description || "";
+  let existingNotes = [];
+  try {
+    existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  } catch (_err) {
+    existingNotes = [];
+  }
 
-    document.getElementById("save-event-btn").removeEventListener("click", saveNoteNew())
-    document.getElementById("save-event-btn").addEventListener("click", () => {getEdinNoteData(id)})
+  const needNoteData = existingNotes.find((note) => String(note.uuid) === String(id));
+  if (!needNoteData) {
+    console.warn("not found", existingNotes);
+    return;
+  }
+
+  title.value = needNoteData?.title || "";
+  time.value = needNoteData?.time || "";
+  subject.value = needNoteData?.subject || "";
+  description.value = needNoteData?.description || "";
+
+  const saveBtn = document.getElementById("save-event-btn");
+  if (saveBtn) {
+    saveBtn.onclick = () => getEdinNoteData(id);
+  }
 }
 
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
- let existingNotes = localStorage.getItem("notes");
- 
- if (!existingNotes) {
-  notes = [];
-  notes.push(newNote);
+  let notes = [];
+  const existingNotes = localStorage.getItem("notes");
+
+  if (!existingNotes) {
+    notes = [newNote];
+  } else {
+    try {
+      notes = JSON.parse(existingNotes);
+      if (!Array.isArray(notes)) notes = [];
+    } catch (_err) {
+      notes = [];
+    }
+    notes.push(newNote);
+  }
+
   localStorage.setItem("notes", JSON.stringify(notes));
- } else {
-  existingNotes = JSON.parse(existingNotes);
-  existingNotes.push(newNote);
-  localStorage.setItem("notes", JSON.stringify(existingNotes));
- }
-  console.log(existingNotes);
- sendExtra();
- getNotes();
+  console.log(notes);
+  sendExtra();
+  getNotes();
 }
 
 function saveNoteNew() {
@@ -1810,12 +1842,15 @@ function saveNoteNew() {
 }
 
 function getNotes() {
-  console.log("getNotes was started")
+  console.log("getNotes was started");
+  const notesArea = document.querySelector(".notes-area");
+  if (!notesArea) return;
+
   let nowNotes = localStorage.getItem("notes");
-  let notesArea = document.querySelector(".notes-area");
-  notesArea.innerHTML = ``;
+  notesArea.innerHTML = "";
+
   if (!nowNotes || String(nowNotes) === "[]") {
-    nnotesArea.insertAdjacentHTML('beforeend', `<div id="empty-note" class="note">
+    notesArea.insertAdjacentHTML('beforeend', `<div id="empty-note" class="note">
                 <h2 style="color: var(--tg-theme-section-header-text-color)">Пока заметок нет</h2>
                 <time>12:00</time>
                 <lesson>Математика</lesson>
@@ -1826,13 +1861,24 @@ function getNotes() {
                     <button class="note-btn-del" onclick="document.getElementById('empty-note').remove(); haptic.notificationOccurred('success');"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                 </div>
             </div>`);
-  } else {
+    return;
+  }
+
+  try {
     nowNotes = JSON.parse(nowNotes);
-    nowNotes.forEach((note, idx) => {
-      let clasS = "note";
-      if (localStorage.getItem("pin-note") === String(note.uuid)) clasS += " pinned";
-      else if (String(note?.pin) === String(true)) clasS += " pinned";
-      notesArea.insertAdjacentHTML('beforeend', `<div id="note-${note.uuid}" class="${clasS}">
+  } catch (_err) {
+    notesArea.innerHTML = "";
+    return;
+  }
+
+  if (!Array.isArray(nowNotes)) return;
+
+  nowNotes.forEach((note) => {
+    let clasS = "note";
+    if (localStorage.getItem("pin-note") === String(note.uuid)) clasS += " pinned";
+    else if (String(note?.pin) === String(true)) clasS += " pinned";
+
+    notesArea.insertAdjacentHTML('beforeend', `<div id="note-${note.uuid}" class="${clasS}">
                 <h2>${note.title}</h2>
                 <time>${note.time}</time>
                 <lesson>${note.subject}</lesson>
@@ -1843,8 +1889,7 @@ function getNotes() {
                     <button class="note-btn-del" delid="${note.uuid}" onclick="delNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                 </div>
             </div>`);
-    })
-  }
+  });
 }
 
 
