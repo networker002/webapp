@@ -1691,6 +1691,78 @@ function delNote(id) {
 
 }
 
+function getEdinNoteData(id) {
+  const ev = document.getElementById("event-input");
+  const title = document.getElementById("name-event");
+  const time = document.getElementById("time-event");
+  const subject = document.getElementById("attach-event");
+  const description = document.getElementById("extra-event");
+
+  let existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  
+  const note = existingNotes.find((note) => String(note.uuid) === String(id));
+  note.title = title.value;
+  note.time = time.value;
+  note.subject = subject.value;
+  note.description = description.value;
+
+  localStorage.setItem("notes", JSON.stringify(existingNotes));
+
+  console.log("updated:", note);
+  
+  sendExtra();
+}
+
+function editNote(id) {
+      document.getElementById("note-add-btn").click();
+
+      document.getElementById("event-input").outerHTML = `<div id="event-input">
+        <label class="event-header">
+            <h4>Редактирование события</h4>
+        </label>
+        <div class="event-field">
+            <span>Новое название</span>
+            <input type="text" placeholder="Как переименуем событие?" id="name-event" maxlength="64">
+        </div>
+        <div class="event-field time-field">
+            <span>Время</span>
+            <div class="time-row">
+                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
+                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
+            </div>
+        </div>
+        <div class="event-field">
+            <span>Предмет / прикрепление</span>
+            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
+        </div>
+        <div class="event-field">
+            <span>Дополнительно</span>
+            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
+        </div>
+        <div class="btbtns">
+            <button id="edit-event-btn">Сохранить изменения</button>
+            <!-- <button id="cancel-event-btn">Отмена</button> -->
+        </div>
+    </div>`;
+
+    const title = document.getElementById("name-event");
+    const time = document.getElementById("time-event");
+    const subject = document.getElementById("attach-event");
+    const description = document.getElementById("extra-event");
+
+    let existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    var needNoteData = existingNotes.find(note => String(note.uuid) === String(id));
+
+    if (!needNoteData) console.warn("not found", existingNotes); return;
+    
+    title.value = needNoteData?.title || "";
+    time.value = needNoteData?.time || "";
+    subject.value = needNoteData?.subject || "";
+    description.value = needNoteData?.description || "";
+
+    document.getElementById("edit-event-btn").addEventListener("click", () => {getEdinNoteData(id)})
+}
+
 function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
  let existingNotes = localStorage.getItem("notes");
  
