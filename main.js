@@ -1730,6 +1730,7 @@ function getEdinNoteData(id) {
   }
 
   sendExtra();
+  getNotes();
 }
 
 function editNote(id) {
