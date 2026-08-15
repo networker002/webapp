@@ -937,6 +937,65 @@ function hideRoomShown() {
 let rr = true;
 let clickedAi = false;
 
+function updateDynamicDayBottomSpacing() {
+  const bottomMenu = document.querySelector(".bottom-menu");
+  if (!container || !bottomMenu) return;
+
+  const menuRect = bottomMenu.getBoundingClientRect();
+
+  const actveSlide = container.querySelector(".swiper-slide-active");
+  if (!actveSlide) return;
+
+  const menuStyles = getComputedStyle(bottomMenu);
+  const menuVisible = menuStyles.display !== "none" && menuStyles.visibility !== "hidden" && menuRect.height > 0;
+
+  container.querySelectorAll(".day").forEach((day) => {
+    day.style.removeProperty("--dynamic-day-bottom-space");
+
+    if (!menuVisible) return;
+    if (!day.querySelector(".lesson-row")) return;
+
+    const slide = day.closest(".swiper-slide");
+    if (slide && !slide.classList.contains("swiper-slide-active")) return;
+    
+    const dayRect = day.getBoundingClientRect();
+
+    const GAP = 16;
+
+    const availableHeight = Math.max(
+      0,
+      menuRect.top - dayRect.top - GAP
+    );
+    const contentHeight = day.scrollHeight;
+
+    if (contentHeight <= availableHeight) return;
+
+    const requiredSpace = Math.ceil( menuRect.height + GAP );
+
+    day.style.setProperty("--dynamic-day-bottom-space", `${requiredSpace}px`);
+  })
+}
+
+function initDynamicDayBottomSpacing() {
+  const update = () => {
+    requestAnimationFrame(updateDynamicDayBottomSpacing);
+  };
+
+  window.addEventListener("resize", update, {passive: true});
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", update, {passive: true});
+  }
+
+  const bottomMenu = document.querySelector(".bottom-menu");
+
+  if (bottomMenu && "ResizeObserver" in window) {
+    const observer = new ResizeObserver(update);
+    observer.observe(bottomMenu);
+  }
+  update();
+}
+
 function upsSV() {
   if (!nowBtn) return;
   let found = false;
@@ -966,9 +1025,9 @@ function upsSV() {
         dayParseOnline();
       }
 
-      if (de.querySelectorAll(".lesson-row").length >= 4) {
-        de.style = "margin-bottom: 6em !important";
-      }
+      // if (de.querySelectorAll(".lesson-row").length >= 4) {
+      //   de.style = "margin-bottom: 6em !important";
+      // }
 
       if (
         dayName === days[tommorrow.getDay()] &&
@@ -1001,6 +1060,7 @@ function upsSV() {
       de.dataset.cleaned = "true";
     }
   });
+  updateDynamicDayBottomSpacing();
 }
 
 var btns = document.querySelectorAll(".btnD");
@@ -2029,6 +2089,7 @@ window.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded");
   
   newUIFeatures();
+  initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
   document.querySelector(".menu-display img").src =
@@ -2145,8 +2206,10 @@ function initSwiper() {
   });
 
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
+  requestAnimationFrame(updateDynamicDayBottomSpacing);
   swiper.on("slideChange", (e) => {
     btns.forEach((b) => {
+      requestAnimationFrame(updateDynamicDayBottomSpacing);
       if (b.innerText.startsWith(btnRevMapping[days[swiper.realIndex + 1]])) {
         //if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
         b.classList.add("selected");

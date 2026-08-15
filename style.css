@@ -224,6 +224,8 @@ header.scrolling {
     transition: transform cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
     outline: 2px var(--accent) double;
     filter: drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5));
+    --dynamic-day-bottom-space: 0px;
+    margin-bottom: calc(1em + var(--dynamic-day-bottom-space));
 }
 .day .day-name {
     display: flex;
