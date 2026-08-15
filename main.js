@@ -1709,6 +1709,35 @@ function getEdinNoteData(id) {
   localStorage.setItem("notes", JSON.stringify(existingNotes));
 
   console.log("updated:", note);
+
+  document.getElementById("event-input").outerHTML = `<div id="event-input">
+        <label class="event-header">
+            <h4>Добавление события</h4>
+        </label>
+        <div class="event-field">
+            <span>Название</span>
+            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="64">
+        </div>
+        <div class="event-field time-field">
+            <span>Время</span>
+            <div class="time-row">
+                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
+                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
+            </div>
+        </div>
+        <div class="event-field">
+            <span>Предмет / прикрепление</span>
+            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
+        </div>
+        <div class="event-field">
+            <span>Дополнительно</span>
+            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
+        </div>
+        <div class="btbtns">
+            <button id="save-event-btn" onclick="saveNoteNew()">Сохранить</button>
+            <!-- <button id="cancel-event-btn">Отмена</button> -->
+        </div>
+    </div>`;
   
   sendExtra();
 }
@@ -1856,7 +1885,7 @@ function getNotes() {
                 <lesson>${note.subject}</lesson>
                 <p>${note.description}</p>
                 <div class="note-btn-container">
-                    <button class="note-btn-edit" editid="${note.uuid}"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-1 2q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/></svg></button>
+                    <button class="note-btn-edit" editid="${note.uuid}" onclick="editNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-1 2q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/></svg></button>
                     <button class="note-btn-pin" pinid="${note.uuid}" onclick="pinNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" fill-rule="evenodd" d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1l1-1v-7H19v-2c-1.66 0-3-1.34-3-3"/></svg></button>
                     <button class="note-btn-del" delid="${note.uuid}" onclick="delNote('${note.uuid}')"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                 </div>
