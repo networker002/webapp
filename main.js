@@ -1710,7 +1710,7 @@ function getEdinNoteData(id) {
 
   console.log("updated:", note);
 
-  document.getElementById("event-input").outerHTML = `<div id="event-input">
+  document.getElementById("event-input").innerHTML = `
         <label class="event-header">
             <h4>Добавление события</h4>
         </label>
@@ -1736,16 +1736,19 @@ function getEdinNoteData(id) {
         <div class="btbtns">
             <button id="save-event-btn" onclick="saveNoteNew()">Сохранить</button>
             <!-- <button id="cancel-event-btn">Отмена</button> -->
-        </div>
-    </div>`;
+        </div>`;
+        CloseBG();
+        document.getElementById("note-add-btn").style.display = "flex";
+
   
   sendExtra();
 }
 
 function editNote(id) {
-      document.getElementById("note-add-btn").click();
+  document.getElementById("note-add-btn").style.display = "none";
+    ShowAdd();
 
-      document.getElementById("event-input").outerHTML = `<div id="event-input">
+      document.getElementById("event-input").innerHTML = `
         <label class="event-header">
             <h4>Редактирование события</h4>
         </label>
@@ -1771,8 +1774,7 @@ function editNote(id) {
         <div class="btbtns">
             <button id="edit-event-btn">Сохранить изменения</button>
             <!-- <button id="cancel-event-btn">Отмена</button> -->
-        </div>
-    </div>`;
+        </div>`;
 
     const title = document.getElementById("name-event");
     const time = document.getElementById("time-event");
