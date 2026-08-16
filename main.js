@@ -2930,9 +2930,15 @@ function addToProfile() {
 
   const lessonsAllCountEl = document.getElementById("lessons-all-c");
   if (lessonsAllCountEl) {
-    lessonsAllCountEl.textContent = String(document.querySelectorAll(".lesson-row").length);
+    let elems = 0;
+    document.querySelectorAll(".day").forEach((d) => {
+      const els = Array.from(d.querySelectorAll(".lesson"), l => Number(l.textContent));
+      elems += els.length ? Math.max(...els) : 0;
+    });
+    lessonsAllCountEl.textContent = elems;
   }
 }
+
 
 document.getElementById("attach-event").addEventListener("click", function() {
 

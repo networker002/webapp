@@ -1589,7 +1589,7 @@ h6.skeleton { opacity: .4; }
 .profile-area {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 15px;
     text-align: left;
     padding-left: 16px;
     padding-right: 16px;
