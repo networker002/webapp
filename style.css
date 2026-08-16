@@ -1634,13 +1634,15 @@ h6.skeleton { opacity: .4; }
 }
 
 .cont-profile {
-    background-color: rgb(from var(--accent) r g b / .4) !important;
-    border: 2px solid rgb(from var(--accent) r g b / .8) !important;
+    background-color: rgb(from var(--accent) r g b / .2) !important;
+    border: 2px solid rgb(from var(--accent) r g b / .6) !important;
     padding: 5px !important;
     display: flex;
     border-radius: 55px !important;
     justify-content: space-around;
     align-items: center;
+    justify-content: start;
+    gap: 15px;
 
     img {
         border-radius: 50%;
