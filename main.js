@@ -628,10 +628,49 @@ function getSchedule1(reqNeed = false) {
           }, 1500);
   }
 }
-function waitForInitData(retries = 10) {
-     if (tg.initData) { getSchedule1(); initApp(); return;}
-     if (retries > 0) setTimeout(() => waitForInitData(retries - 1), 10);
-   }
+
+async function waitForInitData(retries = 10) {
+
+    if (tg.initData) {
+
+        try {
+
+            getSchedule1();
+
+            await initApp();
+
+            hideLoader();
+
+        } catch (error) {
+
+            console.error(
+                "Ошибка при инициализации приложения:",
+                error
+            );
+
+            hideLoader();
+        }
+
+        return;
+    }
+
+    if (retries > 0) {
+
+        setTimeout(
+            () => waitForInitData(retries - 1),
+            10
+        );
+
+    } else {
+
+        console.error(
+            "Telegram initData не получен"
+        );
+
+        hideLoader();
+    }
+}
+
 waitForInitData();
 
 function safeReadNotes() {
@@ -661,11 +700,17 @@ function waitForInitDataUnsafe(retries = 10) {
 waitForInitDataUnsafe();
 
 function hideLoader() {
-  setTimeout(() => {
-            loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          }, 1000);
+    if (loader) {
+        loader.style.display = "none";
+    }
+
+    if (loaderContainer) {
+        loaderContainer.style.display = "none";
+    }
+
+    if (assistant) {
+        assistant.style.display = "block";
+    }
 }
 
 tg.onEvent('themeChanged', () => {
