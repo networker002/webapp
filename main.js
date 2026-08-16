@@ -345,11 +345,7 @@ function getSchedule1(reqNeed = false) {
         })
         .then((resp) => {
           if (resp && resp.ok) {
-            setTimeout(() => {
-            loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          }, 1500);
+            
 
             return resp.json();
           }
@@ -591,11 +587,7 @@ function getSchedule1(reqNeed = false) {
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
         container.innerHTML = cachedData;
-        setTimeout(() => {
-            loader.style.display = "none";
-          loaderContainer.style.display = "none";
-          assistant.style.display = "block";
-          }, 1500);
+        
         if (nowBtn) upsSV();
         var Group = localStorage.getItem("userGroup");
         if (Group) {
@@ -668,10 +660,19 @@ function waitForInitDataUnsafe(retries = 10) {
 }
 waitForInitDataUnsafe();
 
+function hideLoader() {
+  setTimeout(() => {
+            loader.style.display = "none";
+          loaderContainer.style.display = "none";
+          assistant.style.display = "block";
+          }, 1000);
+}
+
 tg.onEvent('themeChanged', () => {
   const savedTheme = localStorage.getItem("customThemeColors");
   if (savedTheme) {
     applyTheme(savedTheme.split(","));
+    hideLoader();
   }
 });
 
