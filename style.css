@@ -1569,6 +1569,117 @@ h6.skeleton { opacity: .4; }
 }
 
 
+#profile-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    
+    gap: 15px;
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+        padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
+    }
+}
+
+.profile-area {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    text-align: left;
+    padding-left: 16px;
+    padding-right: 16px;
+    
+}
+
+.profile-area>div,  .profile-area>section>div {
+    background: rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.6);
+    padding: 15px;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    align-content: center;
+
+    span {
+        padding-left: 5px;
+        letter-spacing: 1.5px;
+    }
+
+    svg {
+        scale: .7;
+        position: absolute;
+        right: 15px;
+        padding: 5px;
+
+        path{transition: opacity .025s;}
+
+        &:active {
+            scale: .6;
+            path {
+                opacity: .8;
+            }
+        }
+    }
+}
+
+.profile-area section {
+    display: flex;
+    flex-direction: row;
+    gap: 15px
+}
+
+.cont-profile {
+    background-color: rgb(from var(--accent) r g b / .4) !important;
+    border: 2px solid rgb(from var(--accent) r g b / .8) !important;
+    padding: 5px !important;
+    display: flex;
+    border-radius: 55px !important;
+    justify-content: space-around;
+    align-items: center;
+
+    img {
+        border-radius: 50%;
+    }
+}
+
+.user-name {
+    font-weight: 900;
+    font-size: larger;
+}
+
+.user-username {
+    font-size: small;
+}
+
+.user-notes, .user-lessons {
+    width: calc((100% - 30px) / 2 - 15px);
+    border:2px solid rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.8);
+    background: rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.7) !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 5px 10px !important;
+    
+    p {
+        align-self: flex-start;
+        line-height: 0%;
+    }
+
+}
+
+#notes-all-c, #lessons-all-c {
+    font-size: x-large;
+}
+
+.notes-profile-a {
+    pointer-events: none !important;
+}
+
 .loader {
                 display: flex;
                 position: relative;

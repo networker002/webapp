@@ -2192,7 +2192,8 @@ window.addEventListener("DOMContentLoaded", function () {
   initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
-  document.querySelector(".menu-display img").src =
+  addToProfile();
+  document.querySelector(".profile-area img").src =
     tg.initDataUnsafe.user.photo_url;
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
@@ -2839,6 +2840,30 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 //   document.getElementById("note-add-btn").classList.add("opened");
 // }
 // });
+
+function alertToCopy() {
+   var al = document.getElementById("fast-alert");
+    if (al) {
+      const oldctx = al.textContent;
+      al.textContent = "Скопировано";
+      al.style.display = "flex";
+      al.style.animation = "flyUP 2s normal";
+      setTimeout(function () {
+        al.style.display = "none";
+        al.textContent = oldctx;
+      }, 1900);
+    }
+}
+
+function addToProfile() {
+  document.querySelectorAll(".user-id span").forEach(e => e.textContent = tg?.initDataUnsafe?.user?.id);
+  document.querySelectorAll(".user-group span").forEach(e => e.textContent = localStorage.getItem("userGroup") || "Не указана");
+  document.querySelectorAll(".user-name").forEach(e => e.textContent = `${tg?.initDataUnsafe?.user?.first_name} ${tg?.initDataUnsafe?.user?.last_name}${(tg?.initDataUnsafe?.user?.is_premium ? " ⭐️" : "")}`)
+  document.querySelectorAll(".user-username").forEach(e => e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}` );
+  document.querySelectorAll(".profile-area svg").forEach((c) => c.addEventListener("click", () => {navigator.clipboard.writeText(c.parentElement.querySelector("span")?.textContent);}));
+  document.getElementById("notes-all-c").textContent = (JSON.parse(localStorage.getItem("notes"))).length;
+  document.getElementById("lessons-all-c").textContent = document.querySelectorAll(".lesson-row").length;
+}
 
 document.getElementById("attach-event").addEventListener("click", function() {
 
