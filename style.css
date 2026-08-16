@@ -1669,6 +1669,7 @@ h6.skeleton { opacity: .4; }
     
     p {
         align-self: flex-start;
+        font-size: small;
     }
 
 }
