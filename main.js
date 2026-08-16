@@ -642,10 +642,30 @@ function waitForInitData(retries = 10) {
    }
 waitForInitData();
 
+function safeReadNotes() {
+  try {
+    const rawNotes = localStorage.getItem("notes");
+    if (!rawNotes || rawNotes === "null") return [];
+    const parsedNotes = JSON.parse(rawNotes);
+    if (Array.isArray(parsedNotes)) return parsedNotes;
+    return parsedNotes ? [parsedNotes] : [];
+  } catch (error) {
+    console.warn("Failed to read notes from localStorage:", error);
+    return [];
+  }
+}
+
 function waitForInitDataUnsafe(retries = 10) {
-     if (tg.initDataUnsafe) {  document.querySelector(".profile-area img").src = tg.initDataUnsafe.user.photo_url; addToProfile(); return;}
-     if (retries > 0) setTimeout(() => waitForInitDataUnsafe(retries - 1), 10);
-   }
+  if (tg?.initDataUnsafe?.user) {
+    const profileImg = document.querySelector(".profile-area img");
+    if (profileImg) {
+      profileImg.src = tg.initDataUnsafe.user.photo_url || profileImg.src;
+    }
+    addToProfile();
+    return;
+  }
+  if (retries > 0) setTimeout(() => waitForInitDataUnsafe(retries - 1), 10);
+}
 waitForInitDataUnsafe();
 
 tg.onEvent('themeChanged', () => {
@@ -1069,23 +1089,37 @@ function upsSV() {
   updateDynamicDayBottomSpacing();
 }
 
-var btns = document.querySelectorAll(".btnD");
-btns.forEach((btn, index) => {
-  if (btn.innerHTML.startsWith(daysShort[n])) {
-    btn.classList.add("selected");
-    nowBtn = btn;
-    s = true;
-  }
-  btn.addEventListener("click", function () {
-    if (s) {
-      nowBtn.classList.remove("selected");
+function getDayButtons() {
+  return Array.from(document.querySelectorAll(".btnD"));
+}
+
+let btns = [];
+function bindDayButtons() {
+  btns = getDayButtons();
+  if (!btns.length) return;
+
+  btns.forEach((btn, index) => {
+    if (btn.innerHTML.startsWith(daysShort[n])) {
+      btn.classList.add("selected");
+      nowBtn = btn;
+      s = true;
     }
-    btn.classList.add("selected");
-    document.querySelector(".swiper").swiper.slideToLoop(index);
-    nowBtn = btn;
-    upsSV();
+    btn.addEventListener("click", function () {
+      if (s && nowBtn) {
+        nowBtn.classList.remove("selected");
+      }
+      btn.classList.add("selected");
+      const swiperEl = document.querySelector(".swiper");
+      if (swiperEl && swiperEl.swiper) {
+        swiperEl.swiper.slideToLoop(index);
+      }
+      nowBtn = btn;
+      upsSV();
+    });
   });
-});
+}
+
+bindDayButtons();
 
 let r = 0;
 // const burgerBtn = document.getElementById("burger-menu");
@@ -2310,18 +2344,23 @@ function initSwiper() {
     loop: true,
   });
 
+  const dayButtons = Array.from(document.querySelectorAll(".btnD"));
+
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   requestAnimationFrame(updateDynamicDayBottomSpacing);
-  swiper.on("slideChange", (e) => {
-    btns.forEach((b) => {
+  swiper.on("slideChange", () => {
+    const activeDayKey = btnRevMapping[days[swiper.realIndex + 1]];
+    dayButtons.forEach((b) => {
       requestAnimationFrame(updateDynamicDayBottomSpacing);
-      if (b.innerText.startsWith(btnRevMapping[days[swiper.realIndex + 1]])) {
-        //if (b.innerText == btnRevMapping[days[swiper.realIndex + 1]]) {
+      const buttonText = (b?.innerText || b?.textContent || "").trim();
+      if (buttonText && activeDayKey && buttonText.startsWith(activeDayKey)) {
         b.classList.add("selected");
       } else {
         b.classList.remove("selected");
       }
-      nowBtn = b;
+      if (buttonText && activeDayKey && buttonText.startsWith(activeDayKey)) {
+        nowBtn = b;
+      }
     });
   });
 }
@@ -2860,13 +2899,39 @@ function alertToCopy() {
 }
 
 function addToProfile() {
-  document.querySelectorAll(".user-id span").forEach(e => e.textContent = tg?.initDataUnsafe?.user?.id);
-  document.querySelectorAll(".user-group span").forEach(e => e.textContent = localStorage.getItem("userGroup") || "Не указана");
-  document.querySelectorAll(".user-name").forEach(e => e.textContent = `${tg?.initDataUnsafe?.user?.first_name} ${tg?.initDataUnsafe?.user?.last_name}${(tg?.initDataUnsafe?.user?.is_premium ? " ⭐️" : "")}`)
-  document.querySelectorAll(".user-username").forEach(e => e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}` );
-  document.querySelectorAll(".profile-area svg").forEach((c) => c.addEventListener("click", () => {navigator.clipboard.writeText(c.parentElement.querySelector("span")?.textContent);}));
-  document.getElementById("notes-all-c").textContent = (JSON.parse(localStorage.getItem("notes"))).length;
-  document.getElementById("lessons-all-c").textContent = document.querySelectorAll(".lesson-row").length;
+  document.querySelectorAll(".user-id span").forEach((e) => {
+    e.textContent = tg?.initDataUnsafe?.user?.id ?? "";
+  });
+  document.querySelectorAll(".user-group span").forEach((e) => {
+    e.textContent = localStorage.getItem("userGroup") || "Не указана";
+  });
+  document.querySelectorAll(".user-name").forEach((e) => {
+    const firstName = tg?.initDataUnsafe?.user?.first_name || "";
+    const lastName = tg?.initDataUnsafe?.user?.last_name || "";
+    const premiumMark = tg?.initDataUnsafe?.user?.is_premium ? " ⭐️" : "";
+    e.textContent = `${firstName} ${lastName}${premiumMark}`.trim();
+  });
+  document.querySelectorAll(".user-username").forEach((e) => {
+    e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}`;
+  });
+  document.querySelectorAll(".profile-area svg").forEach((c) => {
+    c.addEventListener("click", () => {
+      const targetText = c.parentElement?.querySelector("span")?.textContent;
+      if (targetText && navigator?.clipboard) {
+        navigator.clipboard.writeText(targetText);
+      }
+    });
+  });
+
+  const notesCountEl = document.getElementById("notes-all-c");
+  if (notesCountEl) {
+    notesCountEl.textContent = String(safeReadNotes().length);
+  }
+
+  const lessonsAllCountEl = document.getElementById("lessons-all-c");
+  if (lessonsAllCountEl) {
+    lessonsAllCountEl.textContent = String(document.querySelectorAll(".lesson-row").length);
+  }
 }
 
 document.getElementById("attach-event").addEventListener("click", function() {
