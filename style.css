@@ -1771,7 +1771,7 @@ h6.skeleton { opacity: .4; }
         height: 1px;
         left: 50%;
         transform: translateX(-50%);
-        top: 0;
+        top: -5px;
     }
 }
 
