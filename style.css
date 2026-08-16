@@ -1686,7 +1686,7 @@ h6.skeleton { opacity: .4; }
 .user-settings {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 }
 
 .user-settings > div {
