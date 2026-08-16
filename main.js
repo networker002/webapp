@@ -637,10 +637,16 @@ function getSchedule1(reqNeed = false) {
   }
 }
 function waitForInitData(retries = 10) {
-     if (tg.initData) { getSchedule1(); initApp(); return; }
+     if (tg.initData) { getSchedule1(); initApp(); return;}
      if (retries > 0) setTimeout(() => waitForInitData(retries - 1), 10);
    }
 waitForInitData();
+
+function waitForInitDataUnsafe(retries = 10) {
+     if (tg.initDataUnsafe) {  document.querySelector(".profile-area img").src = tg.initDataUnsafe.user.photo_url; addToProfile(); return;}
+     if (retries > 0) setTimeout(() => waitForInitDataUnsafe(retries - 1), 10);
+   }
+waitForInitDataUnsafe();
 
 tg.onEvent('themeChanged', () => {
   const savedTheme = localStorage.getItem("customThemeColors");
@@ -2192,9 +2198,7 @@ window.addEventListener("DOMContentLoaded", function () {
   initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
-  addToProfile();
-  document.querySelector(".profile-area img").src =
-    tg.initDataUnsafe.user.photo_url;
+  
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
     stopAll();
