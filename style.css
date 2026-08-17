@@ -1798,6 +1798,8 @@ h6.skeleton { opacity: .4; }
         width: calc(100% - 100px);
         transform: translate(-50%, -50%);
         padding: 30px;
+        margin-top: 0 !important;
+        padding-top: 30px !important;
         border-radius: 30px;
         display: none;
         flex-direction: column;
@@ -1832,7 +1834,9 @@ h6.skeleton { opacity: .4; }
     }
 
     .popuper-notifications h1, p {
-        margin: 0;
+        margin: 0 !important;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
     }
 
     .input-container-n {
@@ -1888,11 +1892,11 @@ h6.skeleton { opacity: .4; }
 
     @keyframes bellDingDong {
         0% {
-            transform: rotate(10deg);
+            transform: rotate(20deg);
         }
 
         100% {
-            transform: rotate(-10deg);
+            transform: rotate(-20deg);
         }
     }
 
@@ -1911,7 +1915,7 @@ h6.skeleton { opacity: .4; }
         left: calc(100% - 56px);
 
         svg {
-            animation: bellDingDong .4s ease;
+            animation: bellDingDong .5s ease;
         }
     }
 
