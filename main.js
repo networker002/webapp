@@ -2515,7 +2515,6 @@ function toggleNotifications() {
       return response.json();
     })
     .then((result) => {
-      updateNotificationIcon(result.notifications);
       haptic.notificationOccurred("success");
     })
     .catch((error) => {
@@ -2920,6 +2919,8 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 }
 });
 
+document.querySelector(".user-notifications").addEventListener("click", () => {showNotificationsSettings()})
+
 // document.getElementById("cancel-event-btn").addEventListener("click", function(){
 //  if (document.getElementById("note-add-btn").classList.contains("opened")) {
 //     document.getElementById("note-add-btn").classList.remove("opened");
@@ -2929,6 +2930,19 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 //   document.getElementById("note-add-btn").classList.add("opened");
 // }
 // });
+
+function showNotificationsSettings() {
+        document.querySelector(".popuper-notifications").style.display = "flex";
+        document.getElementById("cancel-bg").style.display = "block";
+    }
+
+    function hideNotificationsSettings() {
+        document.querySelector(".popuper-notifications").style.display = "none";
+        document.getElementById("cancel-bg").style.display = "none";
+    }
+
+document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings())
+
 
 function alertToCopy() {
    var al = document.getElementById("fast-alert");
