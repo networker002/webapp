@@ -1821,7 +1821,7 @@ function getEdinNoteData(id) {
 
 function editNote(id) {
   const addBtn = document.getElementById("note-add-btn");
-  if (addBtn) addBtn.style.display = "none";
+  //if (addBtn) addBtn.style.display = "none";
 
   ShowAdd();
 
