@@ -2417,24 +2417,26 @@ const ICON_OFF_D =
   "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 function updateNotificationIcon(status) {
-  const r = document.getElementById("notify-btn");
+  const r = document.getElementById("notifications-toggle");
   const isActive = status === true || status === "TRUE";
   if (!r) return;
-  const path = r.querySelector("path");
-  if (!path) {
-    const newPath = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "path",
-    );
-    newPath.setAttribute("fill", "currentColor");
-    r.appendChild(newPath);
-  }
-  const finalPath = r.querySelector("path");
-  finalPath.setAttribute("d", isActive ? ICON_ON_D : ICON_OFF_D);
-  r.style.color = isActive ? "#32CD32" : "#8B0000";
-  r.style.width = "32px";
-  r.style.height = "32px";
-  r.style.transition = "color 0.15s ease";
+  if (isActive) r.click();
+
+  // const path = r.querySelector("path");
+  // if (!path) {
+  //   const newPath = document.createElementNS(
+  //     "http://www.w3.org/2000/svg",
+  //     "path",
+  //   );
+  //   newPath.setAttribute("fill", "currentColor");
+  //   r.appendChild(newPath);
+  // }
+  // const finalPath = r.querySelector("path");
+  // finalPath.setAttribute("d", isActive ? ICON_ON_D : ICON_OFF_D);
+  // r.style.color = isActive ? "#32CD32" : "#8B0000";
+  // r.style.width = "32px";
+  // r.style.height = "32px";
+  // r.style.transition = "color 0.15s ease";
 }
 
 async function noti() {
@@ -2450,7 +2452,7 @@ async function noti() {
     const extraData = await response.json();
 
     if (extraData) {
-      //updateNotificationIcon(extraData.notifications);
+      updateNotificationIcon(extraData.notifications);
 
       if (extraData.theme_colors?.length > 0) {
         localStorage.setItem("customThemeColors", extraData.theme_colors);

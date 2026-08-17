@@ -1803,7 +1803,7 @@ h6.skeleton { opacity: .4; }
         flex-direction: column;
         justify-content: space-between;
         gap: 15px;
-        background: rgb(from var(--accent) r g b / 0.5);
+        background: rgb(from var(--accent) r g b / 0.45);
         backdrop-filter: blur(18px);
         z-index: 999999999;
         animation: show-n-s .5s;
@@ -1856,7 +1856,7 @@ h6.skeleton { opacity: .4; }
         border-radius: 35px;
         background: #ee3311;
         box-shadow: inset 4px 4px 18px rgba(0,0,0,0.45);
-        transition: background 0.5s ease;
+        transition: background 0.8s ease;
     }
 
     #runner-notiif {
@@ -1869,7 +1869,7 @@ h6.skeleton { opacity: .4; }
         background: rgba(255, 255, 255, .2);
         backdrop-filter: blur(18px);
         border-radius: 50%;
-        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         /* filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.25)); */
         display: flex;
         align-items: center;
