@@ -2420,7 +2420,7 @@ function updateNotificationIcon(status) {
   const r = document.getElementById("notifications-toggle");
   const isActive = status === true || status === "TRUE";
   if (!r) return;
-  if (isActive) r.click();
+  if (isActive) r.checked = true;
 
   // const path = r.querySelector("path");
   // if (!path) {
