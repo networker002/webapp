@@ -1808,8 +1808,6 @@ h6.skeleton { opacity: .4; }
         z-index: 999999999;
         animation: show-n-s .5s;
 
-        h1 {text-align: left !important;}
-
 
         ul {
             list-style: none;
@@ -1831,6 +1829,10 @@ h6.skeleton { opacity: .4; }
                 scale: .5;
             }
         }
+    }
+
+    .popuper-notifications h1, p {
+        margin: 0;
     }
 
     .input-container-n {
