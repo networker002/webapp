@@ -3032,8 +3032,12 @@ function initBtns() {
       document.querySelector(".days").style.display = "block";
       document.querySelector(".second-header").style.display = "flex";
       document.getElementById("notes-show").click();
+      if (document.getElementById("note-add-btn").style.display !== "none"){
       document.getElementById("note-add-btn").click();
-      document.getElementById("note-add-btn").click();
+      document.getElementById("note-add-btn").click();} else {
+        ShowAdd();
+      document.getElementById("attach-event").value = l.querySelector(".subject").innerHTML;
+      }
     }, {once: true});
   });
 }
