@@ -287,12 +287,12 @@ function getSchedule1(reqNeed = false) {
             <h3 class="skeleton"></h3>
             <h4 class="skeleton"></h4>
             </div>`;
-    m = "";
-    for (let i = 0; i < userId.toString().length - 4; i++) {
-      m += "●";
-    }
-    document.getElementById("tg-id-menu").innerHTML =
-      userId.toString().slice(0, 4) + m;
+    // m = "";
+    // for (let i = 0; i < userId.toString().length - 4; i++) {
+    //   m += "●";
+    // }
+    // document.getElementById("tg-id-menu").innerHTML =
+    //   userId.toString().slice(0, 4) + m;
     //found = false;
     if (reqNeed) {
       //let forMessageFrom = Date.now();
@@ -311,7 +311,7 @@ function getSchedule1(reqNeed = false) {
                 localStorage.setItem("userGroup", Group);
               }
               document.getElementById("gr").innerHTML = Group;
-              document.getElementById("group-name-menu").innerHTML = Group;
+              //document.getElementById("group-name-menu").innerHTML = Group;
 
               return fetch("https://boost.rorosin.ru/schedulejson", {
                 headers: authHeaders,
@@ -589,9 +589,9 @@ function getSchedule1(reqNeed = false) {
         var Group = localStorage.getItem("userGroup");
         if (Group) {
           const grElement = document.getElementById("gr");
-          const menuElement = document.getElementById("group-name-menu");
+          //const menuElement = document.getElementById("group-name-menu");
           if (grElement) grElement.innerHTML = Group;
-          if (menuElement) menuElement.innerHTML = Group;
+          //if (menuElement) menuElement.innerHTML = Group;
         }
         //teacherHide();
         dayParseOnline();
@@ -2683,7 +2683,7 @@ function toggleNotifications() {
 //   noti();
 // });
 
-document.getElementById("user-menu-display");
+//document.getElementById("user-menu-display");
 
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
