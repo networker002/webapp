@@ -1808,7 +1808,7 @@ h6.skeleton { opacity: .4; }
             background: rgb(from var(--accent) r g b / 0.15);
             backdrop-filter: blur(18px);
             z-index: 999999999;
-            animation: show-n-s .5s;
+            animation: show-n-s .3s ease-in-out;
 
 
             ul {
@@ -1915,7 +1915,7 @@ h6.skeleton { opacity: .4; }
 
             0% {
 
-                transform: translate(-50%, -40%);
+                transform: translate(-50%, -30%) scale(.7);
 
                 opacity: 0;
 
@@ -1963,7 +1963,7 @@ h6.skeleton { opacity: .4; }
             backdrop-filter: blur(26px);
             z-index: 999999999;
             border-radius: 45px;
-            animation: show-n-s .5s ease;
+            animation: show-n-s .3s ease-in-out;
 
             p {
                 display: flex;
