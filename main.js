@@ -71,39 +71,39 @@ setTimeout(
   5000 * (msgS.length + 1),
 );
 
-const btnAI = document.getElementById("activate-ai-a");
+//const btnAI = document.getElementById("activate-ai-a");
 const assistantBlock = document.querySelector(".assistant");
 const assistantSay = document.querySelector(".assistant-say");
 
-function initAI() {
-  const storedState = localStorage.getItem("isActiveAI");
-  const isActive = storedState === null ? true : storedState === "true";
+// function initAI() {
+//   const storedState = localStorage.getItem("isActiveAI");
+//   const isActive = storedState === null ? true : storedState === "true";
 
-  applyAIState(isActive);
-}
+//   applyAIState(isActive);
+// }
 
-function applyAIState(isActive) {
-  const stateStr = isActive ? "true" : "false";
-  localStorage.setItem("isActiveAI", stateStr);
+// function applyAIState(isActive) {
+//   const stateStr = isActive ? "true" : "false";
+//   localStorage.setItem("isActiveAI", stateStr);
 
-  btnAI.innerHTML = isActive ? "<b>ВКЛ</b>" : "<b>ВЫКЛ</b>";
+//   btnAI.innerHTML = isActive ? "<b>ВКЛ</b>" : "<b>ВЫКЛ</b>";
 
-  if (isActive) {
-    assistantBlock.style.display = "block";
-    assistantSay.style.display = "block";
-  } else {
-    assistantBlock.style.display = "none";
-    assistantSay.style.display = "none";
-  }
-}
+//   if (isActive) {
+//     assistantBlock.style.display = "block";
+//     assistantSay.style.display = "block";
+//   } else {
+//     assistantBlock.style.display = "none";
+//     assistantSay.style.display = "none";
+//   }
+// }
 
-btnAI.onclick = function () {
-  const currentState = localStorage.getItem("isActiveAI") === "true";
-  haptic.notificationOccurred("success");
-  applyAIState(!currentState);
-};
+// btnAI.onclick = function () {
+//   const currentState = localStorage.getItem("isActiveAI") === "true";
+//   haptic.notificationOccurred("success");
+//   applyAIState(!currentState);
+// };
 
-initAI();
+// initAI();
 const container = document.getElementById("schedule-wrapper");
 
 var loaderContainer = document.querySelector(".loader-container");
@@ -2417,9 +2417,27 @@ const ICON_OFF_D =
   "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 
+  function showThemeSettings () {
+            document.getElementById("cancel-bg").style.display = "block";
+            document.querySelector(".popuper-appearance").style.display = "flex";
+            document.getElementById("cancel-bg").addEventListener("click", () => hideThemeSettings(), {once: true})
+  }
+  function hideThemeSettings() {
+            document.getElementById("cancel-bg").style.display = "none";
+            document.querySelector(".popuper-appearance").style.display = "none";
+  }
+
+
+  const themePl = document.getElementById("theme-status-ap");
+  const asntPl = document.getElementById("activate-ai-a");
+  const lessonPl = document.getElementById("lessons-style-status");
+  const notesPl = document.getElementById("notes-s-status");
+
+
   function showNotificationsSettings() {
             document.querySelector(".popuper-notifications").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
+            document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings(), {once: true})
         }
 
         function hideNotificationsSettings() {
@@ -3045,7 +3063,6 @@ document.querySelector(".user-notifications").addEventListener("click", () => {s
 //         document.getElementById("cancel-bg").style.display = "none";
 //     }
 
-document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings())
 
 
 function alertToCopy() {
