@@ -2452,7 +2452,7 @@ const ICON_OFF_D =
     }
 
   function setThemesData(){
-    if (localStorage.getItem("customThemeColors")) {themePl.textContent = "Кастомная"} else {themePl.textContent = tg.colorScheme}
+    if (localStorage.getItem("customThemeColors")) {themePl.textContent = "custom"} else {themePl.textContent = tg.colorScheme}
     if (localStorage.getItem("isActiveAI") === "true") {asntPl.checked = true}
     
   }
