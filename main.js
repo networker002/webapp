@@ -641,6 +641,10 @@ async function waitForInitData(retries = 10) {
 
             hideLoader();
 
+            if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
+
+            setThemesData();
+
         } catch (error) {
 
             console.error(
@@ -649,6 +653,10 @@ async function waitForInitData(retries = 10) {
             );
 
             hideLoader();
+
+            if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
+
+            setThemesData();
         }
 
         return;
@@ -2278,7 +2286,7 @@ window.addEventListener("DOMContentLoaded", function () {
   initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
-  setThemesData();
+  //setThemesData();
   
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
@@ -2433,6 +2441,11 @@ const ICON_OFF_D =
   const asntPl = document.getElementById("activate-ai-a");
   const lessonPl = document.getElementById("lessons-style-status");
   const notesPl = document.getElementById("notes-s-status");
+
+  asntPl.onchange = () => {
+    let newItem = localStorage.setItem("isActiveAI", {"true": "false", "false": "true"}[localStorage.getItem("isActiveAI")]);
+    assistant.style.display = {"true": "block", "false": "none"}[localStorage.getItem("isActiveAI")]; haptic.notificationOccurred("success");
+  }
 
   function setThemesData(){
     if (localStorage.getItem("customThemeColors")) {themePl.textContent = "Кастомная"} else {themePl.textContent = tg.colorScheme}
