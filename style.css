@@ -1948,7 +1948,7 @@ h6.skeleton { opacity: .4; }
 
 
         .popuper-appearance {
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 15px;
             padding: 25px 15px !important;
@@ -1971,6 +1971,11 @@ h6.skeleton { opacity: .4; }
                 align-items: center;
                 font-size: 15px;
             }
+        }
+
+        .popuper-appearance h1, p {
+            margin: 0 !important;
+            padding-top: 0 !important;
         }
 
         .a-settings-area {
