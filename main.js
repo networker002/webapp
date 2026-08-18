@@ -75,35 +75,32 @@ setTimeout(
 const assistantBlock = document.querySelector(".assistant");
 const assistantSay = document.querySelector(".assistant-say");
 
-// function initAI() {
-//   const storedState = localStorage.getItem("isActiveAI");
-//   const isActive = storedState === null ? true : storedState === "true";
+function initAI() {
+  const storedState = localStorage.getItem("isActiveAI");
+  const isActive = storedState === null ? true : storedState === "true";
 
-//   applyAIState(isActive);
-// }
+  applyAIState(isActive);
+}
 
-// function applyAIState(isActive) {
-//   const stateStr = isActive ? "true" : "false";
-//   localStorage.setItem("isActiveAI", stateStr);
+function applyAIState(isActive) {
+  const stateStr = isActive ? "true" : "false";
+  localStorage.setItem("isActiveAI", stateStr);
 
-//   btnAI.innerHTML = isActive ? "<b>ВКЛ</b>" : "<b>ВЫКЛ</b>";
+  // btnAI.innerHTML = isActive ? "<b>ВКЛ</b>" : "<b>ВЫКЛ</b>";
 
-//   if (isActive) {
-//     assistantBlock.style.display = "block";
-//     assistantSay.style.display = "block";
-//   } else {
-//     assistantBlock.style.display = "none";
-//     assistantSay.style.display = "none";
-//   }
-// }
+  if (isActive) {
+    assistantBlock.style.display = "block";
+    assistantSay.style.display = "block";
+  } else {
+    assistantBlock.style.display = "none";
+    assistantSay.style.display = "none";
+  }
+}
 
-// btnAI.onclick = function () {
-//   const currentState = localStorage.getItem("isActiveAI") === "true";
-//   haptic.notificationOccurred("success");
-//   applyAIState(!currentState);
-// };
+initAI();
 
-// initAI();
+
+
 const container = document.getElementById("schedule-wrapper");
 
 var loaderContainer = document.querySelector(".loader-container");
@@ -641,7 +638,7 @@ async function waitForInitData(retries = 10) {
 
             hideLoader();
 
-            if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
+            // if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
 
             setThemesData();
 
@@ -654,7 +651,7 @@ async function waitForInitData(retries = 10) {
 
             hideLoader();
 
-            if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
+            // if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
 
             setThemesData();
         }
@@ -2256,7 +2253,7 @@ function groupSet0() {
                 "none";
               // burgerBtn.classList.remove("opened-btn");
               // burgerBtn.classList.add("closed-btn");
-              closeN("user-menu-display");
+              //closeN("user-menu-display");
               getSchedule1(true);
             } else {
               document.getElementById("alerter").style.display = "none";
@@ -2265,7 +2262,7 @@ function groupSet0() {
               // burgerBtn.classList.remove("opened-btn");
               // burgerBtn.classList.add("closed-btn");
               localStorage.setItem("userGroup", userGroup);
-              closeN("user-menu-display");
+              //closeN("user-menu-display");
               getSchedule1(true);
             }
           }
@@ -2442,10 +2439,17 @@ const ICON_OFF_D =
   const lessonPl = document.getElementById("lessons-style-status");
   const notesPl = document.getElementById("notes-s-status");
 
-  asntPl.onchange = () => {
-    let newItem = localStorage.setItem("isActiveAI", {"true": "false", "false": "true"}[localStorage.getItem("isActiveAI")]);
-    assistant.style.display = {"true": "block", "false": "none"}[localStorage.getItem("isActiveAI")]; haptic.notificationOccurred("success");
-  }
+  // asntPl.onchange = () => {
+  //   let newItem = localStorage.setItem("isActiveAI", {"true": "false", "false": "true"}[localStorage.getItem("isActiveAI")]);
+  //   assistant.style.display = {"true": "block", "false": "none"}[localStorage.getItem("isActiveAI")]; haptic.notificationOccurred("success");
+  // }
+
+
+    asntPl.onchange = () => {
+    const currentState = localStorage.getItem("isActiveAI") === "true";
+      haptic.notificationOccurred("success");
+      applyAIState(!currentState);     
+    }
 
   function setThemesData(){
     if (localStorage.getItem("customThemeColors")) {themePl.textContent = "Кастомная"} else {themePl.textContent = tg.colorScheme}
