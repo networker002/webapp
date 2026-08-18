@@ -2604,7 +2604,7 @@ function toggleNotifications() {
   //     //const newStatus = !currentStatus;
 
     const formData = new URLSearchParams();
-    formData.append("notifications", newState ? true : false);
+    formData.append("notifications", newState);
 
        fetch("https://boost.rorosin.ru/extra/notifications", {
         method: "POST",
