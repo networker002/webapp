@@ -2590,26 +2590,27 @@ async function initApp() {
 
 function toggleNotifications() {
   const authHeaders = { Authorization: tg.initData };
+  const toggle = document.getElementById("notifications-toggle");
+  const newState = toggle.checked;
 
-  fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
-    .then((response) => {
-      if (!response.ok) throw new Error("Error: " + response.status);
-      return response.json();
-    })
-    .then((data) => {
-      const currentStatus =
-        data.notifications === true || data.notifications === "TRUE";
-      const newStatus = !currentStatus;
+  // fetch("https://boost.rorosin.ru/extra", { headers: authHeaders })
+  //   .then((response) => {
+  //     if (!response.ok) throw new Error("Error: " + response.status);
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     const currentStatus =
+  //       data.notifications === true || data.notifications === "TRUE";
+  //     //const newStatus = !currentStatus;
 
-      const formData = new URLSearchParams();
-      formData.append("notifications", newStatus ? true : false);
+    const formData = new URLSearchParams();
+    formData.append("notifications", newState ? true : false);
 
-      return fetch("https://boost.rorosin.ru/extra/notifications", {
+       fetch("https://boost.rorosin.ru/extra/notifications", {
         method: "POST",
         headers: authHeaders,
         body: formData,
-      });
-    })
+      })
     .then((response) => {
       if (!response.ok) throw new Error("Error: " + response.status);
       return response.json();
@@ -2620,6 +2621,9 @@ function toggleNotifications() {
     .catch((error) => {
       console.error("Error toggling notifications:", error);
       haptic.notificationOccurred("error");
+      isSettingsStateNofifications = true;
+      toggle.checked = !newState;
+      isSettingsStateNofifications = false;
     });
 }
 
