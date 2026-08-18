@@ -3041,7 +3041,8 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 }
 });
 
-document.querySelector(".user-notifications").addEventListener("click", () => {showNotificationsSettings()})
+document.querySelector(".user-notifications").addEventListener("click", () => {showNotificationsSettings()});
+document.querySelector(".user-appear").addEventListener("click", () => {showThemeSettings()})
 
 // document.getElementById("cancel-event-btn").addEventListener("click", function(){
 //  if (document.getElementById("note-add-btn").classList.contains("opened")) {
