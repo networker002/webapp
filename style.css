@@ -1952,7 +1952,7 @@ h6.skeleton { opacity: .4; }
             flex-direction: column;
             gap: 15px;
             padding: 25px 15px !important;
-            width: calc(100% - 100px);
+            width: calc(100% - 90px);
             position: fixed;
             top: 50%;
             left: 50%;
@@ -2064,6 +2064,49 @@ h6.skeleton { opacity: .4; }
 
         #theme-status-ap, #lessons-style-status, #notes-s-status {
             color: var(--tg-theme-hint-color);
+        }
+
+        #robot-svg-settings {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            &::before {
+                    content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0%;
+                height: 3px;
+                background: none;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                border-radius: 2px;
+                z-index: 2;
+                    transition: background .35s, width .3s ease;
+                }
+        }
+
+        .a-settings-area > div:has(#activate-ai-a:not(:checked)) #robot-svg-settings::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 125%;
+            height: 3px;
+            background: #ec3942;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            border-radius: 2px;
+            z-index: 2;
+            
+        }
+
+        .a-settings-area > div:has(#activate-ai-a:not(:checked)) #robot-svg-settings svg {
+            opacity: 0.5;
+        }
+
+        #robot-svg-settings svg {
+            transition: opacity .5s;
         }
 
 
