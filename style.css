@@ -1834,7 +1834,8 @@ h6.skeleton { opacity: .4; }
         }
 
         .popuper-notifications h1, p {
-            margin: 0;
+            margin: 0 !important;
+            padding-top: 0 !important;
         }
 
         .input-container-n {
@@ -1875,7 +1876,7 @@ h6.skeleton { opacity: .4; }
             background: rgba(255, 255, 255, .2);
             backdrop-filter: blur(18px);
             border-radius: 50%;
-            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+            box-shadow: 4px 1px 6px rgba(0, 0, 0, 0.35), inset 2px 2px 4px rgba(255, 255, 255, .05), inset -2px -2px 4px rgba(0, 0, 0, .15);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1926,11 +1927,12 @@ h6.skeleton { opacity: .4; }
         }
 
         .switch-track.animated #runner-notiif {
-            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 1s ease;
         }
 
         #notifications-toggle:checked~.switch-track #runner-notiif {
             left: calc(100% - 56px);
+            box-shadow: -4px 1px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 4px rgba(255, 255, 255, .15), inset 2px 2px 4px rgba(0, 0, 0, .05);
 
             svg {
                 animation: bellDingDong .4s ease ;

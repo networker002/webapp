@@ -2504,11 +2504,15 @@ const ICON_OFF_D =
             document.getElementById("notifications-s-svg").style.transform = "";
         });
 
+let isSettingsStateNofifications = true;     
+
 function updateNotificationIcon(status) {
   const r = document.getElementById("notifications-toggle");
   const isActive = status === true || status === "TRUE";
   if (!r) return;
-  if (isActive) r.checked = true;
+  isSettingsStateNofifications = true; 
+  r.checked = isActive;
+  isSettingsStateNofifications = false;
 
   // const path = r.querySelector("path");
   // if (!path) {
@@ -2526,6 +2530,12 @@ function updateNotificationIcon(status) {
   // r.style.height = "32px";
   // r.style.transition = "color 0.15s ease";
 }
+
+
+document.getElementById("notifications-toggle").onchange = (e) => {
+  if (isSettingsStateNofifications) return;
+  toggleNotifications();
+};
 
 async function noti() {
   const authHeaders = { Authorization: tg.initData };
