@@ -2278,6 +2278,7 @@ window.addEventListener("DOMContentLoaded", function () {
   initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
+  setThemesData();
   
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
@@ -2433,7 +2434,11 @@ const ICON_OFF_D =
   const lessonPl = document.getElementById("lessons-style-status");
   const notesPl = document.getElementById("notes-s-status");
 
-
+  function setThemesData(){
+    if (localStorage.getItem("customThemeColors")) {themePl.textContent = "Кастомная"} else {themePl.textContent = tg.colorScheme}
+    if (localStorage.getItem("isActiveAI") === "true") {asntPl.checked = true}
+    
+  }
   function showNotificationsSettings() {
             document.querySelector(".popuper-notifications").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
