@@ -1963,6 +1963,7 @@ h6.skeleton { opacity: .4; }
             backdrop-filter: blur(26px);
             z-index: 999999999;
             border-radius: 45px;
+            animation: show-n-s .5s ease;
 
             p {
                 display: flex;
