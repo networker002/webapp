@@ -2024,7 +2024,7 @@ h6.skeleton { opacity: .4; }
 
             &:checked::after {
                 left: calc(100% - 20px);
-                box-shadow: -3px 1px 4px rgba(0, 0, 0, .35), inset 2px 2px 2px rgba(0, 0, 0, .075);
+                box-shadow: /*-3px 1px 4px rgba(0, 0, 0, .35),*/ inset 2px 2px 2px rgba(0, 0, 0, .075);
                 transform: translateY(-50%) rotate(180deg);
             }
 
