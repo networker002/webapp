@@ -1816,6 +1816,7 @@ h6.skeleton { opacity: .4; }
                 text-align: left;
                 display: flex;
                 flex-direction: column;
+                font-size: small;
 
 
 
