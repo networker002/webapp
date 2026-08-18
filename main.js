@@ -2315,28 +2315,28 @@ window.addEventListener("scroll", function () {
 });
 
 //beta
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// const canvas = document.getElementById("canvas");
+// const ctx = canvas.getContext("2d");
 
-function draw() {
-  ctx.fillStyle = "rgba(250, 252, 255, 0.1)";
-  ctx.beginPath();
+// function draw() {
+//   ctx.fillStyle = "rgba(250, 252, 255, 0.1)";
+//   ctx.beginPath();
 
-  var numPoints = 400;
+//   var numPoints = 400;
 
-  for (var i = 0; i < numPoints; i++) {
-    ctx.fillStyle = "rgba(250, 252, 255, " + Math.random() + ")";
-    var x = Math.random() * canvas.width;
-    var y = Math.random() * canvas.height;
-    ctx.moveTo(x, y);
-    ctx.arc(x, y, 2, 0, 2 * Math.PI);
-  }
+//   for (var i = 0; i < numPoints; i++) {
+//     ctx.fillStyle = "rgba(250, 252, 255, " + Math.random() + ")";
+//     var x = Math.random() * canvas.width;
+//     var y = Math.random() * canvas.height;
+//     ctx.moveTo(x, y);
+//     ctx.arc(x, y, 2, 0, 2 * Math.PI);
+//   }
 
-  ctx.fill();
-}
-if (new Date().getHours() <= 7 || new Date().getHours() >= 20) {
-  draw();
-}
+//   ctx.fill();
+// }
+// if (new Date().getHours() <= 7 || new Date().getHours() >= 20) {
+//   draw();
+// }
 
 function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
