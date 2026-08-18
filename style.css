@@ -1972,6 +1972,10 @@ h6.skeleton { opacity: .4; }
                 align-items: center;
                 font-size: 15px;
             }
+
+            b {
+                font-size: 15px;
+            }
         }
 
         .popuper-appearance h1, p {
