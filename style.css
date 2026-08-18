@@ -1787,7 +1787,7 @@ h6.skeleton { opacity: .4; }
             left: 50%;
             transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(8px);
             overflow: hidden !important;
         }
 
@@ -1795,17 +1795,17 @@ h6.skeleton { opacity: .4; }
             position: fixed;
             left: 50%;
             top: 50%;
-            width: calc(100% - 100px);
+            width: calc(100% - 120px);
             transform: translate(-50%, -50%);
-            padding: 30px;
-            border-radius: 30px;
+            padding: 15px;
+            border-radius: 45px;
             margin-top: 0 !important;
-            padding-top: 30px !important;
+            padding-top: 25px !important;
             display: none;
             flex-direction: column;
             justify-content: space-between;
             gap: 15px;
-            background: rgb(from var(--accent) r g b / 0.5);
+            background: rgb(from var(--accent) r g b / 0.15);
             backdrop-filter: blur(18px);
             z-index: 999999999;
             animation: show-n-s .5s;
@@ -1816,7 +1816,6 @@ h6.skeleton { opacity: .4; }
                 text-align: left;
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
 
 
 
@@ -1834,6 +1833,7 @@ h6.skeleton { opacity: .4; }
         }
 
         .popuper-notifications h1, p {
+            text-align: center;
             margin: 0 !important;
             padding-top: 0 !important;
         }
