@@ -2426,8 +2426,8 @@ const ICON_OFF_D =
             document.querySelector(".popuper-notifications").style.display = "none";
             document.getElementById("cancel-bg").style.display = "none";
         }
-        window.addEventListener("click", () => showNotificationsSettings(), { once: true })
-        document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings())
+        // window.addEventListener("click", () => showNotificationsSettings(), { once: true })
+        //document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings())
 
         const runner = document.getElementById("runner-notiif");
         const toggle = document.getElementById("notifications-toggle");

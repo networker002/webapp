@@ -1799,6 +1799,8 @@ h6.skeleton { opacity: .4; }
             transform: translate(-50%, -50%);
             padding: 30px;
             border-radius: 30px;
+            margin-top: 0 !important;
+            padding-top: 30px !important;
             display: none;
             flex-direction: column;
             justify-content: space-between;
@@ -1829,6 +1831,10 @@ h6.skeleton { opacity: .4; }
                     scale: .5;
                 }
             }
+        }
+
+        .popuper-notifications h1, p {
+            margin: 0;
         }
 
         .input-container-n {
