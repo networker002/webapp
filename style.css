@@ -1795,7 +1795,7 @@ h6.skeleton { opacity: .4; }
             position: fixed;
             left: 50%;
             top: 50%;
-            width: min(100% - 40px, 400px);
+            width: calc(100% - 100px);
             transform: translate(-50%, -50%);
             padding: 30px;
             border-radius: 30px;
