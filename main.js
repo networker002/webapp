@@ -2852,7 +2852,6 @@ function sendExtra() {
 
 
 function applyTheme(colors) {
-  document.body.setAttribute("data-theme", "custom");
   const root = document.documentElement.style;
 
   root.setProperty("--tg-theme-bg-color", colors[0]);
@@ -2872,6 +2871,8 @@ function applyTheme(colors) {
   root.setProperty("--room-green", colors[2]);
   root.setProperty("--lst-btn-color", colors[2]);
   root.setProperty("--days-selected-bg", colors[2]);
+
+  localStorage.setItem("customThemeColors", colors.join(", "));
 }
 
 function set2Theme() {
@@ -2882,13 +2883,13 @@ function set2Theme() {
   //const saveBtn = document.getElementById("saveColorsBtn");
 
   const tg = window.Telegram?.WebApp;
-  const tgTheme = tg?.themeParams || {};
+  // const tgTheme = tg?.themeParams || {};
 
-  const defaultColors = [
-    tgTheme.bg_color || "#171F30",
-    tgTheme.secondary_bg_color || "#242F43",
-    tgTheme.button_color || "#3390ec",
-  ];
+  // const defaultColors = [
+  //   tgTheme.bg_color || "#171F30",
+  //   tgTheme.secondary_bg_color || "#242F43",
+  //   tgTheme.button_color || "#3390ec",
+  // ];
 
   let colorsData = localStorage.getItem("customThemeColors").split(",");
   let activeIndex = 0;
@@ -3276,3 +3277,158 @@ function initBtns() {
     }, {once: true});
   });
 }
+
+const tgTheme = tg?.themeParams || {};
+
+  const defaultColors = [
+    tgTheme.bg_color || "#171F30",
+    tgTheme.secondary_bg_color || "#242F43",
+    tgTheme.button_color || "#3390ec",
+  ];
+
+
+function initColorPicker() {
+  let savedThs = localStorage.getItem("customThemeColors")
+    ? null
+    : defaultColors.join(", ");
+
+        const btn1 = document.getElementById("th-c-1");
+        const btn2 = document.getElementById("th-c-2");
+
+        btn1.onchange = () => {document.querySelector(".color-p-container").style.display = "none"; document.getElementById("picker").style.display = "none"; savedThs = defaultColors.join(", ")}
+        btn2.onchange = () => {document.querySelector(".color-p-container").style.display = "flex"; document.getElementById("picker").style.display = "flex"; savedThs = null}
+
+        if (!localStorage.getItem("customThemeColors")) {
+          btn1.checked = true;
+          btn1.onchange();
+        } else {
+          btn2.checked = true;
+          btn2.onchange();
+        }
+
+        const colorPicker = new iro.ColorPicker('#picker', {
+            width:160,
+
+        });
+
+        var hex = colorPicker.color.hexString;
+
+        colorPicker.on('color:change', function(color) {
+            document.querySelector(".color-p.selected").textContent = color.hexString
+            document.querySelector(".color-p.selected").style.background = color.hexString;
+        });
+
+        document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+        document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+        colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+        
+        document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+        document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+
+        document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+        document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+
+        document.querySelectorAll(".color-p").forEach((e) => {e.addEventListener("click", () => {document.querySelectorAll(".color-p").forEach((e) => {if (e.classList.contains("selected"))e.classList.remove("selected")});e.classList.add("selected"); colorPicker.color.hexString = e.textContent})})
+
+        const saveBtn = document.querySelector(".save-ch-btn");
+        saveBtn.addEventListener("click", (e) => {
+            const root = document.documentElement.style;
+          if (savedThs) {
+            document.body.removeAttribute("data-theme");
+            localStorage.removeItem("customThemeColors");
+
+            root.removeProperty("--tg-theme-bg-color");
+            root.removeProperty("--tg-theme-header-bg-color");
+            root.removeProperty("--tg-theme-secondary-bg-color");
+            root.removeProperty("--tg-theme-accent-text-color");
+            root.removeProperty("--tg-theme-button-color");
+
+            root.removeProperty("--main-bg-color");
+            root.removeProperty("--header-bg-color");
+            root.removeProperty("--header-glass");
+            root.removeProperty("--accent-bg");
+            root.removeProperty("--days-bg");
+            root.removeProperty("--day-card-bg");
+            root.removeProperty("--accent");
+            root.removeProperty("--alert-bg");
+            root.removeProperty("--room-green");
+            root.removeProperty("--lst-btn-color");
+            root.removeProperty("--days-selected-bg");
+
+            sendExtra();
+
+          } else {
+            savedThs = [document.getElementById("main-color-th").textContent, document.getElementById("secondary-color-th").textContent, document.getElementById("accent-color-th").textContent].join(", ");
+            root.removeProperty("--tg-theme-bg-color");
+            root.removeProperty("--tg-theme-header-bg-color");
+            root.removeProperty("--tg-theme-secondary-bg-color");
+            root.removeProperty("--tg-theme-accent-text-color");
+            root.removeProperty("--tg-theme-button-color");
+
+            root.removeProperty("--main-bg-color");
+            root.removeProperty("--header-bg-color");
+            root.removeProperty("--header-glass");
+            root.removeProperty("--accent-bg");
+            root.removeProperty("--days-bg");
+            root.removeProperty("--day-card-bg");
+            root.removeProperty("--accent");
+            root.removeProperty("--alert-bg");
+            root.removeProperty("--room-green");
+            root.removeProperty("--lst-btn-color");
+            root.removeProperty("--days-selected-bg");
+
+            applyTheme(savedThs.split(", "));
+
+            sendExtra();
+          }
+            saveBtn.style.pointerEvents = "none";
+            const rect = saveBtn.getBoundingClientRect();
+            const xInside = e.clientX - rect.left;
+            const yInside = e.clientY - rect.top;
+
+            document.getElementById("anim-svg-save-e").style.left = `${xInside}px`;
+            document.getElementById("anim-svg-save-e").style.top = `${yInside}px`;
+            document.getElementById("anim-svg-save-e").style.animation = "show-a-sg 2s ease forwards";
+            document.getElementById("anim-svg-save-e").style.animationDelay = "500ms";
+            setTimeout(() => {
+                document.getElementById("done-svg-c-0").style.display = "flex";
+                setTimeout(() => {
+                    document.getElementById("set-app1").style.animation = "ending2 .3s"; 
+                    document.getElementById("done-svg-c-0").style.display = "none";
+                    document.getElementById("anim-svg-save-e").style.display = "none";
+                    setTimeout(() => {
+
+                    saveBtn.classList.remove("anim");
+                    showAppearanceSettings();
+                    }, 330);
+                }, 1000);
+            }, 2000);
+            console.log(xInside, yInside);
+            saveBtn.classList.add("anim")
+        })
+    }
+    initColorPicker();
+
+        const appearanceSettings = document.querySelector(".a-settings-area");
+        const themeSettings = document.getElementById("set-app1");
+        const backToAppearance = document.querySelector(".back-to-ap-settins-btn");
+
+        function showThemeSettings() {
+            appearanceSettings.style.animation = "ending .3s forwards";
+            setTimeout(() => {
+                appearanceSettings.style.display = "none";
+                appearanceSettings.style.animation = "";
+                themeSettings.style.display = "flex";
+                themeSettings.style.animation = "starting .5s forwards";
+            }, 330);
+        }
+
+        function showAppearanceSettings() {
+            themeSettings.style.display = "none";
+            themeSettings.style.animation = "";
+            appearanceSettings.style.display = "flex";
+            appearanceSettings.style.animation = "starting2 .5s forwards";
+        }
+
+        document.getElementById("theme-swipe-1").onclick = showThemeSettings;
+        backToAppearance.onclick = showAppearanceSettings;
