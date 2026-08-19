@@ -3278,6 +3278,44 @@ function initBtns() {
   });
 }
 
+function refreshThemeStatus() {
+  setThemesData();
+  document.querySelectorAll(".color-p").forEach((element) => {
+    element.classList.remove("selected");
+  });
+  document.getElementById("main-color-th").classList.add("selected");
+  const LStheme = localStorage.getItem("customThemeColors");
+
+        if (LStheme) {
+            LStheme = LStheme.toLowerCase().trim().split(",");
+            if (LStheme.length === 3) {
+            document.getElementById("main-color-th").textContent = LStheme[0];
+            document.getElementById("main-color-th").style.background = LStheme[0];
+            colorPicker.color.hexString = LStheme[0];
+            
+            document.getElementById("secondary-color-th").textContent = LStheme[1];
+            document.getElementById("secondary-color-th").style.background = LStheme[1];
+
+            document.getElementById("accent-color-th").textContent = LStheme[2];
+            document.getElementById("accent-color-th").style.background = LStheme[2];}
+
+            else {
+              console.error("Too little data to unpack", LStheme)
+            }
+
+        } else {
+            document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            
+            document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+            document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+
+            document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+            document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+        }
+}
+
 const tgTheme = tg?.themeParams || {};
 
   const defaultColors = [
@@ -3318,16 +3356,36 @@ function initColorPicker() {
             document.querySelector(".color-p.selected").style.background = color.hexString;
         });
 
-        document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-        document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-        colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-        
-        document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
-        document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+        const LStheme = localStorage.getItem("customThemeColors");
 
-        document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
-        document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+        if (LStheme) {
+            LStheme = LStheme.toLowerCase().trim().split(",");
+            if (LStheme.length === 3) {
+            document.getElementById("main-color-th").textContent = LStheme[0];
+            document.getElementById("main-color-th").style.background = LStheme[0];
+            colorPicker.color.hexString = LStheme[0];
+            
+            document.getElementById("secondary-color-th").textContent = LStheme[1];
+            document.getElementById("secondary-color-th").style.background = LStheme[1];
 
+            document.getElementById("accent-color-th").textContent = LStheme[2];
+            document.getElementById("accent-color-th").style.background = LStheme[2];}
+
+            else {
+              console.error("Too little data to unpack", LStheme)
+            }
+
+        } else {
+            document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
+            
+            document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+            document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
+
+            document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+            document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
+        }
         document.querySelectorAll(".color-p").forEach((e) => {e.addEventListener("click", () => {document.querySelectorAll(".color-p").forEach((e) => {if (e.classList.contains("selected"))e.classList.remove("selected")});e.classList.add("selected"); colorPicker.color.hexString = e.textContent})})
 
         const saveBtn = document.querySelector(".save-ch-btn");
@@ -3402,6 +3460,7 @@ function initColorPicker() {
                     saveBtn.classList.remove("anim");
                     saveBtn.style.pointerEvents = "all";
                     showAppearanceSettings();
+                    refreshThemeStatus();
                     }, 330);
                 }, 1000);
             }, 2000);
