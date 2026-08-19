@@ -2423,12 +2423,12 @@ const ICON_OFF_D =
   "M16.15 19H5q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-.825.213-1.625T6.85 6.85L10 10H7.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275zM18 12.725q0 .3-.175.55t-.45.375t-.575.063t-.5-.263L9.175 6.325Q9 6.15 8.925 5.95t-.075-.425q0-.275.138-.537t.387-.388q.275-.125.55-.225T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.125T18 10zM12 22q-.75 0-1.338-.413t-.587-1.112q0-.2.163-.337T10.6 20h2.8q.2 0 .363.138t.162.337q0 .7-.587 1.113T12 22";
 
 
-  function showThemeSettings () {
+  function openAppearancePopup() {
             document.getElementById("cancel-bg").style.display = "block";
             document.querySelector(".popuper-appearance").style.display = "flex";
-            document.getElementById("cancel-bg").addEventListener("click", () => hideThemeSettings(), {once: true})
+            document.getElementById("cancel-bg").addEventListener("click", () => hideAppearancePopup(), {once: true})
   }
-  function hideThemeSettings() {
+  function hideAppearancePopup() {
             document.getElementById("cancel-bg").style.display = "none";
             document.querySelector(".popuper-appearance").style.display = "none";
   }
@@ -3142,7 +3142,7 @@ document.getElementById("note-add-btn").addEventListener("click", function showH
 });
 
 document.querySelector(".user-notifications").addEventListener("click", () => {showNotificationsSettings()});
-document.querySelector(".user-appear").addEventListener("click", () => {showThemeSettings()})
+document.querySelector(".user-appear").addEventListener("click", openAppearancePopup)
 
 // document.getElementById("cancel-event-btn").addEventListener("click", function(){
 //  if (document.getElementById("note-add-btn").classList.contains("opened")) {
@@ -3413,7 +3413,7 @@ function initColorPicker() {
         const themeSettings = document.getElementById("set-app1");
         const backToAppearance = document.querySelector(".back-to-ap-settins-btn");
 
-        function showThemeSettings() {
+        function showThemeSettingsScreen() {
             appearanceSettings.style.animation = "ending .3s forwards";
             setTimeout(() => {
                 appearanceSettings.style.display = "none";
@@ -3430,5 +3430,5 @@ function initColorPicker() {
             appearanceSettings.style.animation = "starting2 .5s forwards";
         }
 
-        document.getElementById("theme-swipe-1").onclick = showThemeSettings;
+        document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
         backToAppearance.onclick = showAppearanceSettings;
