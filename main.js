@@ -3352,12 +3352,17 @@ function initColorPicker() {
   btn1.onchange = () => {
     document.querySelector(".color-p-container").style.display = "none";
     document.getElementById("picker").style.display = "none";
+    document.querySelector(".tg-color-container").style.display = "flex"
     savedThs = defaultColors.join(",");
   };
+
+  // btn1.onchange = () => {document.querySelector(".color-p-container").style.display = "none"; document.getElementById("picker").style.display = "none"; document.querySelector(".tg-color-container").style.display = "flex"}
+  //       btn2.onchange = () => {document.querySelector(".color-p-container").style.display = "flex"; document.getElementById("picker").style.display = "flex"; document.querySelector(".tg-color-container").style.display = "none"}
 
   btn2.onchange = () => {
     document.querySelector(".color-p-container").style.display = "flex";
     document.getElementById("picker").style.display = "flex";
+    document.querySelector(".tg-color-container").style.display = "none"
     savedThs = null;
   };
 
