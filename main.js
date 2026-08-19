@@ -3293,7 +3293,7 @@ function getCssVar(varName) {
 }
 
 function refreshThemeStatus() {
-  setThemesData();
+  if (typeof setThemesData === "function") setThemesData();
 
   document.querySelectorAll(".color-p").forEach((element) => {
     element.classList.remove("selected");
@@ -3352,18 +3352,13 @@ function initColorPicker() {
   btn1.onchange = () => {
     document.querySelector(".color-p-container").style.display = "none";
     document.getElementById("picker").style.display = "none";
-    document.querySelector(".tg-color-container").style.display = "flex"
-    savedThs = defaultColors.join(",");
+    document.querySelector(".tg-color-container").style.display = "flex";
   };
-
-  // btn1.onchange = () => {document.querySelector(".color-p-container").style.display = "none"; document.getElementById("picker").style.display = "none"; document.querySelector(".tg-color-container").style.display = "flex"}
-  //       btn2.onchange = () => {document.querySelector(".color-p-container").style.display = "flex"; document.getElementById("picker").style.display = "flex"; document.querySelector(".tg-color-container").style.display = "none"}
 
   btn2.onchange = () => {
     document.querySelector(".color-p-container").style.display = "flex";
     document.getElementById("picker").style.display = "flex";
-    document.querySelector(".tg-color-container").style.display = "none"
-    savedThs = null;
+    document.querySelector(".tg-color-container").style.display = "none";
   };
 
   if (!localStorage.getItem("customThemeColors")) {
@@ -3395,7 +3390,9 @@ function initColorPicker() {
         item.classList.remove("selected");
       });
       e.classList.add("selected");
-      if (colorPicker) colorPicker.color.hexString = e.textContent;
+      if (colorPicker && e.textContent.startsWith("#")) {
+        colorPicker.color.hexString = e.textContent.trim();
+      }
     });
   });
 
@@ -3413,24 +3410,24 @@ function initColorPicker() {
 
     propertiesToRemove.forEach((prop) => root.removeProperty(prop));
 
-    if (savedThs) {
+    if (btn1.checked) {
       document.body.removeAttribute("data-theme");
       localStorage.removeItem("customThemeColors");
-      sendExtra();
+      if (typeof sendExtra === "function") sendExtra();
     } else {
       const selectedColors = [
-        document.getElementById("main-color-th").textContent,
-        document.getElementById("secondary-color-th").textContent,
-        document.getElementById("accent-color-th").textContent,
+        document.getElementById("main-color-th").textContent.trim(),
+        document.getElementById("secondary-color-th").textContent.trim(),
+        document.getElementById("accent-color-th").textContent.trim(),
       ];
 
-      savedThs = selectedColors.join(",");
-      localStorage.setItem("customThemeColors", savedThs);
-      applyTheme(selectedColors);
-      sendExtra();
+      const customThemeStr = selectedColors.join(",");
+      localStorage.setItem("customThemeColors", customThemeStr);
+      if (typeof applyTheme === "function") applyTheme(selectedColors);
+      if (typeof sendExtra === "function") sendExtra();
     }
 
-    setThemesData();
+    if (typeof setThemesData === "function") setThemesData();
     saveBtn.style.pointerEvents = "none";
 
     const rect = saveBtn.getBoundingClientRect();
