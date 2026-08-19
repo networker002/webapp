@@ -3353,10 +3353,23 @@ function enableSaveBtn() {
   if (saveBtn) saveBtn.classList.remove("disabled");
 }
 
+function getValidCustomColors() {
+  const raw = localStorage.getItem("customThemeColors");
+  if (!raw) return null;
+
+  const cleanStr = raw.replace(/[\[\]"'\s]/g, "");
+  if (!cleanStr) return null;
+
+  const colors = cleanStr.split(",").filter(Boolean);
+  return colors.length === 3 ? colors : null;
+}
+
+
 function initColorPicker() {
-  let savedThs = localStorage.getItem("customThemeColors")
-    ? null
-    : defaultColors.join(",");
+  // let savedThs = localStorage.getItem("customThemeColors")
+  //   ? null
+  //   : defaultColors.join(",");
+  const hasCustomTheme = Boolean(getValidCustomColors());
 
   const btn1 = document.getElementById("th-c-1");
   const btn2 = document.getElementById("th-c-2");
@@ -3365,17 +3378,25 @@ function initColorPicker() {
     document.querySelector(".color-p-container").style.display = "none";
     document.getElementById("picker").style.display = "none";
     document.querySelector(".tg-color-container").style.display = "flex";
-    enableSaveBtn();
+    if (hasCustomTheme) {
+      enableSaveBtn();
+    } else {
+      disableSaveBtn();
+    }
   };
 
   btn2.onchange = () => {
     document.querySelector(".color-p-container").style.display = "flex";
     document.getElementById("picker").style.display = "flex";
     document.querySelector(".tg-color-container").style.display = "none";
-    enableSaveBtn();
+    if (hasCustomTheme) {
+      disableSaveBtn();
+    } else {
+      enableSaveBtn();
+    }
   };
 
-  if (!localStorage.getItem("customThemeColors")) {
+  if (!hasCustomTheme) {
     btn1.checked = true;
     btn1.onchange();
   } else {
