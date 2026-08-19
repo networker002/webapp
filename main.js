@@ -3356,7 +3356,7 @@ function initColorPicker() {
             document.querySelector(".color-p.selected").style.background = color.hexString;
         });
 
-        const LStheme = localStorage.getItem("customThemeColors");
+        var LStheme = localStorage.getItem("customThemeColors");
 
         if (LStheme) {
             LStheme = LStheme.toLowerCase().trim().split(",");
