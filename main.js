@@ -3381,6 +3381,7 @@ function initColorPicker() {
 
             sendExtra();
           }
+            setThemesData();
             saveBtn.style.pointerEvents = "none";
             const rect = saveBtn.getBoundingClientRect();
             const xInside = e.clientX - rect.left;
