@@ -2512,6 +2512,7 @@ const ICON_OFF_D =
     perPl.onchange = () => {
       if (perPl.checked === true) {AppFX.enable();} else {AppFX.disable()};
       localStorage.setItem("animationsAndHaptic", String(perPl.checked));
+      haptic?.notificationOccurred("success");
   }
 
   function initPerPl() {
