@@ -2161,7 +2161,7 @@ h6.skeleton { opacity: .4; }
 
         #set-app1 {
             animation: starting .5s forwards;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center !important;
             text-align: center;
