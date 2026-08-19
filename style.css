@@ -2165,7 +2165,7 @@ h6.skeleton { opacity: .4; }
             flex-direction: column;
             justify-content: center !important;
             text-align: center;
-            align-items: center;
+            /* align-items: center; */
             
         }
 
