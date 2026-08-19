@@ -3400,6 +3400,7 @@ function initColorPicker() {
                     setTimeout(() => {
 
                     saveBtn.classList.remove("anim");
+                    saveBtn.style.pointerEvents = "all";
                     showAppearanceSettings();
                     }, 330);
                 }, 1000);
