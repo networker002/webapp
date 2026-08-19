@@ -3278,43 +3278,7 @@ function initBtns() {
   });
 }
 
-function refreshThemeStatus() {
-  setThemesData();
-  document.querySelectorAll(".color-p").forEach((element) => {
-    element.classList.remove("selected");
-  });
-  document.getElementById("main-color-th").classList.add("selected");
-  const LStheme = localStorage.getItem("customThemeColors");
-
-        if (LStheme) {
-            LStheme = LStheme.toLowerCase().trim().split(",");
-            if (LStheme.length === 3) {
-            document.getElementById("main-color-th").textContent = LStheme[0];
-            document.getElementById("main-color-th").style.background = LStheme[0];
-            colorPicker.color.hexString = LStheme[0];
-            
-            document.getElementById("secondary-color-th").textContent = LStheme[1];
-            document.getElementById("secondary-color-th").style.background = LStheme[1];
-
-            document.getElementById("accent-color-th").textContent = LStheme[2];
-            document.getElementById("accent-color-th").style.background = LStheme[2];}
-
-            else {
-              console.error("Too little data to unpack", LStheme)
-            }
-
-        } else {
-            document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            
-            document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
-            document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
-
-            document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
-            document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
-        }
-}
+let colorPicker = null;
 
 const tgTheme = tg?.themeParams || {};
 
@@ -3324,150 +3288,174 @@ const tgTheme = tg?.themeParams || {};
     tgTheme.button_color || "#3390ec",
   ];
 
+function getCssVar(varName) {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+function refreshThemeStatus() {
+  setThemesData();
+
+  document.querySelectorAll(".color-p").forEach((element) => {
+    element.classList.remove("selected");
+  });
+
+  const mainColorElem = document.getElementById("main-color-th");
+  const secondaryColorElem = document.getElementById("secondary-color-th");
+  const accentColorElem = document.getElementById("accent-color-th");
+
+  mainColorElem.classList.add("selected");
+
+  const rawLStheme = localStorage.getItem("customThemeColors");
+  let colors = [];
+
+  if (rawLStheme) {
+    colors = rawLStheme.split(",").map((c) => c.trim().toLowerCase());
+  }
+
+  if (colors.length === 3) {
+    mainColorElem.textContent = colors[0];
+    mainColorElem.style.background = colors[0];
+
+    secondaryColorElem.textContent = colors[1];
+    secondaryColorElem.style.background = colors[1];
+
+    accentColorElem.textContent = colors[2];
+    accentColorElem.style.background = colors[2];
+
+    if (colorPicker) colorPicker.color.hexString = colors[0];
+  } else {
+    const bg = getCssVar("--tg-theme-bg-color") || defaultColors[0];
+    const secBg = getCssVar("--tg-theme-secondary-bg-color") || defaultColors[1];
+    const accent = getCssVar("--tg-theme-accent-text-color") || defaultColors[2];
+
+    mainColorElem.textContent = bg;
+    mainColorElem.style.background = bg;
+
+    secondaryColorElem.textContent = secBg;
+    secondaryColorElem.style.background = secBg;
+
+    accentColorElem.textContent = accent;
+    accentColorElem.style.background = accent;
+
+    if (colorPicker) colorPicker.color.hexString = bg;
+  }
+}
 
 function initColorPicker() {
   let savedThs = localStorage.getItem("customThemeColors")
     ? null
-    : defaultColors.join(", ");
+    : defaultColors.join(",");
 
-        const btn1 = document.getElementById("th-c-1");
-        const btn2 = document.getElementById("th-c-2");
+  const btn1 = document.getElementById("th-c-1");
+  const btn2 = document.getElementById("th-c-2");
 
-        btn1.onchange = () => {document.querySelector(".color-p-container").style.display = "none"; document.getElementById("picker").style.display = "none"; savedThs = defaultColors.join(", ")}
-        btn2.onchange = () => {document.querySelector(".color-p-container").style.display = "flex"; document.getElementById("picker").style.display = "flex"; savedThs = null}
+  btn1.onchange = () => {
+    document.querySelector(".color-p-container").style.display = "none";
+    document.getElementById("picker").style.display = "none";
+    savedThs = defaultColors.join(",");
+  };
 
-        if (!localStorage.getItem("customThemeColors")) {
-          btn1.checked = true;
-          btn1.onchange();
-        } else {
-          btn2.checked = true;
-          btn2.onchange();
-        }
+  btn2.onchange = () => {
+    document.querySelector(".color-p-container").style.display = "flex";
+    document.getElementById("picker").style.display = "flex";
+    savedThs = null;
+  };
 
-        const colorPicker = new iro.ColorPicker('#picker', {
-            width:160,
+  if (!localStorage.getItem("customThemeColors")) {
+    btn1.checked = true;
+    btn1.onchange();
+  } else {
+    btn2.checked = true;
+    btn2.onchange();
+  }
 
-        });
 
-        var hex = colorPicker.color.hexString;
+  colorPicker = new iro.ColorPicker("#picker", {
+    width: 160,
+  });
 
-        colorPicker.on('color:change', function(color) {
-            document.querySelector(".color-p.selected").textContent = color.hexString
-            document.querySelector(".color-p.selected").style.background = color.hexString;
-        });
-
-        var LStheme = localStorage.getItem("customThemeColors");
-
-        if (LStheme) {
-            LStheme = LStheme.toLowerCase().trim().split(",");
-            if (LStheme.length === 3) {
-            document.getElementById("main-color-th").textContent = LStheme[0];
-            document.getElementById("main-color-th").style.background = LStheme[0];
-            colorPicker.color.hexString = LStheme[0];
-            
-            document.getElementById("secondary-color-th").textContent = LStheme[1];
-            document.getElementById("secondary-color-th").style.background = LStheme[1];
-
-            document.getElementById("accent-color-th").textContent = LStheme[2];
-            document.getElementById("accent-color-th").style.background = LStheme[2];}
-
-            else {
-              console.error("Too little data to unpack", LStheme)
-            }
-
-        } else {
-            document.getElementById("main-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            document.getElementById("main-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            colorPicker.color.hexString = document.querySelector(":root").style.getPropertyValue("--tg-theme-bg-color");
-            
-            document.getElementById("secondary-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
-            document.getElementById("secondary-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-secondary-bg-color");
-
-            document.getElementById("accent-color-th").textContent = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
-            document.getElementById("accent-color-th").style.background = document.querySelector(":root").style.getPropertyValue("--tg-theme-accent-text-color");
-        }
-        document.querySelectorAll(".color-p").forEach((e) => {e.addEventListener("click", () => {document.querySelectorAll(".color-p").forEach((e) => {if (e.classList.contains("selected"))e.classList.remove("selected")});e.classList.add("selected"); colorPicker.color.hexString = e.textContent})})
-
-        const saveBtn = document.querySelector(".save-ch-btn");
-        saveBtn.addEventListener("click", (e) => {
-            const root = document.documentElement.style;
-          if (savedThs) {
-            document.body.removeAttribute("data-theme");
-            localStorage.removeItem("customThemeColors");
-
-            root.removeProperty("--tg-theme-bg-color");
-            root.removeProperty("--tg-theme-header-bg-color");
-            root.removeProperty("--tg-theme-secondary-bg-color");
-            root.removeProperty("--tg-theme-accent-text-color");
-            root.removeProperty("--tg-theme-button-color");
-
-            root.removeProperty("--main-bg-color");
-            root.removeProperty("--header-bg-color");
-            root.removeProperty("--header-glass");
-            root.removeProperty("--accent-bg");
-            root.removeProperty("--days-bg");
-            root.removeProperty("--day-card-bg");
-            root.removeProperty("--accent");
-            root.removeProperty("--alert-bg");
-            root.removeProperty("--room-green");
-            root.removeProperty("--lst-btn-color");
-            root.removeProperty("--days-selected-bg");
-
-            sendExtra();
-
-          } else {
-            savedThs = [document.getElementById("main-color-th").textContent, document.getElementById("secondary-color-th").textContent, document.getElementById("accent-color-th").textContent].join(", ");
-            root.removeProperty("--tg-theme-bg-color");
-            root.removeProperty("--tg-theme-header-bg-color");
-            root.removeProperty("--tg-theme-secondary-bg-color");
-            root.removeProperty("--tg-theme-accent-text-color");
-            root.removeProperty("--tg-theme-button-color");
-
-            root.removeProperty("--main-bg-color");
-            root.removeProperty("--header-bg-color");
-            root.removeProperty("--header-glass");
-            root.removeProperty("--accent-bg");
-            root.removeProperty("--days-bg");
-            root.removeProperty("--day-card-bg");
-            root.removeProperty("--accent");
-            root.removeProperty("--alert-bg");
-            root.removeProperty("--room-green");
-            root.removeProperty("--lst-btn-color");
-            root.removeProperty("--days-selected-bg");
-
-            applyTheme(savedThs.split(", "));
-
-            sendExtra();
-          }
-            setThemesData();
-            saveBtn.style.pointerEvents = "none";
-            const rect = saveBtn.getBoundingClientRect();
-            const xInside = e.clientX - rect.left;
-            const yInside = e.clientY - rect.top;
-
-            document.getElementById("anim-svg-save-e").style.left = `${xInside}px`;
-            document.getElementById("anim-svg-save-e").style.top = `${yInside}px`;
-            document.getElementById("anim-svg-save-e").style.animation = "show-a-sg 2s ease forwards";
-            document.getElementById("anim-svg-save-e").style.animationDelay = "500ms";
-            setTimeout(() => {
-                document.getElementById("done-svg-c-0").style.display = "flex";
-                setTimeout(() => {
-                    document.getElementById("set-app1").style.animation = "ending2 .3s"; 
-                    document.getElementById("done-svg-c-0").style.display = "none";
-                    document.getElementById("anim-svg-save-e").style.display = "none";
-                    setTimeout(() => {
-
-                    saveBtn.classList.remove("anim");
-                    saveBtn.style.pointerEvents = "all";
-                    showAppearanceSettings();
-                    refreshThemeStatus();
-                    }, 330);
-                }, 1000);
-            }, 2000);
-            console.log(xInside, yInside);
-            saveBtn.classList.add("anim")
-        })
+  colorPicker.on("color:change", function (color) {
+    const selectedEl = document.querySelector(".color-p.selected");
+    if (selectedEl) {
+      selectedEl.textContent = color.hexString;
+      selectedEl.style.background = color.hexString;
     }
+  });
+
+  refreshThemeStatus();
+
+  document.querySelectorAll(".color-p").forEach((e) => {
+    e.addEventListener("click", () => {
+      document.querySelectorAll(".color-p").forEach((item) => {
+        item.classList.remove("selected");
+      });
+      e.classList.add("selected");
+      if (colorPicker) colorPicker.color.hexString = e.textContent;
+    });
+  });
+
+  const saveBtn = document.querySelector(".save-ch-btn");
+  saveBtn.addEventListener("click", (e) => {
+    const root = document.documentElement.style;
+
+    const propertiesToRemove = [
+      "--tg-theme-bg-color", "--tg-theme-header-bg-color", "--tg-theme-secondary-bg-color",
+      "--tg-theme-accent-text-color", "--tg-theme-button-color", "--main-bg-color",
+      "--header-bg-color", "--header-glass", "--accent-bg", "--days-bg",
+      "--day-card-bg", "--accent", "--alert-bg", "--room-green",
+      "--lst-btn-color", "--days-selected-bg"
+    ];
+
+    propertiesToRemove.forEach((prop) => root.removeProperty(prop));
+
+    if (savedThs) {
+      document.body.removeAttribute("data-theme");
+      localStorage.removeItem("customThemeColors");
+      sendExtra();
+    } else {
+      const selectedColors = [
+        document.getElementById("main-color-th").textContent,
+        document.getElementById("secondary-color-th").textContent,
+        document.getElementById("accent-color-th").textContent,
+      ];
+
+      savedThs = selectedColors.join(",");
+      localStorage.setItem("customThemeColors", savedThs);
+      applyTheme(selectedColors);
+      sendExtra();
+    }
+
+    setThemesData();
+    saveBtn.style.pointerEvents = "none";
+
+    const rect = saveBtn.getBoundingClientRect();
+    const xInside = e.clientX - rect.left;
+    const yInside = e.clientY - rect.top;
+
+    const animElem = document.getElementById("anim-svg-save-e");
+    animElem.style.left = `${xInside}px`;
+    animElem.style.top = `${yInside}px`;
+    animElem.style.animation = "show-a-sg 2s ease forwards";
+    animElem.style.animationDelay = "500ms";
+
+    setTimeout(() => {
+      document.getElementById("done-svg-c-0").style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("set-app1").style.animation = "ending2 .3s";
+        document.getElementById("done-svg-c-0").style.display = "none";
+        animElem.style.display = "none";
+        setTimeout(() => {
+          saveBtn.classList.remove("anim");
+          saveBtn.style.pointerEvents = "all";
+          showAppearanceSettings();
+          refreshThemeStatus();
+        }, 330);
+      }, 1000);
+    }, 2000);
+
+    saveBtn.classList.add("anim");
+  });
+}
     initColorPicker();
 
         const appearanceSettings = document.querySelector(".a-settings-area");
