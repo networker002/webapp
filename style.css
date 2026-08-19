@@ -2493,7 +2493,8 @@ h6.skeleton { opacity: .4; }
         .save-ch-btn.disabled {
             opacity: .5;
             filter: brightness(60%) grayscale(.7);
-            pointer-events: none !important;
+            animation: none !important;
+            pointer-events: none;
         }
 
         @keyframes shine-btn-s {
