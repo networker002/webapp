@@ -2495,6 +2495,7 @@ h6.skeleton { opacity: .4; }
             filter: brightness(60%) grayscale(.7);
             animation: none !important;
             pointer-events: none;
+            user-select: none;
         }
 
         @keyframes shine-btn-s {
