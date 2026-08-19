@@ -2004,9 +2004,10 @@ h6.skeleton { opacity: .4; }
             gap: 10px
         }
 
-        #activate-ai-a {
+        #activate-ai-a, #activate-person-a {
             width: 50px;
             position: relative;
+            margin-right: 15px;
             &::before {
                 content: '';
                 position: absolute;
@@ -2040,7 +2041,7 @@ h6.skeleton { opacity: .4; }
                 height: 20px;
                 border-radius: 50%;
                 position: absolute;
-                left: 0;
+                left: -1px;
                 top: 50%;
                 transform: translateY(-50%) rotate(0);
                 background: linear-gradient(90deg, var(--over-color), rgb(from var(--over-color) r g b / 0.1));
@@ -2107,6 +2108,17 @@ h6.skeleton { opacity: .4; }
 
         #robot-svg-settings svg {
             transition: opacity .5s;
+        }
+
+          .a-settings-area > div:has(#activate-person-a:checked) #person-svg-settings {
+            animation: jump-p .5s ease;
+        }
+
+        
+        @keyframes jump-p {
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
 

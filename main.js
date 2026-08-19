@@ -2438,11 +2438,86 @@ const ICON_OFF_D =
   const asntPl = document.getElementById("activate-ai-a");
   const lessonPl = document.getElementById("lessons-style-status");
   const notesPl = document.getElementById("notes-s-status");
+  const perPl = document.getElementById("activate-person-a");
 
   // asntPl.onchange = () => {
   //   let newItem = localStorage.setItem("isActiveAI", {"true": "false", "false": "true"}[localStorage.getItem("isActiveAI")]);
   //   assistant.style.display = {"true": "block", "false": "none"}[localStorage.getItem("isActiveAI")]; haptic.notificationOccurred("success");
   // }
+
+  const AppFX = {
+  _originals: {
+    haptic: null,
+    vibrate: null
+  },
+
+  disable() {
+    if (window.Telegram?.WebApp?.HapticFeedback && !this._originals.haptic) {
+      const haptic = window.Telegram.WebApp.HapticFeedback;
+      
+      this._originals.haptic = {
+        impactOccurred: haptic.impactOccurred.bind(haptic),
+        notificationOccurred: haptic.notificationOccurred.bind(haptic),
+        selectionChanged: haptic.selectionChanged.bind(haptic)
+      };
+
+      haptic.impactOccurred = () => {};
+      haptic.notificationOccurred = () => {};
+      haptic.selectionChanged = () => {};
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.vibrate && !this._originals.vibrate) {
+      this._originals.vibrate = navigator.vibrate.bind(navigator);
+      navigator.vibrate = () => false;
+    }
+
+    if (!document.getElementById('disable-animations')) {
+      const style = document.createElement('style');
+      style.id = 'disable-animations';
+      style.textContent = `
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-delay: 0s !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          transition-delay: 0s !important;
+          scroll-behavior: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  },
+
+  enable() {
+    if (window.Telegram?.WebApp?.HapticFeedback && this._originals.haptic) {
+      const haptic = window.Telegram.WebApp.HapticFeedback;
+      haptic.impactOccurred = this._originals.haptic.impactOccurred;
+      haptic.notificationOccurred = this._originals.haptic.notificationOccurred;
+      haptic.selectionChanged = this._originals.haptic.selectionChanged;
+      this._originals.haptic = null;
+    }
+
+    if (this._originals.vibrate) {
+      navigator.vibrate = this._originals.vibrate;
+      this._originals.vibrate = null;
+    }
+
+    const styleTag = document.getElementById('disable-animations');
+    if (styleTag) {
+      styleTag.remove();
+    }
+  }
+};
+
+    perPl.onchange = () => {
+      if (perPl.checked === true) {AppFX.enable();} else {AppFX.disable()};
+      localStorage.setItem("animationsAndHaptic", String(perPl.checked));
+  }
+
+  function initPerPl() {
+    if (!localStorage.getItem("animationsAndHaptic")) {perPl.checked = true; localStorage.setItem("animationsAndHaptic", String(perPl.checked))};
+    if (localStorage.getItem("animationsAndHaptic") === "false") {perPl.checked = false} else {perPl.checked = true};
+  }
 
 
     asntPl.onchange = () => {
@@ -2454,6 +2529,7 @@ const ICON_OFF_D =
   function setThemesData(){
     if (localStorage.getItem("customThemeColors")) {themePl.textContent = "custom"} else {themePl.textContent = tg.colorScheme}
     if (localStorage.getItem("isActiveAI") === "true") {asntPl.checked = true}
+    initPerPl();
     
   }
   function showNotificationsSettings() {
