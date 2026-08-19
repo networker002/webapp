@@ -3339,6 +3339,18 @@ function refreshThemeStatus() {
 
     if (colorPicker) colorPicker.color.hexString = bg;
   }
+
+  disableSaveBtn();
+}
+
+function disableSaveBtn() {
+  const saveBtn = document.querySelector(".save-ch-btn");
+  if (saveBtn) saveBtn.classList.add("disabled");
+}
+
+function enableSaveBtn() {
+  const saveBtn = document.querySelector(".save-ch-btn");
+  if (saveBtn) saveBtn.classList.remove("disabled");
 }
 
 function initColorPicker() {
@@ -3353,12 +3365,14 @@ function initColorPicker() {
     document.querySelector(".color-p-container").style.display = "none";
     document.getElementById("picker").style.display = "none";
     document.querySelector(".tg-color-container").style.display = "flex";
+    enableSaveBtn();
   };
 
   btn2.onchange = () => {
     document.querySelector(".color-p-container").style.display = "flex";
     document.getElementById("picker").style.display = "flex";
     document.querySelector(".tg-color-container").style.display = "none";
+    enableSaveBtn();
   };
 
   if (!localStorage.getItem("customThemeColors")) {
@@ -3380,6 +3394,7 @@ function initColorPicker() {
       selectedEl.textContent = color.hexString;
       selectedEl.style.background = color.hexString;
     }
+    enableSaveBtn();
   });
 
   refreshThemeStatus();

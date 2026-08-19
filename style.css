@@ -2356,6 +2356,7 @@ h6.skeleton { opacity: .4; }
             transition: all .2s;
             position: relative;
             overflow: hidden !important;
+            animation: shine-btn-s 10s ease-in-out infinite;
             
 
             &::before {
@@ -2487,6 +2488,20 @@ h6.skeleton { opacity: .4; }
                 border-radius: 50%;
                 box-shadow: 4px 4px 6px rgba(0, 0, 0, .25), inset 4px 4px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 2px rgba(255, 255, 255, 0.35);
             }
+        }
+
+        .save-ch-btn.disabled {
+            opacity: .5;
+            filter: brightness(60%) grayscale(.7);
+            pointer-events: none !important;
+        }
+
+        @keyframes shine-btn-s {
+            25% {filter: none;}
+            50% {
+                filter: drop-shadow(1px 1px 12px rgb(from var(--accent) r g b / 0.5));
+            }
+            75%{filter: none;}
         }
 
         .tg-th-colors div:first-child {
