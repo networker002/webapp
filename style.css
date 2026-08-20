@@ -2519,6 +2519,24 @@ h6.skeleton { opacity: .4; }
         .tg-th-colors div:nth-child(3) {
             background: var(--accent);
         }
+
+        .tg-sync-txt-1 {
+            color: rgb(114, 250, 52);
+            font-size: 12px;
+            font-weight: 800;
+            margin: 10px 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+
+
+            svg {
+                scale: .7;
+            }
+        }
     
 
 
