@@ -1711,7 +1711,7 @@ function DelEvent(el, infoExtra = {}) {
   haptic.notificationOccurred("success");
 }
 
-function pinNote(id) {
+async function pinNote(id) {
   const notes = JSON.parse(localStorage.getItem("notes")) || [];
   const el = document.getElementById(`note-${id}`);
   if (!el) return;
@@ -1738,10 +1738,10 @@ function pinNote(id) {
   }
 
   localStorage.setItem("notes", JSON.stringify(notes));
-  sendExtra();
+  await sendExtra();
 }
 
-function delNote(id) {
+async function delNote(id) {
   const el = document.getElementById(`note-${id}`);
   if (!el) return;
 
@@ -1775,14 +1775,14 @@ function delNote(id) {
     el.remove(); 
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
     haptic?.notificationOccurred?.("success");
-    console.log(`[${Date.now()}] ${updatedNotes}`)
-      sendExtra();
+    console.log(`[${Date.now()}]`, updatedNotes)
+      await sendExtra();
       initApp();
   }
 
 }
 
-function getEdinNoteData(id) {
+async function getEdinNoteData(id) {
   const title = document.getElementById("name-event");
   const time = document.getElementById("time-event");
   const subject = document.getElementById("attach-event");
@@ -1820,7 +1820,7 @@ function getEdinNoteData(id) {
     saveBtn.onclick = saveNoteNew;
   }
 
-  sendExtra();
+  await sendExtra();
   getNotes();
 }
 
@@ -1864,7 +1864,7 @@ function editNote(id) {
   }
 }
 
-function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
+async function saveNotes(newNote = {title: null, subject: null, description: null, time: null, uuid: null}) {
   let notes = [];
   const existingNotes = localStorage.getItem("notes");
 
@@ -1882,7 +1882,7 @@ function saveNotes(newNote = {title: null, subject: null, description: null, tim
 
   localStorage.setItem("notes", JSON.stringify(notes));
   console.log(notes);
-  sendExtra();
+  await sendExtra();
   getNotes();
 }
 
@@ -2764,77 +2764,54 @@ function toggleNotifications() {
 
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
-function sendExtra() {
+async function sendExtra() {
   let notes = [];
   const notesRaw = localStorage.getItem("notes");
-  if (notesRaw || String(notesRaw) === "[]") {
-    
+  if (notesRaw) {
+    try {
       const parsedNotes = JSON.parse(notesRaw);
       if (Array.isArray(parsedNotes)) {
         notes = parsedNotes;
       } else if (parsedNotes && typeof parsedNotes === "object") {
         notes = [parsedNotes];
       }
-    //  catch (err) {
-    //   notes = notesRaw
-    //     .split("<sep>")
-    //     .map((item) => item.trim())
-    //     .filter((item) => item !== "")
-    //     .map((item) => {
-    //       try {
-    //         return JSON.parse(item);
-    //       } catch (_err) {
-    //         return null;
-    //       }
-    //     })
-    //     .filter((item) => item !== null);
-    // }
+    } catch (err) {
+      console.error("Failed to parse notes from localStorage:", err);
+      notes = [];
+    }
   }
 
   let theme = [];
-  try {
-    const storedTheme = localStorage.getItem("customThemeColors");
-    theme = storedTheme ? storedTheme.split(",") : [];
-  } catch (err) {
-    console.error("Failed to parse customThemeColors:", err);
-    theme = [];
+  const storedTheme = localStorage.getItem("customThemeColors");
+  if (storedTheme) {
+    theme = storedTheme
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
   }
 
-  fetch("https://boost.rorosin.ru/extra/theme", {
-    method: "POST",
-    headers: {
-      Authorization: tg.initData,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      notes,
-      theme,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Error: " + response.status);
-      return response.json();
-    })
-    .then((status) => {
-      if (status && status.status === true) {
-        console.log("sendExtra done")
-        // var al = document.getElementById("fast-alert");
-        // if (al) {
-        //   al.outerHTML = `<div id="fast-alert"><h2>Обновлено!</h2></div>`;
-        //   al.style.display = "flex";
-        //   al.style.animation = "flyUP 2s normal";
-        //   setTimeout(function () {
-        //     al.style.display = "none";
-        //     al.outerHTML = `<div id="fast-alert"><h2>Обновляем данные</h2></div>`;
-        //   }, 1900);
-        // }
-      }
-    })
-
-    .catch((error) => {
-      console.error("Error toggling notifications:", error);
-      haptic.notificationOccurred("error");
+  try {
+    const response = await fetch("https://boost.rorosin.ru/extra/theme", {
+      method: "POST",
+      headers: {
+        Authorization: initData,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notes, theme }),
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    if (result && result.status === true) {
+      console.log("sendExtra done");
+    }
+  } catch (error) {
+    console.error("Error sending extra data:", error);
+    tg?.HapticFeedback?.notificationOccurred("error");
+  }
 }
 
 // function showFastAlert0(text) {
@@ -3433,7 +3410,7 @@ function initColorPicker() {
   });
 
   const saveBtn = document.querySelector(".save-ch-btn");
-  saveBtn.addEventListener("click", (e) => {
+  saveBtn.addEventListener("click", async (e) => {
     const root = document.documentElement.style;
 
     const propertiesToRemove = [
@@ -3449,7 +3426,7 @@ function initColorPicker() {
     if (btn1.checked) {
       document.body.removeAttribute("data-theme");
       localStorage.removeItem("customThemeColors");
-      if (typeof sendExtra === "function") sendExtra();
+      if (typeof sendExtra === "function") await sendExtra();
     } else {
       const selectedColors = [
         document.getElementById("main-color-th").textContent.trim(),
@@ -3460,7 +3437,7 @@ function initColorPicker() {
       const customThemeStr = selectedColors.join(",");
       localStorage.setItem("customThemeColors", customThemeStr);
       if (typeof applyTheme === "function") applyTheme(selectedColors);
-      if (typeof sendExtra === "function") sendExtra();
+      if (typeof sendExtra === "function") await sendExtra();
     }
 
     if (typeof setThemesData === "function") setThemesData();
