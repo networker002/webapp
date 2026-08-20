@@ -3354,7 +3354,7 @@ function getValidCustomColors() {
   const colors = cleanStr.split(",").filter(Boolean);
   return colors.length === 3 ? colors : null;
 }
-
+let btnEnabled = false;
 
 function initColorPicker() {
   // let savedThs = localStorage.getItem("customThemeColors")
@@ -3371,6 +3371,7 @@ function initColorPicker() {
     document.querySelector(".tg-color-container").style.display = "flex";
     if (hasCustomTheme) {
       enableSaveBtn();
+      btnEnabled = true;
     } else {
       disableSaveBtn();
     }
@@ -3384,6 +3385,7 @@ function initColorPicker() {
       disableSaveBtn();
     } else {
       enableSaveBtn();
+      btnEnabled = true;
     }
   };
 
@@ -3420,6 +3422,7 @@ function initColorPicker() {
       e.classList.add("selected");
       if (colorPicker && e.textContent.startsWith("#")) {
         colorPicker.color.hexString = e.textContent.trim();
+        if (!btnEnabled) disableSaveBtn(); 
       }
     });
   });
