@@ -3398,6 +3398,7 @@ function initColorPicker() {
 
   colorPicker = new iro.ColorPicker("#picker", {
     width: 160,
+    layoutDirection: "horizontal",
   });
 
   colorPicker.on("color:change", function (color) {
