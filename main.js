@@ -2284,6 +2284,7 @@ window.addEventListener("DOMContentLoaded", function () {
   //teacherHide();
   upsSV();
   //setThemesData();
+  initColorPicker();
   
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
@@ -3480,7 +3481,6 @@ function initColorPicker() {
     saveBtn.classList.add("anim");
   });
 }
-    initColorPicker();
 
         const appearanceSettings = document.querySelector(".a-settings-area");
         const themeSettings = document.getElementById("set-app1");
