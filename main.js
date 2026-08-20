@@ -642,6 +642,8 @@ async function waitForInitData(retries = 10) {
 
             setThemesData();
 
+            initColorPicker();
+
         } catch (error) {
 
             console.error(
@@ -654,6 +656,8 @@ async function waitForInitData(retries = 10) {
             // if (!localStorage.getItem("isActiveAI")) {localStorage.setItem("isActiveAI", "true"); assistant.style.display = "block"} else {if (!localStorage.getItem("isActiveAI") === "true") assistant.style.display = "none"}
 
             setThemesData();
+
+            initColorPicker();
         }
 
         return;
@@ -2284,7 +2288,7 @@ window.addEventListener("DOMContentLoaded", function () {
   //teacherHide();
   upsSV();
   //setThemesData();
-  initColorPicker();
+  // initColorPicker();
   
 
     if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
