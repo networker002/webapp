@@ -2794,7 +2794,7 @@ async function sendExtra() {
     const response = await fetch("https://boost.rorosin.ru/extra/theme", {
       method: "POST",
       headers: {
-        Authorization: initData,
+        Authorization: tg.initData,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ notes, theme }),
