@@ -2765,6 +2765,12 @@ function toggleNotifications() {
 // window.addEventListener("DOMContentLoaded", initSwiper());
 
 async function sendExtra() {
+  const initData = tg?.initData;
+  if (!initData) {
+    console.warn("Extra data was not sent: Telegram initData is empty");
+    return;
+  }
+
   let notes = [];
   const notesRaw = localStorage.getItem("notes");
   if (notesRaw) {
@@ -2794,14 +2800,17 @@ async function sendExtra() {
     const response = await fetch("https://boost.rorosin.ru/extra/theme", {
       method: "POST",
       headers: {
-        Authorization: tg.initData,
+        Authorization: initData,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ notes, theme }),
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorBody = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}${errorBody ? `: ${errorBody}` : ""}`,
+      );
     }
 
     const result = await response.json();
