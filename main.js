@@ -3409,8 +3409,12 @@ function initColorPicker() {
       selectedEl.style.background = color.hexString;
     }
     enableSaveBtn();
-    CustombtnEnabled = true;
+    //CustombtnEnabled = true;
   });
+
+  colorPicker.onclick = () => {
+    CustombtnEnabled = true;
+  }
 
   refreshThemeStatus();
 
