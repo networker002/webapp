@@ -2483,12 +2483,13 @@ h6.skeleton { opacity: .4; }
             flex-direction: row;
             gap: 15px;
             justify-content: center;
+            margin: 15px 0;
 
             div {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
-                box-shadow: 4px 4px 6px rgba(0, 0, 0, .25), inset 4px 4px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 2px rgba(255, 255, 255, 0.35);
+                box-shadow: 4px 4px 6px rgba(0, 0, 0, .25), inset 4px 4px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 2px rgba(255, 255, 255, 0.25);
             }
         }
 
@@ -2509,15 +2510,15 @@ h6.skeleton { opacity: .4; }
         }
 
         .tg-th-colors div:first-child {
-            background: var(--tg-theme-bg-color);
+            background: var(--tg-theme-section-bg-color);
         }
 
         .tg-th-colors div:nth-child(2) {
-            background: var(--tg-theme-secondary-bg-color);
+            background: var(--tg-theme-section-separator-color);
         }
 
         .tg-th-colors div:nth-child(3) {
-            background: var(--accent);
+            background: var(--tg-theme-link-color);
         }
 
         .tg-sync-txt-1 {
