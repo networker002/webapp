@@ -1080,6 +1080,7 @@ function initDynamicDayBottomSpacing() {
 function upsSV() {
   if (!nowBtn) return;
   let found = false;
+  let foundC = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
@@ -1107,6 +1108,7 @@ function upsSV() {
       //   .forEach((t) => (t.style.display = "none"));
       if (dayName === days[n]) {
         dayParseOnline();
+        foundC = true;
       }
 
       // if (de.querySelectorAll(".lesson-row").length >= 4) {
@@ -1141,7 +1143,7 @@ function upsSV() {
       de.dataset.cleaned = "true";
     }
   });
-  document.querySelector("header h1 span").textContent = found ? "Сегодня" : "Мой дневник";
+  document.querySelector("header h1 span").textContent = foundC ? "Сегодня" : "Мой дневник";
   updateDynamicDayBottomSpacing();
 }
 
@@ -2412,7 +2414,7 @@ function initSwiper() {
       requestAnimationFrame(updateDynamicDayBottomSpacing);
       const buttonText = (b?.innerText || b?.textContent || "").trim();
       if (buttonText && activeDayKey && buttonText.startsWith(activeDayKey)) {
-        b.classList.add("selected");
+        b.classList.add("selected"); upsSV();
       } else {
         b.classList.remove("selected");
       }
