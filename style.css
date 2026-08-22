@@ -2545,6 +2545,10 @@ h6.skeleton { opacity: .4; }
             gap: 15px;
         }
 
+        #demo-lesson {
+            text-align: left;
+        }
+
         #setting-week-name {
             display: flex;
             gap: 15px;
@@ -2558,6 +2562,13 @@ h6.skeleton { opacity: .4; }
         .to-settings {
             border: 2px solid #fff !important;
             filter:  drop-shadow(1px 1px 6px var(--accent));
+            animation: to-settings-anim .2s;
+        }
+
+        @keyframes to-settings-anim {
+            0% {
+                filter: none;
+            }
         }
     
 
