@@ -3518,7 +3518,7 @@ function initColorPicker() {
         }
 
         function showAppearanceSettings() {
-          if (tg.BackButton) {tg.BackButton.onClick(function() {hideNotificationsSettings()})}
+          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {hideAppearancePopup()})}
             themeSettings.style.display = "none";
             themeSettings.style.animation = "";
             appearanceSettings.style.display = "flex";
