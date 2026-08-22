@@ -2359,7 +2359,7 @@ if (savedTheme === "standard") {
 if (savedTheme) {
   setTheme(savedTheme);
 }
-
+ 
 // document.getElementById("themes-btn").addEventListener("click", function () {
 //   tg.BackButton.show();
 //   tg.BackButton.onClick(function () {
@@ -2433,11 +2433,13 @@ const ICON_OFF_D =
 
 
   function openAppearancePopup() {
+            if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideAppearancePopup()})};
             document.getElementById("cancel-bg").style.display = "block";
             document.querySelector(".popuper-appearance").style.display = "flex";
             document.getElementById("cancel-bg").addEventListener("click", () => hideAppearancePopup(), {once: true})
   }
   function hideAppearancePopup() {
+            if (tg.BackButton) {tg.BackButton.hide()};
             document.getElementById("cancel-bg").style.display = "none";
             document.querySelector(".popuper-appearance").style.display = "none";
   }
@@ -2543,12 +2545,14 @@ const ICON_OFF_D =
     
   }
   function showNotificationsSettings() {
+            if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideNotificationsSettings()}) }
             document.querySelector(".popuper-notifications").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
             document.getElementById("cancel-bg").addEventListener("click", () => hideNotificationsSettings(), {once: true})
         }
 
         function hideNotificationsSettings() {
+            if (tg.BackButton) {tg.BackButton.hide()};
             document.querySelector(".popuper-notifications").style.display = "none";
             document.getElementById("cancel-bg").style.display = "none";
         }
@@ -3503,6 +3507,7 @@ function initColorPicker() {
         const backToAppearance = document.querySelector(".back-to-ap-settins-btn");
 
         function showThemeSettingsScreen() {
+          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
             appearanceSettings.style.animation = "ending .3s forwards";
             setTimeout(() => {
                 appearanceSettings.style.display = "none";
@@ -3513,6 +3518,7 @@ function initColorPicker() {
         }
 
         function showAppearanceSettings() {
+          if (tg.BackButton) {tg.BackButton.onClick(function() {hideNotificationsSettings()})}
             themeSettings.style.display = "none";
             themeSettings.style.animation = "";
             appearanceSettings.style.display = "flex";

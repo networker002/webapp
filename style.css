@@ -246,7 +246,7 @@ header.scrolling {
     margin: auto 0;
     scale: 1.25;
 }
-.day .lesson-row { position: relative;
+.day .lesson-row, .lesson-row2 { position: relative;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -256,7 +256,7 @@ header.scrolling {
     margin-top: 15px !important;
 }
 
-.lesson-row h4 {
+.lesson-row h4, .lesson-row2 h4 {
     margin: 0;
     padding: 0;
 }
@@ -2537,6 +2537,27 @@ h6.skeleton { opacity: .4; }
             svg {
                 scale: .7;
             }
+        }
+
+        #set-app2 {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #setting-week-name {
+            display: flex;
+            gap: 15px;
+            flex-direction: row !important;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            margin: 10px;
+        }
+
+        .to-settings {
+            border: 2px solid #fff !important;
+            filter:  drop-shadow(1px 1px 6px var(--accent));
         }
     
 
