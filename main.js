@@ -1099,6 +1099,9 @@ function upsSV() {
       found = true;
       ch = false;
       lm.set(de, ch);
+
+      document.querySelector("header h1 span").textContent = "Сегодня";
+
       // document
       //   .querySelectorAll(".teacher")
       //   .forEach((t) => (t.style.display = "none"));
@@ -1134,6 +1137,7 @@ function upsSV() {
     } else {
       ch = true;
       assistant.style.transform = "translate(0)";
+      document.querySelector("header h1 span").textContent = "Мой дневник";
     }
 
     if (!de.dataset.cleaned && !de.classList.contains("empty")) {
