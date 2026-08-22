@@ -1092,7 +1092,7 @@ function upsSV() {
     var dayLesson = de.querySelector(".lesson");
     var dayLessons = de.querySelectorAll(".lesson");
 
-    const currentDay = nowBtn?.innerHTML ? btnMapping[nowBtn.innerHTML] : null;
+    const currentDay = nowBtn?.innerHTML ? btnMapping[String(nowBtn.textContent)[0] + String(nowBtn.textContent)[1]] : null;
     if (!currentDay) return;
 
     if (dayName === currentDay) {
