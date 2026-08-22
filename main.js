@@ -2409,7 +2409,6 @@ function initSwiper() {
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   requestAnimationFrame(updateDynamicDayBottomSpacing);
   swiper.on("slideChange", () => {
-    upsSV();
     const activeDayKey = btnRevMapping[days[swiper.realIndex + 1]];
     dayButtons.forEach((b) => {
       requestAnimationFrame(updateDynamicDayBottomSpacing);
@@ -2421,6 +2420,7 @@ function initSwiper() {
       }
       if (buttonText && activeDayKey && buttonText.startsWith(activeDayKey)) {
         nowBtn = b;
+        upsSV();
       }
     });
   });
