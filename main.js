@@ -1100,7 +1100,7 @@ function upsSV() {
       ch = false;
       lm.set(de, ch);
 
-      document.querySelector("header h1 span").textContent = "Сегодня";
+      //document.querySelector("header h1 span").textContent = "Сегодня";
 
       // document
       //   .querySelectorAll(".teacher")
@@ -1137,7 +1137,7 @@ function upsSV() {
     } else {
       ch = true;
       assistant.style.transform = "translate(0)";
-      document.querySelector("header h1 span").textContent = "Мой дневник";
+      //document.querySelector("header h1 span").textContent = "Мой дневник";
     }
 
     if (!de.dataset.cleaned && !de.classList.contains("empty")) {
@@ -1145,6 +1145,7 @@ function upsSV() {
       de.dataset.cleaned = "true";
     }
   });
+  document.querySelector("header h1 span").textContent = found ? "Сегодня" : "Мой дневник";
   updateDynamicDayBottomSpacing();
 }
 
