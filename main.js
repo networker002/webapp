@@ -2409,12 +2409,13 @@ function initSwiper() {
   swiper.slideToLoop(n > 0 ? n - 1 : 0);
   requestAnimationFrame(updateDynamicDayBottomSpacing);
   swiper.on("slideChange", () => {
+    upsSV();
     const activeDayKey = btnRevMapping[days[swiper.realIndex + 1]];
     dayButtons.forEach((b) => {
       requestAnimationFrame(updateDynamicDayBottomSpacing);
       const buttonText = (b?.innerText || b?.textContent || "").trim();
       if (buttonText && activeDayKey && buttonText.startsWith(activeDayKey)) {
-        b.classList.add("selected"); upsSV();
+        b.classList.add("selected");
       } else {
         b.classList.remove("selected");
       }
