@@ -1118,13 +1118,14 @@ function upsSV() {
       if (
         dayName === days[tommorrow.getDay()] &&
         rr &&
-        new Date().getHours() > 7
+        new Date().getHours() > 7 &&
+        dayLesson
       ) {
         stopAll();
         message.style.display = "block";
         assistant.style.transform = "translate(0%, -50%)";
         message.parentElement.style.transform = "translate(0%, -50%)";
-        message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${dayLesson.textContent.startsWith("2") ? "ко" : "к" + dayLesson.textContent.replace("пара", "паре")}</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
+        message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${dayLesson?.textContent.startsWith("2") ? "ко" : "к" + dayLesson.textContent.replace("пара", "паре")}</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
         clickedAi = true;
       } else if (clickedAi) {
         assistant.style.transform = "translate(0)";
