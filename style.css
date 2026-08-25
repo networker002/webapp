@@ -42,7 +42,9 @@
     --days-selected-bg: var(--tg-theme-button-color);
     --btn-shadows-1: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
     --btn-opacity-days: 1;
+
     --lesson-number-padding: 5px;
+
     --note-bg: linear-gradient(20deg, rgb(from var(--tg-theme-hint-color) r g b / 0.5), rgb(from var(--tg-theme-hint-color) r g b / 0.2));
     --note-title: var(--tg-theme-section-header-text-color);
     --note-main: var(--tg-theme-text-color);
@@ -2547,6 +2549,34 @@ h6.skeleton { opacity: .4; }
 
         #demo-lesson {
             text-align: left;
+        }
+
+        #setting-week-name h4 {
+            transition: all .5s;
+            width: 100%;
+        }
+
+        .settings-container-1 {
+            display: flex;
+            gap: 15px;
+            flex-direction: row !important;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            margin: 10px;
+        }
+
+        .settings-container-1 svg {
+            transition: all .2s ease;
+
+            &:active {
+                scale: .88;
+                opacity: .8;
+            }
+        }
+
+        .settings-container-1 .set-sontent-1 {
+            width: 100% !important;
         }
 
         #setting-week-name {
