@@ -2623,7 +2623,7 @@ h6.skeleton { opacity: .4; }
             justify-content: center;
 
             
-            background: rgb(from var(--accent) r g b / .8);
+            background: rgb(from var(--tg-theme-destructive-text-color) r g b / .8);
             padding: 5px 10px;
             border-radius: 35px;
             margin: 0 10px ;
