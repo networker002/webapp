@@ -3745,7 +3745,7 @@ function initColorPicker() {
 
             const lessonIn = document.querySelector("#demo-lesson .day");
 
-            [ lessonIn.querySelector(".day-name"), lessonIn.querySelector(".lesson"), lessonIn.querySelector(".time"), lessonIn.querySelector(".subject"), lessonIn.querySelector(".room"), lessonIn.querySelector(".teacher")].forEach((e) => {
+            [ lessonIn.querySelector(".day-name2"), lessonIn.querySelector(".lesson"), lessonIn.querySelector(".time"), lessonIn.querySelector(".subject"), lessonIn.querySelector(".room"), lessonIn.querySelector(".teacher")].filter(Boolean).forEach((e) => {
                 e.onclick = () => {
                     selectObjectSettings(e);
                 }
