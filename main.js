@@ -749,9 +749,10 @@ function cacheData(data) {
 function dayParseOnline() {
   const dayS = document.querySelectorAll(".day");
   dayS.forEach((D) => {
+    if (!D.querySelector(".day-name")) return;
     if (
       D.querySelector(".day-name")
-        .innerHTML.toString()
+        ?.innerHTML.toString()
         .split("<")[0]
         .toString()
         .trim() === days[n]
