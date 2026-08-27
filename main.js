@@ -552,7 +552,6 @@ function getSchedule1(reqNeed = false) {
                   );
                 
               }
-              });
 
               var rooms = DAY.querySelectorAll(".room");
 
