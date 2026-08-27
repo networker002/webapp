@@ -3519,9 +3519,14 @@ function initColorPicker() {
         }
 
         function showAppearanceSettings() {
-          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {hideAppearancePopup()})}
-            themeSettings.style.display = "none";
-            themeSettings.style.animation = "";
+            const el2 = document.getElementById("set-app2");
+            if (themeSettings) {
+                themeSettings.style.display = "none";
+                themeSettings.style.animation = "";
+            } if (el2) {
+                el2.style.display = "none";
+                el2.style.animation = ""
+            }
             appearanceSettings.style.display = "flex";
             appearanceSettings.style.animation = "starting2 .5s forwards";
         }
