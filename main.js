@@ -3220,8 +3220,9 @@ function addToProfile() {
   if (lessonsAllCountEl) {
     let elems = 0;
     document.querySelectorAll(".day").forEach((d) => {
-      const els = Array.from(d.querySelectorAll(".lesson"), l => Number(l.textContent) ? l.parentElement.parentElement.parentElement.id !== "demo-lesson" : 0);
-      elems += els.length ? Math.max(...els) : 0;
+      if (d.parentElement.id !== "demo-lesson") {
+      const els = Array.from(d.querySelectorAll(".lesson"), l => Number(l.textContent));
+      elems += els.length ? Math.max(...els) : 0;}
     });
     lessonsAllCountEl.textContent = elems;
   }
