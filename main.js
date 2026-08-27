@@ -3505,7 +3505,7 @@ function initColorPicker() {
 
         const appearanceSettings = document.querySelector(".a-settings-area");
         const themeSettings = document.getElementById("set-app1");
-        const backToAppearance = document.querySelector(".back-to-ap-settins-btn");
+        const backToAppearance = document.querySelectorAll(".back-to-ap-settins-btn");
 
         function showThemeSettingsScreen() {
           if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
