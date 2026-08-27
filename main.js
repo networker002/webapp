@@ -3526,5 +3526,221 @@ function initColorPicker() {
             appearanceSettings.style.animation = "starting2 .5s forwards";
         }
 
+        
+
         document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
         backToAppearance.onclick = showAppearanceSettings;
+
+
+        const lessonCardSettingsStorageKey = "customLessonCardSettings";
+        const storedLessonCardSettings = localStorage.getItem(lessonCardSettingsStorageKey);
+
+        if (storedLessonCardSettings) {
+            try {
+                const savedSettings = JSON.parse(storedLessonCardSettings);
+                Object.entries(savedSettings).forEach(([property, value]) => {
+                    if (/^--[a-z-]+$/.test(property) && typeof value === "string" && /^-?\d*\.?\d+(px|em|rem|%)$/.test(value)) {
+                        document.documentElement.style.setProperty(property, value);
+                    }
+                });
+            } catch (error) {
+                localStorage.removeItem(lessonCardSettingsStorageKey);
+            }
+        }
+
+        function enableResLessonBtn() {
+            const btn = document.querySelector(".reset-lesson-settings-c-btn");
+            if (btn.classList.contains("disabled")) btn.classList.remove("disabled");
+        }
+        function disableResLessonBtn() {
+            const btn = document.querySelector(".reset-lesson-settings-c-btn");
+            if (!btn.classList.contains("disabled")) btn.classList.add("disabled");
+        }
+
+        function resetCustomLessonCard() {
+            let ls = localStorage.getItem(lessonCardSettingsStorageKey);
+            if (ls) localStorage.removeItem(lessonCardSettingSteps);
+
+            var defaultProperties = {
+                "--lesson-number-padding": "5px",
+                "--day-name-letter-sp": "1px",
+                "--day-name-gap": "0.4em",
+                "--time-letter-sp": "1px",
+                "--subject-f-size": "16px",
+                "--room-letter-sp": "1px",
+                "--room-f-size": "16px", 
+                "--tname-f-size": "12px"
+            }
+
+            Object.entries(defaultProperties).forEach(([property, value]) => {
+                document.documentElement.style.setProperty(property, value);
+            });
+
+        }
+
+        document.querySelector(".reset-lesson-settings-c-btn").onclick = () => {
+            resetCustomLessonCard();
+            //anim
+            const ob = document.querySelector(".to-settings");
+            ob.click();
+            disableResLessonBtn();
+            ob.click()
+        }
+
+        var settingsObjNamesMapping = {
+            "day-name": ["День недели", "--day-name-letter-sp", "--day-name-gap"],
+            "lesson": ["Номер пары", "--lesson-number-padding"],
+            "time": ["Время пары", "--time-letter-sp"],
+            "subject": ["Название предмета", "--subject-f-size"],
+            "room": ["Аудитория", "--room-letter-sp", "--room-f-size"],
+            "teacher": ["Преподаватель", "--tname-f-size"]
+        }
+
+        var settingsObjNamesMapping2 = {
+            "day-name": ["День недели", "Длина текста", "Расстояние элементов"],
+            "lesson": ["Номер пары", "Размер значка"],
+            "time": ["Время пары", "Расстояние между символами"],
+            "subject": ["Название предмета", "Размер шрифта"],
+            "room": ["Аудитория", "Расстояние между символами", "Размер шрифта"],
+            "teacher": ["Преподаватель", "Размер шрифта"]
+        }
+
+        const lessonCardSettingSteps = {
+            "--day-name-letter-sp": { step: 1, min: 0, max: 10, unit: "px" },
+            "--day-name-gap": { step: 0.1, min: 0, max: 2, unit: "em" },
+            "--lesson-number-padding": { step: 1, min: 0, max: 15, unit: "px" },
+            "--time-letter-sp": { step: 1, min: -1, max: 5, unit: "px" },
+            "--subject-f-size": { step: 1, min: 10, max: 22, unit: "px" },
+            "--room-letter-sp": { step: 1, min: -1, max: 10, unit: "px" },
+            "--room-f-size": { step: 1, min: 10, max: 22, unit: "px" },
+            "--tname-f-size": { step: 1, min: 10, max: 20, unit: "px" }
+        };
+
+        function getLessonCardSettingValue(property) {
+            return getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+        }
+
+        function saveLessonCardSetting(property, value) {
+            const savedSettings = JSON.parse(localStorage.getItem(lessonCardSettingsStorageKey) || "{}");
+            savedSettings[property] = value;
+            localStorage.setItem(lessonCardSettingsStorageKey, JSON.stringify(savedSettings));
+        }
+
+        function updateLessonCardSetting(container, property, description) {
+            const value = getLessonCardSettingValue(property);
+            container.querySelector(".set-content-1").textContent = `${description}: ${value}`;
+            //enableResLessonBtn();
+
+        }
+
+        function changeLessonCardSetting(container, direction) {
+            const selectedObject = document.querySelector(".to-settings");
+            if (!selectedObject) return;
+            enableResLessonBtn();
+
+            const settingIndex = Array.from(document.querySelectorAll(".settings-container-1")).indexOf(container);
+            const property = settingsObjNamesMapping[selectedObject.classList[0]][settingIndex + 1];
+            const description = settingsObjNamesMapping2[selectedObject.classList[0]][settingIndex + 1];
+            const setting = lessonCardSettingSteps[property];
+            if (!setting) return;
+
+            const currentValue = parseFloat(getLessonCardSettingValue(property)) || 0;
+            const nextValue = Math.min(setting.max, Math.max(setting.min, currentValue + direction * setting.step));
+            const value = `${Number(nextValue.toFixed(2))}${setting.unit}`;
+            document.documentElement.style.setProperty(property, value);
+            saveLessonCardSetting(property, value);
+            updateLessonCardSetting(container, property, description);
+        }
+
+        // document.querySelectorAll(".settings-container-1").forEach((container) => {
+        //     container.querySelector(".minus-set").onclick = () => changeLessonCardSetting(container, -1);
+        //     container.querySelector(".plus-set").onclick = () => changeLessonCardSetting(container, 1);
+        // });
+
+        function attachHoldListener(element, callback) {
+        let delayTimer = null;
+        let repeatInterval = null;
+
+        const start = (e) => {
+            if (e.type === 'touchstart') e.preventDefault();
+
+            stop();
+
+            callback();
+
+            delayTimer = setTimeout(() => {
+                repeatInterval = setInterval(callback, 80);
+            }, 400);
+        };
+
+        const stop = () => {
+            clearTimeout(delayTimer);
+            clearInterval(repeatInterval);
+        };
+
+        element.addEventListener('mousedown', start);
+        element.addEventListener('touchstart', start, { passive: false });
+
+        element.addEventListener('mouseup', stop);
+        element.addEventListener('mouseleave', stop);
+        element.addEventListener('touchend', stop);
+        element.addEventListener('touchcancel', stop);
+    }
+
+    document.querySelectorAll(".settings-container-1").forEach((container) => {
+        const minusBtn = container.querySelector(".minus-set");
+        const plusBtn = container.querySelector(".plus-set");
+
+        if (minusBtn) {
+            attachHoldListener(minusBtn, () => changeLessonCardSetting(container, -1));
+        }
+        if (plusBtn) {
+            attachHoldListener(plusBtn, () => changeLessonCardSetting(container, 1));
+        }
+    });
+
+        function selectObjectSettings(obj) {
+            const settingsCont = document.querySelector(".setting-tools-area");
+            const baseSetting = document.querySelector(".settings-container-1").innerHTML;
+            let selected = false;
+            if (obj.classList.contains("to-settings")) selected = true;
+            document.querySelectorAll(".to-settings").forEach((c) => {c.classList.remove("to-settings")});
+            obj.classList.add("to-settings");
+            document.querySelector("#setting-week-name h4").textContent = `${settingsObjNamesMapping[obj.classList[0]][0]}`;
+             document.querySelectorAll(".settings-container-1").forEach((el, idx) => {if (idx > 0) el.style.display = "none"});
+            settingsObjNamesMapping2[obj.classList[0]].forEach((el, idx) => {
+                   if (idx > 0) {document.querySelectorAll(".settings-container-1")[idx-1].style.display = "flex";
+                      updateLessonCardSetting(document.querySelectorAll(".settings-container-1")[idx-1], settingsObjNamesMapping[obj.classList[0]][idx], el);
+                     }
+            })
+            
+            if (selected) {obj.classList.remove("to-settings"); document.querySelector("#setting-week-name h4").textContent = `Выберите элемент`; document.querySelector(".set-content-1").textContent = "Свойство элемента"; document.querySelectorAll(".settings-container-1").forEach((el, idx) => {if (idx > 0) el.style.display = "none"})}
+        }
+
+
+        function showLessonVisualSetting() {
+            const el = document.getElementById("set-app2");
+            appearanceSettings.style.animation = "";
+            appearanceSettings.style.animation = "ending .3s forwards";
+            
+            setTimeout(() => {
+             appearanceSettings.style.display = "none";
+             el.style.display = "flex";
+            el.style.animation = "";
+            el.style.animation = "starting .5s ease forwards";
+            
+            }, 310);
+            
+
+            const lessonIn = document.querySelector("#demo-lesson .day");
+
+            [ lessonIn.querySelector(".day-name"), lessonIn.querySelector(".lesson"), lessonIn.querySelector(".time"), lessonIn.querySelector(".subject"), lessonIn.querySelector(".room"), lessonIn.querySelector(".teacher")].forEach((e) => {
+                e.onclick = () => {
+                    selectObjectSettings(e);
+                }
+             })
+            
+        };
+
+
+        document.getElementById("lesson-swipe-1").onclick = () => showLessonVisualSetting();

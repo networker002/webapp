@@ -44,6 +44,13 @@
     --btn-opacity-days: 1;
 
     --lesson-number-padding: 5px;
+    --day-name-letter-sp: 1px;
+    --day-name-gap: 0.4em;
+    --time-letter-sp: 1px;
+    --subject-f-size: 16px;
+    --room-letter-sp: 1px;
+    --room-f-size: 16px;
+    --tname-f-size: 12px;
 
     --note-bg: linear-gradient(20deg, rgb(from var(--tg-theme-hint-color) r g b / 0.5), rgb(from var(--tg-theme-hint-color) r g b / 0.2));
     --note-title: var(--tg-theme-section-header-text-color);
@@ -233,14 +240,14 @@ header.scrolling {
     display: flex;
     text-align: center;
     padding: 4px;
-    letter-spacing: 1px;
+    letter-spacing: var(--day-name-letter-sp);
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
     align-items: center;
     text-align: center;
     margin: auto;
-    gap: .4em;
+    gap: var(--day-name-gap);
     font-weight: 600;
     font-size: medium
 }
@@ -256,6 +263,15 @@ header.scrolling {
     padding: 15px;
     border-radius: 15px;
     margin-top: 15px !important;
+}
+
+.subject {
+    font-size: var(--subject-f-size);
+}
+
+.room {
+    letter-spacing: var(--room-letter-sp);
+    font-size: var(--room-f-size);
 }
 
 .lesson-row h4, .lesson-row2 h4 {
@@ -287,6 +303,7 @@ header.scrolling {
     display: flex;
     align-items: center;
     gap: .5em;
+    font-size: var(--tname-f-size);
  }
 /* .day .tname::before {
     position: absolute;
@@ -365,7 +382,7 @@ header.scrolling {
 
 .time {
     color: var(--time-color);
-    letter-spacing: 1px;
+    letter-spacing: var(--time-letter-sp);
     font-family: monospace;
     font-weight: 200;
     font-size: larger;
@@ -2575,7 +2592,7 @@ h6.skeleton { opacity: .4; }
             }
         }
 
-        .settings-container-1 .set-sontent-1 {
+        .settings-container-1 .set-content-1 {
             width: 100% !important;
         }
 
@@ -2599,6 +2616,31 @@ h6.skeleton { opacity: .4; }
             0% {
                 filter: none;
             }
+        }
+
+        .reset-lesson-settings-c-btn {
+            display: flex;
+            justify-content: center;
+
+            
+            background: rgb(from var(--accent) r g b / .8);
+            padding: 5px 10px;
+            border-radius: 35px;
+            margin: 0 10px ;
+
+            user-select: none;
+            position: relative;
+            transition: transform .2s ease, filter .15s, opacity .2s ease-in-out;
+
+            &:active {
+                transform: scaleX(1.05) scaleY(0.95);
+            }
+        }
+
+        .reset-lesson-settings-c-btn.disabled {
+            pointer-events: none !important;
+            opacity: .25;
+            filter: grayscale(1);
         }
     
 
