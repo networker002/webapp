@@ -236,7 +236,7 @@ header.scrolling {
     --dynamic-day-bottom-space: 0px;
     margin-bottom: /*var(--dynamic-day-bottom-space)*/ calc(3px + var(--dynamic-day-bottom-space));
 }
-.day .day-name {
+.day .day-name, .day-name2 {
     display: flex;
     text-align: center;
     padding: 4px;
@@ -251,7 +251,7 @@ header.scrolling {
     font-weight: 600;
     font-size: medium
 }
-.day .day-name svg {
+.day .day-name svg, .day-name2 svg {
     margin: auto 0;
     scale: 1.25;
 }

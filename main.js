@@ -3529,7 +3529,7 @@ function initColorPicker() {
         
 
         document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
-        backToAppearance.onclick = showAppearanceSettings;
+        backToAppearance.forEach(e => e.onclick = showAppearanceSettings)
 
 
         const lessonCardSettingsStorageKey = "customLessonCardSettings";
