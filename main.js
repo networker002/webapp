@@ -3600,7 +3600,7 @@ function initColorPicker() {
         }
 
         var settingsObjNamesMapping = {
-            "day-name": ["День недели", "--day-name-letter-sp", "--day-name-gap"],
+            "day-name2": ["День недели", "--day-name-letter-sp", "--day-name-gap"],
             "lesson": ["Номер пары", "--lesson-number-padding"],
             "time": ["Время пары", "--time-letter-sp"],
             "subject": ["Название предмета", "--subject-f-size"],
@@ -3609,7 +3609,7 @@ function initColorPicker() {
         }
 
         var settingsObjNamesMapping2 = {
-            "day-name": ["День недели", "Длина текста", "Расстояние элементов"],
+            "day-name2": ["День недели", "Длина текста", "Расстояние элементов"],
             "lesson": ["Номер пары", "Размер значка"],
             "time": ["Время пары", "Расстояние между символами"],
             "subject": ["Название предмета", "Размер шрифта"],
