@@ -561,7 +561,7 @@ header.scrolling {
             text-align: center;
             z-index: 200000;
             padding: 1em;
-            margin-top: 4em;
+            margin-top: calc(4em + var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
             box-sizing: border-box;
             outline: none;
             border-radius: 35px 35px 95px 95px;
