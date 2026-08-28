@@ -2135,19 +2135,54 @@ function toBtoa(str) {
   return b64.replace(/\//g, "_").replace(/\+/g, "-").replace(/=+$/, "");
 }
 let ALLGROUPS;
+let groupEditorCloseTimer = null;
 
         function openEditGr() {
-            document.getElementById("gr").classList.add('active');
-            document.getElementById('gr-edit').style.animation = '';
-            document.getElementById('gr-edit').style.display = 'flex';
-            document.getElementById('gr-edit').style.animation = 'rasing-i-c .5s';
+      const groupButton = document.getElementById("gr");
+      const groupEditor = document.getElementById("gr-edit");
+
+      clearTimeout(groupEditorCloseTimer);
+      groupButton.classList.add("active");
+      groupButton.style.pointerEvents = "none";
+      groupEditor.style.display = "flex";
+      groupEditor.style.pointerEvents = "all";
+      groupEditor.style.animation = "none";
+
+      requestAnimationFrame(() => {
+        groupEditor.style.animation = "rasing-i-c .5s ease forwards";
+      });
         }
 
         function closeEditGr() {
-            document.getElementById("gr").classList.remove("active");
-            document.getElementById('gr-edit').style.animation = '';
-            document.getElementById('gr-edit').style.animation = 'closing-i-c .5s forwards';
+      const groupButton = document.getElementById("gr");
+      const groupEditor = document.getElementById("gr-edit");
+
+      clearTimeout(groupEditorCloseTimer);
+      groupButton.classList.remove("active");
+      groupButton.style.pointerEvents = "none";
+      groupEditor.style.pointerEvents = "none";
+      groupEditor.style.animation = "closing-i-c .5s ease forwards";
+
+      groupEditorCloseTimer = setTimeout(() => {
+        groupEditor.style.display = "none";
+        groupEditor.style.animation = "none";
+        groupEditor.style.pointerEvents = "";
+        groupButton.style.pointerEvents = "";
+      }, 500);
         }
+
+    function closeGroupEditorImmediately() {
+      clearTimeout(groupEditorCloseTimer);
+
+      const groupButton = document.getElementById("gr");
+      const groupEditor = document.getElementById("gr-edit");
+
+      groupButton.classList.remove("active");
+      groupButton.style.pointerEvents = "";
+      groupEditor.style.display = "none";
+      groupEditor.style.animation = "none";
+      groupEditor.style.pointerEvents = "";
+    }
 
         document.getElementById("group-set").addEventListener("input", (e) => {
             document.querySelectorAll(".tips-res-e-g div").forEach(e1 => e1.remove());
@@ -3076,6 +3111,7 @@ const screensToShow = Object.values(screensButtonsMapping);
 
 Object.keys(screensButtonsMapping).forEach((k) => {
   document.getElementById(k).addEventListener("click", function() {
+    closeGroupEditorImmediately();
     screensToShow.forEach((scr) => {
       //console.log(scr.length);
       if (scr.length === 1) {
