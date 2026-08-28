@@ -2140,13 +2140,13 @@ let ALLGROUPS;
             document.getElementById("gr").classList.add('active');
             document.getElementById('gr-edit').style.animation = '';
             document.getElementById('gr-edit').style.display = 'flex';
-            document.getElementById('gr-edit').style.animation = 'rasing-i-c 1s';
+            document.getElementById('gr-edit').style.animation = 'rasing-i-c .5s';
         }
 
         function closeEditGr() {
             document.getElementById("gr").classList.remove("active");
             document.getElementById('gr-edit').style.animation = '';
-            document.getElementById('gr-edit').style.animation = 'closing-i-c 1s forwards';
+            document.getElementById('gr-edit').style.animation = 'closing-i-c .5s forwards';
         }
 
         document.getElementById("group-set").addEventListener("input", (e) => {

@@ -565,7 +565,7 @@ header.scrolling {
             box-sizing: border-box;
             outline: none;
             border-radius: 35px 35px 95px 95px;
-            animation: rasing-i-c 1s;
+            animation: rasing-i-c .5s;
             display: none;
 
             input {
