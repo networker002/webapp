@@ -1595,7 +1595,7 @@ h6.skeleton { opacity: .4; }
   }
 }
 
- #notes-show.selected {
+ #marks-show.selected {
         .doc-frame {
   stroke-dasharray: 120;
   stroke-dashoffset: 120;
