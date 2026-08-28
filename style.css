@@ -1620,6 +1620,50 @@ h6.skeleton { opacity: .4; }
   }
 }
 
+
+#notes-show.selected {
+    .checklist-frame {
+  animation: fadeInFrame 0.25s ease forwards;
+}
+
+.ring {
+  animation: bounceRing 0.2s 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.check-top {
+  animation: popCheck 0.2s 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.check-bottom {
+  animation: popCheck 0.2s 0.325s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.text-line {
+  animation: expandLine 0.2s 0.225s ease both;
+}
+
+}
+
+@keyframes fadeInFrame {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceRing {
+  from { transform: translateY(-8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes popCheck {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes expandLine {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
 #runner-menu {
     position: absolute;
     width: calc(100% / 4);
