@@ -137,8 +137,24 @@
         
         <div class="second-header">
             <!-- <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex"); document.getElementById("black-bg").style.animation = "none"; document.getElementById("black-bg").style.animation = "opq1 1s ease";document.getElementById("black-bg").style.display = "block";'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18" /></svg></div> -->
-            <div class="btns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V3q0-.425.288-.712T7 2t.713.288T8 3v1h8V3q0-.425.288-.712T17 2t.713.288T18 3v1h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5zM5 8h14V6H5zm0 0V6zm7 6q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18"/></svg></div>
-            <div id="gr"></div>
+            <div class="btns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V3q0-.425.288-.712T7 2t.713.288T8 3v1h8V3q0-.425.288-.712T17 2t.713.288T18 3v1h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5zM5 8h14V6H5zm0 0V6zm7 6q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18"/></svg></div>
+            <div id="gr" onclick="openEditGr()"></div>
+            <div id="gr-edit">
+                <h1>Новая группа</h1>
+                <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
+                <input type="search" maxlength="16" minlength="4" placeholder="КТ-12, ИБ-О-4..." name="group-set"
+                    id="group-set"><br>
+                <div class="tips-res-e-g">
+                </div>
+                <button type="submit" id="set-group-btn" onclick="groupSet0();">Готово</button><br>
+                <button
+                    style="background: none; color: var(--tg-theme-button-text-color); border: none; padding: 5px; border-radius: 50%; outline: none; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;"
+                    onclick="closeEditGr()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                        viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                            d="M20 20L4 4m16 0L4 20" />
+                    </svg></button>
+            </div>
             <div class="btns" id="upd-b"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Restart SVG Icon</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3a9 9 0 1 1-5.657 2" /><path d="M3 4.5h4v4" /></g></svg></div>
         </div>
         <div class="days">

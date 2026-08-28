@@ -2134,161 +2134,120 @@ function toBtoa(str) {
 
   return b64.replace(/\//g, "_").replace(/\+/g, "-").replace(/=+$/, "");
 }
-function groupSet0() {
-  var D = document.getElementById("group-set").value.trim();
+let ALLGROUPS;
 
-  //console.log(D);
-  var erDisplay = document.getElementById("errs-reg");
-  erDisplay.style = "font-weight:600;color:red";
-  if (D.length < 4 || D.length > 13) {
-    erDisplay.innerHTML = "Имя группы должно быть другой длины";
-    haptic.notificationOccurred("error");
-    document.getElementById("shocked-assistant").innerHTML =
-      `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g filter="url(#filter0_i_28_16)">
-      <path d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3813 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z" fill="url(#paint0_linear_28_16)"/>
-      </g>
-      <rect x="24" y="40" width="16" height="2" rx="1" fill="#FFC404"/>
-      <rect x="24.5" y="40.5" width="15" height="1" rx="0.5" stroke="#996402" stroke-opacity="0.79"/>
-      <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_28_16)"/>
-      <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_28_16)"/>
-      <circle cx="41" cy="28.5" r="4" fill="black"/>
-      <circle cx="39" cy="26.5" r="2" fill="white"/>
-      <circle cx="23" cy="28.5" r="4" fill="black"/>
-      <circle cx="21" cy="26.5" r="2" fill="white"/>
-      <defs>
-      <filter id="filter0_i_28_16" x="6.18713" y="5.27429" width="55.6257" height="58.8802" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-      <feOffset dx="4" dy="9"/>
-      <feGaussianBlur stdDeviation="6.1"/>
-      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0"/>
-      <feBlend mode="normal" in2="shape" result="effect1_innerShadow_28_16"/>
-      </filter>
-      <linearGradient id="paint0_linear_28_16" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFC404"/>
-      <stop offset="1" stop-color="#996402"/>
-      </linearGradient>
-      <linearGradient id="paint1_linear_28_16" x1="23" y1="23.5" x2="23" y2="33.5" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D8C3BD"/>
-      <stop offset="1" stop-color="#DBDBDB"/>
-      </linearGradient>
-      <linearGradient id="paint2_linear_28_16" x1="41" y1="23.5" x2="41" y2="33.5" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D8C3BD"/>
-      <stop offset="1" stop-color="#DBDBDB"/>
-      </linearGradient>
-      </defs>
-      </svg>`;
+        function openEditGr() {
+            document.getElementById("gr").classList.add('active');
+            document.getElementById('gr-edit').style.animation = '';
+            document.getElementById('gr-edit').style.display = 'flex';
+            document.getElementById('gr-edit').style.animation = 'rasing-i-c 1s';
+        }
 
-    setTimeout(function () {
-      erDisplay.innerHTML = "";
-      document.getElementById("shocked-assistant").innerHTML =
-        `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g filter="url(#filter0_i_18_72)">
-            <path
-              d="M25.6161 8.45295C28.8169 4.21475 35.1831 4.21474 38.3839 8.45294L42.3814 13.7459C43.3386 15.0134 44.6514 15.9672 46.1527 16.4859L52.4218 18.6521C57.4417 20.3866 59.409 26.4412 56.3673 30.795L52.5687 36.2324C51.6591 37.5345 51.1576 39.0778 51.1282 40.6659L51.0053 47.2976C50.907 52.6078 45.7566 56.3497 40.6759 54.8023L34.3308 52.8699C32.8114 52.4071 31.1886 52.4071 29.6692 52.8699L23.3241 54.8023C18.2434 56.3497 13.093 52.6078 12.9947 47.2976L12.8718 40.6659C12.8424 39.0778 12.3409 37.5345 11.4313 36.2324L7.63268 30.795C4.59102 26.4412 6.55828 20.3866 11.5782 18.6521L17.8473 16.4859C19.3486 15.9672 20.6614 15.0134 21.6186 13.7459L25.6161 8.45295Z"
-              fill="url(#paint0_linear_18_72)" />
-          </g>
-          <circle cx="23" cy="28.5" r="5" fill="url(#paint1_linear_18_72)" />
-          <circle cx="41" cy="28.5" r="5" fill="url(#paint2_linear_18_72)" />
-          <circle cx="41" cy="28.5" r="4" fill="black" />
-          <circle cx="39" cy="28.5" r="2" fill="white" />
-          <circle cx="23" cy="28.5" r="4" fill="black" />
-          <circle cx="25" cy="28.5" r="2" fill="white" />
-          <g filter="url(#filter1_i_18_72)">
-            <path
-              d="M28 39.5C28 37.0147 30.0147 35 32.5 35C34.9853 35 37 37.0147 37 39.5V40.85C37 42.5897 35.5897 44 33.85 44H31.15C29.4103 44 28 42.5897 28 40.85V39.5Z"
-              fill="#6C0A0A" />
-          </g>
-          <defs>
-            <filter id="filter0_i_18_72" x="6.18713" y="5.27429" width="55.6257" height="58.8802"
-              filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
-              <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-              <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-              <feOffset dx="4" dy="9" />
-              <feGaussianBlur stdDeviation="6.1" />
-              <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-              <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.53 0" />
-              <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_72" />
-            </filter>
-            <filter id="filter1_i_18_72" x="28" y="35" width="13" height="13" filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
-              <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-              <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-              <feOffset dx="7" dy="4" />
-              <feGaussianBlur stdDeviation="2" />
-              <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.34 0" />
-              <feBlend mode="normal" in2="shape" result="effect1_innerShadow_18_72" />
-            </filter>
-            <linearGradient id="paint0_linear_18_72" x1="32" y1="0" x2="32" y2="64"
-              gradientUnits="userSpaceOnUse">
-              <stop stop-color="#FFC404" />
-              <stop offset="1" stop-color="#996402" />
-            </linearGradient>
-            <linearGradient id="paint1_linear_18_72" x1="23" y1="23.5" x2="23" y2="33.5"
-              gradientUnits="userSpaceOnUse">
-              <stop stop-color="#D8C3BD" />
-              <stop offset="1" stop-color="#DBDBDB" />
-            </linearGradient>
-            <linearGradient id="paint2_linear_18_72" x1="41" y1="23.5" x2="41" y2="33.5"
-              gradientUnits="userSpaceOnUse">
-              <stop stop-color="#D8C3BD" />
-              <stop offset="1" stop-color="#DBDBDB" />
-            </linearGradient>
-          </defs>
-      </svg>`;
-    }, 3000);
-  } else {
-    const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
-    tg.openTelegramLink(url);
+        function closeEditGr() {
+            document.getElementById("gr").classList.remove("active");
+            document.getElementById('gr-edit').style.animation = '';
+            document.getElementById('gr-edit').style.animation = 'closing-i-c 1s forwards';
+        }
 
-    loader.style.display = "flex";
-    loaderContainer.style.display = "block";
-    setTimeout(function () {
-      const authHeaders = { Authorization: tg.initData };
-      fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
-        .then((response) => {
-          if (!response.ok) throw new Error("Error: " + response.status);
-          return response.json();
-        })
-        .then((userGroup) => {
-          var Group = userGroup.group_name;
-          if (localStorage.getItem("userGroup")) {
-            if (localStorage.getItem("userGroup") !== Group) {
-              document.getElementById("alerter").style.display = "none";
-              document.getElementById("shocked-assistant").style.display =
-                "none";
-              // burgerBtn.classList.remove("opened-btn");
-              // burgerBtn.classList.add("closed-btn");
-              //closeN("user-menu-display");
-              getSchedule1(true);
-            } else {
-              document.getElementById("alerter").style.display = "none";
-              document.getElementById("shocked-assistant").style.display =
-                "none";
-              // burgerBtn.classList.remove("opened-btn");
-              // burgerBtn.classList.add("closed-btn");
-              localStorage.setItem("userGroup", userGroup);
-              //closeN("user-menu-display");
-              getSchedule1(true);
+        document.getElementById("group-set").addEventListener("input", (e) => {
+            document.querySelectorAll(".tips-res-e-g div").forEach(e1 => e1.remove());
+            document.querySelector(".tips-res-e-g").style.display = "none";
+            var res = ALLGROUPS.filter(el => el.toLocaleLowerCase().trim().includes(document.getElementById("group-set").value.toLocaleLowerCase().trim()));
+            if (res.length > 0 && document.getElementById("group-set").value !== "") {
+                document.querySelector(".tips-res-e-g").style.display = "flex";
             }
-          }
+            res.forEach((r) => {
+                var ell = document.querySelector(".tips-res-e-g").appendChild(document.createElement("div"));
+                (ell).innerHTML = r;
+                ell.onclick = () => {
+                    document.getElementById("group-set").value = r; document.querySelector(".tips-res-e-g").style.display = "none";
+                }
+            })
         });
-      CloseBG2();
-      setTimeout(function () {
-        loader.style.display = "none";
-        loaderContainer.style.display = "none";
-      }, 1500);
-    }, 3000);
-  }
-}
+
+        function req() {
+            fetch("https://www.miet.ru/schedule/groups")
+                .then((resp) => {
+
+                    if (!resp.ok) {
+                        console.log(resp)
+                    }
+                    return resp.json()
+                }
+                ).then((data) => {
+                    ALLGROUPS = data.toString().split(",");
+                })
+        }
+        req();
+
+    
+        //
+        function groupSet0() {
+        var D = document.getElementById("group-set").value;
+        //console.log(D);
+        // var erDisplay = document.getElementById("errs-reg");
+        // erDisplay.style = "font-weight:600;color:red";
+        if (ALLGROUPS.indexOf(D) === -1) {
+            haptic?.notificationOccurred("error");
+            document.getElementById("set-group-btn").classList.add("error");
+            document.querySelector("#gr-edit input").style = "border: 2px solid var(--tg-theme-destructive-text-color) !important;"
+
+            setTimeout(() => {
+                document.getElementById("set-group-btn").classList.remove("error");
+                document.querySelector("#gr-edit input").style = "border: none;"
+                document.querySelector("#gr-edit input").style = "border-bottom: 0px solid rgb(from var(--accent) r g b / .75) !important"
+            }, 2500);
+            
+        } else {
+            document.getElementById("set-group-btn").classList.add("success");
+
+            setTimeout(() => {
+                document.getElementById("set-group-btn").classList.remove("success");
+            }, 2500);
+
+            const url = "https://t.me/mietcbot?start=" + "group_" + toBtoa(D);
+            tg.openTelegramLink(url);
+
+            loader.style.display = "flex";
+            loaderContainer.style.display = "block";
+            setTimeout(function () {
+            const authHeaders = { Authorization: tg.initData };
+            fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
+                .then((response) => {
+                if (!response.ok) throw new Error("Error: " + response.status);
+                return response.json();
+                })
+                .then((userGroup) => {
+                var Group = userGroup.group_name;
+                if (localStorage.getItem("userGroup")) {
+                    if (localStorage.getItem("userGroup") !== Group) {
+                    document.getElementById("alerter").style.display = "none";
+                    document.getElementById("shocked-assistant").style.display =
+                        "none";
+                    // burgerBtn.classList.remove("opened-btn");
+                    // burgerBtn.classList.add("closed-btn");
+                    //closeN("user-menu-display");
+                    getSchedule1(true);
+                    } else {
+                    document.getElementById("alerter").style.display = "none";
+                    document.getElementById("shocked-assistant").style.display =
+                        "none";
+                    // burgerBtn.classList.remove("opened-btn");
+                    // burgerBtn.classList.add("closed-btn");
+                    localStorage.setItem("userGroup", userGroup);
+                    //closeN("user-menu-display");
+                    getSchedule1(true);
+                    }
+                }
+                });
+            closeEditGr();
+            setTimeout(function () {
+                loader.style.display = "none";
+                loaderContainer.style.display = "none";
+            }, 1500);
+            }, 3000);
+        }
+        }
 
 window.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded");
