@@ -569,21 +569,39 @@ header.scrolling {
 
             input {
                 padding: 1em;
+                padding-left: 3.2rem;
                 border-radius: 2em;
                 border: none;
                 background: rgb(from var(--tg-theme-bg-color) r g b / 0.5);
                 color: white;
                 font-size: 1.2em;
-                width: 80%;
-                max-width: 300px;
+                width: calc(100% - 30px) !important;
                 outline: none;
                 transition: background .5s;
                 letter-spacing: 2px;
                 box-shadow: 4px 4px 8px rgb(from var(--tg-theme-bg-color) r g b / 0.75);
-                border-bottom: 0px solid rgb(from var(--accent) r g b / .75);
+                border: 0px solid rgb(from var(--accent) r g b / .75);
                 transition: all .1s ease;
+                position: relative;
+                box-sizing: border-box;
                 &:focus {
                     border-bottom: 1px solid rgb(from var(--accent) r g b / .75);
+                }
+
+            }
+
+            #gr-e-p-c {
+                position: relative;
+                display: block;
+                width: 100% !important;
+                svg {
+                    position: absolute;
+                    pointer-events: none;
+                    top: 50%;
+                    transform: translateY(-50%) rotate(15deg) scale(0.9);
+                    left: 1.75rem;
+                    opacity: .6;
+                    transition: opacity .2s, transform .23s ease;
                 }
             }
 
@@ -591,6 +609,12 @@ header.scrolling {
                 letter-spacing: 1px;
                 transition: letter-spacing .5s ease-in-out, color 1s ease;
                 color: var(--tg-theme-hint-color);
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            #gr-e-p-c input:placeholder-shown ~ svg{
+                opacity: .3;
+                transform: translateY(-50%);
             }
 
             button:last-child:active {
