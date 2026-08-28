@@ -1664,6 +1664,31 @@ h6.skeleton { opacity: .4; }
   to { transform: scaleX(1); opacity: 1; }
 }
 
+#profile-show.selected {
+    .user-head {
+  transform-origin: 40px 17px;
+  animation: headBreathe .4s ease-in-out alternate;
+}
+
+.user-body {
+  transform-origin: 40px 34px;
+  animation: bodyBreathe .4s ease-in-out alternate;
+}
+}
+
+@keyframes headBreathe {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.05) rotate(-3deg); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes bodyBreathe {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03, 0.98); opacity: .5;}
+  100% { transform: scale(1); }
+}
+
+
 #runner-menu {
     position: absolute;
     width: calc(100% / 4);
