@@ -969,11 +969,12 @@ header.scrolling {
 }
 @keyframes flyUP {
     0% { transform: translateY(6px); }
-    5% {box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows)}
+    50% {opacity: 1;}
+    /* 5% {box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows)}
     10% { opacity: 1; transform: translateY(0); 
     box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows), 0 4px var(--alert-bg);}
-    15%, 85% {box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows), 0 4px var(--alert-bg), 0 8px var(--acdeac-btn); opacity: 1;}
-    100% { transform: translateY(-12px); opacity: 0; }
+    15%, 85% {box-shadow: 2px 4px .4em #00000027, inset 4px 0 12px var(--anti-shadows), 0 4px var(--alert-bg), 0 8px var(--acdeac-btn); opacity: 1;}*/
+    100% { transform: translateY(-12px); opacity: 0; } 
 }
 
 @keyframes opq1 { 0% { opacity: 0; } }
