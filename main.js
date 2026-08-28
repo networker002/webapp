@@ -2195,7 +2195,7 @@ let groupEditorCloseTimer = null;
             document.querySelectorAll(".tips-res-e-g div").forEach(e1 => e1.remove());
             document.querySelector(".tips-res-e-g").style.display = "none";
             var res = ALLGROUPS.filter(el => el.toLocaleLowerCase().trim().includes(document.getElementById("group-set").value.toLocaleLowerCase().trim()));
-            if (res.length > 0 && document.getElementById("group-set").value !== "") {
+            if (res.length > 0 && document.getElementById("group-set").value.trim() !== "") {
                 document.querySelector(".tips-res-e-g").style.display = "flex";
             }
             res.forEach((r) => {
