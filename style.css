@@ -171,6 +171,7 @@ header.scrolling {
     transition: transform .15s ease, color .3s ease, background-color .3s ease;
     will-change: transform;
     animation: openingBtn .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: grayscale(1);
 
     &::before {
         content: "";
@@ -2984,7 +2985,7 @@ h6.skeleton { opacity: .4; }
                 box-sizing: border-box;
                 overflow: hidden;
                 background-color: var(--tg-theme-bg-color);
-                animation: hide0 1.51s forwards;
+                /* animation: hide0 1.51s forwards; */
 
             }
 
