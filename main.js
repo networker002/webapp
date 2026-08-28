@@ -2140,6 +2140,7 @@ let groupEditorCloseTimer = null;
         function openEditGr() {
       const groupButton = document.getElementById("gr");
       const groupEditor = document.getElementById("gr-edit");
+      const back = document.querySelector(".backdrop");
 
       clearTimeout(groupEditorCloseTimer);
       groupButton.classList.add("active");
@@ -2147,6 +2148,7 @@ let groupEditorCloseTimer = null;
       groupEditor.style.display = "flex";
       groupEditor.style.pointerEvents = "all";
       groupEditor.style.animation = "none";
+      back.style.display = "block";
 
       requestAnimationFrame(() => {
         groupEditor.style.animation = "rasing-i-c .5s ease forwards";
@@ -2156,6 +2158,7 @@ let groupEditorCloseTimer = null;
         function closeEditGr() {
       const groupButton = document.getElementById("gr");
       const groupEditor = document.getElementById("gr-edit");
+      const back = document.querySelector(".backdrop");
 
       clearTimeout(groupEditorCloseTimer);
       groupButton.classList.remove("active");
@@ -2168,6 +2171,7 @@ let groupEditorCloseTimer = null;
         groupEditor.style.animation = "none";
         groupEditor.style.pointerEvents = "";
         groupButton.style.pointerEvents = "";
+        back.style.display = "none";
       }, 500);
         }
 
@@ -2176,12 +2180,15 @@ let groupEditorCloseTimer = null;
 
       const groupButton = document.getElementById("gr");
       const groupEditor = document.getElementById("gr-edit");
+      const back = document.querySelector(".backdrop");
+
 
       groupButton.classList.remove("active");
       groupButton.style.pointerEvents = "";
       groupEditor.style.display = "none";
       groupEditor.style.animation = "none";
       groupEditor.style.pointerEvents = "";
+      back.style.display = "none";
     }
 
         document.getElementById("group-set").addEventListener("input", (e) => {

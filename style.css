@@ -2939,6 +2939,14 @@ h6.skeleton { opacity: .4; }
         }
     
 
+        .backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1999;
+        touch-action: none;
+        pointer-events: auto;
+        }
+
 
 .loader {
                 display: flex;
