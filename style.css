@@ -2944,7 +2944,7 @@ h6.skeleton { opacity: .4; }
         inset: 0;
         z-index: 1999;
         touch-action: none;
-        pointer-events: auto;
+        pointer-events: none; /*<- rewrite it*/
         }
 
 
