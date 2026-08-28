@@ -553,8 +553,8 @@ header.scrolling {
             width: calc(100% - 16px);
             transform: translateX(-50%);
             display: flex;
-            background: rgb(from var(--tg-theme-secondary-bg-color) r g b / .75);
-            backdrop-filter: blur(14px);
+            background: linear-gradient(rgb(from var(--accent) r g b / .15), rgb(from var(--tg-theme-header-bg-color) r g b / .85));
+            backdrop-filter: blur(18px);
             flex-direction: column;
             justify-content: center;
             align-items: center;
