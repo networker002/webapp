@@ -1222,10 +1222,10 @@ updater.addEventListener("click", function () {
     var al = document.getElementById("fast-alert");
     if (al) {
       al.style.display = "flex";
-      al.style.animation = "flyUP 2s normal";
+      al.style.animation = "flyUP 2s forwards";
       setTimeout(function () {
         al.style.display = "none";
-      }, 1900);
+      }, 2100);
     }
 
     document.body.style.pointerEvents = "none";
