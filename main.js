@@ -561,7 +561,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
               var rooms = DAY.querySelectorAll(".room");
 
               for (var i = 0; i < rooms.length; i++) {
-                if (rooms[i].textContent === "") {rooms[i].textContent = "Без аудитории"}
+                if (rooms[i].textContent.trim() === "()") {rooms[i].textContent = "(Без аудитории)"}
                 try {
                   if (
                     rooms[i].innerHTML.toString()[1] !==
