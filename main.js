@@ -352,7 +352,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             const startWeekLogic = new Date(2026, 2, 30);
             const NOW = new Date();
             let weekType;
-            if (!weekTypeNumber) {
+            if (weekTypeNumber === null || weekTypeNumber === undefined) {
               weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );}
             else {
               weekType = weekTypeNumber;
@@ -361,7 +361,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             let newHTML = "";
             //let dayType = data[0];
 
-            const weekLessons = data[1].filter(d => d.day_number === weekType);
+            const weekLessons = data[1].filter(d => Number(d.day_number) === Number(weekType));
             
             for (const dayName of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
               const dayKey = dayMapping2[dayName];
