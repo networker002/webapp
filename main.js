@@ -351,11 +351,11 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           if (data) {
             const startWeekLogic = new Date(2026, 2, 30);
             const NOW = new Date();
-
+            let weekType;
             if (!weekTypeNumber) {
-              const weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );}
+              weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );}
             else {
-              const weekType = weekTypeNumber;
+              weekType = weekTypeNumber;
             }
 
             let newHTML = "";
