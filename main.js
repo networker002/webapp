@@ -3230,7 +3230,7 @@ function addToProfile() {
     document.querySelectorAll(".day").forEach((d) => {
       if (d.parentElement.id !== "demo-lesson") {
       const els = Array.from(d.querySelectorAll(".lesson"), l => Number(l.textContent));
-      elems += els.length ? Math.max(...els) : 0;}
+      elems += Math.min(els.length, Math.max(...els))}
     });
     lessonsAllCountEl.textContent = elems;
   }
