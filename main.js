@@ -270,7 +270,7 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
   var userId = tg.initDataUnsafe.user.id;
 }
 
-function getSchedule1(reqNeed = false) {
+function getSchedule1(reqNeed = false, weekTypeNumber = null) {
   var ttl = 30 * 60 * 1000;
   var cachedData = localStorage.getItem("schedule");
   var dataLastUpd = localStorage.getItem("updated_at");
@@ -351,7 +351,12 @@ function getSchedule1(reqNeed = false) {
           if (data) {
             const startWeekLogic = new Date(2026, 2, 30);
             const NOW = new Date();
-            const weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );
+
+            if (!weekTypeNumber) {
+              const weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );}
+            else {
+              const weekType = weekTypeNumber;
+            }
 
             let newHTML = "";
             //let dayType = data[0];
@@ -556,6 +561,7 @@ function getSchedule1(reqNeed = false) {
               var rooms = DAY.querySelectorAll(".room");
 
               for (var i = 0; i < rooms.length; i++) {
+                if (rooms[i].textContent === "") {rooms[i].textContent = "Без аудитории"}
                 try {
                   if (
                     rooms[i].innerHTML.toString()[1] !==
