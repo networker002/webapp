@@ -2180,6 +2180,7 @@ function toBtoa(str) {
 let ALLGROUPS;
 let groupEditorCloseTimer = null;
 let calendarSelection = null;
+let selectedCalendarDate = null;
 
 const calendarWeeks = [
   { id: 0, title: "1 числитель" },
@@ -2225,7 +2226,8 @@ function renderCalendar() {
       dayButton.dataset.date = date.toISOString().slice(0, 10);
       dayButton.dataset.weekIndex = week.id;
       dayButton.innerHTML = `<span class="calendar-day-name">${dayName}</span><span class="calendar-day-date">${formatCalendarDate(date)}</span>`;
-      if (!dayButton.disabled) dayButton.addEventListener("click", () => {selectCalendarDay(dayButton.dataset.date, week.id, dayIndex); dayButton.classList.add("selected-day");});
+      if (dayButton.dataset.date === selectedCalendarDate) dayButton.classList.add("selected-day");
+      if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, week.id, dayIndex));
       daysGrid.appendChild(dayButton);
     });
     calendarContainer.appendChild(weekElement);
@@ -2251,9 +2253,9 @@ function closeCalendar() {
 
 function selectCalendarDay(dateString, weekIndex, dayIndex) {
   calendarSelection = { dateString, weekIndex, dayIndex };
+  selectedCalendarDate = dateString;
   scheduleWeekIndex = weekIndex;
   updateDayButtonDates(scheduleWeekIndex);
-  document.querySelectorAll(".calendar-day-btn").forEach(e => e.classList.remove("selected-day"));
   closeCalendar();
   getSchedule1(true, weekIndex);
 }
