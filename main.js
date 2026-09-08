@@ -2155,11 +2155,10 @@ const calendarWeeks = [
 const calendarDayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 function getCalendarState() {
-  const startWeekLogic = new Date(2026, 7, 30);
-  const weekIndex = Math.floor(((new Date() - startWeekLogic) / (1000 * 60 * 60 * 24 * 7)) % 4);
-  const monday = new Date(startWeekLogic);
-  monday.setDate(monday.getDate() + weekIndex * 7 + 1);
-  return { weekIndex, monday };
+  const firstWeekMonday = new Date(2026, 7, 31);
+  const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
+  const weekIndex = ((elapsedWeeks % 4) + 4) % 4;
+  return { weekIndex, firstWeekMonday };
 }
 
 function formatCalendarDate(date) {
@@ -2173,7 +2172,7 @@ function isCalendarToday(date) {
 function renderCalendar() {
   const calendarContainer = document.getElementById("calendarContainer");
   if (!calendarContainer) return;
-  const { weekIndex, monday } = getCalendarState();
+  const { weekIndex, firstWeekMonday } = getCalendarState();
   calendarContainer.innerHTML = "";
 
   calendarWeeks.forEach((week) => {
@@ -2183,8 +2182,8 @@ function renderCalendar() {
     const daysGrid = weekElement.querySelector(".calendar-days-grid");
 
     ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].forEach((dayName, dayIndex) => {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + week.id * 7 + dayIndex);
+      const date = new Date(firstWeekMonday);
+      date.setDate(firstWeekMonday.getDate() + week.id * 7 + dayIndex);
       const dayButton = document.createElement("button");
       dayButton.type = "button";
       dayButton.className = `calendar-day-btn${isCalendarToday(date) ? " is-today" : ""}`;
@@ -2218,6 +2217,7 @@ function closeCalendar() {
 
 function selectCalendarDay(dateString, weekIndex, dayIndex) {
   calendarSelection = { dateString, weekIndex, dayIndex };
+  document.querySelectorAll(".calendar-day-btn").forEach(e => e.classList.remove("is-today"));
   closeCalendar();
   getSchedule1(true, weekIndex);
 }
