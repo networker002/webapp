@@ -580,6 +580,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             //teacherHide();
             if (nowBtn) upsSV();
             initSwiper();
+            applyCalendarSelection();
             cacheData(container.innerHTML);
             //initApp();
           }
@@ -608,6 +609,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
         dayParseOnline();
         if (nowBtn) upsSV();
         initSwiper();
+        applyCalendarSelection();
         // if (!document.querySelectorAll(".day").length) {
         //   upsSV();
         // }
@@ -2142,6 +2144,107 @@ function toBtoa(str) {
 }
 let ALLGROUPS;
 let groupEditorCloseTimer = null;
+let calendarSelection = null;
+
+const calendarWeeks = [
+  { id: 0, title: "1 числитель" },
+  { id: 1, title: "1 знаменатель" },
+  { id: 2, title: "2 числитель" },
+  { id: 3, title: "2 знаменатель" },
+];
+const calendarDayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+function getCalendarState() {
+  const startWeekLogic = new Date(2026, 7, 30);
+  const weekIndex = Math.floor(((new Date() - startWeekLogic) / (1000 * 60 * 60 * 24 * 7)) % 4);
+  const monday = new Date(startWeekLogic);
+  monday.setDate(monday.getDate() + weekIndex * 7 + 1);
+  return { weekIndex, monday };
+}
+
+function formatCalendarDate(date) {
+  return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function isCalendarToday(date) {
+  return date.toDateString() === new Date().toDateString();
+}
+
+function renderCalendar() {
+  const calendarContainer = document.getElementById("calendarContainer");
+  if (!calendarContainer) return;
+  const { weekIndex, monday } = getCalendarState();
+  calendarContainer.innerHTML = "";
+
+  calendarWeeks.forEach((week) => {
+    const weekElement = document.createElement("div");
+    weekElement.className = `calendar-week-block${week.id === weekIndex ? " is-current" : ""}`;
+    weekElement.innerHTML = `<div class="calendar-week-header"><span class="calendar-week-title">${week.title}</span>${week.id === weekIndex ? '<span class="calendar-current-badge">Текущая</span>' : ""}</div><div class="calendar-days-grid"></div>`;
+    const daysGrid = weekElement.querySelector(".calendar-days-grid");
+
+    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].forEach((dayName, dayIndex) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + week.id * 7 + dayIndex);
+      const dayButton = document.createElement("button");
+      dayButton.type = "button";
+      dayButton.className = `calendar-day-btn${isCalendarToday(date) ? " is-today" : ""}`;
+      dayButton.disabled = dayIndex === 6;
+      dayButton.dataset.date = date.toISOString().slice(0, 10);
+      dayButton.dataset.weekIndex = week.id;
+      dayButton.innerHTML = `<span class="calendar-day-name">${dayName}</span><span class="calendar-day-date">${formatCalendarDate(date)}</span>`;
+      if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, week.id, dayIndex));
+      daysGrid.appendChild(dayButton);
+    });
+    calendarContainer.appendChild(weekElement);
+  });
+}
+
+function openCalendar() {
+  const modal = document.getElementById("calendarModal");
+  if (!modal) return;
+  renderCalendar();
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.querySelector(".backdrop")?.style.setProperty("display", "block");
+}
+
+function closeCalendar() {
+  const modal = document.getElementById("calendarModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  if (!document.getElementById("gr-edit")?.offsetParent) document.querySelector(".backdrop")?.style.setProperty("display", "none");
+}
+
+function selectCalendarDay(dateString, weekIndex, dayIndex) {
+  calendarSelection = { dateString, weekIndex, dayIndex };
+  closeCalendar();
+  getSchedule1(true, weekIndex);
+}
+
+function applyCalendarSelection() {
+  if (!calendarSelection) return;
+  const { dayIndex } = calendarSelection;
+  const swiper = document.querySelector(".swiper")?.swiper;
+  const dayButton = document.querySelectorAll(".btnD")[dayIndex];
+  if (swiper) swiper.slideToLoop(dayIndex);
+  if (dayButton) {
+    document.querySelectorAll(".btnD").forEach((button) => button.classList.remove("selected"));
+    dayButton.classList.add("selected");
+    nowBtn = dayButton;
+    upsSV();
+  }
+  calendarSelection = null;
+}
+
+document.getElementById("calendar-btn")?.addEventListener("click", openCalendar);
+document.getElementById("closeCalendarBtn")?.addEventListener("click", closeCalendar);
+document.getElementById("calendarModal")?.addEventListener("click", (event) => {
+  if (event.target.id === "calendarModal") closeCalendar();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.getElementById("calendarModal")?.classList.contains("open")) closeCalendar();
+});
 
         function openEditGr() {
       const groupButton = document.getElementById("gr");
