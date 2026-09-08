@@ -2191,9 +2191,8 @@ function renderCalendar() {
       dayButton.dataset.date = date.toISOString().slice(0, 10);
       dayButton.dataset.weekIndex = week.id;
       dayButton.innerHTML = `<span class="calendar-day-name">${dayName}</span><span class="calendar-day-date">${formatCalendarDate(date)}</span>`;
-      if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, week.id, dayIndex));
+      if (!dayButton.disabled) dayButton.addEventListener("click", () => {selectCalendarDay(dayButton.dataset.date, week.id, dayIndex); dayButton.classList.add("selected-day");});
       daysGrid.appendChild(dayButton);
-      dayButton.classList.add("selected-day");
     });
     calendarContainer.appendChild(weekElement);
   });
