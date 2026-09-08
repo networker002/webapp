@@ -760,8 +760,8 @@ header.scrolling {
 .calendar-subtitle { display: block; margin-top: 2px; font-size: 12px; color: var(--tg-theme-hint-color); }
 .calendar-close-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: none; border-radius: 50%; background: var(--days-bg); color: var(--over-color); }
 .calendar-close-btn:active { transform: scale(.9); }
-.calendar-body { display: flex; flex-direction: column; gap: 18px; padding: 16px; overflow-y: auto; }
-.calendar-week-block { padding: 12px; background: var(--days-bg); border: 1px solid var(--shadows); border-radius: 14px; }
+.calendar-body { display: flex; flex-direction: column; gap: 18px; padding: 5px; overflow-y: auto; }
+.calendar-week-block { padding: 10px; background: var(--days-bg); border: 1px solid var(--shadows); border-radius: 14px; }
 .calendar-week-block.is-current { border-color: var(--accent); }
 .calendar-week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 4px; }
 .calendar-week-title { color: var(--accent); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: var(--day-name-letter-sp); }
@@ -774,7 +774,7 @@ header.scrolling {
 .calendar-day-btn:disabled { opacity: .3; background: transparent; border-color: transparent; cursor: not-allowed; }
 .calendar-day-btn.is-today { background: var(--accent); border-color: var(--accent); color: var(--main-bg-color); box-shadow: 0 4px 10px var(--anti-shadows); }
 .calendar-day-btn.is-today .calendar-day-name { opacity: .9; }
-.calendar-day-btn.selected-day { background: var(--tg-theme-button-color); border-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); box-shadow: 0 4px 10px var(--anti-shadows); }
+.calendar-day-btn.selected-day { background: var(--tg-theme-button-color); border-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); box-shadow: 0 4px 10px var(--anti-shadows); border-width: 2px;}
 
 .btns {
     margin: auto;
