@@ -2193,6 +2193,7 @@ function renderCalendar() {
       dayButton.innerHTML = `<span class="calendar-day-name">${dayName}</span><span class="calendar-day-date">${formatCalendarDate(date)}</span>`;
       if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, week.id, dayIndex));
       daysGrid.appendChild(dayButton);
+      dayButton.classList.add("selected-day");
     });
     calendarContainer.appendChild(weekElement);
   });
@@ -2217,7 +2218,7 @@ function closeCalendar() {
 
 function selectCalendarDay(dateString, weekIndex, dayIndex) {
   calendarSelection = { dateString, weekIndex, dayIndex };
-  document.querySelectorAll(".calendar-day-btn").forEach(e => e.classList.remove("is-today"));
+  document.querySelectorAll(".calendar-day-btn").forEach(e => e.classList.remove("selected-day"));
   closeCalendar();
   getSchedule1(true, weekIndex);
 }
