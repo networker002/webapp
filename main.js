@@ -216,6 +216,39 @@ var d = new Date();
 let n = d.getDay();
 let m = d.getMonth();
 let dt = d.getDate();
+let scheduleWeekIndex = null;
+
+function getScheduleWeekIndex() {
+  const firstWeekMonday = new Date(2026, 7, 31);
+  const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
+  return ((elapsedWeeks % 4) + 4) % 4;
+}
+
+function getScheduleWeekMonday(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
+  const firstWeekMonday = new Date(2026, 7, 31);
+  firstWeekMonday.setDate(firstWeekMonday.getDate() + weekIndex * 7);
+  return firstWeekMonday;
+}
+
+function updateDayButtonDates(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
+  const weekMonday = getScheduleWeekMonday(weekIndex);
+
+  document.querySelectorAll(".btnD").forEach((button, index) => {
+    const date = new Date(weekMonday);
+    date.setDate(weekMonday.getDate() + index);
+    const dateLabel = button.querySelector(".day-date");
+
+    if (dateLabel) {
+      dateLabel.textContent = `${date.getDate()}.${String(date.getMonth() + 1).padStart(2, "0")}`;
+    } else if (index < 6) {
+      button.insertAdjacentHTML(
+        "beforeend",
+        `<span class="day-date" style="opacity: 0.5; font-size: x-small; letter-spacing: 0 !important;">${date.getDate()}.${String(date.getMonth() + 1).padStart(2, "0")}</span>`,
+      );
+    }
+  });
+}
+
 const dayMapping2 = {
       "Понедельник": 1,
       "Вторник": 2,
@@ -349,14 +382,16 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
         })
         .then((data) => {
           if (data) {
-            const startWeekLogic = new Date(2026, 7, 30);
             const NOW = new Date();
             let weekType;
             if (weekTypeNumber === null || weekTypeNumber === undefined) {
-              weekType = Math.floor( ((NOW - startWeekLogic) / (1000 * 60 * 60 * 24 * 7 )) % 4 );}
+              weekType = getScheduleWeekIndex();
+            }
             else {
               weekType = weekTypeNumber;
             }
+            scheduleWeekIndex = ((Number(weekType) % 4) + 4) % 4;
+            updateDayButtonDates(scheduleWeekIndex);
 
             let newHTML = "";
             //let dayType = data[0];
@@ -2155,9 +2190,8 @@ const calendarWeeks = [
 const calendarDayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 function getCalendarState() {
-  const firstWeekMonday = new Date(2026, 7, 31);
-  const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
-  const weekIndex = ((elapsedWeeks % 4) + 4) % 4;
+  const firstWeekMonday = getScheduleWeekMonday(0);
+  const weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex();
   return { weekIndex, firstWeekMonday };
 }
 
@@ -2217,6 +2251,8 @@ function closeCalendar() {
 
 function selectCalendarDay(dateString, weekIndex, dayIndex) {
   calendarSelection = { dateString, weekIndex, dayIndex };
+  scheduleWeekIndex = weekIndex;
+  updateDayButtonDates(scheduleWeekIndex);
   document.querySelectorAll(".calendar-day-btn").forEach(e => e.classList.remove("selected-day"));
   closeCalendar();
   getSchedule1(true, weekIndex);
@@ -3173,9 +3209,9 @@ function newUIFeatures() {
     btn.style.textAlign = "center";
     btn.style.gap = ".1em";
 
-    //console.log(dt - (n - idx ) + 1);
-    btn.innerHTML += `<span style='opacity: 0.5; font-size: x-small; letter-spacing: 0 !important;'>${new Date(new Date().setDate(dt - (n - idx) + 1)).getDate()}.${(new Date(new Date().setDate(dt - (n - idx) + 1)).getMonth() + 1).toString().padStart(2, "0")}</span>`;
   });
+
+  updateDayButtonDates();
 
   //var menu2 = document.createElement("div");
   //menu2.classList.add("menu-swiper");
