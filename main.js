@@ -349,7 +349,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
         })
         .then((data) => {
           if (data) {
-            const startWeekLogic = new Date(2026, 8, 2);
+            const startWeekLogic = new Date(2026, 7, 30);
             const NOW = new Date();
             let weekType;
             if (weekTypeNumber === null || weekTypeNumber === undefined) {
