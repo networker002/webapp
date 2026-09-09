@@ -269,6 +269,46 @@ header.scrolling {
     border: 1px solid rgba(255,255,255,.2);
 }
 
+.lesson-row.is-current, .lesson-row2.is-current {
+    border-color: #38e681;
+    background: linear-gradient(45deg, rgba(56, 230, 129, .12), rgba(56, 230, 129, .3));
+    box-shadow: 0 0 18px rgba(56, 230, 129, .42), inset 0 0 12px rgba(56, 230, 129, .12);
+}
+
+.lesson-row.is-finished, .lesson-row2.is-finished {
+    filter: grayscale(.8);
+    opacity: .58;
+}
+
+.lesson-row.is-upcoming, .lesson-row2.is-upcoming {
+    border-color: rgba(255, 255, 255, .16);
+    box-shadow: 0 0 0 transparent;
+}
+
+.now-lesson-summary-container { padding: 0 1em 1em; }
+
+.summary-card {
+    padding: 1em;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(from var(--accent-bg) r g b / .9), rgba(from var(--accent) r g b / .22));
+}
+
+.summary-card.is-current { border-color: #38e681; box-shadow: 0 0 22px rgba(56, 230, 129, .3); }
+.summary-card.is-upcoming { border-color: #e2bd56; }
+.summary-status { display: flex; align-items: center; gap: .5em; font-size: 1.05em; }
+.summary-status span { width: .65em; height: .65em; border-radius: 50%; background: #9a9a9a; }
+.summary-card.is-current .summary-status span { background: #38e681; box-shadow: 0 0 12px #38e681; }
+.summary-card.is-upcoming .summary-status span { background: #e2bd56; }
+.summary-hint { margin-top: .45em; color: var(--tg-theme-hint-color); }
+.summary-subject { margin-top: .8em; font-size: 1.25em; }
+.summary-details { display: grid; gap: .55em; margin-top: 1em; }
+.summary-details span { display: flex; justify-content: space-between; gap: 1em; }
+.summary-details b { color: var(--tg-theme-hint-color); }
+.summary-map { display: inline-block; margin-top: 1em; color: var(--tg-theme-link-color); font-weight: 600; }
+.summary-empty { padding: 1.25em; text-align: center; border-radius: 20px; background: rgba(from var(--accent-bg) r g b / .7); }
+.summary-empty p { margin-top: .5em; color: var(--tg-theme-hint-color); }
+
 /* .day .lesson-row, .lesson-row2 { position: relative;
     display: flex;
     align-items: center;
@@ -3057,6 +3097,22 @@ h6.skeleton { opacity: .4; }
         #calendar-schedule-container {
             display: none;
 
+        }
+
+        #summary-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+        }
+
+        .summary-header {
+            padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
 .loader {

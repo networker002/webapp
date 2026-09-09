@@ -476,7 +476,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
                 dayItems.forEach((item) => {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
-                    <div class="lesson-row">
+                    <div class="lesson-row lesson-row2">
                       <div>
                       <h4 class="lesson">${item.lesson_code}</h4>
                       </div>
@@ -1194,6 +1194,7 @@ function upsSV() {
     }
   });
   document.querySelector("header h1 span").textContent = foundC ? "Сегодня" : "Мой дневник";
+  loadSummary();
   updateDynamicDayBottomSpacing();
 }
 
@@ -3254,9 +3255,102 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 // document.getElementById("profile-show")
 //window.addEventListener("DOMContentLoaded", ()=> initApp());
 
+function loadSummary() {
+  const nowSummaryCont = document.querySelector(".now-lesson-summary-container");
+
+  if (!nowSummaryCont) return;
+
+  const parseTime = (timeText, baseDate = new Date()) => {
+    const match = timeText?.match(/(\d{1,2})\s*:\s*(\d{2})/g);
+    if (!match || match.length < 2) return null;
+    const toDate = (value) => {
+      const [hours, minutes] = value.split(":").map(Number);
+      const result = new Date(baseDate);
+      result.setHours(hours, minutes, 0, 0);
+      return result;
+    };
+    return { start: toDate(match[0]), end: toDate(match[1]) };
+  };
+
+  const setState = (row, state) => {
+    row.classList.add("lesson-row2");
+    row.classList.remove("is-current", "is-finished", "is-upcoming", "is-break");
+    row.classList.add(`is-${state}`);
+    row.dataset.lessonState = state;
+  };
+
+  const allRows = Array.from(document.querySelectorAll(".lesson-row, .lesson-row2"));
+  const now = new Date();
+  const todayName = days[now.getDay()];
+  const today = Array.from(document.querySelectorAll(".day")).find((day) =>
+    day.querySelector(".day-name")?.textContent.trim() === todayName,
+  );
+  const rows = today ? Array.from(today.querySelectorAll(".lesson-row, .lesson-row2")) : [];
+  const lessons = rows
+    .map((row) => ({ row, time: parseTime(row.querySelector(".time")?.textContent) }))
+    .filter((lesson) => lesson.time)
+    .sort((a, b) => a.time.start - b.time.start);
+
+  allRows.forEach((row) => setState(row, "upcoming"));
+  lessons.forEach(({ row, time }) => {
+    if (now >= time.start && now <= time.end) setState(row, "current");
+    else if (now > time.end) setState(row, "finished");
+  });
+
+  if (!lessons.length) {
+    nowSummaryCont.innerHTML = `<div class="summary-empty"><h2>Сегодня пар нет</h2><p>Можно выдохнуть и заняться своими делами.</p></div>`;
+    return;
+  }
+
+  const current = lessons.find(({ time }) => now >= time.start && now <= time.end);
+  const next = lessons.find(({ time }) => time.start > now);
+  const previous = lessons.filter(({ time }) => time.end < now).at(-1);
+  let statusTitle;
+  let statusText;
+  let selectedLesson = current || next;
+
+  if (current) {
+    statusTitle = "Сейчас идет";
+    statusText = `До конца пары ${Math.max(1, Math.ceil((current.time.end - now) / 60000))} мин.`;
+  } else if (next && previous) {
+    statusTitle = "Перемена";
+    statusText = `Следующая пара начнется в ${next.time.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.`;
+    selectedLesson = next;
+  } else if (next) {
+    statusTitle = "Пары еще не начались";
+    statusText = `Первая пара начнется в ${next.time.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.`;
+  } else {
+    statusTitle = "Пары на сегодня закончились";
+    statusText = "До завтра можно спокойно отдыхать.";
+    selectedLesson = previous;
+  }
+
+  const row = selectedLesson?.row;
+  const subject = row?.querySelector(".subject")?.textContent.trim() || "Предмет не указан";
+  const room = row?.querySelector(".room")?.textContent.trim().replace(/[()]/g, "") || "Аудитория не указана";
+  const teacher = row?.querySelector(".tname")?.textContent.trim() || "Преподаватель не указан";
+  const time = row?.querySelector(".time")?.textContent.trim() || "";
+  const mapQuery = encodeURIComponent(`МГТУ СТАНКИН аудитория ${room}`);
+  const state = current ? "current" : next ? "upcoming" : "finished";
+
+  nowSummaryCont.innerHTML = `
+    <section class="summary-card is-${state}">
+      <div class="summary-status"><span></span><strong>${statusTitle}</strong></div>
+      <p class="summary-hint">${statusText}</p>
+      <h2 class="summary-subject">${subject}</h2>
+      <div class="summary-details">
+        <span><b>Время</b>${time}</span>
+        <span><b>Аудитория</b>${room}</span>
+        <span><b>Преподаватель</b>${teacher}</span>
+      </div>
+    </section>`;
+}
+
+setInterval(loadSummary, 30000);
+
 const screensButtonsMapping = {
   "schedule-show": [document.querySelector("main"), document.querySelector("header")],
-  "marks-show": [document.getElementById("marks-screen")],
+  "marks-show": [document.getElementById("summary-screen")],
   "notes-show": [document.getElementById("notes-screen")],
   "profile-show": [document.getElementById("profile-screen")]
 }
