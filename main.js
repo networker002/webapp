@@ -217,6 +217,8 @@ let n = d.getDay();
 let m = d.getMonth();
 let dt = d.getDate();
 let scheduleWeekIndex = null;
+let calendarSelection = null;
+let selectedCalendarDate = null;
 
 function getScheduleWeekIndex() {
   const firstWeekMonday = new Date(2026, 7, 31);
@@ -727,8 +729,6 @@ async function waitForInitData(retries = 10) {
         hideLoader();
     }
 }
-
-waitForInitData();
 
 function safeReadNotes() {
   try {
@@ -2180,8 +2180,6 @@ function toBtoa(str) {
 }
 let ALLGROUPS;
 let groupEditorCloseTimer = null;
-let calendarSelection = null;
-let selectedCalendarDate = null;
 
 const calendarWeeks = [
   { id: 0, title: "1 числитель" },
@@ -4051,3 +4049,5 @@ function initColorPicker() {
 
 
         document.getElementById("lesson-swipe-1").onclick = () => showLessonVisualSetting();
+
+      waitForInitData();
