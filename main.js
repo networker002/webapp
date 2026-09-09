@@ -3288,7 +3288,8 @@ function loadSummary() {
   const today = Array.from(document.querySelectorAll(".day")).find((day) =>
     day.querySelector(".day-name")?.textContent.trim() === todayName,
   );
-  const tm = days[(new Date.setDate(dt + 1)).getDay()];
+  let tm = new Date();
+  tm.setDate(dt + 1)
   const tmD = Array.from(document.querySelectorAll(".day")).find((day) =>
     day.querySelector(".day-name")?.textContent.trim() === tm,
   );
