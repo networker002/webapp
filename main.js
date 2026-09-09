@@ -3259,8 +3259,9 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 
 function loadSummary() {
   const nowSummaryCont = document.querySelector(".now-lesson-summary-container");
+  const nextSummaryPath = document.querySelector(".summary-path-next");
 
-  if (!nowSummaryCont) return;
+  if (!nowSummaryCont || !nextSummaryPath) return;
 
   const parseTime = (timeText, baseDate = new Date()) => {
     const match = timeText?.match(/(\d{1,2})\s*:\s*(\d{2})/g);
@@ -3281,13 +3282,17 @@ function loadSummary() {
     row.dataset.lessonState = state;
   };
 
-  const allRows = Array.from(document.querySelectorAll(".lesson-row, .lesson-row2"));
+  const allRows = Array.from(document.querySelectorAll(".lesson-row"));
   const now = new Date();
   const todayName = days[now.getDay()];
   const today = Array.from(document.querySelectorAll(".day")).find((day) =>
     day.querySelector(".day-name")?.textContent.trim() === todayName,
   );
-  const rows = today ? Array.from(today.querySelectorAll(".lesson-row, .lesson-row2")) : [];
+  const tm = days[(new Date.setDate(dt + 1)).getDay()];
+  const tmD = Array.from(document.querySelectorAll(".day")).find((day) =>
+    day.querySelector(".day-name")?.textContent.trim() === tm,
+  );
+  const rows = today ? Array.from(today.querySelectorAll(".lesson-row")) : [];
   const lessons = rows
     .map((row) => ({ row, time: parseTime(row.querySelector(".time")?.textContent) }))
     .filter((lesson) => lesson.time)
@@ -3311,6 +3316,9 @@ function loadSummary() {
   let statusText;
   let selectedLesson = current || next;
 
+  let nextTitle;
+  let nextStatus;
+
   if (current) {
     statusTitle = "Сейчас идет";
     statusText = `До конца пары ${Math.max(1, Math.ceil((current.time.end - now) / 60000))} мин.`;
@@ -3326,13 +3334,41 @@ function loadSummary() {
     statusText = "До завтра можно спокойно отдыхать.";
     selectedLesson = previous;
   }
+ // testing 
+  if (next) {
+    const nextNext = lessons[lessons.indexOf(next) + 1];
+    let nextNextTime;
+    if (nextNext) nextNextTime = nextNext.time.start;
+    console.log(nextNext, nextNextTime);
+    if (!nextNext) {
+      nextTitle = "Домой";
+      nextStatus = "Сегодня пар больше не будет";
+    } else {
+      nextTitle = "Перемена";
+      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((nextNextTime - next.time.end) / 60000))} мин </strong> до следующей пары`;
+    }
+  } else if (current) {
+    if (next) {
+      nextTitle = "Перемена";
+      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((next.time.start - current.time.end) / 60000))} мин </strong> до следующей пары`;
+    } else {
+      nextTitle = "Домой";
+      nextStatus = "После этой пары занятий больше не будет";
+    }
+  } else {
+    nextTitle = "На завтра";
+    let s = new Set();
+    tmD.querySelectorAll(".lesson-row .lesson").forEach((r) => {s.add(parseInt(r.textContent))});
+    let lessonsNumber = Math.min(s.size, tmD.querySelectorAll(".lesson-row").length);
+    nextStatus = `У тебя завтра будет <strong>${lessonsNumber + (({1: " пара", 2: " пары", 3: " пары", 4: " пары"})[lessonsNumber] || " пар")}</strong>`;
+    tmD;
+  }
 
   const row = selectedLesson?.row;
   const subject = row?.querySelector(".subject")?.textContent.trim() || "Предмет не указан";
   const room = row?.querySelector(".room")?.textContent.trim().replace(/[()]/g, "") || "Аудитория не указана";
   const teacher = row?.querySelector(".tname")?.textContent.trim() || "Преподаватель не указан";
   const time = row?.querySelector(".time")?.textContent.trim() || "";
-  const mapQuery = encodeURIComponent(`МГТУ СТАНКИН аудитория ${room}`);
   const state = current ? "current" : next ? "upcoming" : "finished";
 
   nowSummaryCont.innerHTML = `
@@ -3346,6 +3382,14 @@ function loadSummary() {
         <span><b>Преподаватель</b>${teacher}</span>
       </div>
     </section>`;
+
+  nextSummaryPath.innerHTML = `
+    <div class="summary-path-card">
+      <div><h2>Потом</h2></div>
+      <div>${nextTitle}</div>
+      <div>${nextStatus}</div>
+    </div>
+  `;
 }
 
 setInterval(loadSummary, 30000);

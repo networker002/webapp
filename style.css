@@ -282,11 +282,21 @@ header.scrolling {
 
 .now-lesson-summary-container { padding: 0 1em 1em; }
 
-.summary-card {
+.summary-path-next { padding: 0 1em 1em; }
+
+.summary-card, .summary-path-card {
     padding: 1em;
     border: 1px solid rgba(255, 255, 255, .2);
     border-radius: 20px;
     background: linear-gradient(145deg, rgba(from var(--accent-bg) r g b / .9), rgba(from var(--accent) r g b / .22));
+}
+
+.summary-path-card {
+    display: flex;
+    gap: 5px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .summary-card.is-current { border-color: #38e681; filter: drop-shadow(0 0 22px rgba(56, 230, 129, .35)); }
@@ -3102,7 +3112,7 @@ h6.skeleton { opacity: .4; }
 
         }
 
-        .summary-header {
+        .summary-header h1 {
             padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
             text-align: center;
             display: flex;
