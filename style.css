@@ -255,7 +255,21 @@ header.scrolling {
     margin: auto 0;
     scale: 1.25;
 }
-.day .lesson-row, .lesson-row2 { position: relative;
+
+
+.day .lesson-row, .lesson-row2 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(45deg, rgba(from var(--over-color) r g b / 0.1), rgba(from var(--accent) r g b / 0.3));
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 15px !important;
+    border: 1px solid rgba(255,255,255,.2);
+}
+
+/* .day .lesson-row, .lesson-row2 { position: relative;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -263,10 +277,16 @@ header.scrolling {
     padding: 15px;
     border-radius: 15px;
     margin-top: 15px !important;
-}
+} */
+
+/* .subject {
+    font-size: var(--subject-f-size);
+} */
 
 .subject {
     font-size: var(--subject-f-size);
+    /* font-weight: 600; */
+    font-family: NotoSerifTamilSlanted ExtraBold;
 }
 
 .room {
