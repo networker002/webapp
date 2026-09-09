@@ -3392,8 +3392,7 @@ function loadSummary() {
 
   nextSummaryPath.innerHTML = `
     <div class="summary-path-card">
-      <div><h2>Потом</h2></div>
-      <div>${nextTitle}</div>
+      <div><h2>${nextTitle}</h2></div>
       <div>${nextStatus}</div>
     </div>
   `;

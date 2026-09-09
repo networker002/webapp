@@ -282,7 +282,14 @@ header.scrolling {
 
 .now-lesson-summary-container { padding: 0 1em 1em; }
 
-.summary-path-next { padding: 0 1em 1em; }
+.summary-path-next { padding: 0 1em 1em; 
+    &::before {
+        content: "ЗАТЕМ";
+        font-weight: 100;
+        letter-spacing: 1px;
+        padding-left: 2rem;
+        opacity: .73
+    }}
 
 .summary-card, .summary-path-card {
     padding: 1em;
@@ -293,7 +300,7 @@ header.scrolling {
 
 .summary-path-card {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: 5px;
     text-align: center;
     justify-content: center;
