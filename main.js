@@ -3282,16 +3282,16 @@ function loadSummary() {
     row.dataset.lessonState = state;
   };
 
-  const allRows = Array.from(document.querySelectorAll(".lesson-row"));
   const now = new Date();
   const todayName = days[now.getDay()];
   const today = Array.from(document.querySelectorAll(".day")).find((day) =>
     day.querySelector(".day-name")?.textContent.trim() === todayName,
   );
-  let tm = new Date();
-  tm.setDate(dt + 1)
-  const tmD = Array.from(document.querySelectorAll(".day")).find((day) =>
-    day.querySelector(".day-name")?.textContent.trim() === tm,
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowName = days[tomorrow.getDay()];
+  const tomorrowDay = Array.from(document.querySelectorAll(".day")).find((day) =>
+    day.querySelector(".day-name")?.textContent.trim() === tomorrowName,
   );
   const rows = today ? Array.from(today.querySelectorAll(".lesson-row")) : [];
   const lessons = rows
@@ -3299,7 +3299,7 @@ function loadSummary() {
     .filter((lesson) => lesson.time)
     .sort((a, b) => a.time.start - b.time.start);
 
-  allRows.forEach((row) => setState(row, "upcoming"));
+  rows.forEach((row) => setState(row, "upcoming"));
   lessons.forEach(({ row, time }) => {
     if (now >= time.start && now <= time.end) setState(row, "current");
     else if (now > time.end) setState(row, "finished");
@@ -3307,6 +3307,7 @@ function loadSummary() {
 
   if (!lessons.length) {
     nowSummaryCont.innerHTML = `<div class="summary-empty"><h2>Сегодня пар нет</h2><p>Можно выдохнуть и заняться своими делами.</p></div>`;
+    nextSummaryPath.innerHTML = "";
     return;
   }
 
@@ -3335,34 +3336,39 @@ function loadSummary() {
     statusText = "До завтра можно спокойно отдыхать.";
     selectedLesson = previous;
   }
- // testing 
-  if (next) {
-    const nextNext = lessons[lessons.indexOf(next) + 1];
-    let nextNextTime;
-    if (nextNext) nextNextTime = nextNext.time.start;
-    console.log(nextNext, nextNextTime);
-    if (!nextNext) {
-      nextTitle = "Домой";
-      nextStatus = "Сегодня пар больше не будет";
-    } else {
-      nextTitle = "Перемена";
-      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((nextNextTime - next.time.end) / 60000))} мин </strong> до следующей пары`;
-    }
-  } else if (current) {
+  if (current) {
     if (next) {
       nextTitle = "Перемена";
-      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((next.time.start - current.time.end) / 60000))} мин </strong> до следующей пары`;
+      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((next.time.start - current.time.end) / 60000))} мин</strong> до следующей пары`;
     } else {
       nextTitle = "Домой";
       nextStatus = "После этой пары занятий больше не будет";
     }
+  } else if (next) {
+    const nextNext = lessons[lessons.indexOf(next) + 1];
+    if (!nextNext) {
+      nextTitle = "Домой";
+      nextStatus = "После этой пары занятий больше не будет";
+    } else {
+      nextTitle = "Перемена";
+      nextStatus = `У тебя будет <strong>${Math.max(1, Math.ceil((nextNext.time.start - next.time.end) / 60000))} мин</strong> до следующей пары`;
+    }
   } else {
     nextTitle = "На завтра";
-    let s = new Set();
-    tmD.querySelectorAll(".lesson-row .lesson").forEach((r) => {s.add(parseInt(r.textContent))});
-    let lessonsNumber = Math.min(s.size, tmD.querySelectorAll(".lesson-row").length);
-    nextStatus = `У тебя завтра будет <strong>${lessonsNumber + (({1: " пара", 2: " пары", 3: " пары", 4: " пары"})[lessonsNumber] || " пар")}</strong>`;
-    tmD;
+    if (!tomorrowDay) {
+      nextStatus = "Расписание еще не опубликовано";
+    } else {
+      const lessonNumbers = new Set(
+        Array.from(tomorrowDay.querySelectorAll(".lesson")).map((lesson) =>
+          Number.parseInt(lesson.textContent, 10),
+        ),
+      );
+      const lessonsNumber = lessonNumbers.size;
+      const suffix =
+        lessonsNumber === 1 ? "пара" :
+        lessonsNumber >= 2 && lessonsNumber <= 4 ? "пары" : "пар";
+      nextStatus = `У тебя завтра будет <strong>${lessonsNumber} ${suffix}</strong>`;
+    }
   }
 
   const row = selectedLesson?.row;
