@@ -275,11 +275,6 @@ header.scrolling {
     box-shadow: 0 0 18px rgba(56, 230, 129, .42), inset 0 0 12px rgba(56, 230, 129, .12);
 }
 
-.lesson-row.is-finished, .lesson-row2.is-finished {
-    filter: grayscale(.8);
-    opacity: .58;
-}
-
 .lesson-row.is-upcoming, .lesson-row2.is-upcoming {
     border-color: rgba(255, 255, 255, .16);
     box-shadow: 0 0 0 transparent;
@@ -294,8 +289,9 @@ header.scrolling {
     background: linear-gradient(145deg, rgba(from var(--accent-bg) r g b / .9), rgba(from var(--accent) r g b / .22));
 }
 
-.summary-card.is-current { border-color: #38e681; box-shadow: 0 0 22px rgba(56, 230, 129, .3); }
+.summary-card.is-current { border-color: #38e681; filter: drop-shadow(0 0 22px rgba(56, 230, 129, .35)); }
 .summary-card.is-upcoming { border-color: #e2bd56; }
+.summary-card.is-finished { filter: grayscale(.8); opacity: .58; }
 .summary-status { display: flex; align-items: center; gap: .5em; font-size: 1.05em; }
 .summary-status span { width: .65em; height: .65em; border-radius: 50%; background: #9a9a9a; }
 .summary-card.is-current .summary-status span { background: #38e681; box-shadow: 0 0 12px #38e681; }
@@ -303,7 +299,7 @@ header.scrolling {
 .summary-hint { margin-top: .45em; color: var(--tg-theme-hint-color); }
 .summary-subject { margin-top: .8em; font-size: 1.25em; }
 .summary-details { display: grid; gap: .55em; margin-top: 1em; }
-.summary-details span { display: flex; justify-content: space-between; gap: 1em; }
+.summary-details span { display: flex; justify-content: space-between; gap: 1em; text-align: right;}
 .summary-details b { color: var(--tg-theme-hint-color); }
 .summary-map { display: inline-block; margin-top: 1em; color: var(--tg-theme-link-color); font-weight: 600; }
 .summary-empty { padding: 1.25em; text-align: center; border-radius: 20px; background: rgba(from var(--accent-bg) r g b / .7); }
