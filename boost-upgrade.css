@@ -917,7 +917,7 @@ body.pref-breaks-off .break-chip { display: none !important; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin: 6px 14px;
+  margin: 4px 14px;
   padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
@@ -926,6 +926,9 @@ body.pref-breaks-off .break-chip { display: none !important; }
   background: color-mix(in srgb, var(--tg-theme-hint-color, #8a94a6) 12%, transparent);
   user-select: none;
 }
+/* следующая пара тянет за собой margin-top: 15px !important — гасим его,
+   чтобы зазор под чипом был равен 4px (паддинг чипа), а не collapsed 15px */
+.day .break-chip + .lesson-row { margin-top: 4px !important; }
 
 /* ─── Нейрон-кнопка отправки в ИИ-чате ─── */
 #ai-chat-send {
