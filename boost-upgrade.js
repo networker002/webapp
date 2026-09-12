@@ -1007,9 +1007,33 @@
   function drawScheduleCard({ title, subtitle, weekLabel, lessons, mode }) {
     const W = 1080;
     const pad = 48;
-    const rowH = 150;
     const headerH = 280;
-    const H = Math.max(720, headerH + Math.max(lessons.length, 1) * rowH + 160);
+    const textLeft = pad + 110;
+    const maxTextW = W - pad - 30 - textLeft;
+
+    // Проход 1: измеряем текст и считаем высоту каждой строки — предмет
+    // переносится на несколько строк (до трёх), высота карточки от контента.
+    const measure = document.createElement("canvas").getContext("2d");
+    const subjectFont = "700 34px system-ui, -apple-system, sans-serif";
+    const metaFont = "400 24px system-ui, -apple-system, sans-serif";
+    measure.font = subjectFont;
+    const rows = lessons.map((lesson) => {
+      const lines = wrapCardText(measure, lesson.subject, maxTextW, 3);
+      measure.font = metaFont;
+      const meta = fitCardText(
+        measure,
+        [lesson.room && `ауд. ${lesson.room}`, lesson.teacher].filter(Boolean).join(" · "),
+        maxTextW,
+      );
+      measure.font = subjectFont;
+      // 40 = отступ времени, 84 = базовая линия предмета, +40 за строку,
+      // 38 = мета-строка, 18 = нижний паддинг карточки
+      const height = 84 + (lines.length - 1) * 40 + 38 + 18;
+      return { lesson, lines, meta, height };
+    });
+
+    const rowsH = rows.reduce((sum, row) => sum + row.height + 18, 0) - 18;
+    const H = Math.max(720, headerH + Math.max(rowsH, 140) + 160);
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
@@ -1052,7 +1076,7 @@
     ctx.fillText(weekLabel.slice(0, 24), pad + 22, 208);
 
     let y = headerH;
-    if (!lessons.length) {
+    if (!rows.length) {
       ctx.fillStyle = card;
       roundRect(ctx, pad, y, W - pad * 2, 140, 24);
       ctx.fill();
@@ -1060,34 +1084,35 @@
       ctx.font = "600 36px system-ui, -apple-system, sans-serif";
       ctx.fillText(mode === "summary" ? "Сегодня пар нет" : "Пар нет — можно отдыхать", pad + 36, y + 82);
     } else {
-      lessons.forEach((lesson, i) => {
+      rows.forEach(({ lesson, lines, meta, height }, i) => {
         ctx.fillStyle = i % 2 === 0 ? card : mixColor(card, bg, 0.35);
-        roundRect(ctx, pad, y, W - pad * 2, rowH - 18, 22);
+        roundRect(ctx, pad, y, W - pad * 2, height, 22);
         ctx.fill();
 
         ctx.fillStyle = accent;
-        roundRect(ctx, pad + 18, y + 28, 64, 64, 16);
+        roundRect(ctx, pad + 18, y + (height - 64) / 2, 64, 64, 16);
         ctx.fill();
         ctx.fillStyle = "#fff";
         ctx.font = "700 30px system-ui, -apple-system, sans-serif";
-        ctx.fillText(String(lesson.code || i + 1).slice(0, 2), pad + 36, y + 70);
+        ctx.textAlign = "center";
+        ctx.fillText(String(lesson.code || i + 1).slice(0, 2), pad + 50, y + height / 2 + 10);
+        ctx.textAlign = "left";
 
         ctx.fillStyle = hint;
         ctx.font = "600 26px system-ui, -apple-system, sans-serif";
-        ctx.fillText((lesson.time || "").slice(0, 20), pad + 110, y + 42);
+        ctx.fillText((lesson.time || "").slice(0, 20), textLeft, y + 40);
 
         ctx.fillStyle = text;
-        ctx.font = "700 34px system-ui, -apple-system, sans-serif";
-        ctx.fillText((lesson.subject || "—").slice(0, 36), pad + 110, y + 88);
+        ctx.font = subjectFont;
+        lines.forEach((lineText, li) => {
+          ctx.fillText(lineText, textLeft, y + 84 + li * 40);
+        });
 
         ctx.fillStyle = hint;
-        ctx.font = "400 24px system-ui, -apple-system, sans-serif";
-        const meta = [lesson.room && `ауд. ${lesson.room}`, lesson.teacher]
-          .filter(Boolean)
-          .join(" · ");
-        ctx.fillText(meta.slice(0, 52), pad + 110, y + 122);
+        ctx.font = metaFont;
+        ctx.fillText(meta, textLeft, y + 84 + (lines.length - 1) * 40 + 38);
 
-        y += rowH;
+        y += height + 18;
       });
     }
 
@@ -1099,6 +1124,42 @@
     ctx.fillText("BoostBot · t.me/mietcbot", pad + 28, H - 64);
 
     return canvas;
+  }
+
+  function wrapCardText(ctx, value, maxW, maxLines = 3) {
+    // Перенос по словам; если строки кончились, а слова нет — многоточие
+    const normalized = String(value || "—").replace(/\s+/g, " ").trim();
+    const words = normalized.split(" ");
+    const lines = [];
+    let line = "";
+    for (const word of words) {
+      const candidate = line ? line + " " + word : word;
+      if (!line || ctx.measureText(candidate).width <= maxW) {
+        line = candidate;
+      } else {
+        lines.push(line);
+        if (lines.length >= maxLines) break;
+        line = word;
+      }
+    }
+    if (lines.length < maxLines && line) lines.push(line);
+    if (lines.length === maxLines && words.join(" ") !== lines.join(" ")) {
+      let last = lines[maxLines - 1];
+      while (last.length > 1 && ctx.measureText(last + "…").width > maxW) {
+        last = last.slice(0, -1).trimEnd();
+      }
+      lines[maxLines - 1] = last + "…";
+    }
+    return lines;
+  }
+
+  function fitCardText(ctx, value, maxW) {
+    let s = String(value || "");
+    if (ctx.measureText(s).width <= maxW) return s;
+    while (s.length > 1 && ctx.measureText(s + "…").width > maxW) {
+      s = s.slice(0, -1).trimEnd();
+    }
+    return s + "…";
   }
 
   function roundRect(ctx, x, y, w, h, r) {
