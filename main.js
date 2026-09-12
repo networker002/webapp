@@ -230,7 +230,7 @@ let n = d.getDay();
 let m = d.getMonth();
 let dt = d.getDate();
 let scheduleWeekIndex = null;
-let scheduleWeekOffset = 0; // 0 = текущая реальная неделя, ±N — на N недель назад/вперёд
+let scheduleWeekOffset = 0; // 0 = текущая реальная неделя, 1–3 — до трёх недель вперёд; окно циклится по модулю 4
 let calendarSelection = null;
 let selectedCalendarDate = null;
 let scheduleRowsCache = null;
@@ -760,7 +760,10 @@ function switchWeek(delta, dayIndex) {
   try {
     haptic?.selectionChanged?.();
   } catch (_e) {}
-  scheduleWeekOffset += delta;
+  // окно недель = текущая + 3 вперёд (столько хранит расписание):
+  // за левым краем окна закрываемся на его правый край по датам и наоборот,
+  // чтобы по свайпам не уходить в недели, данных о которых уже нет
+  scheduleWeekOffset = ((scheduleWeekOffset + delta) % 4 + 4) % 4;
   scheduleWeekIndex = ((getScheduleWeekIndex() + scheduleWeekOffset) % 4 + 4) % 4;
   window.scheduleWeekIndex = scheduleWeekIndex;
   const weekMonday = getRealWeekMonday(scheduleWeekOffset);
