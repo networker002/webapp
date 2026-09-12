@@ -1571,15 +1571,28 @@ ${botSharePayloadLink()}`,
     const premium =
       Boolean(tg?.initDataUnsafe?.user?.is_premium) ||
       localStorage.getItem("boostSoftPremium") === "1";
-    const limit = premium ? AI_PREMIUM_DAILY : AI_FREE_DAILY;
+    // Лимит, возвращённый сервером (/ai/chat → quota), приоритетнее локальной догадки
+    // по is_premium — на бэкенде премиум-статус может быть другим
+    const limit =
+      Number.isFinite(raw.limit) && raw.limit > 0 ? raw.limit : premium ? AI_PREMIUM_DAILY : AI_FREE_DAILY;
     return { ...raw, premium, limit, left: Math.max(0, limit - (raw.used || 0)) };
+  }
+
+  function syncAiQuota(quota) {
+    // Сервер — источник истины по остатку квоты: перезаписываем им оптимистичный локальный счётчик
+    if (!quota || typeof quota !== "object") return;
+    const used = Number(quota.used);
+    const limit = Number(quota.limit);
+    if (!Number.isFinite(used) || !Number.isFinite(limit) || limit <= 0) return;
+    localStorage.setItem(AI_QUOTA_KEY, JSON.stringify({ day: new Date().toISOString().slice(0, 10), used: Math.max(0, used), limit }));
   }
 
   function consumeAiQuota() {
     const st = aiQuotaState();
     if (st.left <= 0) return false;
     st.used = (st.used || 0) + 1;
-    localStorage.setItem(AI_QUOTA_KEY, JSON.stringify({ day: st.day, used: st.used }));
+    // limit сохраняем: там может лежать серверное значение из syncAiQuota
+    localStorage.setItem(AI_QUOTA_KEY, JSON.stringify({ day: st.day, used: st.used, limit: st.limit }));
     return true;
   }
 
@@ -1720,6 +1733,9 @@ ${botSharePayloadLink()}`,
           method: "POST",
           body: JSON.stringify({ message: q }),
         });
+        // Ответ несёт актуальный остаток квоты — корректируем локальный счётчик
+        if (data?.quota) syncAiQuota(data.quota);
+        refreshQuotaLabel();
         pending.classList.remove("ai-thinking");
         pending.replaceChildren();
         const reply = data?.reply ||
@@ -1730,7 +1746,17 @@ ${botSharePayloadLink()}`,
         safeHaptic("success");
       } catch (err) {
         pending.classList.remove("ai-thinking");
-        pending.textContent = err?.message?.includes("429")
+        const errText = String(err?.message || "");
+        // В теле 429 сервер отдаёт {used, limit} — синхронизируем и его,
+        // чтобы остаток в шапке совпадал с сервером
+        const jsonAt = errText.indexOf("{");
+        if (errText.includes("429") && jsonAt !== -1) {
+          try {
+            syncAiQuota(JSON.parse(errText.slice(jsonAt)));
+            refreshQuotaLabel();
+          } catch (_) {}
+        }
+        pending.textContent = errText.includes("429")
           ? "Дневная квота AI исчерпана. Завтра лимит обновится."
           : "Сеть или сервер недоступны. Проверь интернет.";
         safeHaptic("error");
