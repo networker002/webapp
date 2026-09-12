@@ -943,3 +943,53 @@ body.pref-breaks-off .break-chip { display: none !important; }
   0%, 100% { opacity: .25; }
   50% { opacity: 1; }
 }
+
+/* ─── Кнопка «Поделиться» на главном экране ─── */
+#main-share-btn {
+  position: absolute;
+  /* отступ сверху = высота нативных кнопок Telegram (свернуть/меню) */
+  top: calc(
+    var(--tg-content-safe-area-inset-top, 0px) +
+    var(--tg-safe-area-inset-top, 0px) + 8px
+  );
+  right: calc(14px + var(--tg-safe-area-inset-right, 0px));
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--tg-theme-button-color, var(--accent)) 16%, transparent);
+  color: var(--tg-theme-button-color, var(--accent));
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform .15s ease, background .2s ease;
+}
+#main-share-btn:active {
+  transform: scale(.9);
+  background: color-mix(in srgb, var(--tg-theme-button-color, var(--accent)) 28%, transparent);
+}
+
+/* ─── Модалка заметки: контент не сжимается — скроллится ─── */
+#event-input > * {
+  flex-shrink: 0;
+}
+
+/* ─── Крестик отвязки пары: компактный и скрытый без пары ─── */
+#clear-pair-link {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 14px !important;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--tg-theme-destructive-text-color, #e74c3c) 14%, transparent);
+}
+#clear-pair-link[hidden] {
+  display: none !important;
+}

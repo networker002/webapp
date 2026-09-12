@@ -152,6 +152,12 @@
     }
   }
 
+  function syncPairLinkClear() {
+    const summary = document.getElementById("pair-link-summary");
+    const clearBtn = document.getElementById("clear-pair-link");
+    if (clearBtn) clearBtn.hidden = summary?.dataset.linked !== "1";
+  }
+
   function initAppearanceExtras() {
     // Тумблеры живут прямо в под-экранах «Подсказки» и «Заметки студента»
     document.querySelectorAll("input[data-pref]").forEach((input) => {
@@ -504,6 +510,7 @@
         pairField.textContent = `${pairLink.dayOfWeek} · ${pairLink.timeRange} · ${pairLink.subject}`;
         pairField.dataset.linked = "1";
       }
+      syncPairLinkClear();
       toast("Пара привязана к заметке");
     }, 120);
   }
@@ -646,6 +653,7 @@
         delete pairSummary.dataset.payload;
         pairSummary.textContent = "Не привязана — удержите пару в расписании";
       }
+      syncPairLinkClear();
     }
   }
 
@@ -1578,7 +1586,24 @@
   }
 
   /* ─── Share UI injection ─── */
+  function injectMainShareButton() {
+    const header = document.querySelector("header");
+    if (!header || document.getElementById("main-share-btn")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "main-share-btn";
+    btn.setAttribute("aria-label", "Поделиться расписанием");
+    btn.title = "Поделиться расписанием";
+    btn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path fill="currentColor" d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 1 0-3-3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0 0 6c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65a2.92 2.92 0 1 0 2.92-2.9z"/>' +
+      "</svg>";
+    btn.addEventListener("click", () => window.shareCurrentDayCard());
+    header.appendChild(btn);
+  }
+
   function injectShareButtons() {
+    injectMainShareButton();
     // calendar week headers — share inside week-type selector (per week block)
     const cal = document.getElementById("calendarContainer");
     if (cal) {
@@ -1768,6 +1793,7 @@
             pairSummary.dataset.linked = "0";
           }
         }
+        syncPairLinkClear();
       }, 0);
     });
 
@@ -1779,6 +1805,7 @@
         delete pairSummary.dataset.payload;
         pairSummary.textContent = "Не привязана — удержите пару в расписании";
       }
+      syncPairLinkClear();
       safeImpact("light");
     });
 
