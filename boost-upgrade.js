@@ -1180,6 +1180,23 @@
     return `https://t.me/${BOT_USERNAME}?start=share_${b64}`;
   }
 
+  async function shareViaBot(blob) {
+    // Заливаем карточку на бэкенд и ведём юзера в чат с ботом:
+    // бот отдаст PNG с HTML-подписью и кнопками «Выбрать чат»/«Сохранить».
+    const publicUrl = await uploadShareBlob(blob);
+    const filename = (publicUrl.split("/").pop() || "");
+    const digest = filename.replace(/\.png$/i, "").split("_").pop();
+    if (!/^[0-9a-f]{8,32}$/.test(digest)) throw new Error("bad digest");
+    if (typeof tg?.openTelegramLink === "function") {
+      tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=card_${digest}`);
+    } else {
+      window.open(`https://t.me/${BOT_USERNAME}?start=card_${digest}`, "_blank", "noopener,noreferrer");
+    }
+    safeHaptic("success");
+    toast("Открываю бота — оттуда отправь карточку в любой чат");
+    return "bot-card";
+  }
+
   function openChatChooser(publicUrl) {
     // Шаринг через Telegram: отправитель выбирает чат (в т.ч. чат с ботом).
     // Превью публичной картинки покажет изображение; t.me-ссылка в тексте
@@ -1202,8 +1219,19 @@ ${botSharePayloadLink()}`,
     const file = new File([blob], filename, { type: "image/png" });
     const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
 
-    // 0) Реальное вложение: системный шерит-шит отправляет именно картинку
-    //    (Android, iPhone), в тексте — диплинк, который Telegram автоссылкует
+    // 0) В Telegram основной путь — чат с ботом: карточка уходит на бэкенд,
+    //    бот отдаёт её с HTML-подписью и кнопками; так обходим ограничения
+    //    webview на всех платформах
+    if (inTelegram) {
+      try {
+        return await shareViaBot(blob);
+      } catch (err) {
+        console.warn("bot card share failed", err);
+      }
+    }
+
+    // 1) Реальное вложение: системный шерит-шит отправляет именно картинку
+    //    (браузер вне Telegram), в тексте — диплинк, который автоссылкует
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
@@ -1217,18 +1245,6 @@ ${botSharePayloadLink()}`,
       } catch (err) {
         if (err?.name === "AbortError") return "aborted";
         console.warn("share file failed", err);
-      }
-    }
-
-    // 1) В Telegram без файлового шерита (десктоп): рендер на бэкенд,
-    //    выбор чата с публичной картинкой (превью покажет изображение)
-    if (inTelegram) {
-      try {
-        const publicUrl = await uploadShareBlob(blob);
-        openChatChooser(publicUrl);
-        return "telegram-share";
-      } catch (err) {
-        console.warn("telegram chat share failed", err);
       }
     }
 
