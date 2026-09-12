@@ -1249,14 +1249,14 @@
     });
   }
 
-  async function uploadShareBlob(blob) {
+  async function uploadShareBlob(blob, weekRange = null) {
     const form = new FormData();
     form.append("file", blob, "schedule.png");
     form.append(
       "meta",
       JSON.stringify({
         group: localStorage.getItem("userGroup") || "",
-        week: window.scheduleWeekIndex ?? getScheduleWeekIndexFixed(),
+        week: weekRange || (window.scheduleWeekIndex ?? getScheduleWeekIndexFixed()),
       }),
     );
     const res = await fetch(`${API_BASE}/share/upload`, {
@@ -1283,20 +1283,53 @@
     return `https://t.me/${BOT_USERNAME}?start=share_${b64}`;
   }
 
+  function openBotChatWithFallback(url) {
+    // Клиенты Telegram игнорируют openTelegramLink вне пользовательского
+    // жеста (а после рендера/загрузки жест уже «протух») — если через 1.5с
+    // переключения не случилось, показываем явную кнопку
+    let bannerShown = false;
+    const showBanner = () => {
+      if (bannerShown) return;
+      bannerShown = true;
+      const bar = document.createElement("button");
+      bar.type = "button";
+      bar.id = "open-bot-banner";
+      bar.textContent = "Открыть бота, чтобы отправить карточку →";
+      bar.addEventListener("click", () => {
+        bar.remove();
+        if (typeof tg?.openTelegramLink === "function") tg.openTelegramLink(url);
+        else window.open(url, "_blank", "noopener,noreferrer");
+      });
+      document.body.appendChild(bar);
+      setTimeout(() => bar.remove(), 20000);
+    };
+    try {
+      if (typeof tg?.openTelegramLink === "function") tg.openTelegramLink(url);
+      else window.open(url, "_blank", "noopener,noreferrer");
+    } catch (err) {
+      console.warn("open bot link failed", err);
+      showBanner();
+      return;
+    }
+    setTimeout(() => {
+      if (document.visibilityState === "visible") showBanner();
+    }, 1500);
+  }
+
   async function shareViaBot(blob, weekRange) {
     // Заливаем карточку на бэкенд и ведём юзера в чат с ботом:
     // бот отдаст PNG с HTML-подписью и кнопками «Выбрать чат»/«Сохранить».
     // weekRange («07.09-13.09») — подпись диапазоном для недельной карточки.
-    const publicUrl = await uploadShareBlob(blob);
+    // В start-параметре допустимы только [A-Za-z0-9_-], поэтому в deep link
+    // диапазон уходит без точек (DDMM-DDMM) — бот разворачивает обратно.
+    const publicUrl = await uploadShareBlob(blob, weekRange);
     const filename = (publicUrl.split("/").pop() || "");
     const digest = filename.replace(/\.png$/i, "").split("_").pop();
     if (!/^[0-9a-f]{8,32}$/.test(digest)) throw new Error("bad digest");
-    const start = weekRange ? `card_${digest}_${weekRange}` : `card_${digest}`;
-    if (typeof tg?.openTelegramLink === "function") {
-      tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=${start}`);
-    } else {
-      window.open(`https://t.me/${BOT_USERNAME}?start=${start}`, "_blank", "noopener,noreferrer");
-    }
+    const start = weekRange
+      ? `card_${digest}_${weekRange.replace(/\./g, "")}`
+      : `card_${digest}`;
+    openBotChatWithFallback(`https://t.me/${BOT_USERNAME}?start=${start}`);
     safeHaptic("success");
     toast("Открываю бота — оттуда отправь карточку в любой чат");
     return "bot-card";
@@ -1722,6 +1755,10 @@ ${botSharePayloadLink()}`,
         const weekId = calendarWeeksIndexFromTitle(
           header.querySelector(".calendar-week-title")?.textContent,
         );
+        // Реальный понедельник кликнутого блока (а не типа недели!) —
+        // берём из даты Пн в сетке блока
+        const blockMonday =
+          weekBlock?.querySelector(".calendar-day-btn")?.dataset?.date || null;
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "share-btn share-week-type-btn";
@@ -1731,7 +1768,7 @@ ${botSharePayloadLink()}`,
           '<path fill="currentColor" d="m16 5l-1.42 1.42l-1.59-1.59V16h-1.98V4.83L9.42 6.42L8 5l4-4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2"/></svg>';
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          shareWeekTypeCard(weekId);
+          shareWeekTypeCard(weekId, blockMonday);
         });
         header.appendChild(btn);
         if (weekBlock) weekBlock.dataset.weekId = String(weekId);
@@ -1755,7 +1792,7 @@ ${botSharePayloadLink()}`,
     return idx >= 0 ? idx : window.scheduleWeekIndex ?? getScheduleWeekIndexFixed();
   }
 
-  async function shareWeekTypeCard(weekId) {
+  async function shareWeekTypeCard(weekId, blockMonday = null) {
     try {
       toast("Рисуем неделю…");
       const prev = window.scheduleWeekIndex;
@@ -1786,11 +1823,16 @@ ${botSharePayloadLink()}`,
         mode: "week",
       });
       const blob = await canvasToPngBlob(canvas);
-      // Реальные даты недели (пн–вс) — бот поставит их в подпись карточки
-      const monday =
-        typeof window.getScheduleWeekMonday === "function"
-          ? window.getScheduleWeekMonday(target)
-          : null;
+      // Реальные даты кликнутой недели (пн–вс) — бот поставит их в подпись.
+      // epoch-фолбэк только если даты блока недоступны
+      let monday = null;
+      if (blockMonday) {
+        const parsed = new Date(`${blockMonday}T00:00:00`);
+        if (!Number.isNaN(parsed.getTime())) monday = parsed;
+      }
+      if (!monday && typeof window.getScheduleWeekMonday === "function") {
+        monday = window.getScheduleWeekMonday(target);
+      }
       let weekRange = null;
       if (monday instanceof Date && !Number.isNaN(monday.getTime())) {
         const fmt = (d) =>
