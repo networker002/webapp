@@ -3258,3 +3258,24 @@ h6.skeleton { opacity: .4; }
                     font-size: 2.5em;
                 }
             }
+        #set-app3 {
+            animation: starting .5s forwards;
+            display: none;
+            flex-direction: column;
+            justify-content: center !important;
+            text-align: center;
+        }
+
+        #set-app3 .tips-screen-title {
+            margin-top: 10px !important;
+        }
+
+        #set-app3 .tips-screen-sub {
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+            margin-top: 4px !important;
+        }
+
+        #set-app3 .a-settings-area {
+            padding-left: 10px;
+        }
