@@ -917,7 +917,9 @@ body.pref-breaks-off .break-chip { display: none !important; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin: 4px 14px;
+  width: fit-content;
+  min-width: 50%;
+  margin: 4px auto;
   padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
