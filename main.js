@@ -624,7 +624,17 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           }
         })
         .catch((err) => {
-          console.error("Ошибка:", err);
+          const cachedGroup = localStorage.getItem("userGroup");
+          const cachedSchedule = localStorage.getItem("schedule");
+          if (cachedGroup && cachedSchedule) {
+            const groupElement = document.getElementById("gr");
+            if (groupElement) groupElement.textContent = cachedGroup;
+            container.innerHTML = cachedSchedule;
+            dayParseOnline();
+            initSwiper();
+            applyCalendarSelection();
+          }
+          console.warn("Расписание недоступно, используем кэш:", err);
           setTimeout(() => {
             loader.style.display = "none";
           loaderContainer.style.display = "none";
@@ -2825,6 +2835,7 @@ document.getElementById("notifications-toggle").onchange = (e) => {
 };
 
 async function noti() {
+  if (!tg?.initData) return;
   const authHeaders = { Authorization: tg.initData };
 
   try {
@@ -2862,7 +2873,7 @@ async function noti() {
       }
     }
   } catch (error) {
-    console.error("Error loading notifications:", error);
+    console.warn("Дополнительные данные недоступны:", error);
   }
 }
 
@@ -3856,16 +3867,16 @@ function initColorPicker() {
 
         function enableResLessonBtn() {
             const btn = document.querySelector(".reset-lesson-settings-c-btn");
-            if (btn.classList.contains("disabled")) btn.classList.remove("disabled");
+          if (btn?.classList.contains("disabled")) btn.classList.remove("disabled");
         }
         function disableResLessonBtn() {
             const btn = document.querySelector(".reset-lesson-settings-c-btn");
-            if (!btn.classList.contains("disabled")) btn.classList.add("disabled");
+          if (btn && !btn.classList.contains("disabled")) btn.classList.add("disabled");
         }
 
         function resetCustomLessonCard() {
             let ls = localStorage.getItem(lessonCardSettingsStorageKey);
-            if (ls) localStorage.removeItem(lessonCardSettingSteps);
+          if (ls) localStorage.removeItem(lessonCardSettingsStorageKey);
 
             var defaultProperties = {
                 "--lesson-number-padding": "5px",
@@ -3884,14 +3895,14 @@ function initColorPicker() {
 
         }
 
-        document.querySelector(".reset-lesson-settings-c-btn").onclick = () => {
+        document.querySelector(".reset-lesson-settings-c-btn")?.addEventListener("click", () => {
             resetCustomLessonCard();
             //anim
             const ob = document.querySelector(".to-settings");
-            ob.click();
+          ob?.click();
             disableResLessonBtn();
-            ob.click()
-        }
+          ob?.click();
+        });
 
         var settingsObjNamesMapping = {
             "day-name2": ["День недели", "--day-name-letter-sp", "--day-name-gap"],

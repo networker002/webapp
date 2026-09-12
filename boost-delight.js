@@ -67,6 +67,7 @@
   }
 
   async function api(path, options = {}) {
+    if (!navigator.onLine) throw new Error("offline");
     const opts = { ...options };
     opts.headers = {
       ...authHeaders(
@@ -74,7 +75,10 @@
       ),
       ...(opts.headers || {}),
     };
-    const res = await fetch(`${API_BASE}${path}`, opts);
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...opts,
+      signal: AbortSignal.timeout?.(8000),
+    });
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       throw new Error(`API ${path}: ${res.status} ${text}`);
