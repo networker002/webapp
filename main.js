@@ -2697,6 +2697,15 @@ function initSwiper() {
   // во время переключения недели приземляемся на нужный день мгновенно (speed 0):
   // анимированный переход с Пн до Сб выглядел как быстрый пролёт всей недели
   swiper.slideToLoop(initialSlide, weekSwitchPending ? 0 : undefined);
+  // изначально выбранный в календаре день = день, на котором стоит свайпер
+  // (в обычные дни — сегодня, в воскресенье — понедельник отображаемой недели),
+  // иначе при открытии календаря пометка selected-day никому не назначена
+  if (!calendarSelection) {
+    const initMonday = getRealWeekMonday(scheduleWeekOffset);
+    const initDate = new Date(initMonday);
+    initDate.setDate(initMonday.getDate() + initialSlide);
+    selectedCalendarDate = initDate.toISOString().slice(0, 10);
+  }
   let lastRealIndex = swiper.realIndex;
   requestAnimationFrame(updateDynamicDayBottomSpacing);
   swiper.on("slideChange", () => {
