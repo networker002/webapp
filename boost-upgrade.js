@@ -1599,14 +1599,6 @@ ${botSharePayloadLink()}`,
   function initAiChat() {
     if (document.getElementById("ai-chat-panel")) return;
 
-    const fab = document.createElement("button");
-    fab.id = "ai-chat-fab";
-    fab.type = "button";
-    fab.hidden = true; // по умолчанию открыт экран расписания — там ассистент
-    fab.setAttribute("aria-label", "Спросить про расписание");
-    fab.innerHTML = "✦";
-    document.body.appendChild(fab);
-
     const panel = document.createElement("div");
     panel.id = "ai-chat-panel";
     panel.hidden = true;
@@ -1675,14 +1667,6 @@ ${botSharePayloadLink()}`,
       log.scrollTop = log.scrollHeight;
     }
 
-    fab.addEventListener("click", () => {
-      panel.hidden = !panel.hidden;
-      if (!panel.hidden) {
-        refreshQuotaLabel();
-        input.focus();
-        safeImpact("light");
-      }
-    });
     // Ассистент «звёздочка» открывает чат только если он включён в настройках
     const aiEnabled = () => localStorage.getItem("isActiveAI") !== "false";
     const openChatFromStarry = () => {
@@ -1959,15 +1943,6 @@ ${botSharePayloadLink()}`,
     injectShareButtons();
     initAiChat();
     initAppearanceExtras();
-    document.querySelectorAll("#schedule-show, #marks-show, #notes-show, #profile-show").forEach((button) => {
-      button.addEventListener("click", () => {
-        const scheduleScreen = button.id === "schedule-show";
-        const fab = document.getElementById("ai-chat-fab");
-        // На расписании работает ассистент «звёздочка», FAB — на остальных экранах
-        if (fab) fab.hidden = scheduleScreen;
-        if (scheduleScreen) document.getElementById("ai-chat-panel")?.setAttribute("hidden", "");
-      });
-    });
     enrichLessonRows();
     if (typeof window.getNotes === "function") window.getNotes();
     renderDeadlinesStrip();
