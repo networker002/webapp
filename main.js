@@ -221,13 +221,13 @@ let calendarSelection = null;
 let selectedCalendarDate = null;
 
 function getScheduleWeekIndex() {
-  const firstWeekMonday = new Date(2026, 7, 31);
+  const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
   const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
   return ((elapsedWeeks % 4) + 4) % 4;
 }
 
 function getScheduleWeekMonday(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
-  const firstWeekMonday = new Date(2026, 7, 31);
+  const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
   firstWeekMonday.setDate(firstWeekMonday.getDate() + weekIndex * 7);
   return firstWeekMonday;
 }
@@ -393,6 +393,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
               weekType = weekTypeNumber;
             }
             scheduleWeekIndex = ((Number(weekType) % 4) + 4) % 4;
+            try { localStorage.setItem("schedule_json", JSON.stringify({ weekType: scheduleWeekIndex, rows: data[1], times: data[2], savedAt: Date.now() })); } catch (_e) {}
             updateDayButtonDates(scheduleWeekIndex);
 
             let newHTML = "";
@@ -478,7 +479,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
                 dayItems.forEach((item) => {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
-                    <div class="lesson-row lesson-row2">
+                    <div class="lesson-row lesson-row2" data-week="${weekType}" data-lesson-code="${item.lesson_code}" data-subject="${String(item.subject_name||'').replace(/"/g,'&quot;')}" data-room="${String(item.room_name||'').replace(/"/g,'&quot;')}" data-day="${dayName}">
                       <div>
                       <h4 class="lesson">${item.lesson_code}</h4>
                       </div>

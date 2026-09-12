@@ -7,6 +7,7 @@
     <title>Расписание 📅</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="boost-upgrade.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
@@ -106,13 +107,13 @@
         </label>
         <div class="event-field">
             <span>Название</span>
-            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="64">
+            <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="96">
         </div>
         <div class="event-field time-field">
-            <span>Время</span>
+            <span>Время создания</span>
             <div class="time-row">
-                <input type="text" id="time-event" maxlength="11" min="4" placeholder="12:00">
-                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + new Date().getMinutes();">now</b>
+                <input type="text" id="time-event" maxlength="32" min="4" placeholder="12:00">
+                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2,'0');">now</b>
             </div>
         </div>
         <div class="event-field">
@@ -120,12 +121,37 @@
             <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
         </div>
         <div class="event-field">
+            <span>Ссылка на пару</span>
+            <div class="pair-link-box">
+                <div id="pair-link-summary" data-linked="0">Не привязана — удержите пару в расписании</div>
+                <button type="button" id="clear-pair-link" aria-label="Сбросить привязку">×</button>
+            </div>
+        </div>
+        <div class="event-field">
+            <span>Дедлайн</span>
+            <input type="datetime-local" id="deadline-event">
+            <div class="deadline-presets">
+                <button type="button" data-deadline-preset="3">+3ч</button>
+                <button type="button" data-deadline-preset="24">Завтра</button>
+                <button type="button" data-deadline-preset="72">+3 дня</button>
+                <button type="button" data-deadline-preset="168">Неделя</button>
+            </div>
+        </div>
+        <div class="event-field priority-field">
+            <span>Приоритет</span>
+            <select id="priority-event">
+                <option value="low">Низкий</option>
+                <option value="normal" selected>Обычный</option>
+                <option value="high">Высокий</option>
+                <option value="urgent">Срочно</option>
+            </select>
+        </div>
+        <div class="event-field">
             <span>Дополнительно</span>
-            <textarea placeholder="Заметки..." id="extra-event" maxlength="128"></textarea>
+            <textarea placeholder="Заметки, критерии сдачи, ссылки..." id="extra-event" maxlength="2000"></textarea>
         </div>
         <div class="btbtns">
             <button id="save-event-btn" onclick="saveNoteNew()">Сохранить</button>
-            <!-- <button id="cancel-event-btn">Отмена</button> -->
         </div>
     </div>
 
@@ -276,6 +302,8 @@
         </div>
 
     <script src="main.js" defer></script>
+    <script src="boost-upgrade.js" defer></script>
+    <script src="boost-delight.js" defer></script>
 
     <div class="screen-to-show" id="summary-screen">
         <div class="summary-header"><h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 15.6l3.2-4.6h-2.85l2-7H9v8h3zm5.375-4.25l-6 8.675q-.15.225-.387.3t-.463 0t-.375-.262T10 19.6V14H9q-.825 0-1.412-.587T7 12V4q0-.825.588-1.412T9 2h5.85q.8 0 1.288.625T16.425 4L15 9h1.125q.9 0 1.338.8t-.088 1.55M12 12H9z"/></svg> Мой день</h1></div>
