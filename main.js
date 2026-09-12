@@ -252,6 +252,10 @@ function getRealWeekMonday(offset = scheduleWeekOffset) {
   return monday;
 }
 
+// для boost-upgrade.js: дата активного дня шаринга (карточка дня = эта дата)
+window.getRealWeekMonday = getRealWeekMonday;
+window.getScheduleWeekOffset = () => scheduleWeekOffset;
+
 function updateDayButtonDates(offset = scheduleWeekOffset) {
   const weekMonday = getRealWeekMonday(offset);
 

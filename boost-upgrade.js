@@ -1249,7 +1249,7 @@
     });
   }
 
-  async function uploadShareBlob(blob, weekRange = null) {
+  async function uploadShareBlob(blob, weekRange = null, cardDate = null) {
     const form = new FormData();
     form.append("file", blob, "schedule.png");
     form.append(
@@ -1257,6 +1257,7 @@
       JSON.stringify({
         group: localStorage.getItem("userGroup") || "",
         week: weekRange || (window.scheduleWeekIndex ?? getScheduleWeekIndexFixed()),
+        ...(cardDate ? { date: `${cardDate.slice(0, 2)}.${cardDate.slice(2, 4)}` } : {}),
       }),
     );
     const res = await fetch(`${API_BASE}/share/upload`, {
@@ -1316,19 +1317,21 @@
     }, 1500);
   }
 
-  async function shareViaBot(blob, weekRange) {
+  async function shareViaBot(blob, weekRange, cardDate) {
     // Заливаем карточку на бэкенд и ведём юзера в чат с ботом:
     // бот отдаст PNG с HTML-подписью и кнопками «Выбрать чат»/«Сохранить».
-    // weekRange («07.09-13.09») — подпись диапазоном для недельной карточки.
-    // В start-параметре допустимы только [A-Za-z0-9_-], поэтому в deep link
-    // диапазон уходит без точек (DDMM-DDMM) — бот разворачивает обратно.
-    const publicUrl = await uploadShareBlob(blob, weekRange);
+    // weekRange («07.09-13.09») — подпись диапазоном для недельной карточки;
+    // cardDate («1309») — дата дневной карточки: бот ключует кэш и подпись
+    // по ней, а не по «сегодня».
+    // В start-параметре допустимы только [A-Za-z0-9_-], поэтому суффиксы
+    // уходят без точек — бот разворачивает обратно.
+    const publicUrl = await uploadShareBlob(blob, weekRange, cardDate);
     const filename = (publicUrl.split("/").pop() || "");
     const digest = filename.replace(/\.png$/i, "").split("_").pop();
     if (!/^[0-9a-f]{8,32}$/.test(digest)) throw new Error("bad digest");
-    const start = weekRange
-      ? `card_${digest}_${weekRange.replace(/\./g, "")}`
-      : `card_${digest}`;
+    let start = `card_${digest}`;
+    if (weekRange) start += `_${weekRange.replace(/\./g, "")}`;
+    else if (cardDate) start += `_${cardDate}`;
     openBotChatWithFallback(`https://t.me/${BOT_USERNAME}?start=${start}`);
     safeHaptic("success");
     toast("Открываю бота — оттуда отправь карточку в любой чат");
@@ -1353,7 +1356,7 @@ ${botSharePayloadLink()}`,
     toast("Выбери чат для отправки");
   }
 
-  async function shareBlobWithFallbacks(blob, filename = "schedule.png", weekRange = null) {
+  async function shareBlobWithFallbacks(blob, filename = "schedule.png", weekRange = null, cardDate = null) {
     const file = new File([blob], filename, { type: "image/png" });
     const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
 
@@ -1362,7 +1365,7 @@ ${botSharePayloadLink()}`,
     //    webview на всех платформах
     if (inTelegram) {
       try {
-        return await shareViaBot(blob, weekRange);
+        return await shareViaBot(blob, weekRange, cardDate);
       } catch (err) {
         console.warn("bot card share failed", err);
       }
@@ -1441,7 +1444,19 @@ ${botSharePayloadLink()}`,
         mode: "day",
       });
       const blob = await canvasToPngBlob(canvas);
-      await shareBlobWithFallbacks(blob, `${group}-${dayName}.png`);
+      // Дата активного дня: реальный понедельник отображённой недели + индекс
+      // свайпера. Бот ключует кэш и подпись по дате карточки, а не по «сегодня»
+      let cardDate = null;
+      const swiper = document.querySelector(".swiper")?.swiper;
+      const dayIdx = swiper?.realIndex ?? 0;
+      if (typeof window.getRealWeekMonday === "function") {
+        const monday = window.getRealWeekMonday(window.getScheduleWeekOffset?.() ?? 0);
+        if (monday instanceof Date && !Number.isNaN(monday.getTime())) {
+          const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + dayIdx);
+          cardDate = `${String(d.getDate()).padStart(2, "0")}${String(d.getMonth() + 1).padStart(2, "0")}`;
+        }
+      }
+      await shareBlobWithFallbacks(blob, `${group}-${dayName}.png`, null, cardDate);
     } catch (err) {
       console.error(err);
       safeHaptic("error");
