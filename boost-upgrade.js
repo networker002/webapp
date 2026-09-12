@@ -1283,17 +1283,19 @@
     return `https://t.me/${BOT_USERNAME}?start=share_${b64}`;
   }
 
-  async function shareViaBot(blob) {
+  async function shareViaBot(blob, weekRange) {
     // Заливаем карточку на бэкенд и ведём юзера в чат с ботом:
     // бот отдаст PNG с HTML-подписью и кнопками «Выбрать чат»/«Сохранить».
+    // weekRange («07.09-13.09») — подпись диапазоном для недельной карточки.
     const publicUrl = await uploadShareBlob(blob);
     const filename = (publicUrl.split("/").pop() || "");
     const digest = filename.replace(/\.png$/i, "").split("_").pop();
     if (!/^[0-9a-f]{8,32}$/.test(digest)) throw new Error("bad digest");
+    const start = weekRange ? `card_${digest}_${weekRange}` : `card_${digest}`;
     if (typeof tg?.openTelegramLink === "function") {
-      tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=card_${digest}`);
+      tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=${start}`);
     } else {
-      window.open(`https://t.me/${BOT_USERNAME}?start=card_${digest}`, "_blank", "noopener,noreferrer");
+      window.open(`https://t.me/${BOT_USERNAME}?start=${start}`, "_blank", "noopener,noreferrer");
     }
     safeHaptic("success");
     toast("Открываю бота — оттуда отправь карточку в любой чат");
@@ -1318,7 +1320,7 @@ ${botSharePayloadLink()}`,
     toast("Выбери чат для отправки");
   }
 
-  async function shareBlobWithFallbacks(blob, filename = "schedule.png") {
+  async function shareBlobWithFallbacks(blob, filename = "schedule.png", weekRange = null) {
     const file = new File([blob], filename, { type: "image/png" });
     const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
 
@@ -1327,7 +1329,7 @@ ${botSharePayloadLink()}`,
     //    webview на всех платформах
     if (inTelegram) {
       try {
-        return await shareViaBot(blob);
+        return await shareViaBot(blob, weekRange);
       } catch (err) {
         console.warn("bot card share failed", err);
       }
@@ -1784,7 +1786,19 @@ ${botSharePayloadLink()}`,
         mode: "week",
       });
       const blob = await canvasToPngBlob(canvas);
-      await shareBlobWithFallbacks(blob, `${group}-week-${target + 1}.png`);
+      // Реальные даты недели (пн–вс) — бот поставит их в подпись карточки
+      const monday =
+        typeof window.getScheduleWeekMonday === "function"
+          ? window.getScheduleWeekMonday(target)
+          : null;
+      let weekRange = null;
+      if (monday instanceof Date && !Number.isNaN(monday.getTime())) {
+        const fmt = (d) =>
+          `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
+        const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+        weekRange = `${fmt(monday)}-${fmt(sunday)}`;
+      }
+      await shareBlobWithFallbacks(blob, `${group}-week-${target + 1}.png`, weekRange);
       if (typeof prev === "number" && prev !== target && typeof window.getSchedule1 === "function") {
         window.scheduleWeekIndex = prev;
         window.getSchedule1(true, prev);
