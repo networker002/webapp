@@ -1019,20 +1019,21 @@
     return v || fallback;
   }
 
-  function drawScheduleCard({ title, subtitle, weekLabel, lessons, mode }) {
+  function drawScheduleCard({ title, subtitle, weekLabel, lessons, days, mode }) {
     const W = 1080;
     const pad = 48;
     const headerH = 280;
     const textLeft = pad + 110;
     const maxTextW = W - pad - 30 - textLeft;
+    const DAY_HEAD = 56; // заголовок мини-блока дня: подпись + линия
+    const GROUP_GAP = 24; // зазор между мини-блоками дней
 
     // Проход 1: измеряем текст и считаем высоту каждой строки — предмет
     // переносится на несколько строк (до трёх), высота карточки от контента.
     const measure = document.createElement("canvas").getContext("2d");
     const subjectFont = "700 34px system-ui, -apple-system, sans-serif";
     const metaFont = "400 24px system-ui, -apple-system, sans-serif";
-    measure.font = subjectFont;
-    const rows = lessons.map((lesson) => {
+    const measureRow = (lesson) => {
       const lines = wrapCardText(measure, lesson.subject, maxTextW, 3);
       measure.font = metaFont;
       const meta = fitCardText(
@@ -1045,9 +1046,17 @@
       // 38 = мета-строка, 18 = нижний паддинг карточки
       const height = 84 + (lines.length - 1) * 40 + 38 + 18;
       return { lesson, lines, meta, height };
-    });
+    };
+    const groups = (days || []).map((d) => ({ name: d.name, rows: d.lessons.map(measureRow) }));
+    const rows = groups.length ? [] : (lessons || []).map(measureRow);
 
-    const rowsH = rows.reduce((sum, row) => sum + row.height + 18, 0) - 18;
+    const rowsH = groups.length
+      ? groups.reduce(
+          (sum, g) =>
+            sum + DAY_HEAD + g.rows.reduce((s, r) => s + r.height + 18, 0) + GROUP_GAP,
+          0,
+        ) - GROUP_GAP
+      : rows.reduce((sum, row) => sum + row.height + 18, 0) - 18;
     const H = Math.max(720, headerH + Math.max(rowsH, 140) + 160);
     const canvas = document.createElement("canvas");
     canvas.width = W;
@@ -1091,7 +1100,7 @@
     ctx.fillText(weekLabel.slice(0, 24), pad + 22, 208);
 
     let y = headerH;
-    if (!rows.length) {
+    if (!rows.length && !groups.length) {
       ctx.fillStyle = card;
       roundRect(ctx, pad, y, W - pad * 2, 140, 24);
       ctx.fill();
@@ -1099,7 +1108,7 @@
       ctx.font = "600 36px system-ui, -apple-system, sans-serif";
       ctx.fillText(mode === "summary" ? "Сегодня пар нет" : "Пар нет — можно отдыхать", pad + 36, y + 82);
     } else {
-      rows.forEach(({ lesson, lines, meta, height }, i) => {
+      const drawRow = ({ lesson, lines, meta, height }, i) => {
         ctx.fillStyle = i % 2 === 0 ? card : mixColor(card, bg, 0.35);
         roundRect(ctx, pad, y, W - pad * 2, height, 22);
         ctx.fill();
@@ -1128,7 +1137,25 @@
         ctx.fillText(meta, textLeft, y + 84 + (lines.length - 1) * 40 + 38);
 
         y += height + 18;
-      });
+      };
+
+      if (groups.length) {
+        // Мини-блоки по дням: подпись дня акцентом + линия, под ней пары дня
+        groups.forEach(({ name, rows: groupRows }) => {
+          ctx.fillStyle = accent;
+          ctx.font = "700 30px system-ui, -apple-system, sans-serif";
+          ctx.fillText(name, pad + 6, y + 30);
+          ctx.fillStyle = hint;
+          ctx.globalAlpha = 0.35;
+          ctx.fillRect(pad + 6, y + 44, W - pad * 2 - 12, 2);
+          ctx.globalAlpha = 1;
+          y += DAY_HEAD;
+          groupRows.forEach(drawRow);
+          y += GROUP_GAP;
+        });
+      } else {
+        rows.forEach(drawRow);
+      }
     }
 
     ctx.fillStyle = accent;
@@ -1738,19 +1765,22 @@ ${botSharePayloadLink()}`,
       }
       const group = localStorage.getItem("userGroup") || "Группа";
       const days = Array.from(document.querySelectorAll(".day"));
-      const lessons = [];
+      const dayBlocks = [];
       days.forEach((dayEl) => {
         const dayName = dayEl.querySelector(".day-name")?.textContent?.trim() || "";
-        const short = DAY_SHORT_NAMES[dayName] ?? dayName.slice(0, 2);
-        collectDayLessonsFromDom(dayEl).forEach((l) => {
-          lessons.push({ ...l, subject: `${short} · ${l.subject}` });
-        });
+        const dayLessons = collectDayLessonsFromDom(dayEl).slice(0, 8);
+        if (dayLessons.length) {
+          dayBlocks.push({
+            name: DAY_SHORT_NAMES[dayName] ?? dayName.slice(0, 2),
+            lessons: dayLessons,
+          });
+        }
       });
       const canvas = drawScheduleCard({
         title: group,
         subtitle: WEEK_TITLES[target] || `Неделя ${target + 1}`,
         weekLabel: WEEK_TITLES[target] || "",
-        lessons: lessons.slice(0, 12),
+        days: dayBlocks,
         mode: "week",
       });
       const blob = await canvasToPngBlob(canvas);
