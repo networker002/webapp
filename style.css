@@ -2013,7 +2013,7 @@ h6.skeleton { opacity: .4; }
     position: fixed;
     bottom: 6em;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(0deg) scale(1);
     background: var(--tg-theme-button-color);
     padding: 0;
     border-radius: 50%;
@@ -2033,7 +2033,7 @@ h6.skeleton { opacity: .4; }
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform .2s ease, background .4s ease, bottom .5s ease-in-out;
+    transition: transform .45s ease-in-out, background .4s ease, bottom .5s ease-in-out, left .5s ease-in-out, scale .2s ease;
     scale: 1.25;
     z-index: 99999;
 }
@@ -2044,16 +2044,19 @@ h6.skeleton { opacity: .4; }
     flex: 0 0 auto;
 }
 
-#note-add-btn:active {
-    transform: translateX(-50%) scale(.9);
+#note-add-btn:active { scale: 1.12; }
 
-}
-
+/* Открытая модалка: кнопка превращается в «×», уезжает в левый нижний угол
+   и уменьшается — иначе она лежит прямо на кнопке «Сохранить» */
 #note-add-btn.opened {
-    transform: translateX(-50%) rotate(45deg) scale(1.25);
+    left: calc(10px + var(--tg-safe-area-inset-left, 0px));
+    bottom: calc(10px + var(--tg-safe-area-inset-bottom, 0px));
+    transform: translateX(0%) rotate(45deg) scale(1);
+    scale: .72;
     background: rgb(from var(--tg-theme-hint-color) r g b / .7);
-    bottom: 1em;
 }
+
+#note-add-btn.opened:active { scale: .64; }
 
 .screen-to-show {
     justify-content: center;
