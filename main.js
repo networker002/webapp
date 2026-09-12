@@ -13,14 +13,22 @@ Array.from(assistants.children).forEach((assist) => {
 });
 
 const message = document.getElementById("ctx-assistant-say");
-let msgS = [
-  `                <h1>Привет!</h1>
+// в воскресенье Starry вместо стандартных приветствий напоминает,
+// что расписание на следующую неделю уже доступно
+let msgS =
+  new Date().getDay() === 0
+    ? [
+        `
+                <p>Сегодня <b style="color: var(--accent)">воскресенье</b>, а значит тебе уже доступно расписание на <b style="color: var(--accent)">следующую</b> неделю!</p>`,
+      ]
+    : [
+        `                <h1>Привет!</h1>
                 <p>Я твой напарник - Starry</p>`,
-  `  
+        `  
                 <p>Теперь мы будем вместе</p>`,
-  `
+        `
                 <p>Моя главная задача - помогать тебе с учебой</p>`,
-];
+      ];
 
 let timeouts = [];
 let message_start = 5000;
