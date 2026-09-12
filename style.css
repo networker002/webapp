@@ -847,6 +847,7 @@ header.scrolling {
 .calendar-day-btn:disabled { opacity: .3; background: transparent; border-color: transparent; cursor: not-allowed; }
 .calendar-day-btn.is-today { background: var(--accent); border-color: var(--accent); color: var(--main-bg-color); }
 .calendar-day-btn.is-today .calendar-day-name { opacity: .9; }
+.calendar-day-btn.is-today:disabled { opacity: 1; background: color-mix(in srgb, var(--accent) 22%, transparent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
 .calendar-day-btn.selected-day { outline: 2px solid var(--tg-theme-button-color); outline-offset: -1px; }
 
 .btns {
