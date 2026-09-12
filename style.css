@@ -845,6 +845,8 @@ header.scrolling {
 .calendar-day-btn .calendar-day-date { font-size: 12px; font-weight: 700; }
 .calendar-day-btn:active:not(:disabled) { transform: scale(.95); }
 .calendar-day-btn:disabled { opacity: .3; background: transparent; border-color: transparent; cursor: not-allowed; }
+.calendar-day-btn.is-today { background: var(--accent); border-color: var(--accent); color: var(--main-bg-color); }
+.calendar-day-btn.is-today .calendar-day-name { opacity: .9; }
 .calendar-day-btn.selected-day { outline: 2px solid var(--tg-theme-button-color); outline-offset: -1px; }
 
 .btns {
