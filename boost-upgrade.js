@@ -1181,9 +1181,12 @@
   }
 
   function openChatChooser(publicUrl) {
-    // Шаринг через Telegram: отправитель выбирает чат (в т.ч. чат с ботом)
+    // Шаринг через Telegram: отправитель выбирает чат (в т.ч. чат с ботом).
+    // Превью публичной картинки покажет изображение; t.me-ссылка в тексте
+    // Telegram автоссылкует — обычный текст без HTML гиперссылок не умеет.
     const text = encodeURIComponent(
-      `Расписание ${localStorage.getItem("userGroup") || ""} · ${botSharePayloadLink()}`,
+      `Расписание ${localStorage.getItem("userGroup") || ""}
+${botSharePayloadLink()}`,
     );
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${text}`;
     if (typeof tg?.openTelegramLink === "function") {
@@ -1199,9 +1202,26 @@
     const file = new File([blob], filename, { type: "image/png" });
     const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
 
-    // 0) В Telegram — самый надёжный и универсальный путь: рендер уходит на
-    //    бэкенд (/share/upload), открывается выбор чата с публичной ссылкой.
-    //    Работает на Android, iPhone и десктопе независимо от webview.
+    // 0) Реальное вложение: системный шерит-шит отправляет именно картинку
+    //    (Android, iPhone), в тексте — диплинк, который Telegram автоссылкует
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "Расписание",
+          text: `Расписание ${localStorage.getItem("userGroup") || ""} · ${botSharePayloadLink()}`,
+        });
+        safeHaptic("success");
+        toast("Отправлено");
+        return "share";
+      } catch (err) {
+        if (err?.name === "AbortError") return "aborted";
+        console.warn("share file failed", err);
+      }
+    }
+
+    // 1) В Telegram без файлового шерита (десктоп): рендер на бэкенд,
+    //    выбор чата с публичной картинкой (превью покажет изображение)
     if (inTelegram) {
       try {
         const publicUrl = await uploadShareBlob(blob);
@@ -1209,22 +1229,6 @@
         return "telegram-share";
       } catch (err) {
         console.warn("telegram chat share failed", err);
-      }
-    }
-
-    // 1) navigator.share with file (браузер вне Telegram / Android)
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: "Расписание",
-          text: localStorage.getItem("userGroup") || "Расписание",
-        });
-        safeHaptic("success");
-        toast("Отправлено");
-        return "share";
-      } catch (err) {
-        if (err?.name === "AbortError") return "aborted";
       }
     }
 

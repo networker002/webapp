@@ -521,19 +521,28 @@ body.pref-compactNotes-on .note-v2 .note-meta, body.pref-compactNotes-on .note-v
 body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
 
 .home-screen-hint {
+  position: absolute;
+  /* Под кнопкой «Поделиться», с тем же safe-area отступом */
+  top: calc(
+    var(--tg-content-safe-area-inset-top, 0px) +
+    var(--tg-safe-area-inset-top, 0px) + 8px + 40px + 8px
+  );
+  right: calc(14px + var(--tg-safe-area-inset-right, 0px));
+  margin: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 6px auto 0;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%;
   padding: 0;
   background: var(--tg-theme-button-color, var(--accent));
   color: var(--tg-theme-button-text-color, #fff);
+  border-radius: 50%;
   box-shadow: 0 4px 14px color-mix(in srgb, var(--tg-theme-button-color, var(--accent)) 45%, transparent);
   cursor: pointer;
+  z-index: 1000;
   transition: transform .15s ease, opacity .15s ease;
 }
 .home-screen-hint svg {
