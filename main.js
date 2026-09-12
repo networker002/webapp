@@ -2683,7 +2683,9 @@ function initSwiper() {
     : n > 0
       ? n - 1
       : 0;
-  swiper.slideToLoop(initialSlide);
+  // во время переключения недели приземляемся на нужный день мгновенно (speed 0):
+  // анимированный переход с Пн до Сб выглядел как быстрый пролёт всей недели
+  swiper.slideToLoop(initialSlide, weekSwitchPending ? 0 : undefined);
   let lastRealIndex = swiper.realIndex;
   requestAnimationFrame(updateDynamicDayBottomSpacing);
   swiper.on("slideChange", () => {
