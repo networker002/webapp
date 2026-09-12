@@ -794,15 +794,18 @@
       return;
     }
     const { weekIndex, dayOfWeek } = note.pairLink;
+    const dayIdx = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"].indexOf(dayOfWeek);
     if (typeof weekIndex === "number") {
-      window.scheduleWeekIndex = weekIndex;
-      if (typeof window.getSchedule1 === "function") {
+      if (typeof window.jumpToScheduleWeek === "function") {
+        // мгновенный рендер нужной недели и дня из кэша (window.scheduleWeekIndex
+        // не работает: main.js читает собственную let-переменную, а не свойство window)
+        window.jumpToScheduleWeek(weekIndex, dayIdx);
+      } else if (typeof window.getSchedule1 === "function") {
         window.getSchedule1(true, weekIndex);
       }
     }
     document.getElementById("schedule-show")?.click();
     setTimeout(() => {
-      const dayIdx = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"].indexOf(dayOfWeek);
       if (dayIdx >= 0) {
         document.querySelector(".swiper")?.swiper?.slideToLoop?.(dayIdx);
         document.querySelectorAll(".btnD")[dayIdx]?.click?.();

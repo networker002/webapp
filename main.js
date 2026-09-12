@@ -725,28 +725,33 @@ function getScheduleRows() {
   return null;
 }
 
-function switchWeek(delta, dayIndex) {
-  if (weekSwitchPending) return;
-  weekSwitchPending = true;
-  const currentWeek = scheduleWeekIndex ?? getScheduleWeekIndex();
-  const newWeek = (((currentWeek + delta) % 4) + 4) % 4;
+function jumpToScheduleWeek(weekIndex, dayIndex = 0) {
+  const newWeek = ((Number(weekIndex) % 4) + 4) % 4;
+  const landingDayIndex = Number.isInteger(dayIndex) && dayIndex >= 0 && dayIndex <= 5 ? dayIndex : 0;
   const weekMonday = getScheduleWeekMonday(newWeek);
   const landingDate = new Date(weekMonday);
-  landingDate.setDate(weekMonday.getDate() + dayIndex);
+  landingDate.setDate(weekMonday.getDate() + landingDayIndex);
   const dateString = landingDate.toISOString().slice(0, 10);
-  calendarSelection = { dateString, weekIndex: newWeek, dayIndex };
+  calendarSelection = { dateString, weekIndex: newWeek, dayIndex: landingDayIndex };
   selectedCalendarDate = dateString;
   scheduleWeekIndex = newWeek;
   updateDayButtonDates(newWeek);
-  try {
-    haptic?.selectionChanged?.();
-  } catch (_e) {}
   const cachedRows = getScheduleRows();
   if (cachedRows) {
     applyScheduleData([null, cachedRows.rows, cachedRows.times], newWeek, false);
   } else {
     getSchedule1(true, newWeek);
   }
+}
+
+function switchWeek(delta, dayIndex) {
+  if (weekSwitchPending) return;
+  weekSwitchPending = true;
+  const currentWeek = scheduleWeekIndex ?? getScheduleWeekIndex();
+  try {
+    haptic?.selectionChanged?.();
+  } catch (_e) {}
+  jumpToScheduleWeek(currentWeek + delta, dayIndex);
 }
 
 
