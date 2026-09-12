@@ -440,125 +440,6 @@
     });
   }
 
-  /* ─── Story share with deep link ─── */
-  function buildStoryWidgetLink() {
-    const group = localStorage.getItem("userGroup") || "";
-    const payload = encodeURIComponent(
-      JSON.stringify({
-        g: group,
-        d: todayKey(),
-        src: "story",
-      }),
-    );
-    // Telegram Mini App startapp param (ASCII-safe)
-    const startapp = `story_${btoa(unescape(encodeURIComponent(group || "boost")))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "")
-      .slice(0, 64)}`;
-    return {
-      url: `https://t.me/${BOT_USERNAME}?startapp=${startapp}`,
-      startapp,
-      payload,
-      webAppUrl: `${WEBAPP_URL}?tgWebAppStartParam=${startapp}`,
-    };
-  }
-
-  async function shareSummaryToStory() {
-    try {
-      toast("Готовим сторис…");
-      if (typeof window.shareSummaryCard !== "function") {
-        toast("Шаринг ещё не готов");
-        return;
-      }
-      // Draw via existing canvas pipeline by temporarily wrapping upload path
-      const group = localStorage.getItem("userGroup") || "Группа";
-      const weekIdx =
-        window.scheduleWeekIndex ??
-        (typeof window.getScheduleWeekIndex === "function"
-          ? window.getScheduleWeekIndex()
-          : 0);
-      const days = [
-        "Воскресенье",
-        "Понедельник",
-        "Вторник",
-        "Среда",
-        "Четверг",
-        "Пятница",
-        "Суббота",
-      ];
-      const todayName = days[new Date().getDay()];
-      const today = Array.from(document.querySelectorAll(".day")).find(
-        (d) => d.querySelector(".day-name")?.textContent?.trim() === todayName,
-      );
-      const lessons = today
-        ? Array.from(today.querySelectorAll(".lesson-row"))
-            .filter((r) => r.style.display !== "none")
-            .map((row) => ({
-              code: row.querySelector(".lesson")?.textContent?.trim() || "",
-              time: row.querySelector(".time")?.textContent?.trim() || "",
-              subject: row.querySelector(".subject")?.textContent?.trim() || "",
-              room: (row.querySelector(".room")?.textContent || "")
-                .replace(/[()]/g, "")
-                .trim(),
-              teacher: row.querySelector(".tname")?.textContent?.trim() || "",
-            }))
-        : [];
-
-      // Prefer calling boost-upgrade share after upload for story
-      const link = buildStoryWidgetLink();
-      const canvas = document.createElement("canvas");
-      // Reuse shareSummaryCard path: trigger share with story preference
-      sessionStorage.setItem("preferShareToStory", "1");
-      sessionStorage.setItem("storyWidgetLink", link.url);
-
-      if (typeof tg?.shareToStory === "function") {
-        // Build PNG then upload
-        await window.shareSummaryCard();
-        // If shareSummary already handled story via upload fallback — ok.
-        // Extra: try explicit story with media area if we have last url
-        const lastUrl = sessionStorage.getItem("lastSharePublicUrl");
-        if (lastUrl) {
-          try {
-            tg.shareToStory(lastUrl, {
-              text: `${group} · сегодня`,
-              widget_link: { url: link.url, name: "Открыть расписание" },
-            });
-            safeHaptic("success");
-            toast("Сторис с кнопкой");
-            return;
-          } catch (_) {
-            try {
-              tg.shareToStory(lastUrl);
-            } catch (__) {}
-          }
-        }
-      } else {
-        await window.shareSummaryCard();
-        toast("shareToStory недоступен — использован обычный шаринг");
-      }
-    } catch (err) {
-      console.error(err);
-      safeHaptic("error");
-      toast("Не удалось открыть сторис");
-    } finally {
-      sessionStorage.removeItem("preferShareToStory");
-    }
-  }
-
-  function injectStoryButton() {
-    const header = document.querySelector(".summary-header");
-    if (!header || document.getElementById("share-story-btn")) return;
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.id = "share-story-btn";
-    btn.className = "share-btn share-story-btn";
-    btn.textContent = typeof tg?.shareToStory === "function" ? "Сторис" : "Поделиться";
-    btn.title = "Поделиться расписанием";
-    header.appendChild(btn);
-    btn.addEventListener("click", () => shareSummaryToStory());
-  }
-
   /* ─── Group deadline board ─── */
   function collectPublicDeadlines() {
     let notes = [];
@@ -873,7 +754,6 @@
     patchSaveNote();
     bumpStreak("open");
     renderGoWidget();
-    injectStoryButton();
     injectPremiumPresets();
     handleStartParam();
     injectHomeScreenHint();
@@ -883,7 +763,6 @@
     document.getElementById("marks-show")?.addEventListener("click", () => {
       setTimeout(() => {
         renderGoWidget();
-        injectStoryButton();
       }, 50);
     });
     document.getElementById("profile-show")?.addEventListener("click", () => {
@@ -911,7 +790,6 @@
   window.BoostDelight = {
     renderGoWidget,
     bumpStreak,
-    shareSummaryToStory,
     syncDeadlineReminders,
     publishGroupBoard,
   };

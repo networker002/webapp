@@ -7,6 +7,7 @@
   "use strict";
 
   const API_BASE = "https://boost.rorosin.ru";
+  const BOT_USERNAME = (window.BoostDelightBotUsername) || "mietcbot";
   const WEEK_EPOCH = new Date(2026, 7, 2); // align with backend get_weeks.py
   const OVERRIDES_KEY = "lessonOverrides_v1";
   const NOTES_FILTER_KEY = "notesFilter_v1";
@@ -130,30 +131,98 @@
     } catch (_) {}
   }
 
-  function initAppearanceExtras() {
-    const area = document.querySelector(".a-settings-area");
-    if (!area || document.getElementById("appearance-extras")) return;
-    const saved = (key, fallback) => localStorage.getItem(key) ?? fallback;
-    const panel = document.createElement("section");
-    panel.id = "appearance-extras";
-    panel.className = "appearance-extras";
-    panel.innerHTML = `
-      <h3>Подсказки и заметки</h3>
-      <label><span>Подсказки Starry</span><input type="checkbox" data-pref="tips" ${saved("prefTips", "on") === "on" ? "checked" : ""}></label>
-      <label><span>Подсветка текущей пары</span><input type="checkbox" data-pref="highlights" ${saved("prefHighlights", "on") === "on" ? "checked" : ""}></label>
-      <label><span>Компактные заметки</span><input type="checkbox" data-pref="compactNotes" ${saved("prefCompactNotes", "off") === "on" ? "checked" : ""}></label>
-      <label><span>Крупный текст заметок</span><input type="checkbox" data-pref="largeNotes" ${saved("prefLargeNotes", "off") === "on" ? "checked" : ""}></label>`;
-    area.appendChild(panel);
+  const PREF_KEY = {
+    tips: "prefTips",
+    highlights: "prefHighlights",
+    breaks: "prefBreaks",
+    compactNotes: "prefCompactNotes",
+    largeNotes: "prefLargeNotes",
+    hideDone: "prefHideDone",
+    noteBadges: "prefNoteBadges",
+  };
 
-    const apply = (key, checked) => {
-      const map = { tips: "prefTips", highlights: "prefHighlights", compactNotes: "prefCompactNotes", largeNotes: "prefLargeNotes" };
-      localStorage.setItem(map[key], checked ? "on" : "off");
-      document.body.classList.toggle(`pref-${key}-off`, !checked);
-      document.body.classList.toggle(`pref-${key}-on`, checked);
-    };
-    panel.querySelectorAll("input[data-pref]").forEach((input) => {
-      apply(input.dataset.pref, input.checked);
-      input.addEventListener("change", () => apply(input.dataset.pref, input.checked));
+  function applyPref(key, checked) {
+    const storageKey = PREF_KEY[key] || `pref${key[0].toUpperCase()}${key.slice(1)}`;
+    localStorage.setItem(storageKey, checked ? "on" : "off");
+    document.body.classList.toggle(`pref-${key}-off`, !checked);
+    document.body.classList.toggle(`pref-${key}-on`, checked);
+    if (key === "breaks") renderBreakChips();
+    if (key === "hideDone" || key === "noteBadges") {
+      if (typeof window.getNotes === "function") window.getNotes();
+    }
+  }
+
+  function initAppearanceExtras() {
+    // Тумблеры живут прямо в под-экранах «Подсказки» и «Заметки студента»
+    document.querySelectorAll("input[data-pref]").forEach((input) => {
+      if (input.__prefBound) return;
+      input.__prefBound = true;
+      const key = input.dataset.pref;
+      const storageKey = PREF_KEY[key] || `pref${key[0].toUpperCase()}${key.slice(1)}`;
+      input.checked = (localStorage.getItem(storageKey) ?? (key === "tips" || key === "highlights" || key === "breaks" || key === "noteBadges" ? "on" : "off")) === "on";
+      applyPref(key, input.checked);
+      input.addEventListener("change", () => applyPref(key, input.checked));
+    });
+    // Ряд «Заметки студента» открывает свой под-экран
+    const notesSwipe = document.getElementById("notes-swipe-1");
+    const notesScreen = document.getElementById("set-app4");
+    if (notesSwipe && notesScreen && !notesSwipe.__prefBound) {
+      notesSwipe.__prefBound = true;
+      notesSwipe.addEventListener("click", () => {
+        const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
+        if (!appearanceSettings) return;
+        if (tg?.BackButton) { tg.BackButton.show(); tg.BackButton.onClick(() => window.__showAppearanceRoot?.()); }
+        appearanceSettings.style.animation = "ending .3s forwards";
+        setTimeout(() => {
+          appearanceSettings.style.display = "none";
+          appearanceSettings.style.animation = "";
+          notesScreen.style.display = "flex";
+          notesScreen.style.animation = "starting .5s forwards";
+        }, 330);
+      });
+    }
+  }
+
+  /* ─── Перемены между парами ─── */
+  function parseRowTimes(text) {
+    const m = (text || "").match(/(\d{1,2}):(\d{2})\s*[-–—]\s*(\d{1,2}):(\d{2})/);
+    if (!m) return null;
+    const s = Number(m[1]) * 60 + Number(m[2]);
+    const e = Number(m[3]) * 60 + Number(m[4]);
+    return { start: s, end: e };
+  }
+
+  function renderBreakChips() {
+    const days = document.querySelectorAll(".day");
+    days.forEach((day) => {
+      const rows = Array.from(day.querySelectorAll(".lesson-row")).filter(
+        (r) => r.style.display !== "none",
+      );
+      const desired = [];
+      for (let i = 0; i < rows.length - 1; i++) {
+        const a = parseRowTimes(rows[i].querySelector(".time")?.textContent);
+        const b = parseRowTimes(rows[i + 1].querySelector(".time")?.textContent);
+        if (!a || !b) continue;
+        const gap = b.start - a.end;
+        if (gap < 10) continue;
+        desired.push({ after: rows[i], text: `☕ перемена · ${gap} мин` });
+      }
+      const existing = Array.from(day.querySelectorAll(".break-chip"));
+      const same =
+        existing.length === desired.length &&
+        existing.every(
+          (chip, i) =>
+            chip.textContent === desired[i].text &&
+            chip.nextElementSibling === desired[i].after.nextElementSibling,
+        );
+      if (same) return;
+      existing.forEach((chip) => chip.remove());
+      desired.forEach(({ after, text }) => {
+        const chip = document.createElement("div");
+        chip.className = "break-chip";
+        chip.textContent = text;
+        after.parentElement.insertBefore(chip, after.nextSibling);
+      });
     });
   }
 
@@ -409,6 +478,7 @@
     });
     applyOverridesToDom();
     paintNoteBadgesOnLessons();
+    renderBreakChips();
   }
 
   function openQuickNoteFromLesson(row) {
@@ -849,6 +919,7 @@
 
   function paintNoteBadgesOnLessons() {
     document.querySelectorAll(".lesson-note-dot").forEach((el) => el.remove());
+    if (document.body.classList.contains("pref-noteBadges-off")) return;
     const openLinked = readNotes().filter((n) => n.pairLink && !n.done);
     document.querySelectorAll(".lesson-row").forEach((row) => {
       if (row.closest("#demo-lesson")) return;
@@ -1091,39 +1162,33 @@
     return data.url;
   }
 
+  function botSharePayloadLink() {
+    // Deep link с payload группы: получатель получает карточку и атрибуцию
+    const group = localStorage.getItem("userGroup") || "";
+    const b64 = btoa(unescape(encodeURIComponent(group || "boost")))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    return `https://t.me/${BOT_USERNAME}?start=share_${b64}`;
+  }
+
+  function openChatChooser(publicUrl) {
+    // Шаринг через Telegram: отправитель выбирает чат (в т.ч. чат с ботом)
+    const text = encodeURIComponent(
+      `Расписание ${localStorage.getItem("userGroup") || ""} · ${botSharePayloadLink()}`,
+    );
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${text}`;
+    if (typeof tg?.openTelegramLink === "function") {
+      tg.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, "_blank", "noopener,noreferrer");
+    }
+    safeHaptic("success");
+    toast("Выбери чат для отправки");
+  }
+
   async function shareBlobWithFallbacks(blob, filename = "schedule.png") {
     const file = new File([blob], filename, { type: "image/png" });
-    const preferStory = sessionStorage.getItem("preferShareToStory") === "1";
-
-    // Prefer story path when requested (iOS / viral)
-    if (preferStory) {
-      try {
-        const publicUrl = await uploadShareBlob(blob);
-        if (typeof tg?.shareToStory === "function") {
-          const widget = sessionStorage.getItem("storyWidgetLink");
-          try {
-            if (widget) {
-              tg.shareToStory(publicUrl, {
-                text: localStorage.getItem("userGroup") || "Расписание",
-                widget_link: { url: widget, name: "Открыть" },
-              });
-            } else {
-              tg.shareToStory(publicUrl);
-            }
-            safeHaptic("success");
-            toast("В историю");
-            return "story";
-          } catch (_) {
-            try {
-              tg.shareToStory(publicUrl);
-              return "story";
-            } catch (__) {}
-          }
-        }
-      } catch (err) {
-        console.warn("prefer story failed", err);
-      }
-    }
 
     // 1) navigator.share with file (Android / modern)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1141,7 +1206,38 @@
       }
     }
 
-    // 2) clipboard (often works on desktop; flaky on iOS)
+    // 2) сохранить файл на устройство (Android / десктоп; iOS через «Файлы»)
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      safeHaptic("success");
+      toast("Скачивание…");
+      return "download";
+    } catch (_) {}
+
+    // 3) iOS без navigator.share: открываем загруженную картинку —
+    //    в Safari её можно удержать и «Сохранить в фото»
+    try {
+      const publicUrl = await uploadShareBlob(blob);
+      if (typeof tg?.openLink === "function") {
+        tg.openLink(publicUrl, { try_instant_view: false });
+      } else {
+        window.open(publicUrl, "_blank", "noopener,noreferrer");
+      }
+      toast("Удерживай картинку, чтобы сохранить");
+      return "open-image";
+    } catch (err) {
+      console.warn("open image fallback", err);
+    }
+
+    // 3.5) буфер обмена (десктоп)
     try {
       if (navigator.clipboard && window.ClipboardItem) {
         await navigator.clipboard.write([
@@ -1153,50 +1249,11 @@
       }
     } catch (_) {}
 
-    // 3) download
-    try {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-      toast("Скачивание…");
-    } catch (_) {}
-
-    // 4) upload + shareToStory (optional, iOS-friendly path)
+    // 4) upload + выбор чата в Telegram (в т.ч. чат с ботом)
     try {
       const publicUrl = await uploadShareBlob(blob);
-      if (typeof tg?.shareToStory === "function") {
-        try {
-          tg.shareToStory(publicUrl);
-          safeHaptic("success");
-          toast("В историю");
-          return "story";
-        } catch (_) {}
-      }
-      if (navigator.share) {
-        try {
-          await navigator.share({ url: publicUrl, title: "Расписание" });
-          return "share-url";
-        } catch (_) {}
-      }
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${encodeURIComponent("Расписание")}`;
-      if (typeof tg?.openTelegramLink === "function") {
-        tg.openTelegramLink(shareUrl);
-        toast("Открываем выбор чата");
-        return "telegram-share";
-      }
-      window.open(shareUrl, "_blank", "noopener,noreferrer");
+      openChatChooser(publicUrl);
       return "telegram-share";
-      try {
-        await navigator.clipboard.writeText(publicUrl);
-        toast("Ссылка скопирована");
-        return "link";
-      } catch (_) {}
     } catch (err) {
       console.warn("share upload fallback", err);
     }
@@ -1353,6 +1410,7 @@
     const fab = document.createElement("button");
     fab.id = "ai-chat-fab";
     fab.type = "button";
+    fab.hidden = true; // по умолчанию открыт экран расписания — там ассистент
     fab.setAttribute("aria-label", "Спросить про расписание");
     fab.innerHTML = "✦";
     document.body.appendChild(fab);
@@ -1370,7 +1428,18 @@
       <div id="ai-chat-log" class="ai-chat-log"></div>
       <form id="ai-chat-form" class="ai-chat-form">
         <input id="ai-chat-input" maxlength="200" placeholder="Когда следующая пара? Куда идти?" autocomplete="off" />
-        <button type="submit">→</button>
+        <button type="submit" id="ai-chat-send" aria-label="Отправить">
+          <svg class="neuron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <circle class="n-core" cx="12" cy="12" r="2.1" fill="currentColor" stroke="none"/>
+              <path d="M12 9.9V5.4"/><circle class="n-node" cx="12" cy="3.9" r="1.4"/>
+              <path d="M13.8 13.05l3.9 2.25"/><circle class="n-node" cx="19.1" cy="16" r="1.4"/>
+              <path d="M10.2 13.05l-3.9 2.25"/><circle class="n-node" cx="4.9" cy="16" r="1.4"/>
+              <path d="M10.7 10.6L6.9 8"/><circle class="n-node" cx="5.4" cy="7.2" r="1.4"/>
+              <path d="M13.3 10.6l3.8-2.6"/><circle class="n-node" cx="18.6" cy="7.2" r="1.4"/>
+            </g>
+          </svg>
+        </button>
       </form>
     `;
     document.body.appendChild(panel);
@@ -1422,15 +1491,29 @@
         safeImpact("light");
       }
     });
-    document.getElementById("default-assistant")?.addEventListener("click", openChat);
-    document.getElementById("gloomy-asistant")?.addEventListener("click", openChat);
-    window.__openScheduleAi = openChat;
+    // Ассистент «звёздочка» открывает чат только если он включён в настройках
+    const aiEnabled = () => localStorage.getItem("isActiveAI") !== "false";
+    const openChatFromStarry = () => {
+      if (!aiEnabled()) return;
+      openChat();
+    };
+    document.getElementById("default-assistant")?.addEventListener("click", openChatFromStarry);
+    document.getElementById("gloomy-asistant")?.addEventListener("click", openChatFromStarry);
+    window.__openScheduleAi = openChatFromStarry;
     panel.querySelector("#ai-chat-close").addEventListener("click", () => {
       panel.hidden = true;
     });
 
+    const sendBtn = panel.querySelector("#ai-chat-send");
+    function setSendBusy(busy) {
+      if (!sendBtn) return;
+      sendBtn.disabled = busy;
+      sendBtn.classList.toggle("is-thinking", busy);
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (sendBtn?.disabled) return;
       const q = (input.value || "").trim();
       if (!q) return;
       const st = aiQuotaState();
@@ -1448,6 +1531,7 @@
       if (!consumeAiQuota()) return;
       refreshQuotaLabel();
       input.value = "";
+      setSendBusy(true);
       appendMsg("user", q);
       appendMsg("bot", "Думаю");
       const pending = log.lastChild;
@@ -1471,6 +1555,8 @@
           ? "Дневная квота AI исчерпана. Завтра лимит обновится."
           : "Сеть или сервер недоступны. Проверь интернет.";
         safeHaptic("error");
+      } finally {
+        setSendBusy(false);
       }
     });
 
@@ -1642,10 +1728,11 @@
     initAppearanceExtras();
     document.querySelectorAll("#schedule-show, #marks-show, #notes-show, #profile-show").forEach((button) => {
       button.addEventListener("click", () => {
-        const firstScreen = button.id === "schedule-show";
+        const scheduleScreen = button.id === "schedule-show";
         const fab = document.getElementById("ai-chat-fab");
-        if (fab) fab.hidden = !firstScreen;
-        if (!firstScreen) document.getElementById("ai-chat-panel")?.setAttribute("hidden", "");
+        // На расписании работает ассистент «звёздочка», FAB — на остальных экранах
+        if (fab) fab.hidden = scheduleScreen;
+        if (scheduleScreen) document.getElementById("ai-chat-panel")?.setAttribute("hidden", "");
       });
     });
     enrichLessonRows();

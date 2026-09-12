@@ -3846,6 +3846,7 @@ function initColorPicker() {
 
         function showAppearanceSettings() {
             const el2 = document.getElementById("set-app2");
+            const el4 = document.getElementById("set-app4");
             if (themeSettings) {
                 themeSettings.style.display = "none";
                 themeSettings.style.animation = "";
@@ -3855,10 +3856,14 @@ function initColorPicker() {
             } if (tipsSettings) {
                 tipsSettings.style.display = "none";
                 tipsSettings.style.animation = ""
+            } if (el4) {
+                el4.style.display = "none";
+                el4.style.animation = ""
             }
             appearanceSettings.style.display = "flex";
             appearanceSettings.style.animation = "starting2 .5s forwards";
         }
+        window.__showAppearanceRoot = showAppearanceSettings;
 
         
 

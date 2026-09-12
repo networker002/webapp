@@ -1381,10 +1381,12 @@ h6.skeleton { opacity: .4; }
     display: none;
     flex-direction: column;
     gap: 11px;
-    max-height: calc(100dvh - 16px);
+    max-height: calc(min(var(--tg-viewport-stable-height, 100dvh), 100dvh) - 16px);
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top) + 20px);
+    padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px) + 20px);
+    padding-bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 18px);
+    -webkit-overflow-scrolling: touch;
 }
 #event-input h4 {
     color: var(--tg-theme-text-color);
@@ -2484,7 +2486,7 @@ h6.skeleton { opacity: .4; }
             gap: 10px
         }
 
-        #activate-ai-a, #activate-person-a {
+        #activate-ai-a, #activate-person-a, .a-settings-area .switch-toggle {
             width: 50px;
             position: relative;
             margin-right: 15px;

@@ -870,3 +870,64 @@ body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
     transition: none !important;
   }
 }
+
+/* ─── Под-экран «Заметки студента» ─── */
+#set-app4 {
+  animation: starting .5s forwards;
+  display: none;
+  flex-direction: column;
+  justify-content: center !important;
+  text-align: center;
+}
+#set-app4 .tips-screen-title { margin-top: 10px !important; }
+#set-app4 .tips-screen-sub {
+  color: var(--tg-theme-hint-color);
+  font-size: 14px;
+  margin-top: 4px !important;
+}
+#set-app4 .a-settings-area { padding-left: 10px; }
+
+/* ─── Новые префы ─── */
+body.pref-hideDone-on .note-v2.is-done { display: none !important; }
+body.pref-breaks-off .break-chip { display: none !important; }
+
+.break-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 6px 14px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color, #8a94a6);
+  background: color-mix(in srgb, var(--tg-theme-hint-color, #8a94a6) 12%, transparent);
+  user-select: none;
+}
+
+/* ─── Нейрон-кнопка отправки в ИИ-чате ─── */
+#ai-chat-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .2s ease, transform .15s ease;
+}
+#ai-chat-send .neuron-icon .n-node { transition: opacity .2s ease; }
+#ai-chat-send:disabled { cursor: default; opacity: .85; }
+#ai-chat-send:not(:disabled):active { transform: scale(.92); }
+#ai-chat-send.is-thinking { pointer-events: none; }
+#ai-chat-send.is-thinking .neuron-icon { animation: neuron-spin 1.4s linear infinite; }
+#ai-chat-send.is-thinking .neuron-icon .n-node { animation: neuron-blink 1.4s ease-in-out infinite; }
+#ai-chat-send.is-thinking .neuron-icon .n-node:nth-of-type(2) { animation-delay: .2s; }
+#ai-chat-send.is-thinking .neuron-icon .n-node:nth-of-type(3) { animation-delay: .4s; }
+#ai-chat-send.is-thinking .neuron-icon .n-node:nth-of-type(4) { animation-delay: .6s; }
+#ai-chat-send.is-thinking .neuron-icon .n-node:nth-of-type(5) { animation-delay: .8s; }
+@keyframes neuron-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes neuron-blink {
+  0%, 100% { opacity: .25; }
+  50% { opacity: 1; }
+}
