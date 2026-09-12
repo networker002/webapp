@@ -831,7 +831,6 @@ header.scrolling {
 .calendar-modal.open .calendar-card { transform: translateY(0) scale(1); }
 .calendar-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--header-bg-color); border-bottom: 1px solid var(--shadows); }
 .calendar-title { font-size: 18px; }
-.calendar-subtitle { display: block; margin-top: 2px; font-size: 12px; color: var(--tg-theme-hint-color); }
 .calendar-close-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: none; border-radius: 50%; background: var(--days-bg); color: var(--over-color); }
 .calendar-close-btn:active { transform: scale(.9); }
 .calendar-body { display: flex; flex-direction: column; gap: 18px; padding: 5px; overflow-y: auto; }

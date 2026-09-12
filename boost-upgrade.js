@@ -1695,17 +1695,6 @@ ${botSharePayloadLink()}`,
         header.appendChild(btn);
         if (weekBlock) weekBlock.dataset.weekId = String(weekId);
       });
-
-      if (!document.getElementById("share-week-btn")) {
-        const bar = document.createElement("div");
-        bar.className = "share-week-bar";
-        bar.innerHTML = `<button type="button" id="share-week-btn" class="share-btn">Поделиться днём</button>`;
-        const modal = document.querySelector(".calendar-card");
-        modal?.querySelector(".calendar-header")?.appendChild(bar);
-        bar.querySelector("button").addEventListener("click", () => {
-          window.shareCurrentDayCard();
-        });
-      }
     }
 
     const summaryHeader = document.querySelector(".summary-header");

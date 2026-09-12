@@ -30,9 +30,6 @@
   color: var(--tg-theme-accent-text-color, var(--accent));
   margin-left: 6px;
 }
-.share-week-bar {
-  margin-left: auto;
-}
 .summary-header {
   display: flex;
   align-items: center;
