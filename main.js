@@ -2599,6 +2599,8 @@ const ICON_OFF_D =
 
   function openAppearancePopup() {
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideAppearancePopup()})};
+            document.querySelectorAll(".popuper-appearance [id^='set-app']").forEach(e => {e.style.display = "none"; e.style.animation = "";});
+            document.querySelector(".popuper-appearance > .a-settings-area").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
             document.querySelector(".popuper-appearance").style.display = "flex";
             document.getElementById("cancel-bg").addEventListener("click", () => hideAppearancePopup(), {once: true})
@@ -3815,8 +3817,9 @@ function initColorPicker() {
   });
 }
 
-        const appearanceSettings = document.querySelector(".a-settings-area");
+        const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
         const themeSettings = document.getElementById("set-app1");
+        const tipsSettings = document.getElementById("set-app3");
         const backToAppearance = document.querySelectorAll(".back-to-ap-settins-btn");
 
         function showThemeSettingsScreen() {
@@ -3830,6 +3833,17 @@ function initColorPicker() {
             }, 330);
         }
 
+        function showTipsSettingsScreen() {
+          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
+            appearanceSettings.style.animation = "ending .3s forwards";
+            setTimeout(() => {
+                appearanceSettings.style.display = "none";
+                appearanceSettings.style.animation = "";
+                tipsSettings.style.display = "flex";
+                tipsSettings.style.animation = "starting .5s forwards";
+            }, 330);
+        }
+
         function showAppearanceSettings() {
             const el2 = document.getElementById("set-app2");
             if (themeSettings) {
@@ -3838,6 +3852,9 @@ function initColorPicker() {
             } if (el2) {
                 el2.style.display = "none";
                 el2.style.animation = ""
+            } if (tipsSettings) {
+                tipsSettings.style.display = "none";
+                tipsSettings.style.animation = ""
             }
             appearanceSettings.style.display = "flex";
             appearanceSettings.style.animation = "starting2 .5s forwards";
@@ -3846,6 +3863,7 @@ function initColorPicker() {
         
 
         document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
+        document.getElementById("tips-swipe-1").onclick = showTipsSettingsScreen;
         backToAppearance.forEach(e => e.onclick = showAppearanceSettings)
 
 
