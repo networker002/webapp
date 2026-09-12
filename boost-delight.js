@@ -767,8 +767,13 @@
     button.type = "button";
     button.id = "home-screen-hint";
     button.className = "home-screen-hint";
-    button.textContent = "Добавить на экран";
-    button.title = "Быстрый запуск расписания из Telegram";
+    button.setAttribute("aria-label", "Добавить на экран");
+    button.title = "Добавить на экран — быстрый запуск расписания из Telegram";
+    button.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path fill="currentColor" d="M12 3.2 3.6 10a1 1 0 0 0 1.25 1.56l.65-.52V19a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-7.96l.65.52A1 1 0 0 0 20.4 10L12 3.2Zm0 2.6 4.5 3.6V19h-2.6v-4.1a1.9 1.9 0 1 0-3.8 0V19H7.5V9.4L12 5.8Z"/>' +
+      '<path fill="currentColor" d="m12 8.9 2.55 2.55a.9.9 0 1 1-1.27 1.28l-.38-.38V16a.9.9 0 1 1-1.8 0v-3.65l-.38.38a.9.9 0 1 1-1.27-1.28L12 8.9Z"/>' +
+      "</svg>";
     anchor.appendChild(button);
     button.addEventListener("click", () => {
       try {

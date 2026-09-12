@@ -509,16 +509,27 @@ body.pref-compactNotes-on .note-v2 .note-meta, body.pref-compactNotes-on .note-v
 body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
 
 .home-screen-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 6px auto 0;
-  border: 1px solid color-mix(in srgb, var(--tg-theme-button-color, var(--accent)) 45%, transparent);
-  border-radius: 999px;
-  padding: 7px 12px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
   background: var(--tg-theme-button-color, var(--accent));
   color: var(--tg-theme-button-text-color, #fff);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--tg-theme-button-color, var(--accent)) 45%, transparent);
   cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.home-screen-hint svg {
+  display: block;
+}
+.home-screen-hint:active {
+  transform: scale(.92);
+  opacity: .85;
 }
 
 .soft-paywall {
