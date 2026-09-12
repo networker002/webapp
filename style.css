@@ -1366,7 +1366,9 @@ h6.skeleton { opacity: .4; }
 
 #event-input {
     position: fixed;
-    top: max(8px, var(--tg-content-safe-area-inset-top, 0px));
+    top: calc(
+        max(8px, var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)) + 4px
+    );
     left: 50%;
     transform: translate(-50%, 0);
     background: none;
@@ -1381,12 +1383,15 @@ h6.skeleton { opacity: .4; }
     display: none;
     flex-direction: column;
     gap: 11px;
-    max-height: calc(min(var(--tg-viewport-stable-height, 100dvh), 100dvh) - 16px);
+    max-height: calc(min(var(--tg-viewport-stable-height, 100dvh), 100dvh) - 24px);
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px) + 20px);
-    padding-bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 18px);
+    padding-top: calc(
+        max(var(--tg-content-safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px)) + 12px
+    );
+    padding-bottom: 0;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 }
 #event-input h4 {
     color: var(--tg-theme-text-color);
@@ -1473,6 +1478,11 @@ h6.skeleton { opacity: .4; }
     flex-direction: column;
     gap: 12px;
     margin-top: 12px;
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    padding: 10px 0 calc(12px + max(var(--tg-safe-area-inset-bottom, 0px), var(--tg-content-safe-area-inset-bottom, 0px)));
+    background: linear-gradient(to top, rgb(from var(--tg-theme-bg-color) r g b / .96) 55%, transparent);
 }
 #event-input button {
     padding: .72em .9em;

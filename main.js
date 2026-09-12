@@ -209,6 +209,19 @@ loaderContainer.style.display = "block";
 assistant.style.display = "none";
 
 const tg = window.Telegram.WebApp;
+
+// BackButton: каждая новая регистрация обработчика заменяет предыдущую —
+// иначе обработчики накапливаются (каждый показ под-экрана добавлял ещё один)
+if (tg?.BackButton) {
+  const BB = tg.BackButton;
+  let __bbCurrent = null;
+  const __origOnClick = BB.onClick.bind(BB);
+  BB.onClick = function (fn) {
+    if (__bbCurrent) { try { BB.offClick(__bbCurrent); } catch (_) {} }
+    __bbCurrent = fn;
+    return __origOnClick(fn);
+  };
+}
 tg.ready();
 const haptic = tg.HapticFeedback;
 
@@ -2600,7 +2613,11 @@ const ICON_OFF_D =
   function openAppearancePopup() {
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideAppearancePopup()})};
             document.querySelectorAll(".popuper-appearance [id^='set-app']").forEach(e => {e.style.display = "none"; e.style.animation = "";});
-            document.querySelector(".popuper-appearance > .a-settings-area").style.display = "flex";
+            const areaRoot = document.querySelector(".popuper-appearance > .a-settings-area");
+            areaRoot.style.animation = "";
+            areaRoot.style.opacity = "";
+            areaRoot.style.transform = "";
+            areaRoot.style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
             document.querySelector(".popuper-appearance").style.display = "flex";
             document.getElementById("cancel-bg").addEventListener("click", () => hideAppearancePopup(), {once: true})

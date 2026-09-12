@@ -1189,8 +1189,22 @@
 
   async function shareBlobWithFallbacks(blob, filename = "schedule.png") {
     const file = new File([blob], filename, { type: "image/png" });
+    const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
 
-    // 1) navigator.share with file (Android / modern)
+    // 0) В Telegram — самый надёжный и универсальный путь: рендер уходит на
+    //    бэкенд (/share/upload), открывается выбор чата с публичной ссылкой.
+    //    Работает на Android, iPhone и десктопе независимо от webview.
+    if (inTelegram) {
+      try {
+        const publicUrl = await uploadShareBlob(blob);
+        openChatChooser(publicUrl);
+        return "telegram-share";
+      } catch (err) {
+        console.warn("telegram chat share failed", err);
+      }
+    }
+
+    // 1) navigator.share with file (браузер вне Telegram / Android)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
@@ -1281,7 +1295,7 @@
     } catch (err) {
       console.error(err);
       safeHaptic("error");
-      toast("Не удалось поделиться");
+      toast(`Не удалось поделиться: ${err?.message || "ошибка отрисовки"}`);
     }
   };
 
@@ -1594,7 +1608,6 @@
         const modal = document.querySelector(".calendar-card");
         modal?.querySelector(".calendar-header")?.appendChild(bar);
         bar.querySelector("button").addEventListener("click", () => {
-          closeCalendarSafe();
           window.shareCurrentDayCard();
         });
       }
@@ -1654,10 +1667,6 @@
       safeHaptic("error");
       toast("Не удалось поделиться неделей");
     }
-  }
-
-  function closeCalendarSafe() {
-    if (typeof window.closeCalendar === "function") window.closeCalendar();
   }
 
   /* ─── Patch schedule render completion ─── */
