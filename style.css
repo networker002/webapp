@@ -2003,12 +2003,20 @@ h6.skeleton { opacity: .4; }
     left: 50%;
     transform: translateX(-50%);
     background: var(--tg-theme-button-color);
-    padding: 4px;
+    padding: 0;
     border-radius: 50%;
     outline: none;
     border: none;
     color: var(--tg-theme-button-text-color);
-    aspect-ratio: 1 / 1;
+    /* Жёсткие размеры: aspect-ratio поддерживают не все webview,
+       на старых движках кнопка растягивалась в эллипс */
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    flex: 0 0 44px;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -2016,6 +2024,12 @@ h6.skeleton { opacity: .4; }
     transition: transform .2s ease, background .4s ease, bottom .5s ease-in-out;
     scale: 1.25;
     z-index: 99999;
+}
+
+#note-add-btn svg {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
 }
 
 #note-add-btn:active {
