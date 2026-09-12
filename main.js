@@ -230,6 +230,7 @@ let n = d.getDay();
 let m = d.getMonth();
 let dt = d.getDate();
 let scheduleWeekIndex = null;
+let scheduleWeekOffset = 0; // 0 = текущая реальная неделя, ±N — на N недель назад/вперёд
 let calendarSelection = null;
 let selectedCalendarDate = null;
 let scheduleRowsCache = null;
@@ -241,14 +242,18 @@ function getScheduleWeekIndex() {
   return ((elapsedWeeks % 4) + 4) % 4;
 }
 
-function getScheduleWeekMonday(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
-  const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
-  firstWeekMonday.setDate(firstWeekMonday.getDate() + weekIndex * 7);
-  return firstWeekMonday;
+// понедельник реальной недели, которую смотрим (в воскресенье — уже следующая,
+// чтобы совпадать с типом недели из getScheduleWeekIndex)
+function getRealWeekMonday(offset = scheduleWeekOffset) {
+  const today = new Date();
+  const shiftToMonday = today.getDay() === 0 ? 1 : -((today.getDay() + 6) % 7);
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + shiftToMonday + offset * 7);
+  return monday;
 }
 
-function updateDayButtonDates(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
-  const weekMonday = getScheduleWeekMonday(weekIndex);
+function updateDayButtonDates(offset = scheduleWeekOffset) {
+  const weekMonday = getRealWeekMonday(offset);
 
   document.querySelectorAll(".btnD").forEach((button, index) => {
     const date = new Date(weekMonday);
@@ -481,9 +486,11 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
       weekType = weekTypeNumber;
     }
     scheduleWeekIndex = ((Number(weekType) % 4) + 4) % 4;
+    if (weekTypeNumber === null || weekTypeNumber === undefined) scheduleWeekOffset = 0;
+    window.scheduleWeekIndex = scheduleWeekIndex;
     scheduleRowsCache = { rows: data[1], times: data[2] };
     try { localStorage.setItem("schedule_json", JSON.stringify({ weekType: scheduleWeekIndex, rows: data[1], times: data[2], savedAt: Date.now() })); } catch (_e) {}
-    updateDayButtonDates(scheduleWeekIndex);
+    updateDayButtonDates();
 
     let newHTML = "";
     //let dayType = data[0];
@@ -728,14 +735,17 @@ function getScheduleRows() {
 function jumpToScheduleWeek(weekIndex, dayIndex = 0) {
   const newWeek = ((Number(weekIndex) % 4) + 4) % 4;
   const landingDayIndex = Number.isInteger(dayIndex) && dayIndex >= 0 && dayIndex <= 5 ? dayIndex : 0;
-  const weekMonday = getScheduleWeekMonday(newWeek);
+  // ближайшее идущее вперёд вхождение недели этого типа
+  scheduleWeekOffset = (newWeek - getScheduleWeekIndex() + 4) % 4;
+  scheduleWeekIndex = newWeek;
+  window.scheduleWeekIndex = newWeek;
+  const weekMonday = getRealWeekMonday(scheduleWeekOffset);
   const landingDate = new Date(weekMonday);
   landingDate.setDate(weekMonday.getDate() + landingDayIndex);
   const dateString = landingDate.toISOString().slice(0, 10);
   calendarSelection = { dateString, weekIndex: newWeek, dayIndex: landingDayIndex };
   selectedCalendarDate = dateString;
-  scheduleWeekIndex = newWeek;
-  updateDayButtonDates(newWeek);
+  updateDayButtonDates();
   const cachedRows = getScheduleRows();
   if (cachedRows) {
     applyScheduleData([null, cachedRows.rows, cachedRows.times], newWeek, false);
@@ -747,11 +757,25 @@ function jumpToScheduleWeek(weekIndex, dayIndex = 0) {
 function switchWeek(delta, dayIndex) {
   if (weekSwitchPending) return;
   weekSwitchPending = true;
-  const currentWeek = scheduleWeekIndex ?? getScheduleWeekIndex();
   try {
     haptic?.selectionChanged?.();
   } catch (_e) {}
-  jumpToScheduleWeek(currentWeek + delta, dayIndex);
+  scheduleWeekOffset += delta;
+  scheduleWeekIndex = ((getScheduleWeekIndex() + scheduleWeekOffset) % 4 + 4) % 4;
+  window.scheduleWeekIndex = scheduleWeekIndex;
+  const weekMonday = getRealWeekMonday(scheduleWeekOffset);
+  const landingDate = new Date(weekMonday);
+  landingDate.setDate(weekMonday.getDate() + dayIndex);
+  const dateString = landingDate.toISOString().slice(0, 10);
+  calendarSelection = { dateString, weekIndex: scheduleWeekIndex, dayIndex };
+  selectedCalendarDate = dateString;
+  updateDayButtonDates();
+  const cachedRows = getScheduleRows();
+  if (cachedRows) {
+    applyScheduleData([null, cachedRows.rows, cachedRows.times], scheduleWeekIndex, false);
+  } else {
+    getSchedule1(true, scheduleWeekIndex);
+  }
 }
 
 
@@ -2268,12 +2292,6 @@ const calendarWeeks = [
 ];
 const calendarDayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
-function getCalendarState() {
-  const firstWeekMonday = getScheduleWeekMonday(0);
-  const weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex();
-  return { weekIndex, firstWeekMonday };
-}
-
 function formatCalendarDate(date) {
   return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
@@ -2285,31 +2303,34 @@ function isCalendarToday(date) {
 function renderCalendar() {
   const calendarContainer = document.getElementById("calendarContainer");
   if (!calendarContainer) return;
-  const { weekIndex, firstWeekMonday } = getCalendarState();
   calendarContainer.innerHTML = "";
 
-  calendarWeeks.forEach((week) => {
+  const currentType = getScheduleWeekIndex();
+  for (let offset = 0; offset < 4; offset++) {
+    const weekType = ((currentType + offset) % 4 + 4) % 4;
+    const week = calendarWeeks[weekType];
+    const monday = getRealWeekMonday(offset);
     const weekElement = document.createElement("div");
-    weekElement.className = `calendar-week-block${week.id === weekIndex ? " is-current" : ""}`;
-    weekElement.innerHTML = `<div class="calendar-week-header"><span class="calendar-week-title">${week.title}</span>${week.id === weekIndex ? '<span class="calendar-current-badge">Текущая</span>' : ""}</div><div class="calendar-days-grid"></div>`;
+    weekElement.className = `calendar-week-block${offset === 0 ? " is-current" : ""}`;
+    weekElement.innerHTML = `<div class="calendar-week-header"><span class="calendar-week-title">${week.title}</span>${offset === 0 ? '<span class="calendar-current-badge">Текущая</span>' : ""}</div><div class="calendar-days-grid"></div>`;
     const daysGrid = weekElement.querySelector(".calendar-days-grid");
 
-    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].forEach((dayName, dayIndex) => {
-      const date = new Date(firstWeekMonday);
-      date.setDate(firstWeekMonday.getDate() + week.id * 7 + dayIndex);
+    calendarDayNames.forEach((dayName, dayIndex) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + dayIndex);
       const dayButton = document.createElement("button");
       dayButton.type = "button";
       dayButton.className = `calendar-day-btn${isCalendarToday(date) ? " is-today" : ""}`;
       dayButton.disabled = dayIndex === 6;
       dayButton.dataset.date = date.toISOString().slice(0, 10);
-      dayButton.dataset.weekIndex = week.id;
+      dayButton.dataset.weekIndex = weekType;
       dayButton.innerHTML = `<span class="calendar-day-name">${dayName}</span><span class="calendar-day-date">${formatCalendarDate(date)}</span>`;
       if (dayButton.dataset.date === selectedCalendarDate) dayButton.classList.add("selected-day");
-      if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, week.id, dayIndex));
+      if (!dayButton.disabled) dayButton.addEventListener("click", () => selectCalendarDay(dayButton.dataset.date, weekType, dayIndex));
       daysGrid.appendChild(dayButton);
     });
     calendarContainer.appendChild(weekElement);
-  });
+  }
 }
 
 function openCalendar() {
@@ -2332,10 +2353,12 @@ function closeCalendar() {
 function selectCalendarDay(dateString, weekIndex, dayIndex) {
   calendarSelection = { dateString, weekIndex, dayIndex };
   selectedCalendarDate = dateString;
-  scheduleWeekIndex = weekIndex;
-  updateDayButtonDates(scheduleWeekIndex);
+  scheduleWeekOffset = ((weekIndex - getScheduleWeekIndex()) % 4 + 4) % 4;
+  scheduleWeekIndex = ((Number(weekIndex) % 4) + 4) % 4;
+  window.scheduleWeekIndex = scheduleWeekIndex;
+  updateDayButtonDates();
   closeCalendar();
-  getSchedule1(true, weekIndex);
+  getSchedule1(true, scheduleWeekIndex);
 }
 
 function applyCalendarSelection() {
