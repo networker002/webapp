@@ -221,13 +221,13 @@ let calendarSelection = null;
 let selectedCalendarDate = null;
 
 function getScheduleWeekIndex() {
-  const firstWeekMonday = new Date(2026, 7, 31);
+  const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
   const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
   return ((elapsedWeeks % 4) + 4) % 4;
 }
 
 function getScheduleWeekMonday(weekIndex = scheduleWeekIndex ?? getScheduleWeekIndex()) {
-  const firstWeekMonday = new Date(2026, 7, 31);
+  const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
   firstWeekMonday.setDate(firstWeekMonday.getDate() + weekIndex * 7);
   return firstWeekMonday;
 }
@@ -393,6 +393,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
               weekType = weekTypeNumber;
             }
             scheduleWeekIndex = ((Number(weekType) % 4) + 4) % 4;
+            try { localStorage.setItem("schedule_json", JSON.stringify({ weekType: scheduleWeekIndex, rows: data[1], times: data[2], savedAt: Date.now() })); } catch (_e) {}
             updateDayButtonDates(scheduleWeekIndex);
 
             let newHTML = "";
@@ -478,7 +479,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
                 dayItems.forEach((item) => {
                   if (item.day_of_week === dayKey) {
                   newHTML += `
-                    <div class="lesson-row lesson-row2">
+                    <div class="lesson-row lesson-row2" data-week="${weekType}" data-lesson-code="${item.lesson_code}" data-subject="${String(item.subject_name||'').replace(/"/g,'&quot;')}" data-room="${String(item.room_name||'').replace(/"/g,'&quot;')}" data-day="${dayName}">
                       <div>
                       <h4 class="lesson">${item.lesson_code}</h4>
                       </div>
@@ -623,7 +624,17 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           }
         })
         .catch((err) => {
-          console.error("Ошибка:", err);
+          const cachedGroup = localStorage.getItem("userGroup");
+          const cachedSchedule = localStorage.getItem("schedule");
+          if (cachedGroup && cachedSchedule) {
+            const groupElement = document.getElementById("gr");
+            if (groupElement) groupElement.textContent = cachedGroup;
+            container.innerHTML = cachedSchedule;
+            dayParseOnline();
+            initSwiper();
+            applyCalendarSelection();
+          }
+          console.warn("Расписание недоступно, используем кэш:", err);
           setTimeout(() => {
             loader.style.display = "none";
           loaderContainer.style.display = "none";
@@ -2588,8 +2599,6 @@ const ICON_OFF_D =
 
   function openAppearancePopup() {
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideAppearancePopup()})};
-            document.querySelectorAll(".popuper-appearance [id^='set-app']").forEach(e => {e.style.display = "none"; e.style.animation = "";});
-            document.querySelector(".popuper-appearance > .a-settings-area").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
             document.querySelector(".popuper-appearance").style.display = "flex";
             document.getElementById("cancel-bg").addEventListener("click", () => hideAppearancePopup(), {once: true})
@@ -2826,6 +2835,7 @@ document.getElementById("notifications-toggle").onchange = (e) => {
 };
 
 async function noti() {
+  if (!tg?.initData) return;
   const authHeaders = { Authorization: tg.initData };
 
   try {
@@ -2863,7 +2873,7 @@ async function noti() {
       }
     }
   } catch (error) {
-    console.error("Error loading notifications:", error);
+    console.warn("Дополнительные данные недоступны:", error);
   }
 }
 
@@ -3805,9 +3815,8 @@ function initColorPicker() {
   });
 }
 
-        const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
+        const appearanceSettings = document.querySelector(".a-settings-area");
         const themeSettings = document.getElementById("set-app1");
-        const tipsSettings = document.getElementById("set-app3");
         const backToAppearance = document.querySelectorAll(".back-to-ap-settins-btn");
 
         function showThemeSettingsScreen() {
@@ -3821,17 +3830,6 @@ function initColorPicker() {
             }, 330);
         }
 
-        function showTipsSettingsScreen() {
-          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
-            appearanceSettings.style.animation = "ending .3s forwards";
-            setTimeout(() => {
-                appearanceSettings.style.display = "none";
-                appearanceSettings.style.animation = "";
-                tipsSettings.style.display = "flex";
-                tipsSettings.style.animation = "starting .5s forwards";
-            }, 330);
-        }
-
         function showAppearanceSettings() {
             const el2 = document.getElementById("set-app2");
             if (themeSettings) {
@@ -3840,18 +3838,14 @@ function initColorPicker() {
             } if (el2) {
                 el2.style.display = "none";
                 el2.style.animation = ""
-            } if (tipsSettings) {
-                tipsSettings.style.display = "none";
-                tipsSettings.style.animation = ""
             }
             appearanceSettings.style.display = "flex";
             appearanceSettings.style.animation = "starting2 .5s forwards";
         }
 
-
+        
 
         document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
-        document.getElementById("tips-swipe-1").onclick = showTipsSettingsScreen;
         backToAppearance.forEach(e => e.onclick = showAppearanceSettings)
 
 
@@ -3873,16 +3867,16 @@ function initColorPicker() {
 
         function enableResLessonBtn() {
             const btn = document.querySelector(".reset-lesson-settings-c-btn");
-            if (btn.classList.contains("disabled")) btn.classList.remove("disabled");
+          if (btn?.classList.contains("disabled")) btn.classList.remove("disabled");
         }
         function disableResLessonBtn() {
             const btn = document.querySelector(".reset-lesson-settings-c-btn");
-            if (!btn.classList.contains("disabled")) btn.classList.add("disabled");
+          if (btn && !btn.classList.contains("disabled")) btn.classList.add("disabled");
         }
 
         function resetCustomLessonCard() {
             let ls = localStorage.getItem(lessonCardSettingsStorageKey);
-            if (ls) localStorage.removeItem(lessonCardSettingSteps);
+          if (ls) localStorage.removeItem(lessonCardSettingsStorageKey);
 
             var defaultProperties = {
                 "--lesson-number-padding": "5px",
@@ -3901,14 +3895,14 @@ function initColorPicker() {
 
         }
 
-        document.querySelector(".reset-lesson-settings-c-btn").onclick = () => {
+        document.querySelector(".reset-lesson-settings-c-btn")?.addEventListener("click", () => {
             resetCustomLessonCard();
             //anim
             const ob = document.querySelector(".to-settings");
-            ob.click();
+          ob?.click();
             disableResLessonBtn();
-            ob.click()
-        }
+          ob?.click();
+        });
 
         var settingsObjNamesMapping = {
             "day-name2": ["День недели", "--day-name-letter-sp", "--day-name-gap"],
