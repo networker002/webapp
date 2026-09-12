@@ -246,9 +246,13 @@ function getScheduleWeekIndex() {
 // чтобы совпадать с типом недели из getScheduleWeekIndex)
 function getRealWeekMonday(offset = scheduleWeekOffset) {
   const today = new Date();
-  const shiftToMonday = today.getDay() === 0 ? 1 : -((today.getDay() + 6) % 7);
+  const isSunday = today.getDay() === 0;
+  const shiftToMonday = isSunday ? 1 : -((today.getDay() + 6) % 7);
+  // в воскресенье окно = прошлая + текущая (следующая) + две следующих:
+  // позиция 3 цикла — это неделя, закончившаяся сегодня, иначе её не достать
+  const weekShift = isSunday ? ((offset + 1) % 4) - 1 : offset;
   const monday = new Date(today);
-  monday.setDate(today.getDate() + shiftToMonday + offset * 7);
+  monday.setDate(today.getDate() + shiftToMonday + weekShift * 7);
   return monday;
 }
 
