@@ -1312,23 +1312,7 @@ ${botSharePayloadLink()}`,
       }
     }
 
-    // 2) сохранить файл на устройство (Android / десктоп; iOS через «Файлы»)
-    try {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-      safeHaptic("success");
-      toast("Скачивание…");
-      return "download";
-    } catch (_) {}
-
-    // 3) iOS без navigator.share: открываем загруженную картинку —
+    // 2) iOS без navigator.share: открываем загруженную картинку —
     //    в Safari её можно удержать и «Сохранить в фото»
     try {
       const publicUrl = await uploadShareBlob(blob);
@@ -1343,7 +1327,7 @@ ${botSharePayloadLink()}`,
       console.warn("open image fallback", err);
     }
 
-    // 3.5) буфер обмена (десктоп)
+    // 3) буфер обмена (десктоп)
     try {
       if (navigator.clipboard && window.ClipboardItem) {
         await navigator.clipboard.write([
@@ -1364,7 +1348,7 @@ ${botSharePayloadLink()}`,
       console.warn("share upload fallback", err);
     }
 
-    return "download";
+    return "failed";
   }
 
   window.shareCurrentDayCard = async function shareCurrentDayCard() {
