@@ -522,12 +522,12 @@ body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
 
 .home-screen-hint {
   position: absolute;
-  /* Под кнопкой «Поделиться», с тем же safe-area отступом */
+  /* Слева от кнопки «Поделиться», на той же строке */
   top: calc(
     var(--tg-content-safe-area-inset-top, 0px) +
-    var(--tg-safe-area-inset-top, 0px) + 8px + 40px + 8px
+    var(--tg-safe-area-inset-top, 0px) + 8px
   );
-  right: calc(14px + var(--tg-safe-area-inset-right, 0px));
+  right: calc(14px + 40px + 8px + var(--tg-safe-area-inset-right, 0px));
   margin: 0;
   display: inline-flex;
   align-items: center;
