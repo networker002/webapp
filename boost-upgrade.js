@@ -21,6 +21,18 @@
     "2 знаменатель",
   ];
 
+  // Полные имена дней из .day-name → стандартные двухбуквенные для карточек
+  // (slice(0, 2) давал «Че», «По», «Пя», «Су»)
+  const DAY_SHORT_NAMES = {
+    Понедельник: "Пн",
+    Вторник: "Вт",
+    Среда: "Ср",
+    Четверг: "Чт",
+    Пятница: "Пт",
+    Суббота: "Сб",
+    Воскресенье: "Вс",
+  };
+
   const PRIORITY_META = {
     low: { label: "Низкий", className: "prio-low" },
     normal: { label: "Обычный", className: "prio-normal" },
@@ -1729,8 +1741,9 @@ ${botSharePayloadLink()}`,
       const lessons = [];
       days.forEach((dayEl) => {
         const dayName = dayEl.querySelector(".day-name")?.textContent?.trim() || "";
+        const short = DAY_SHORT_NAMES[dayName] ?? dayName.slice(0, 2);
         collectDayLessonsFromDom(dayEl).forEach((l) => {
-          lessons.push({ ...l, subject: `${dayName.slice(0, 2)} · ${l.subject}` });
+          lessons.push({ ...l, subject: `${short} · ${l.subject}` });
         });
       });
       const canvas = drawScheduleCard({
