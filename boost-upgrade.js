@@ -1685,7 +1685,9 @@ ${botSharePayloadLink()}`,
         btn.type = "button";
         btn.className = "share-btn share-week-type-btn";
         btn.title = "Поделиться этой неделей";
-        btn.textContent = "↗";
+        btn.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path fill="currentColor" d="m16 5l-1.42 1.42l-1.59-1.59V16h-1.98V4.83L9.42 6.42L8 5l4-4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2"/></svg>';
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
           shareWeekTypeCard(weekId);

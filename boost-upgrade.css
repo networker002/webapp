@@ -703,6 +703,9 @@ body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
   padding: 0;
   border-radius: 10px;
   font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .calendar-week-header {
   display: flex;
