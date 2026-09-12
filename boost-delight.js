@@ -553,8 +553,8 @@
     btn.type = "button";
     btn.id = "share-story-btn";
     btn.className = "share-btn share-story-btn";
-    btn.textContent = "Сторис";
-    btn.title = "Поделиться в историю с deep link";
+    btn.textContent = typeof tg?.shareToStory === "function" ? "Сторис" : "Поделиться";
+    btn.title = "Поделиться расписанием";
     header.appendChild(btn);
     btn.addEventListener("click", () => shareSummaryToStory());
   }

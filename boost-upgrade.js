@@ -130,6 +130,33 @@
     } catch (_) {}
   }
 
+  function initAppearanceExtras() {
+    const area = document.querySelector(".a-settings-area");
+    if (!area || document.getElementById("appearance-extras")) return;
+    const saved = (key, fallback) => localStorage.getItem(key) ?? fallback;
+    const panel = document.createElement("section");
+    panel.id = "appearance-extras";
+    panel.className = "appearance-extras";
+    panel.innerHTML = `
+      <h3>Подсказки и заметки</h3>
+      <label><span>Подсказки Starry</span><input type="checkbox" data-pref="tips" ${saved("prefTips", "on") === "on" ? "checked" : ""}></label>
+      <label><span>Подсветка текущей пары</span><input type="checkbox" data-pref="highlights" ${saved("prefHighlights", "on") === "on" ? "checked" : ""}></label>
+      <label><span>Компактные заметки</span><input type="checkbox" data-pref="compactNotes" ${saved("prefCompactNotes", "off") === "on" ? "checked" : ""}></label>
+      <label><span>Крупный текст заметок</span><input type="checkbox" data-pref="largeNotes" ${saved("prefLargeNotes", "off") === "on" ? "checked" : ""}></label>`;
+    area.appendChild(panel);
+
+    const apply = (key, checked) => {
+      const map = { tips: "prefTips", highlights: "prefHighlights", compactNotes: "prefCompactNotes", largeNotes: "prefLargeNotes" };
+      localStorage.setItem(map[key], checked ? "on" : "off");
+      document.body.classList.toggle(`pref-${key}-off`, !checked);
+      document.body.classList.toggle(`pref-${key}-on`, checked);
+    };
+    panel.querySelectorAll("input[data-pref]").forEach((input) => {
+      apply(input.dataset.pref, input.checked);
+      input.addEventListener("change", () => apply(input.dataset.pref, input.checked));
+    });
+  }
+
   /* ─── Week epoch fix (backend-aligned) ─── */
   function getScheduleWeekIndexFixed() {
     const elapsedWeeks = Math.floor(
@@ -333,6 +360,10 @@
       row.dataset.time = time;
       row.dataset.teacher = teacher;
       row.dataset.day = day;
+      row.dataset.pairId = `${week}|${day}|${code}|${subject}`
+        .toLowerCase()
+        .replace(/[^a-z0-9а-яё]+/gi, "-");
+      row.id = `pair-${row.dataset.pairId}`;
 
       if (!row.dataset.boostBound) {
         row.dataset.boostBound = "1";
@@ -389,6 +420,7 @@
       room: row.dataset.room,
       teacher: row.dataset.teacher,
       timeRange: row.dataset.time,
+      pairId: row.dataset.pairId,
     };
     sessionStorage.setItem("pendingPairLink", JSON.stringify(pairLink));
     document.getElementById("notes-show")?.click();
@@ -489,6 +521,25 @@
       } catch (_) {}
     }
     return null;
+  }
+
+  function sanitizeAiHtml(value) {
+    const template = document.createElement("template");
+    template.innerHTML = String(value || "");
+    const allowed = new Set(["B", "STRONG", "I", "EM", "U", "S", "BR", "P", "UL", "OL", "LI", "A"]);
+    template.content.querySelectorAll("*").forEach((node) => {
+      if (!allowed.has(node.tagName)) {
+        node.replaceWith(...node.childNodes);
+        return;
+      }
+      [...node.attributes].forEach((attr) => {
+        if (node.tagName === "A" && attr.name === "href" && /^(https?:|tg:)/i.test(attr.value)) {
+          node.setAttribute("target", "_blank");
+          node.setAttribute("rel", "noopener noreferrer");
+        } else node.removeAttribute(attr.name);
+      });
+    });
+    return template.content;
   }
 
   function fillNoteForm(note) {
@@ -681,12 +732,13 @@
       setTimeout(() => {
         document.querySelectorAll(".lesson-row").forEach((row) => {
           row.classList.remove("pair-flash");
-          if (
-            row.dataset.subject === note.pairLink.subject &&
-            String(row.dataset.lessonCode) === String(note.pairLink.lessonCode || "")
-          ) {
+          const samePair = note.pairLink.pairId
+            ? row.dataset.pairId === note.pairLink.pairId
+            : row.dataset.subject === note.pairLink.subject && String(row.dataset.lessonCode) === String(note.pairLink.lessonCode || "");
+          if (samePair) {
             row.classList.add("pair-flash");
             row.scrollIntoView({ behavior: "smooth", block: "center" });
+            setTimeout(() => row.classList.remove("pair-flash"), 3000);
           }
         });
       }, 400);
@@ -1132,6 +1184,14 @@
           return "share-url";
         } catch (_) {}
       }
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${encodeURIComponent("Расписание")}`;
+      if (typeof tg?.openTelegramLink === "function") {
+        tg.openTelegramLink(shareUrl);
+        toast("Открываем выбор чата");
+        return "telegram-share";
+      }
+      window.open(shareUrl, "_blank", "noopener,noreferrer");
+      return "telegram-share";
       try {
         await navigator.clipboard.writeText(publicUrl);
         toast("Ссылка скопирована");
@@ -1320,6 +1380,12 @@
     const input = panel.querySelector("#ai-chat-input");
     const chips = panel.querySelector("#ai-chips");
     const quotaLabel = panel.querySelector("#ai-quota-label");
+    const openChat = () => {
+      panel.hidden = false;
+      refreshQuotaLabel();
+      input.focus();
+      safeImpact("light");
+    };
 
     function refreshQuotaLabel() {
       const st = aiQuotaState();
@@ -1341,7 +1407,9 @@
     function appendMsg(role, text) {
       const div = document.createElement("div");
       div.className = `ai-msg ai-${role}`;
-      div.textContent = text;
+      if (role === "bot" && /<[^>]+>/.test(String(text))) {
+        div.appendChild(sanitizeAiHtml(text));
+      } else div.textContent = text;
       log.appendChild(div);
       log.scrollTop = log.scrollHeight;
     }
@@ -1354,6 +1422,9 @@
         safeImpact("light");
       }
     });
+    document.getElementById("default-assistant")?.addEventListener("click", openChat);
+    document.getElementById("gloomy-asistant")?.addEventListener("click", openChat);
+    window.__openScheduleAi = openChat;
     panel.querySelector("#ai-chat-close").addEventListener("click", () => {
       panel.hidden = true;
     });
@@ -1378,20 +1449,24 @@
       refreshQuotaLabel();
       input.value = "";
       appendMsg("user", q);
-      appendMsg("bot", "Думаю…");
+      appendMsg("bot", "Думаю");
       const pending = log.lastChild;
+      pending.classList.add("ai-thinking");
       try {
         const data = await api("/ai/chat", {
           method: "POST",
           body: JSON.stringify({ message: q }),
         });
-        pending.textContent =
-          data?.reply ||
+        pending.classList.remove("ai-thinking");
+        pending.replaceChildren();
+        const reply = data?.reply ||
           (data?.status === "rejected"
             ? "Могу помочь только с вопросами по расписанию."
             : "Не получилось ответить. Попробуй иначе.");
+        pending.appendChild(/<[^>]+>/.test(reply) ? sanitizeAiHtml(reply) : document.createTextNode(reply));
         safeHaptic("success");
       } catch (err) {
+        pending.classList.remove("ai-thinking");
         pending.textContent = err?.message?.includes("429")
           ? "Дневная квота AI исчерпана. Завтра лимит обновится."
           : "Сеть или сервер недоступны. Проверь интернет.";
@@ -1436,21 +1511,6 @@
           closeCalendarSafe();
           window.shareCurrentDayCard();
         });
-      }
-    }
-
-    // also next to week type in second header area via floating chip near calendar btn
-    if (!document.getElementById("share-day-inline")) {
-      const calBtn = document.getElementById("calendar-btn");
-      if (calBtn?.parentElement) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.id = "share-day-inline";
-        btn.className = "share-btn share-btn-inline";
-        btn.title = "Поделиться";
-        btn.innerHTML = "↗";
-        calBtn.parentElement.insertBefore(btn, calBtn.nextSibling);
-        btn.addEventListener("click", () => window.shareCurrentDayCard());
       }
     }
 
@@ -1579,6 +1639,15 @@
     enhanceLessonEditor();
     injectShareButtons();
     initAiChat();
+    initAppearanceExtras();
+    document.querySelectorAll("#schedule-show, #marks-show, #notes-show, #profile-show").forEach((button) => {
+      button.addEventListener("click", () => {
+        const firstScreen = button.id === "schedule-show";
+        const fab = document.getElementById("ai-chat-fab");
+        if (fab) fab.hidden = !firstScreen;
+        if (!firstScreen) document.getElementById("ai-chat-panel")?.setAttribute("hidden", "");
+      });
+    });
     enrichLessonRows();
     if (typeof window.getNotes === "function") window.getNotes();
     renderDeadlinesStrip();

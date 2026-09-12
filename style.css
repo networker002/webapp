@@ -1366,21 +1366,24 @@ h6.skeleton { opacity: .4; }
 
 #event-input {
     position: fixed;
-    top: 0%;
+    top: max(8px, var(--tg-content-safe-area-inset-top, 0px));
     left: 50%;
     transform: translate(-50%, 0);
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     backdrop-filter: blur(16px);
-    padding: 34px 28px;
+    padding: 20px 18px;
     width: 90%;
     max-width: 420px;
     z-index: 2001;
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
     display: none;
     flex-direction: column;
-    gap: 18px;
+    gap: 11px;
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top) + 20px);
 }
 #event-input h4 {
@@ -1460,7 +1463,7 @@ h6.skeleton { opacity: .4; }
 }
 #event-input input:placeholder-shown, #event-input textarea:placeholder-shown { background: var(--accent-bg); }
 #event-input input:focus, #event-input textarea:focus { outline: none; }
-#event-input textarea { min-height: 100px; resize: vertical; max-height: 180px;}
+#event-input textarea { min-height: 64px; resize: vertical; max-height: 120px;}
 #event-input br { display: none; }
 
 .btbtns {
@@ -1470,7 +1473,7 @@ h6.skeleton { opacity: .4; }
     margin-top: 12px;
 }
 #event-input button {
-    padding: 1em;
+    padding: .72em .9em;
     border-radius: 2em;
     border: none;
     color: var(--tg-theme-button-text-color);
@@ -1484,6 +1487,8 @@ h6.skeleton { opacity: .4; }
     box-sizing: border-box;
     margin-top: 0;
 }
+#event-input .deadline-presets { gap: 5px; }
+#event-input .deadline-presets button { width: auto; padding: .48em .65em; font-size: .8em; border-radius: 10px; }
 #cancel-event-btn {
     color: var(--tg-theme-text-color) !important;
     background: var(--tg-theme-bg-color) !important;
