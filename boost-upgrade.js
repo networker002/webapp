@@ -1260,18 +1260,26 @@
         ...(cardDate ? { date: `${cardDate.slice(0, 2)}.${cardDate.slice(2, 4)}` } : {}),
       }),
     );
-    const res = await fetch(`${API_BASE}/share/upload`, {
-      method: "POST",
-      headers: authHeaders(),
-      body: form,
-    });
-    if (!res.ok) throw new Error("upload failed");
-    const data = await res.json();
-    if (!data?.url) throw new Error("no url");
+    // Жёсткий таймаут: пока идёт заливка, юзер сидит на кнопке «Отправить»
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
     try {
-      sessionStorage.setItem("lastSharePublicUrl", data.url);
-    } catch (_) {}
-    return data.url;
+      const res = await fetch(`${API_BASE}/share/upload`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: form,
+        signal: ctrl.signal,
+      });
+      if (!res.ok) throw new Error(`upload ${res.status}`);
+      const data = await res.json();
+      if (!data?.url) throw new Error("no url");
+      try {
+        sessionStorage.setItem("lastSharePublicUrl", data.url);
+      } catch (_) {}
+      return data.url;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function botSharePayloadLink() {
@@ -1284,95 +1292,424 @@
     return `https://t.me/${BOT_USERNAME}?start=share_${b64}`;
   }
 
-  function openBotChatWithFallback(url) {
-    // Клиенты Telegram игнорируют openTelegramLink вне пользовательского
-    // жеста (а после рендера/загрузки жест уже «протух») — если через 1.5с
-    // переключения не случилось, показываем явную кнопку
-    let bannerShown = false;
-    const showBanner = () => {
-      if (bannerShown) return;
-      bannerShown = true;
-      const bar = document.createElement("button");
-      bar.type = "button";
-      bar.id = "open-bot-banner";
-      bar.textContent = "Открыть бота, чтобы отправить карточку →";
-      bar.addEventListener("click", () => {
-        bar.remove();
-        if (typeof tg?.openTelegramLink === "function") tg.openTelegramLink(url);
-        else window.open(url, "_blank", "noopener,noreferrer");
-      });
-      document.body.appendChild(bar);
-      setTimeout(() => bar.remove(), 20000);
-    };
+  function inTelegramWeb() {
+    return Boolean(tg?.platform && tg.platform !== "unknown");
+  }
+
+  function openBotChat(url) {
+    // Открытие без баннер-артефактов: если клиент не переключился на чат с
+    // ботом, кнопка «Открыть бота» остаётся в шите — отдельный слой не нужен
     try {
-      if (typeof tg?.openTelegramLink === "function") tg.openTelegramLink(url);
-      else window.open(url, "_blank", "noopener,noreferrer");
+      if (/^https:\/\/t\.me\//.test(url) && typeof tg?.openTelegramLink === "function") {
+        tg.openTelegramLink(url);
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+      return true;
     } catch (err) {
       console.warn("open bot link failed", err);
-      showBanner();
-      return;
+      return false;
     }
-    setTimeout(() => {
-      if (document.visibilityState === "visible") showBanner();
-    }, 1500);
   }
 
-  async function shareViaBot(blob, weekRange, cardDate) {
-    // Заливаем карточку на бэкенд и ведём юзера в чат с ботом:
-    // бот отдаст PNG с HTML-подписью и кнопками «Выбрать чат»/«Сохранить».
-    // weekRange («07.09-13.09») — подпись диапазоном для недельной карточки;
-    // cardDate («1309») — дата дневной карточки: бот ключует кэш и подпись
-    // по ней, а не по «сегодня».
-    // В start-параметре допустимы только [A-Za-z0-9_-], поэтому суффиксы
-    // уходят без точек — бот разворачивает обратно.
-    const publicUrl = await uploadShareBlob(blob, weekRange, cardDate);
-    const filename = (publicUrl.split("/").pop() || "");
-    const digest = filename.replace(/\.png$/i, "").split("_").pop();
-    if (!/^[0-9a-f]{8,32}$/.test(digest)) throw new Error("bad digest");
-    let start = `card_${digest}`;
-    if (weekRange) start += `_${weekRange.replace(/\./g, "")}`;
-    else if (cardDate) start += `_${cardDate}`;
-    openBotChatWithFallback(`https://t.me/${BOT_USERNAME}?start=${start}`);
-    safeHaptic("success");
-    toast("Открываю бота — оттуда отправь карточку в любой чат");
-    return "bot-card";
+  /* ─── Share sheet: данные карточек ───
+   * Все 4 недели цикла приходят одним ответом /schedulejson (кэш в
+   * main.js), поэтому и дневные, и недельные карточки рисуем из данных:
+   * не трогаем DOM расписания (раньше недельная карточка переключала
+   * расписание юзера на нужную неделю и ждала 700мс — гонка и мигание)
+   * и честно применяем локальные правки (alias/аудитория/скрытые пары). */
+  const SHARE_DAY_ORDER = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+
+  const shareState = {
+    mode: "day", // "day" | "week"
+    dayIdx: 0,
+    weekIdx: 0,
+    monday: null,
+    canvas: null,
+    payload: null,
+    busy: false,
+    lastUrl: null,
+  };
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
   }
 
-  function openChatChooser(publicUrl) {
-    // Шаринг через Telegram: отправитель выбирает чат (в т.ч. чат с ботом).
-    // Превью публичной картинки покажет изображение; t.me-ссылка в тексте
-    // Telegram автоссылкует — обычный текст без HTML гиперссылок не умеет.
-    const text = encodeURIComponent(
-      `Расписание ${localStorage.getItem("userGroup") || ""}
-${botSharePayloadLink()}`,
-    );
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${text}`;
-    if (typeof tg?.openTelegramLink === "function") {
-      tg.openTelegramLink(shareUrl);
-    } else {
-      window.open(shareUrl, "_blank", "noopener,noreferrer");
-    }
-    safeHaptic("success");
-    toast("Выбери чат для отправки");
+  function fmtDDMM(d) {
+    return `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}`;
   }
 
-  async function shareBlobWithFallbacks(blob, filename = "schedule.png", weekRange = null, cardDate = null) {
-    const file = new File([blob], filename, { type: "image/png" });
-    const inTelegram = Boolean(tg?.platform && tg.platform !== "unknown");
+  function fmtWeekRange(monday) {
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+    return `${fmtDDMM(monday)}-${fmtDDMM(sunday)}`;
+  }
 
-    // 0) В Telegram основной путь — чат с ботом: карточка уходит на бэкенд,
-    //    бот отдаёт её с HTML-подписью и кнопками; так обходим ограничения
-    //    webview на всех платформах
-    if (inTelegram) {
-      try {
-        return await shareViaBot(blob, weekRange, cardDate);
-      } catch (err) {
-        console.warn("bot card share failed", err);
+  function displayedWeekMonday() {
+    const monday = window.getRealWeekMonday?.(window.getScheduleWeekOffset?.() ?? 0);
+    return monday instanceof Date && !Number.isNaN(monday.getTime()) ? monday : null;
+  }
+
+  function shareRowsCache() {
+    try {
+      if (typeof window.getScheduleRows === "function") {
+        const rows = window.getScheduleRows();
+        if (rows?.rows?.length) return rows;
       }
+    } catch (_) {}
+    try {
+      const cached = JSON.parse(localStorage.getItem("schedule_json") || "null");
+      if (cached?.rows?.length) return { rows: cached.rows, times: cached.times };
+    } catch (_) {}
+    return null;
+  }
+
+  function dayLessonsFromData(weekIdx, dayIdx) {
+    const cache = shareRowsCache();
+    if (!cache) return null;
+    const dayName = SHARE_DAY_ORDER[dayIdx];
+    const times = cache.times || {};
+    const overrides = readOverrides();
+    const rows = (cache.rows || [])
+      .filter((r) => Number(r.day_number) === Number(weekIdx) && Number(r.day_of_week) === dayIdx + 1)
+      .sort((a, b) => Number(a.lesson_code || 0) - Number(b.lesson_code || 0));
+    const lessons = [];
+    for (const r of rows) {
+      const code = String(r.lesson_code ?? "");
+      const t = times[code] ?? times[r.lesson_code];
+      const time = Array.isArray(t) ? t.join(" - ") : String(t || "").replace(",", " - ");
+      const subject = String(r.subject_name || "—");
+      const ov = overrides[`${weekIdx}|${dayName}|${code}|${subject}`];
+      if (ov?.hidden) continue;
+      const fallbackTime = [r.lesson_start, r.lesson_end]
+        .filter(Boolean)
+        .map((s) => String(s).slice(0, 5))
+        .join(" - ");
+      lessons.push({
+        code,
+        time: time || fallbackTime,
+        subject: ov?.alias || subject,
+        room: ov?.roomOverride || String(r.room_name || "").replace(/[()]/g, "").trim(),
+        teacher: String(r.teacher_full || "").trim(),
+      });
+    }
+    return lessons;
+  }
+
+  // Фолбэк на DOM — только когда кэша данных нет, а нужная неделя на экране
+  function dayLessonsFromDom(dayIdx) {
+    const dayEls = document.querySelectorAll(".swiper-slide .day");
+    return collectDayLessonsFromDom(dayEls[dayIdx] || getActiveDayElement());
+  }
+
+  function buildShareDayCard(weekIdx, dayIdx, monday) {
+    const group = localStorage.getItem("userGroup") || "Группа";
+    const base = monday ?? displayedWeekMonday();
+    const dayName = SHARE_DAY_ORDER[dayIdx] ?? "День";
+    const date = base
+      ? new Date(base.getFullYear(), base.getMonth(), base.getDate() + dayIdx)
+      : null;
+    let lessons = dayLessonsFromData(weekIdx, dayIdx);
+    if (lessons === null) lessons = dayLessonsFromDom(dayIdx);
+    const canvas = drawScheduleCard({
+      title: group,
+      subtitle: date ? `${dayName}, ${fmtDDMM(date)}` : dayName,
+      weekLabel: WEEK_TITLES[weekIdx] || `Неделя ${weekIdx + 1}`,
+      lessons,
+      mode: "day",
+    });
+    return {
+      canvas,
+      weekRange: null,
+      cardDate: date ? `${pad2(date.getDate())}${pad2(date.getMonth() + 1)}` : null,
+      filename: `${group}-${dayName}.png`,
+    };
+  }
+
+  function buildShareWeekCard(weekIdx, monday) {
+    const group = localStorage.getItem("userGroup") || "Группа";
+    const base = monday ?? displayedWeekMonday();
+    const displayed = Number(window.scheduleWeekIndex ?? getScheduleWeekIndexFixed());
+    const cache = shareRowsCache();
+    // без кэша доступна только неделя на экране (DOM)
+    if (!cache && weekIdx !== displayed) return null;
+    const dayBlocks = [];
+    SHARE_DAY_ORDER.forEach((dayName, i) => {
+      const lessons = dayLessonsFromData(weekIdx, i) ?? dayLessonsFromDom(i);
+      if (lessons.length) {
+        dayBlocks.push({
+          name: DAY_SHORT_NAMES[dayName] ?? dayName.slice(0, 2),
+          lessons: lessons.slice(0, 8),
+        });
+      }
+    });
+    const canvas = drawScheduleCard({
+      title: group,
+      subtitle: base ? fmtWeekRange(base) : WEEK_TITLES[weekIdx] || `Неделя ${weekIdx + 1}`,
+      weekLabel: WEEK_TITLES[weekIdx] || "",
+      days: dayBlocks,
+      mode: "week",
+    });
+    return {
+      canvas,
+      weekRange: base ? fmtWeekRange(base) : null,
+      cardDate: null,
+      filename: `${group}-week-${weekIdx + 1}.png`,
+    };
+  }
+
+  /* ─── Share sheet: UI ─── */
+  function ensureShareSheet() {
+    if (document.getElementById("share-sheet-modal")) return;
+    const sheet = document.createElement("div");
+    sheet.id = "share-sheet-modal";
+    sheet.className = "share-sheet-modal";
+    sheet.hidden = true;
+    sheet.innerHTML = `
+      <div class="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title">
+        <header>
+          <h3 id="share-sheet-title">Поделиться</h3>
+          <button type="button" id="share-sheet-close" aria-label="Закрыть">×</button>
+        </header>
+        <div class="share-mode-row" id="share-mode-row">
+          <button type="button" class="share-mode-btn is-active" data-mode="day">День</button>
+          <button type="button" class="share-mode-btn" data-mode="week">Неделя</button>
+        </div>
+        <div class="share-day-chips" id="share-day-chips"></div>
+        <p class="share-sub-label" id="share-sub-label"></p>
+        <div class="share-preview" id="share-preview"></div>
+        <div class="share-sheet-actions" id="share-actions">
+          <button type="button" id="share-download-btn" class="share-ghost-btn">Скачать PNG</button>
+          <button type="button" id="share-send-btn" class="share-primary-btn">Отправить</button>
+        </div>
+        <div class="share-done" id="share-done" hidden>
+          <p id="share-done-text"></p>
+          <div class="share-sheet-actions">
+            <button type="button" id="share-done-close" class="share-ghost-btn">Готово</button>
+            <a id="share-open-link" class="share-primary-btn" href="#">Открыть бота</a>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(sheet);
+    sheet.addEventListener("click", (e) => {
+      if (e.target === sheet) closeShareSheet();
+    });
+    sheet.querySelector("#share-sheet-close").addEventListener("click", closeShareSheet);
+    sheet.querySelector("#share-mode-row").addEventListener("click", (e) => {
+      const btn = e.target.closest(".share-mode-btn");
+      if (!btn) return;
+      safeImpact("light");
+      setShareMode(btn.dataset.mode);
+    });
+    sheet.querySelector("#share-day-chips").addEventListener("click", (e) => {
+      const chip = e.target.closest(".share-day-chip");
+      if (!chip) return;
+      shareState.dayIdx = Number(chip.dataset.dayIdx) || 0;
+      safeImpact("light");
+      renderShareSheet();
+    });
+    sheet.querySelector("#share-send-btn").addEventListener("click", sendShareCard);
+    sheet.querySelector("#share-download-btn").addEventListener("click", downloadShareCard);
+    sheet.querySelector("#share-done-close").addEventListener("click", closeShareSheet);
+    sheet.querySelector("#share-open-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      if (shareState.lastUrl) openBotChat(shareState.lastUrl);
+    });
+  }
+
+  function activeDayIndex() {
+    const swiper = document.querySelector(".swiper")?.swiper;
+    return Math.min(SHARE_DAY_ORDER.length - 1, Math.max(0, swiper?.realIndex ?? 0));
+  }
+
+  function openShareSheet(opts = {}) {
+    ensureShareSheet();
+    const displayed = Number(window.scheduleWeekIndex ?? getScheduleWeekIndexFixed());
+    const monday = opts.monday instanceof Date && !Number.isNaN(opts.monday.getTime())
+      ? opts.monday
+      : displayedWeekMonday();
+    const weekIdx = Number.isFinite(Number(opts.weekIdx))
+      ? ((Number(opts.weekIdx) % 4) + 4) % 4
+      : displayed;
+    let dayIdx = Number.isFinite(Number(opts.dayIdx))
+      ? Math.min(SHARE_DAY_ORDER.length - 1, Math.max(0, Number(opts.dayIdx)))
+      : activeDayIndex();
+    if (opts.todayIfVisible && monday) {
+      // сегодня попадает в отображённую неделю? (в вс чипов нет — оставляем активный день)
+      const start = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate());
+      const diff = Math.floor((new Date().setHours(0, 0, 0, 0) - start.getTime()) / 86400000);
+      if (diff >= 0 && diff <= 5) dayIdx = diff;
+    }
+    Object.assign(shareState, {
+      mode: opts.mode === "week" ? "week" : "day",
+      dayIdx,
+      weekIdx,
+      monday,
+      busy: false,
+      lastUrl: null,
+    });
+    const sheet = document.getElementById("share-sheet-modal");
+    sheet.hidden = false;
+    requestAnimationFrame(() => sheet.classList.add("is-open"));
+    renderShareSheet();
+    safeImpact("light");
+  }
+
+  function closeShareSheet() {
+    const sheet = document.getElementById("share-sheet-modal");
+    if (!sheet || sheet.hidden) return;
+    sheet.classList.remove("is-open");
+    setTimeout(() => {
+      sheet.hidden = true;
+      sheet.querySelector("#share-done").hidden = true;
+      sheet.querySelector("#share-actions").hidden = false;
+      sheet.querySelector("#share-preview").innerHTML = "";
+    }, 200);
+  }
+
+  function setShareMode(mode) {
+    const next = mode === "week" ? "week" : "day";
+    if (shareState.mode === next) return;
+    shareState.mode = next;
+    renderShareSheet();
+  }
+
+  function renderDayChips(container) {
+    container.innerHTML = "";
+    SHARE_DAY_ORDER.forEach((dayName, i) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "share-day-chip" + (i === shareState.dayIdx ? " is-active" : "");
+      chip.dataset.dayIdx = String(i);
+      const date = shareState.monday
+        ? new Date(shareState.monday.getFullYear(), shareState.monday.getMonth(), shareState.monday.getDate() + i)
+        : null;
+      chip.innerHTML = `<b>${DAY_SHORT_NAMES[dayName]}</b><span>${
+        date ? `${date.getDate()}.${date.getMonth() + 1}` : ""
+      }</span>`;
+      container.appendChild(chip);
+    });
+  }
+
+  function renderShareSheet() {
+    const sheet = document.getElementById("share-sheet-modal");
+    if (!sheet || sheet.hidden) return;
+    sheet.querySelectorAll(".share-mode-btn").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.mode === shareState.mode);
+    });
+    const chips = sheet.querySelector("#share-day-chips");
+    chips.hidden = shareState.mode !== "day";
+    if (shareState.mode === "day") renderDayChips(chips);
+
+    let payload;
+    if (shareState.mode === "week") {
+      payload = buildShareWeekCard(shareState.weekIdx, shareState.monday);
+      if (!payload) {
+        // данных по этой неделе нет — не показываем пустую карточку
+        toast("Расписание ещё не загрузилось — попробуй чуть позже");
+        shareState.mode = "day";
+        return renderShareSheet();
+      }
+    } else {
+      payload = buildShareDayCard(shareState.weekIdx, shareState.dayIdx, shareState.monday);
+    }
+    shareState.canvas = payload.canvas;
+    shareState.payload = payload;
+
+    const sub = sheet.querySelector("#share-sub-label");
+    const weekTitle = WEEK_TITLES[shareState.weekIdx] || "";
+    if (shareState.mode === "day") {
+      const dayName = SHARE_DAY_ORDER[shareState.dayIdx];
+      const date = shareState.monday
+        ? new Date(
+            shareState.monday.getFullYear(),
+            shareState.monday.getMonth(),
+            shareState.monday.getDate() + shareState.dayIdx,
+          )
+        : null;
+      sub.textContent = date ? `${dayName}, ${fmtDDMM(date)} · ${weekTitle}` : dayName;
+    } else {
+      sub.textContent = shareState.monday
+        ? `${fmtWeekRange(shareState.monday)} · ${weekTitle}`
+        : weekTitle;
     }
 
-    // 1) Реальное вложение: системный шерит-шит отправляет именно картинку
-    //    (браузер вне Telegram), в тексте — диплинк, который автоссылкует
+    const preview = sheet.querySelector("#share-preview");
+    preview.innerHTML = "";
+    payload.canvas.className = "share-preview-canvas";
+    preview.appendChild(payload.canvas);
+
+    // «Скачать PNG» имеет смысл только там, где браузер умеет файлы:
+    // в мобильных webview Telegram скачивание блокируется — там карточку
+    // сохраняет кнопка бота «Сохранить на устройство»
+    const platform = tg?.platform || "";
+    const canDownload =
+      !inTelegramWeb() || ["tdesktop", "macos", "web", "unified"].includes(platform);
+    sheet.querySelector("#share-download-btn").hidden = !canDownload;
+  }
+
+  async function sendShareCard() {
+    if (shareState.busy || !shareState.canvas) return;
+    shareState.busy = true;
+    const sendBtn = document.querySelector("#share-send-btn");
+    const prevText = sendBtn.textContent;
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Готовлю…";
+    try {
+      const blob = await canvasToPngBlob(shareState.canvas);
+      if (inTelegramWeb()) {
+        await deliverViaBot(blob, shareState.payload);
+      } else {
+        await deliverNative(blob, shareState.payload);
+      }
+    } catch (err) {
+      console.error(err);
+      safeHaptic("error");
+      toast("Не получилось поделиться — попробуй ещё раз");
+    } finally {
+      shareState.busy = false;
+      sendBtn.disabled = false;
+      sendBtn.textContent = prevText;
+    }
+  }
+
+  async function deliverViaBot(blob, payload) {
+    // В Telegram карточка живёт у бота: он отдаёт её с кнопками «Выбрать
+    // чат»/«Сохранить». Заливка PNG — best effort: если не вышло, deep link
+    // несёт дату/диапазон, и бот рисует карточку сам из расписания.
+    const { weekRange, cardDate } = payload;
+    let start = null;
+    try {
+      const publicUrl = await uploadShareBlob(blob, weekRange, cardDate);
+      const digest = (publicUrl.split("/").pop() || "").replace(/\.png$/i, "").split("_").pop();
+      if (/^[0-9a-f]{8,32}$/.test(digest)) {
+        start = `card_${digest}`;
+        if (weekRange) start += `_${weekRange.replace(/\./g, "")}`;
+        else if (cardDate) start += `_${cardDate}`;
+      }
+    } catch (err) {
+      console.warn("card upload failed — bot will render it server-side", err);
+    }
+    if (!start) {
+      const today = new Date();
+      start = weekRange
+        ? `card_week_${weekRange.replace(/\./g, "")}`
+        : `card_day_${cardDate || `${pad2(today.getDate())}${pad2(today.getMonth() + 1)}`}`;
+    }
+    const url = `https://t.me/${BOT_USERNAME}?start=${start}`;
+    shareState.lastUrl = url;
+    openBotChat(url);
+    safeHaptic("success");
+    showShareDone(
+      "Карточка уже в чате с ботом — перешли её в любой чат или сохрани на устройство.",
+      "Открыть бота",
+    );
+  }
+
+  async function deliverNative(blob, payload) {
+    // Вне Telegram: системный шеринг с настоящим вложением, затем буфер
+    // обмена, в крайнем случае — публичная ссылка. Каждый шаг честно
+    // сообщает результат, «тихих» провалов нет.
+    const file = new File([blob], payload.filename || "schedule.png", { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
@@ -1382,116 +1719,65 @@ ${botSharePayloadLink()}`,
         });
         safeHaptic("success");
         toast("Отправлено");
-        return "share";
+        closeShareSheet();
+        return;
       } catch (err) {
-        if (err?.name === "AbortError") return "aborted";
+        if (err?.name === "AbortError") return;
         console.warn("share file failed", err);
       }
     }
-
-    // 2) iOS без navigator.share: открываем загруженную картинку —
-    //    в Safari её можно удержать и «Сохранить в фото»
-    try {
-      const publicUrl = await uploadShareBlob(blob);
-      if (typeof tg?.openLink === "function") {
-        tg.openLink(publicUrl, { try_instant_view: false });
-      } else {
-        window.open(publicUrl, "_blank", "noopener,noreferrer");
-      }
-      toast("Удерживай картинку, чтобы сохранить");
-      return "open-image";
-    } catch (err) {
-      console.warn("open image fallback", err);
-    }
-
-    // 3) буфер обмена (десктоп)
     try {
       if (navigator.clipboard && window.ClipboardItem) {
-        await navigator.clipboard.write([
-          new ClipboardItem({ "image/png": blob }),
-        ]);
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
         safeHaptic("success");
-        toast("Картинка в буфере");
-        return "clipboard";
+        toast("Картинка в буфере обмена");
+        closeShareSheet();
+        return;
       }
     } catch (_) {}
-
-    // 4) upload + выбор чата в Telegram (в т.ч. чат с ботом)
-    try {
-      const publicUrl = await uploadShareBlob(blob);
-      openChatChooser(publicUrl);
-      return "telegram-share";
-    } catch (err) {
-      console.warn("share upload fallback", err);
-    }
-
-    return "failed";
+    const publicUrl = await uploadShareBlob(blob);
+    shareState.lastUrl = publicUrl;
+    showShareDone(
+      "Системный шеринг недоступен — вот прямая ссылка на карточку.",
+      "Открыть картинку",
+    );
   }
 
-  window.shareCurrentDayCard = async function shareCurrentDayCard() {
+  function showShareDone(text, linkLabel) {
+    const sheet = document.getElementById("share-sheet-modal");
+    if (!sheet) return;
+    sheet.querySelector("#share-done-text").textContent = text;
+    sheet.querySelector("#share-open-link").textContent = linkLabel || "Открыть";
+    sheet.querySelector("#share-actions").hidden = true;
+    sheet.querySelector("#share-done").hidden = false;
+  }
+
+  function downloadShareCard() {
+    if (!shareState.canvas) return;
     try {
-      toast("Рисуем карточку…");
-      const dayEl = getActiveDayElement();
-      const dayName = dayEl?.querySelector(".day-name")?.textContent?.trim() || "День";
-      const group = localStorage.getItem("userGroup") || "Группа";
-      const weekIdx = window.scheduleWeekIndex ?? getScheduleWeekIndexFixed();
-      const lessons = collectDayLessonsFromDom(dayEl);
-      const canvas = drawScheduleCard({
-        title: group,
-        subtitle: dayName,
-        weekLabel: WEEK_TITLES[weekIdx] || `Неделя ${weekIdx + 1}`,
-        lessons,
-        mode: "day",
-      });
-      const blob = await canvasToPngBlob(canvas);
-      // Дата активного дня: реальный понедельник отображённой недели + индекс
-      // свайпера. Бот ключует кэш и подпись по дате карточки, а не по «сегодня»
-      let cardDate = null;
-      const swiper = document.querySelector(".swiper")?.swiper;
-      const dayIdx = swiper?.realIndex ?? 0;
-      if (typeof window.getRealWeekMonday === "function") {
-        const monday = window.getRealWeekMonday(window.getScheduleWeekOffset?.() ?? 0);
-        if (monday instanceof Date && !Number.isNaN(monday.getTime())) {
-          const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + dayIdx);
-          cardDate = `${String(d.getDate()).padStart(2, "0")}${String(d.getMonth() + 1).padStart(2, "0")}`;
-        }
-      }
-      await shareBlobWithFallbacks(blob, `${group}-${dayName}.png`, null, cardDate);
-    } catch (err) {
-      console.error(err);
-      safeHaptic("error");
-      toast(`Не удалось поделиться: ${err?.message || "ошибка отрисовки"}`);
+      shareState.canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = shareState.payload?.filename || "schedule.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        toast("Картинка скачана");
+      }, "image/png");
+    } catch (_) {
+      toast("Не удалось скачать — сохрани карточку через бота");
     }
+  }
+
+  window.shareCurrentDayCard = function shareCurrentDayCard() {
+    openShareSheet();
   };
 
-  window.shareSummaryCard = async function shareSummaryCard() {
-    try {
-      toast("Рисуем карточку…");
-      const group = localStorage.getItem("userGroup") || "Группа";
-      const weekIdx = window.scheduleWeekIndex ?? getScheduleWeekIndexFixed();
-      const todayName = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"][
-        new Date().getDay()
-      ];
-      const today = Array.from(document.querySelectorAll(".day")).find(
-        (d) => d.querySelector(".day-name")?.textContent?.trim() === todayName,
-      );
-      const lessons = collectDayLessonsFromDom(today);
-      const status =
-        document.querySelector(".summary-status strong")?.textContent?.trim() || "Мой день";
-      const canvas = drawScheduleCard({
-        title: group,
-        subtitle: `${todayName} · ${status}`,
-        weekLabel: WEEK_TITLES[weekIdx] || "Неделя",
-        lessons,
-        mode: "summary",
-      });
-      const blob = await canvasToPngBlob(canvas);
-      await shareBlobWithFallbacks(blob, `${group}-today.png`);
-    } catch (err) {
-      console.error(err);
-      safeHaptic("error");
-      toast("Не удалось поделиться");
-    }
+  window.shareSummaryCard = function shareSummaryCard() {
+    openShareSheet({ todayIfVisible: true });
   };
 
   /* ─── Lesson card editor redesign ─── */
@@ -1793,7 +2079,7 @@ ${botSharePayloadLink()}`,
           '<path fill="currentColor" d="m16 5l-1.42 1.42l-1.59-1.59V16h-1.98V4.83L9.42 6.42L8 5l4-4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2"/></svg>';
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          shareWeekTypeCard(weekId, blockMonday);
+          window.shareWeekTypeCard(weekId, blockMonday);
         });
         header.appendChild(btn);
         if (weekBlock) weekBlock.dataset.weekId = String(weekId);
@@ -1817,65 +2103,18 @@ ${botSharePayloadLink()}`,
     return idx >= 0 ? idx : window.scheduleWeekIndex ?? getScheduleWeekIndexFixed();
   }
 
-  async function shareWeekTypeCard(weekId, blockMonday = null) {
-    try {
-      toast("Рисуем неделю…");
-      const prev = window.scheduleWeekIndex;
-      const target = Number(weekId);
-      if (typeof window.getSchedule1 === "function" && prev !== target) {
-        window.scheduleWeekIndex = target;
-        await Promise.resolve(window.getSchedule1(true, target));
-        await new Promise((r) => setTimeout(r, 700));
-      }
-      const group = localStorage.getItem("userGroup") || "Группа";
-      const days = Array.from(document.querySelectorAll(".day"));
-      const dayBlocks = [];
-      days.forEach((dayEl) => {
-        const dayName = dayEl.querySelector(".day-name")?.textContent?.trim() || "";
-        const dayLessons = collectDayLessonsFromDom(dayEl).slice(0, 8);
-        if (dayLessons.length) {
-          dayBlocks.push({
-            name: DAY_SHORT_NAMES[dayName] ?? dayName.slice(0, 2),
-            lessons: dayLessons,
-          });
-        }
-      });
-      const canvas = drawScheduleCard({
-        title: group,
-        subtitle: WEEK_TITLES[target] || `Неделя ${target + 1}`,
-        weekLabel: WEEK_TITLES[target] || "",
-        days: dayBlocks,
-        mode: "week",
-      });
-      const blob = await canvasToPngBlob(canvas);
-      // Реальные даты кликнутой недели (пн–вс) — бот поставит их в подпись.
-      // epoch-фолбэк только если даты блока недоступны
-      let monday = null;
-      if (blockMonday) {
-        const parsed = new Date(`${blockMonday}T00:00:00`);
-        if (!Number.isNaN(parsed.getTime())) monday = parsed;
-      }
-      if (!monday && typeof window.getScheduleWeekMonday === "function") {
-        monday = window.getScheduleWeekMonday(target);
-      }
-      let weekRange = null;
-      if (monday instanceof Date && !Number.isNaN(monday.getTime())) {
-        const fmt = (d) =>
-          `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
-        const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
-        weekRange = `${fmt(monday)}-${fmt(sunday)}`;
-      }
-      await shareBlobWithFallbacks(blob, `${group}-week-${target + 1}.png`, weekRange);
-      if (typeof prev === "number" && prev !== target && typeof window.getSchedule1 === "function") {
-        window.scheduleWeekIndex = prev;
-        window.getSchedule1(true, prev);
-      }
-    } catch (err) {
-      console.error(err);
-      safeHaptic("error");
-      toast("Не удалось поделиться неделей");
+  window.shareWeekTypeCard = function shareWeekTypeCard(weekId, blockMonday = null) {
+    // Недельная карточка открывается в шите: расписание пользователя
+    // больше не переключается на целевую неделю (раньше это выглядело
+    // как мигание и могло уехать гонкой по 700мс)
+    let monday = null;
+    if (blockMonday) {
+      const parsed = new Date(`${blockMonday}T00:00:00`);
+      if (!Number.isNaN(parsed.getTime())) monday = parsed;
     }
-  }
+    if (monday) openShareSheet({ mode: "week", weekIdx: Number(weekId), monday });
+    else openShareSheet({ mode: "week" });
+  };
 
   /* ─── Patch schedule render completion ─── */
   function patchCacheData() {

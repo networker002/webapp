@@ -17,22 +17,151 @@
   transform: scale(0.96);
   filter: brightness(0.92);
 }
-#open-bot-banner {
+/* ─── Share sheet: превью + отправка дня/недели ─── */
+/* 200100 — выше календаря (200000), из которого шарится неделя;
+   тост #fast-alert поднят ещё выше (см. ниже) */
+.share-sheet-modal {
   position: fixed;
-  left: 16px;
-  right: 16px;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  z-index: 9999;
-  padding: 14px 18px;
+  inset: 0;
+  z-index: 200100;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.share-sheet-modal.is-open { opacity: 1; }
+.share-sheet {
+  width: min(100%, 440px);
+  max-height: calc(100vh - 40px); /* фолбэк для webview без dvh */
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  background: var(--tg-theme-bg-color, #171F30);
+  border-radius: 22px 22px 0 0;
+  padding: 18px 16px calc(18px + var(--tg-safe-area-inset-bottom, 0px));
+  transform: translateY(16px);
+  transition: transform 0.2s ease;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
+}
+.share-sheet-modal.is-open .share-sheet { transform: translateY(0); }
+.share-sheet header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.share-sheet header h3 { margin: 0; font-size: 18px; }
+#share-sheet-close {
   border: none;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-text-color);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.share-mode-row {
+  display: flex;
+  gap: 6px;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
   border-radius: 14px;
-  background: var(--tg-theme-button-color, var(--accent));
-  color: var(--tg-theme-button-text-color, #fff);
+  padding: 4px;
+  margin-bottom: 10px;
+}
+.share-mode-btn {
+  flex: 1;
+  border: none;
+  border-radius: 11px;
+  padding: 9px 10px;
+  background: transparent;
+  color: var(--tg-theme-hint-color);
   font-weight: 700;
   font-size: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  animation: pop-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  cursor: pointer;
 }
+.share-mode-btn.is-active {
+  background: var(--tg-theme-button-color, var(--accent));
+  color: var(--tg-theme-button-text-color, #fff);
+}
+.share-day-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 6px;
+}
+.share-day-chips[hidden] { display: none !important; }
+.share-day-chip {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 12px;
+  padding: 7px 11px;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-text-color);
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  cursor: pointer;
+}
+.share-day-chip b { font-size: 13px; }
+.share-day-chip span { font-size: 10px; color: var(--tg-theme-hint-color); }
+.share-day-chip.is-active {
+  background: color-mix(in srgb, var(--tg-theme-button-color, #3390ec) 26%, var(--tg-theme-secondary-bg-color, #242F43));
+  outline: 1px solid var(--tg-theme-button-color, var(--accent));
+}
+.share-sub-label {
+  margin: 2px 0 8px;
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+}
+.share-preview {
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  max-height: 46vh;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.share-preview-canvas { display: block; width: 100%; height: auto; }
+.share-sheet-actions {
+  display: flex;
+  gap: 8px;
+}
+.share-sheet-actions > * { flex: 1; }
+.share-primary-btn,
+.share-ghost-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+.share-primary-btn {
+  background: var(--tg-theme-button-color, var(--accent));
+  color: var(--tg-theme-button-text-color, #fff);
+}
+.share-primary-btn:disabled { opacity: 0.6; }
+.share-ghost-btn {
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-text-color);
+}
+.share-done p {
+  margin: 4px 0 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tg-theme-text-color);
+}
+/* тост должен перекрывать шит и календарь */
+#fast-alert { z-index: 200200; }
 .share-btn-inline {
   width: 40px;
   height: 40px;
