@@ -147,6 +147,15 @@
       .replace(/"/g, "&quot;");
   }
 
+  // «Кузнецов Александр Викторович» → «Кузнецов А. В.»
+  function shortenTeacherName(full) {
+    const parts = String(full || "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "";
+    const [last, ...rest] = parts;
+    const initials = rest.map((p) => `${p[0].toUpperCase()}.`).join(" ");
+    return initials ? `${last} ${initials}` : last;
+  }
+
   function isPremium() {
     return Boolean(tg?.initDataUnsafe?.user?.is_premium);
   }
@@ -368,6 +377,13 @@
     const { lesson, state, minutes } = info;
     const room = lesson.room || "—";
     const big = room.replace(/\s+/g, "");
+    const copyText = [
+      lesson.subject || "",
+      lesson.room || "",
+      shortenTeacherName(lesson.teacher),
+    ]
+      .filter(Boolean)
+      .join(" - ");
     box.className = `go-widget is-${state}`;
     box.innerHTML = `
       <div class="go-label">${state === "now" ? "Сейчас · аудитория" : "Следующая · иди в"}</div>
@@ -376,15 +392,15 @@
         <span>${escapeHtml(lesson.subject || "Пара")}</span>
         <span class="go-timer">${state === "now" ? `ещё ${minutes} мин` : `через ${minutes} мин`}</span>
       </div>
-      <button type="button" class="go-copy-btn" id="go-copy-room">Скопировать ауд.</button>`;
+      <button type="button" class="go-copy-btn" id="go-copy-room">Скопировать</button>`;
 
     box.querySelector("#go-copy-room")?.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(room);
-        toast("Аудитория скопирована");
+        await navigator.clipboard.writeText(copyText || room);
+        toast("Скопировано");
         safeHaptic("success");
       } catch (_) {
-        toast(room);
+        toast(copyText || room);
       }
     });
 

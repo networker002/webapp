@@ -838,7 +838,11 @@ body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
 
 /* ─── Go widget ─── */
 .go-widget {
+  /* экран «Мой день» — flex-колонка с align-items: center, без stretch
+     виджет сжимается под короткий номер аудитории; тянем на всю ширину
+     как карточки «сейчас идёт»/«затем» (1em ≈ 16px боковых отступов у них) */
   margin: 8px 16px 12px;
+  align-self: stretch;
   padding: 16px 18px;
   border-radius: 22px;
   background:
