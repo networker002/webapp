@@ -2091,8 +2091,12 @@
       const btn = document.createElement("button");
       btn.type = "button";
       btn.id = "share-summary-btn";
-      btn.className = "share-btn";
-      btn.textContent = "Поделиться";
+      btn.setAttribute("aria-label", "Поделиться");
+      btn.title = "Поделиться";
+      btn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path fill="currentColor" d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 1 0-3-3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0 0 6c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65a2.92 2.92 0 1 0 2.92-2.9z"/>' +
+        "</svg>";
       summaryHeader.appendChild(btn);
       btn.addEventListener("click", () => window.shareSummaryCard());
     }
