@@ -4061,6 +4061,9 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   opacity: .85;
 }
 .hidden-lessons-chip:active { opacity: 1; }
+/* display:flex перебивает UA-правило [hidden], из-за этого чип не исчезал
+   после «Показать все» и оставался со старым счётчиком */
+.hidden-lessons-chip[hidden] { display: none; }
 .hidden-lessons-list {
   display: flex;
   flex-direction: column;
