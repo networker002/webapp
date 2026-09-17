@@ -858,20 +858,20 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
           </div>
         </div>`;
       } else {
-        newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${dayName}</h3>`;
+        newHTML += `<div class="swiper-slide"><div class="day"><h3 class="day-name">${escapeHtml(dayName)}</h3>`;
 
         dayItems.forEach((item) => {
           if (item.day_of_week === dayKey) {
           newHTML += `
-            <div class="lesson-row lesson-row2" data-week="${weekType}" data-lesson-code="${item.lesson_code}" data-subject="${String(item.subject_name||'').replace(/"/g,'&quot;')}" data-room="${String(item.room_name||'').replace(/"/g,'&quot;')}" data-day="${dayName}">
+            <div class="lesson-row lesson-row2" data-week="${weekType}" data-lesson-code="${item.lesson_code}" data-subject="${escapeAttr(item.subject_name || "")}" data-room="${escapeAttr(item.room_name || "")}" data-day="${escapeHtml(dayName)}">
               <div>
               <h4 class="lesson">${item.lesson_code}</h4>
               </div>
               <div>
               <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
-              <span class="subject">${item.subject_name}</span>
-              <span class="room">(${item.room_name})</span>
-              <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${item.teacher_full}</h5></div>
+              <span class="subject">${escapeHtml(item.subject_name)}</span>
+              <span class="room">(${escapeHtml(item.room_name)})</span>
+              <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${escapeHtml(item.teacher_full)}</h5></div>
               </div>
             </div>`;
           }
