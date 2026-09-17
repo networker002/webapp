@@ -4043,6 +4043,71 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   color: var(--tg-theme-button-text-color, #fff);
 }
 
+/* ─── Скрытые пары: чип под днями недели и список в шите ─── */
+.hidden-lessons-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px auto 2px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-text-color);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: .85;
+}
+.hidden-lessons-chip:active { opacity: 1; }
+.hidden-lessons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 46vh;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.hidden-lesson-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+}
+.hidden-lesson-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.hidden-lesson-info strong {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hidden-lesson-info span {
+  font-size: 11px;
+  color: var(--tg-theme-hint-color);
+}
+.hidden-lesson-info i { font-style: normal; opacity: .8; }
+.hidden-lesson-item .ov-primary {
+  padding: 8px 12px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.hidden-lessons-empty {
+  padding: 18px 4px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+}
+
 /* ─── Мягкий paywall Premium ─── */
 .soft-paywall {
   position: fixed;

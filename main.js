@@ -516,10 +516,14 @@ let selectedCalendarDate = null;
 let scheduleRowsCache = null;
 let weekSwitchPending = false;
 
-function getScheduleWeekIndex() {
+function weekIndexForDate(date) {
   const firstWeekMonday = new Date(2026, 7, 2); // synced with backend get_weeks.py
-  const elapsedWeeks = Math.floor((new Date() - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
+  const elapsedWeeks = Math.floor((date - firstWeekMonday) / (1000 * 60 * 60 * 24 * 7));
   return ((elapsedWeeks % 4) + 4) % 4;
+}
+
+function getScheduleWeekIndex() {
+  return weekIndexForDate(new Date());
 }
 
 // понедельник реальной недели, которую смотрим (в воскресенье — уже следующая,
@@ -1128,6 +1132,8 @@ function applyOverridesToDom() {
     });
     row.appendChild(badge);
   });
+
+  updateHiddenLessonsChip();
 }
 
 function openOverrideEditor(row) {
@@ -1212,6 +1218,164 @@ function openOverrideEditor(row) {
     toast(hide ? "Пара скрыта локально" : "Правка сохранена");
     close();
   });
+}
+
+/* ── Скрытые пары: просмотр и возврат ── */
+function listHiddenOverrides() {
+  const map = readOverrides();
+  return Object.entries(map)
+    .filter(([, ov]) => ov && ov.hidden)
+    .map(([key, ov]) => {
+      const parts = key.split("|");
+      return {
+        key,
+        week: Number(parts[0]) || 0,
+        day: parts[1] || "",
+        code: parts[2] || "",
+        subject: parts.slice(3).join("|") || "Предмет не указан",
+        alias: ov.alias || "",
+        updatedAt: ov.updatedAt || "",
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.week - b.week ||
+        SHARE_DAY_ORDER.indexOf(a.day) - SHARE_DAY_ORDER.indexOf(b.day) ||
+        Number(a.code || 0) - Number(b.code || 0),
+    );
+}
+
+// время скрытой пары достаём из кэша данных (там лежат все 4 недели)
+function hiddenLessonTime(week, dayName, code, subject) {
+  const cache = shareRowsCache();
+  if (!cache) return "";
+  const dow = dayMapping2[dayName];
+  const row = (cache.rows || []).find(
+    (r) =>
+      Number(r.day_number) === Number(week) &&
+      Number(r.day_of_week) === Number(dow) &&
+      String(r.lesson_code) === String(code) &&
+      String(r.subject_name) === String(subject),
+  );
+  if (!row) return "";
+  const t = cache.times?.[row.lesson_code];
+  const time = Array.isArray(t) ? t.join(" - ") : String(t || "").replace(",", " - ");
+  return time || [row.lesson_start, row.lesson_end].filter(Boolean).map((s) => String(s).slice(0, 5)).join(" - ");
+}
+
+function unhideOverride(key) {
+  const map = readOverrides();
+  const ov = map[key];
+  if (!ov) return;
+  // скрытие снимаем, но личное переименование/аудиторию сохраняем
+  if (ov.alias || ov.roomOverride) {
+    map[key] = { ...ov, hidden: false, updatedAt: new Date().toISOString() };
+  } else {
+    delete map[key];
+  }
+  writeOverrides(map);
+  applyOverridesToDom();
+  safeHaptic("success");
+}
+
+function updateHiddenLessonsChip() {
+  let chip = document.getElementById("hidden-lessons-chip");
+  const hidden = listHiddenOverrides();
+  if (!hidden.length) {
+    if (chip) chip.hidden = true;
+    return;
+  }
+  if (!chip) {
+    chip = document.createElement("button");
+    chip.type = "button";
+    chip.id = "hidden-lessons-chip";
+    chip.className = "hidden-lessons-chip";
+    const daysRow = document.querySelector("main .days");
+    if (!daysRow || !daysRow.parentElement) return;
+    daysRow.parentElement.insertBefore(chip, daysRow.nextSibling);
+    chip.addEventListener("click", () => {
+      safeImpact("light");
+      openHiddenLessonsSheet();
+    });
+  }
+  chip.hidden = false;
+  chip.innerHTML = `<span aria-hidden="true">🙈</span> Скрытые пары · ${hidden.length}`;
+}
+
+function openHiddenLessonsSheet() {
+  const hidden = listHiddenOverrides();
+
+  document.getElementById("hidden-lessons-modal")?.remove();
+  const modal = document.createElement("div");
+  modal.id = "hidden-lessons-modal";
+  modal.className = "override-modal";
+  modal.innerHTML = `
+    <div class="override-sheet" role="dialog" aria-modal="true" aria-labelledby="hidden-lessons-title">
+      <header>
+        <h3 id="hidden-lessons-title">Скрытые пары</h3>
+        <p>Видны только тебе — официальное расписание не меняется</p>
+      </header>
+      <div class="hidden-lessons-list"></div>
+      <div class="override-actions">
+        <button type="button" class="ov-ghost" id="hl-close">Закрыть</button>
+        ${hidden.length > 1 ? '<button type="button" class="ov-primary" id="hl-unhide-all">Показать все</button>' : ""}
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  safeImpact("light");
+  requestAnimationFrame(() => modal.classList.add("is-open"));
+
+  const listEl = modal.querySelector(".hidden-lessons-list");
+  const renderList = () => {
+    const items = listHiddenOverrides();
+    if (!items.length) {
+      listEl.innerHTML = `<div class="hidden-lessons-empty">Скрытых пар больше нет</div>`;
+      return;
+    }
+    listEl.innerHTML = items
+      .map((item) => {
+        const time = hiddenLessonTime(item.week, item.day, item.code, item.subject);
+        const weekLabel = WEEK_TITLES[item.week] || `Неделя ${item.week + 1}`;
+        return `
+      <div class="hidden-lesson-item">
+        <div class="hidden-lesson-info">
+          <strong>${escapeHtml(item.alias || item.subject)}</strong>
+          <span>${escapeHtml(item.day)} · ${escapeHtml(weekLabel)}${time ? ` · ${escapeHtml(time)}` : ""}${item.alias ? ` <i>(ориг.: ${escapeHtml(item.subject)})</i>` : ""}</span>
+        </div>
+        <button type="button" class="ov-primary" data-unhide="${escapeAttr(item.key)}">Показать</button>
+      </div>`;
+      })
+      .join("");
+    listEl.querySelectorAll("[data-unhide]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        unhideOverride(btn.dataset.unhide);
+        toast("Пара снова в расписании");
+        renderList();
+        const left = listHiddenOverrides();
+        if (!left.length) close();
+        else {
+          const allBtn = modal.querySelector("#hl-unhide-all");
+          if (allBtn && left.length <= 1) allBtn.remove();
+        }
+      });
+    });
+  };
+
+  const close = () => {
+    modal.classList.remove("is-open");
+    setTimeout(() => modal.remove(), 180);
+  };
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) close();
+  });
+  modal.querySelector("#hl-close").addEventListener("click", close);
+  modal.querySelector("#hl-unhide-all")?.addEventListener("click", () => {
+    listHiddenOverrides().forEach((item) => unhideOverride(item.key));
+    applyOverridesToDom();
+    toast("Все пары снова в расписании");
+    close();
+  });
+  renderList();
 }
 
 /* ── Обогащение строк расписания: data-атрибуты, long-press → быстрая заметка ── */
@@ -2389,6 +2553,13 @@ function cacheData(data) {
 
 function dayParseOnline() {
   const dayS = document.querySelectorAll(".day");
+  // «Сейчас идёт» имеет смысл только на текущей реальной неделе
+  if (scheduleWeekOffset !== 0) {
+    dayS.forEach((D) => {
+      D.querySelectorAll(".time.now").forEach((timee) => timee.classList.remove("now"));
+    });
+    return;
+  }
   dayS.forEach((D) => {
     if (!D.querySelector(".day-name")) return;
     if (
@@ -5138,23 +5309,60 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 // document.getElementById("profile-show")
 //window.addEventListener("DOMContentLoaded", ()=> initApp());
 
+/* ── «Сегодняшние» пары для сводки «Мой день» и виджета «Куда идти» ──
+ * Когда на экране неделя из будущего, DOM расписания чужой: подсвечивать
+ * по нему «сейчас идёт» нельзя, поэтому пары берём из кэша данных. */
+function collectTodayLessons() {
+  const now = new Date();
+  const dow = now.getDay(); // 0 = воскресенье
+
+  if (scheduleWeekOffset === 0) {
+    const todayName = days[dow];
+    const todayEl = Array.from(document.querySelectorAll(".day")).find((day) =>
+      day.querySelector(".day-name")?.textContent.trim() === todayName,
+    );
+    const rows = todayEl ? Array.from(todayEl.querySelectorAll(".lesson-row")) : [];
+    return {
+      fromDom: true,
+      rows,
+      lessons: rows
+        .filter((row) => row.style.display !== "none")
+        .map((row) => {
+          const subjEl = row.querySelector(".subject");
+          const roomEl = row.querySelector(".room");
+          const subject =
+            subjEl?.textContent?.trim() || subjEl?.dataset?.orig || row.dataset.subject || "";
+          const room = row.dataset.room
+            ? (roomEl?.textContent || "").replace(/[()]/g, "").trim() || row.dataset.room
+            : "";
+          return {
+            row,
+            time: parseLessonTimes(row.querySelector(".time")?.textContent, now),
+            timeText: row.querySelector(".time")?.textContent?.trim() || "",
+            subject,
+            room,
+            teacher: row.dataset.teacher || row.querySelector(".tname")?.textContent?.trim() || "",
+            code: row.dataset.lessonCode || row.querySelector(".lesson")?.textContent?.trim() || "",
+          };
+        })
+        .filter((lesson) => lesson.time)
+        .sort((a, b) => a.time.start - b.time.start),
+    };
+  }
+
+  const data = dow >= 1 && dow <= 6 ? dayLessonsFromData(getScheduleWeekIndex(), dow - 1) : [];
+  const lessons = (data || [])
+    .map((lesson) => ({ ...lesson, time: parseLessonTimes(lesson.time, now), timeText: lesson.time }))
+    .filter((lesson) => lesson.time)
+    .sort((a, b) => a.time.start - b.time.start);
+  return { fromDom: false, rows: [], lessons };
+}
+
 function loadSummary() {
   const nowSummaryCont = document.querySelector(".now-lesson-summary-container");
   const nextSummaryPath = document.querySelector(".summary-path-next");
 
   if (!nowSummaryCont || !nextSummaryPath) return;
-
-  const parseTime = (timeText, baseDate = new Date()) => {
-    const match = timeText?.match(/(\d{1,2})\s*:\s*(\d{2})/g);
-    if (!match || match.length < 2) return null;
-    const toDate = (value) => {
-      const [hours, minutes] = value.split(":").map(Number);
-      const result = new Date(baseDate);
-      result.setHours(hours, minutes, 0, 0);
-      return result;
-    };
-    return { start: toDate(match[0]), end: toDate(match[1]) };
-  };
 
   const setState = (row, state) => {
     row.classList.add("lesson-row2");
@@ -5164,27 +5372,23 @@ function loadSummary() {
   };
 
   const now = new Date();
-  const todayName = days[now.getDay()];
-  const today = Array.from(document.querySelectorAll(".day")).find((day) =>
-    day.querySelector(".day-name")?.textContent.trim() === todayName,
-  );
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowName = days[tomorrow.getDay()];
-  const tomorrowDay = Array.from(document.querySelectorAll(".day")).find((day) =>
-    day.querySelector(".day-name")?.textContent.trim() === tomorrowName,
-  );
-  const rows = today ? Array.from(today.querySelectorAll(".lesson-row")) : [];
-  const lessons = rows
-    .map((row) => ({ row, time: parseTime(row.querySelector(".time")?.textContent) }))
-    .filter((lesson) => lesson.time)
-    .sort((a, b) => a.time.start - b.time.start);
+  const { fromDom, rows, lessons } = collectTodayLessons();
 
-  rows.forEach((row) => setState(row, "upcoming"));
-  lessons.forEach(({ row, time }) => {
-    if (now >= time.start && now <= time.end) setState(row, "current");
-    else if (now > time.end) setState(row, "finished");
-  });
+  // подсветка «идёт / прошла / впереди» имеет смысл только на текущей неделе
+  if (fromDom) {
+    rows.forEach((row) => {
+      if (row.style.display !== "none") setState(row, "upcoming");
+    });
+    lessons.forEach(({ row, time }) => {
+      if (now >= time.start && now <= time.end) setState(row, "current");
+      else if (now > time.end) setState(row, "finished");
+    });
+  } else {
+    document.querySelectorAll(".lesson-row").forEach((row) => {
+      row.classList.remove("is-current", "is-finished", "is-upcoming", "is-break");
+      delete row.dataset.lessonState;
+    });
+  }
 
   if (!lessons.length) {
     nowSummaryCont.innerHTML = `<div class="summary-empty"><h2>Сегодня пар нет</h2><p>Можно выдохнуть и заняться своими делами.</p></div>`;
@@ -5236,15 +5440,27 @@ function loadSummary() {
     }
   } else {
     nextTitle = "На завтра";
-    if (!tomorrowDay) {
+    // null = данных о завтрашнем дне нет
+    let tomorrowLessons = null;
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (fromDom) {
+      const tomorrowDay = Array.from(document.querySelectorAll(".day")).find((day) =>
+        day.querySelector(".day-name")?.textContent.trim() === days[tomorrow.getDay()],
+      );
+      if (tomorrowDay) {
+        tomorrowLessons = Array.from(tomorrowDay.querySelectorAll(".lesson-row"))
+          .filter((row) => row.style.display !== "none")
+          .map((row) => row.dataset.lessonCode || row.querySelector(".lesson")?.textContent?.trim() || "");
+      }
+    } else {
+      const tdow = tomorrow.getDay();
+      tomorrowLessons = tdow >= 1 && tdow <= 6 ? dayLessonsFromData(weekIndexForDate(tomorrow), tdow - 1) : [];
+    }
+    if (!tomorrowLessons) {
       nextStatus = "Расписание еще не опубликовано";
     } else {
-      const lessonNumbers = new Set(
-        Array.from(tomorrowDay.querySelectorAll(".lesson")).map((lesson) =>
-          Number.parseInt(lesson.textContent, 10),
-        ),
-      );
-      const lessonsNumber = lessonNumbers.size;
+      const lessonsNumber = new Set(tomorrowLessons.map((l) => String(l.code))).size;
       const suffix =
         lessonsNumber === 1 ? "пара" :
         lessonsNumber >= 2 && lessonsNumber <= 4 ? "пары" : "пар";
@@ -5252,11 +5468,10 @@ function loadSummary() {
     }
   }
 
-  const row = selectedLesson?.row;
-  const subject = row?.querySelector(".subject")?.textContent.trim() || "Предмет не указан";
-  const room = row?.querySelector(".room")?.textContent.trim().replace(/[()]/g, "") || "Аудитория не указана";
-  const teacher = row?.querySelector(".tname")?.textContent.trim() || "Преподаватель не указан";
-  const time = row?.querySelector(".time")?.textContent.trim() || "";
+  const subject = selectedLesson?.subject || "Предмет не указан";
+  const room = selectedLesson?.room || "Аудитория не указана";
+  const teacher = selectedLesson?.teacher || "Преподаватель не указан";
+  const time = selectedLesson?.timeText || "";
   const state = current ? "current" : next ? "upcoming" : "finished";
 
   nowSummaryCont.innerHTML = `
@@ -5494,44 +5709,8 @@ function parseLessonTimes(timeText, baseDate = new Date()) {
 }
 
 function getNextOrCurrentLesson() {
-  const days = [
-    "Воскресенье",
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота",
-  ];
+  const { lessons } = collectTodayLessons();
   const now = new Date();
-  const todayName = days[now.getDay()];
-  const today = Array.from(document.querySelectorAll(".day")).find(
-    (d) => d.querySelector(".day-name")?.textContent?.trim() === todayName,
-  );
-  if (!today) return null;
-  const lessons = Array.from(today.querySelectorAll(".lesson-row"))
-    .filter((r) => r.style.display !== "none")
-    .map((row) => ({
-      row,
-      time: parseLessonTimes(row.querySelector(".time")?.textContent),
-      subject:
-        row.dataset.subject ||
-        row.querySelector(".subject")?.dataset.orig ||
-        row.querySelector(".subject")?.textContent?.trim() ||
-        "",
-      room: (
-        row.dataset.room ||
-        row.querySelector(".room")?.dataset.orig ||
-        row.querySelector(".room")?.textContent ||
-        ""
-      )
-        .replace(/[()]/g, "")
-        .trim(),
-      teacher: row.dataset.teacher || row.querySelector(".tname")?.textContent?.trim() || "",
-      code: row.dataset.lessonCode || row.querySelector(".lesson")?.textContent?.trim() || "",
-    }))
-    .filter((l) => l.time)
-    .sort((a, b) => a.time.start - b.time.start);
 
   const current = lessons.find((l) => now >= l.time.start && now <= l.time.end);
   const next = lessons.find((l) => l.time.start > now);
