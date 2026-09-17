@@ -684,19 +684,21 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           throw new Error("Group not found!");
         })
         .then((resp) => {
-          if (resp && resp.ok) {
-            
-
-            return resp.json();
+          if (!resp || !resp.ok) {
+            // Раньше не-ok ответ молча проглатывался — скелетон висел вечно
+            throw new Error("schedule load failed: " + (resp ? resp.status : "no response"));
           }
+          return resp.json();
         })
         .then((data) => {
           if (data) applyScheduleData(data, weekTypeNumber);
         })
         .catch((err) => {
           const cachedRows = getScheduleRows();
+          let servedFromCache = false;
           if (cachedRows) {
             applyScheduleData([null, cachedRows.rows, cachedRows.times], weekTypeNumber, false);
+            servedFromCache = true;
           } else {
             const cachedGroup = localStorage.getItem("userGroup");
             const cachedSchedule = localStorage.getItem("schedule");
@@ -707,15 +709,32 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
               dayParseOnline();
               initSwiper();
               applyCalendarSelection();
+              servedFromCache = true;
             }
           }
           weekSwitchPending = false;
           console.warn("Расписание недоступно, используем кэш:", err);
-          setTimeout(() => {
-            loader.style.display = "none";
+          if (!servedFromCache) {
+            // Никакого кэша нет: вместо вечного скелетона — внятный экран ошибки
+            container.innerHTML = `
+              <div id="schedule-error" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 16px;text-align:center;">
+                <div style="font-size:2em;">📡</div>
+                <h3 style="margin:0;">Не удалось загрузить расписание</h3>
+                <p style="margin:0;opacity:.75;">Проверь интернет и попробуй ещё раз</p>
+                <button type="button" id="schedule-retry-btn" style="padding:10px 22px;border-radius:12px;border:none;background:var(--accent);color:var(--main-bg-color);font-weight:600;">Повторить</button>
+              </div>`;
+            const retryBtn = container.querySelector("#schedule-retry-btn");
+            if (retryBtn) {
+              retryBtn.addEventListener("click", () => {
+                loader.style.display = "flex";
+                loaderContainer.style.display = "block";
+                getSchedule1(true, weekTypeNumber);
+              });
+            }
+          }
+          loader.style.display = "none";
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
-          }, 1500);
         });
     } else if (!reqNeed) {
       if (cachedData && Date.now() - dataLastUpd < ttl) {
