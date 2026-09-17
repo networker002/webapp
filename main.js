@@ -434,6 +434,9 @@ if (tg?.BackButton) {
   };
 }
 tg.ready();
+// Свайп вниз не должен закрывать приложение: жест конфликтует со свайпом
+// недель (Swiper) — иначе случайные закрытия при листании расписания
+try { tg.disableVerticalSwipes?.(); } catch (_) {}
 const haptic = tg.HapticFeedback;
 
 /* ── Общие хелперы API, тостов и экранирования ── */
@@ -665,11 +668,10 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
 
           console.log(userGroup);
           console.log(Group);
-          
+
           //
-          setTimeout(() => {
-            loader.style.display = "none";
-            loaderContainer.style.display = "none";
+          loader.style.display = "none";
+          loaderContainer.style.display = "none";
           assistant.style.display = "block";
           document.getElementById("alerter").style.display = "block";
 
@@ -680,7 +682,6 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-          }, 1500);
           throw new Error("Group not found!");
         })
         .then((resp) => {
@@ -763,9 +764,8 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
       }
     }
   } else {
-    
-    setTimeout(() => {
-            loader.style.display = "none";
+
+    loader.style.display = "none";
           loaderContainer.style.display = "none";
           assistant.style.display = "block";
           document.getElementById("alerter").style.display = "block";
@@ -777,8 +777,6 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
       <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
       <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
       <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
-
-          }, 1500);
   }
 }
 
