@@ -678,7 +678,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             <h3>Вы еще не зарегистрировались в нашей системе!</h3>
             <h6>Давайте сделаем это сейчас:</h6>
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
           }, 1500);
           throw new Error("Group not found!");
@@ -775,7 +775,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
       <h3>Вы еще не зарегистрировались в нашей системе!</h3>
       <h6>Давайте сделаем это сейчас:</h6>
       <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-      <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+      <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
       <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
 
           }, 1500);
@@ -3169,7 +3169,7 @@ function openGroupChangeModal() {
             <h3>Обновление данных</h3>
             <h6>Давайте сделаем это сейчас:</h6>
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
-            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set"><br>
+            <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
             <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button><br>
             <button style="background: var(--tg-theme-bg-color); color: var(--tg-theme-button-text-color); border: none; padding: 1em; border-radius: 3em; letter-spacing: 0.1em; outline: none; width: calc(100% - 10rem);" onclick="closeN('alerter', 'shocked-assistant')">Отмена</button>`;
 }
@@ -4381,28 +4381,57 @@ document.addEventListener("keydown", (event) => {
                 }
                 ).then((data) => {
                     ALLGROUPS = data.toString().split(",");
+                    updateGroupsDatalist();
                 })
         }
         req();
 
-    
+
+        // Автодополнение групп в поле регистрации (datalist заполняется по мере загрузки списка)
+        function updateGroupsDatalist() {
+            if (!Array.isArray(ALLGROUPS) || !ALLGROUPS.length) return;
+            var dl = document.getElementById("groups-datalist");
+            if (!dl) {
+                dl = document.createElement("datalist");
+                dl.id = "groups-datalist";
+                document.body.appendChild(dl);
+            }
+            dl.innerHTML = ALLGROUPS.slice(0, 2000)
+                .map((g) => `<option value="${escapeAttr(g)}"></option>`)
+                .join("");
+        }
+
         //
         function groupSet0() {
-        var D = document.getElementById("group-set").value;
-        //console.log(D);
-        // var erDisplay = document.getElementById("errs-reg");
-        // erDisplay.style = "font-weight:600;color:red";
+        var D = document.getElementById("group-set").value.trim();
+        var erDisplay = document.getElementById("errs-reg");
+        var regInput = document.getElementById("group-set");
+        var grEditInput = document.querySelector("#gr-edit input");
         if (ALLGROUPS.indexOf(D) === -1) {
             haptic?.notificationOccurred("error");
             document.getElementById("set-group-btn").classList.add("error");
-            document.querySelector("#gr-edit input").style = "border: 2px solid var(--tg-theme-destructive-text-color) !important;"
+            if (regInput) regInput.style.border = "2px solid var(--tg-theme-destructive-text-color)";
+            if (grEditInput) grEditInput.style = "border: 2px solid var(--tg-theme-destructive-text-color) !important;"
+            if (erDisplay) {
+                var q = String(D || "").toUpperCase();
+                var hints = (ALLGROUPS || [])
+                    .filter((g) => typeof g === "string" && q && g.toUpperCase().includes(q))
+                    .slice(0, 3);
+                erDisplay.textContent = hints.length
+                    ? "Такой группы нет. Возможно, вы имели в виду: " + hints.join(", ")
+                    : "Такой группы нет. Формат названия: ЭН-46, ИВБО-01…";
+            }
 
             setTimeout(() => {
                 document.getElementById("set-group-btn").classList.remove("error");
-                document.querySelector("#gr-edit input").style = "border: none;"
-                document.querySelector("#gr-edit input").style = "border-bottom: 0px solid rgb(from var(--accent) r g b / .75) !important"
+                if (regInput) regInput.style.border = "";
+                if (grEditInput) {
+                    grEditInput.style = "border: none;"
+                    grEditInput.style = "border-bottom: 0px solid rgb(from var(--accent) r g b / .75) !important"
+                }
+                if (erDisplay) erDisplay.textContent = "";
             }, 2500);
-            
+
         } else {
             document.getElementById("set-group-btn").classList.add("success");
 
