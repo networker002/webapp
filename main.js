@@ -2318,8 +2318,7 @@ function shareSummaryCard() {
 
 function shareWeekTypeCard(weekId, blockMonday = null) {
   // Недельная карточка открывается в шите: расписание пользователя
-  // больше не переключается на целевую неделю (раньше это выглядело
-  // как мигание и могло уехать гонкой по 700мс)
+  // на целевую неделю не переключается
   let monday = null;
   if (blockMonday) {
     const parsed = new Date(`${blockMonday}T00:00:00`);
