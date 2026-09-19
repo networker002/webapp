@@ -2556,12 +2556,31 @@ function safeReadNotes() {
   }
 }
 
+// photo_url может отсутствовать (десктоп-клиент) или протухнуть — тогда инициалы
+function setupProfileAvatar(user) {
+  const img = document.querySelector(".cont-profile img");
+  const fallback = document.querySelector(".cont-profile .avatar-fallback");
+  if (!img || !fallback) return;
+  img.hidden = true;
+  fallback.hidden = true;
+  const initials = `${(user.first_name || "?")[0] || ""}${(user.last_name || "")[0] || ""}`.toUpperCase();
+  fallback.textContent = initials || "?";
+  if (!user.photo_url) {
+    fallback.hidden = false;
+    return;
+  }
+  img.onload = () => {
+    img.hidden = false;
+  };
+  img.onerror = () => {
+    fallback.hidden = false;
+  };
+  img.src = user.photo_url;
+}
+
 function waitForInitDataUnsafe(retries = 10) {
   if (tg?.initDataUnsafe?.user) {
-    const profileImg = document.querySelector(".profile-area img");
-    if (profileImg) {
-      profileImg.src = tg.initDataUnsafe.user.photo_url || profileImg.src;
-    }
+    setupProfileAvatar(tg.initDataUnsafe.user);
     addToProfile();
     return;
   }
@@ -5716,7 +5735,7 @@ function bumpStreak(reason = "open") {
   syncStreakRemote(data).catch(() => {});
   renderStreakChip();
   if ((data.count || 0) >= 3 && reason === "open") {
-    toast(`Серия ${data.count} дней 🔥`);
+    toast(`Серия ${data.count} ${pluralDays(data.count)} 🔥`);
     safeHaptic("success");
   }
   if ((data.count || 0) >= 7 && reason === "open") showSoftPaywall(data);
@@ -5731,7 +5750,7 @@ function showSoftPaywall(data) {
   modal.innerHTML = `
     <div class="soft-paywall-card" role="dialog" aria-modal="true" aria-labelledby="soft-paywall-title">
       <button type="button" class="soft-paywall-close" aria-label="Закрыть">×</button>
-      <div class="soft-paywall-kicker">${data.count} дней подряд</div>
+      <div class="soft-paywall-kicker">${data.count} ${pluralDays(data.count)} подряд</div>
       <h3 id="soft-paywall-title">Ты уже вошёл в ритм</h3>
       <p>Premium открывает расширенную AI-квоту и дополнительные пресеты оформления.</p>
       <button type="button" class="soft-paywall-primary">Посмотреть Premium</button>
@@ -5762,6 +5781,15 @@ async function syncStreakRemote(data) {
   });
 }
 
+function pluralDays(n) {
+  const d = Math.abs(n) % 100;
+  const d1 = d % 10;
+  if (d > 10 && d < 20) return "дней";
+  if (d1 > 1 && d1 < 5) return "дня";
+  if (d1 === 1) return "день";
+  return "дней";
+}
+
 function renderStreakChip() {
   let chip = document.getElementById("streak-chip");
   const profile = document.querySelector(".cont-profile");
@@ -5778,7 +5806,7 @@ function renderStreakChip() {
     });
   }
   const fresh = readStreak();
-  chip.innerHTML = `<span class="streak-fire" aria-hidden="true"><svg class="mi" width="15" height="15" style="vertical-align:-2px"><use href="#mi-local_fire_department"/></svg></span><strong>${fresh.count || 0}</strong><span>дней</span>`;
+  chip.innerHTML = `<span class="streak-fire" aria-hidden="true"><svg class="mi" width="15" height="15" style="vertical-align:-2px"><use href="#mi-local_fire_department"/></svg></span><strong>${fresh.count || 0}</strong><span>${pluralDays(fresh.count || 0)}</span>`;
   chip.hidden = !(fresh.count > 0);
 }
 

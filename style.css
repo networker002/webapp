@@ -2430,8 +2430,26 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
 
     img {
         border-radius: 50%;
+        object-fit: cover;
+        flex: none;
     }
 }
+
+.avatar-fallback {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgb(from var(--accent) r g b / .3);
+    color: var(--over-color);
+    font-weight: 900;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+
+.avatar-fallback[hidden] { display: none; }
 
 .user-name {
     font-weight: 900;
@@ -2497,7 +2515,8 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
 /* Material-иконки профиля: единый размер вместо legacy scale .7 + padding */
 #profile-screen h1 { align-items: center; }
 #profile-screen h1 .mi { width: 26px; height: 26px; }
-.user-notes svg.mi, .user-lessons svg.mi {
+/* инлайновые svg карточек могут быть без класса .mi — нормализуем обе */
+.profile-area .user-notes svg, .profile-area .user-lessons svg {
   scale: none;
   padding: 0;
   width: 26px;
@@ -2516,7 +2535,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   color: var(--tg-theme-hint-color);
   cursor: pointer;
 }
-.user-settings svg.mi { scale: none; padding: 0; width: 24px; height: 24px; }
+.user-settings svg.mi, .user-settings .user-notify-text-svg, .user-settings .user-theme-text-svg { scale: none; padding: 0; width: 24px; height: 24px; }
 .sett-app svg.mi, #robot-svg-settings svg.mi { width: 24px; height: 24px; }
 .streak-fire { display: inline-flex; align-items: center; }
 .streak-fire .mi { display: block; }
