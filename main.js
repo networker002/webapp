@@ -170,16 +170,7 @@ function initAiChat() {
     <form id="ai-chat-form" class="ai-chat-form">
       <input id="ai-chat-input" maxlength="200" placeholder="Когда следующая пара? Куда идти?" autocomplete="off" />
       <button type="submit" id="ai-chat-send" aria-label="Отправить">
-        <svg class="neuron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-          <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <circle class="n-core" cx="12" cy="12" r="2.1" fill="currentColor" stroke="none"/>
-            <path d="M12 9.9V5.4"/><circle class="n-node" cx="12" cy="3.9" r="1.4"/>
-            <path d="M13.8 13.05l3.9 2.25"/><circle class="n-node" cx="19.1" cy="16" r="1.4"/>
-            <path d="M10.2 13.05l-3.9 2.25"/><circle class="n-node" cx="4.9" cy="16" r="1.4"/>
-            <path d="M10.7 10.6L6.9 8"/><circle class="n-node" cx="5.4" cy="7.2" r="1.4"/>
-            <path d="M13.3 10.6l3.8-2.6"/><circle class="n-node" cx="18.6" cy="7.2" r="1.4"/>
-          </g>
-        </svg>
+        <svg class="mi send-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" aria-hidden="true"><use href="#mi-send"/></svg>
       </button>
     </form>
   `;
@@ -199,8 +190,8 @@ function initAiChat() {
 
   function refreshQuotaLabel() {
     const st = aiQuotaState();
-    quotaLabel.textContent = st.premium
-      ? `${st.left}/${st.limit} ★`
+    quotaLabel.innerHTML = st.premium
+      ? `${st.left}/${st.limit} <svg class="mi" width="13" height="13" style="vertical-align:-1px"><use href="#mi-star"/></svg>`
       : `${st.left}/${st.limit}`;
   }
 
@@ -719,7 +710,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             // Никакого кэша нет: вместо вечного скелетона — внятный экран ошибки
             container.innerHTML = `
               <div id="schedule-error" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 16px;text-align:center;">
-                <div style="font-size:2em;">📡</div>
+                <div><svg class="mi" width="36" height="36"><use href="#mi-wifi_off"/></svg></div>
                 <h3 style="margin:0;">Не удалось загрузить расписание</h3>
                 <p style="margin:0;opacity:.75;">Проверь интернет и попробуй ещё раз</p>
                 <button type="button" id="schedule-retry-btn" style="padding:10px 22px;border-radius:12px;border:none;background:var(--accent);color:var(--main-bg-color);font-weight:600;">Повторить</button>
@@ -1059,7 +1050,7 @@ function renderBreakChips() {
       if (!a || !b) continue;
       const gap = b.start - a.end;
       if (gap < 10) continue;
-      desired.push({ after: rows[i], text: `☕ перемена · ${gap} мин` });
+      desired.push({ after: rows[i], text: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> перемена · ${gap} мин` });
     }
     const existing = Array.from(day.querySelectorAll(".break-chip"));
     const same =
@@ -1142,7 +1133,7 @@ function applyOverridesToDom() {
     badge.type = "button";
     badge.className = "override-badge";
     badge.title = "Личная правка";
-    badge.textContent = "✦";
+    badge.innerHTML = '<svg class="mi" width="11" height="11" style="vertical-align:-1px"><use href="#mi-auto_awesome"/></svg>';
     badge.addEventListener("click", (e) => {
       e.stopPropagation();
       openOverrideEditor(row);
@@ -1316,7 +1307,7 @@ function updateHiddenLessonsChip() {
     });
   }
   chip.hidden = false;
-  chip.innerHTML = `<span aria-hidden="true">🙈</span> Скрытые пары · ${hidden.length}`;
+  chip.innerHTML = `<span aria-hidden="true"><svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-visibility_off"/></svg></span> Скрытые пары · ${hidden.length}`;
 }
 
 function openHiddenLessonsSheet() {
@@ -1404,7 +1395,7 @@ function openRoomGuessSheet() {
   modal.innerHTML = `
     <div class="override-sheet room-guess-sheet" role="dialog" aria-modal="true" aria-labelledby="room-guess-title">
       <div class="room-guess-icon" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.9 5.7 5.7 1.9-5.7 1.9L12 17.2l-1.9-5.7-5.7-1.9 5.7-1.9zM19 13.5l.95 2.85 2.85.95-2.85.95L19 21.1l-.95-2.85-2.85-.95 2.85-.95zM5 14l.7 2.1 2.1.7-2.1.7L5 19.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg>
+        <svg class="mi" width="26" height="26" aria-hidden="true"><use href="#mi-auto_awesome"/></svg>
       </div>
       <header>
         <h3 id="room-guess-title">Аудитория подобрана автоматически</h3>
@@ -4067,29 +4058,29 @@ function getNotes() {
     if (urgency) clasS += ` deadline-${urgency}`;
 
     const pairBtn = note.pairLink
-      ? `<button type="button" class="note-btn-jump" onclick="jumpToPairLink('${note.uuid}')" title="К паре">↗</button>`
+      ? `<button type="button" class="note-btn-jump" onclick="jumpToPairLink('${note.uuid}')" title="К паре"><svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-north_east"/></svg></button>`
       : "";
 
     notesArea.insertAdjacentHTML(
       "beforeend",
       `<article id="note-${escapeAttr(note.uuid)}" class="${clasS}">
         <div class="note-top">
-          <button type="button" class="note-check" onclick="toggleNoteDone('${escapeAttr(note.uuid)}')" aria-label="Готово">${note.done ? "✓" : ""}</button>
+          <button type="button" class="note-check" onclick="toggleNoteDone('${escapeAttr(note.uuid)}')" aria-label="Готово">${note.done ? '<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-check"/></svg>' : ""}</button>
           <h2>${escapeHtml(note.title)}</h2>
           <span class="note-prio-chip">${prio.label}</span>
         </div>
         <div class="note-meta">
           <time>${escapeHtml(note.time)}</time>
           <span class="note-subject">${escapeHtml(note.subject)}</span>
-          ${note.deadline ? `<span class="note-deadline" data-urgency="${urgency || ""}">⏳ ${escapeHtml(formatDeadline(note.deadline))}</span>` : ""}
+          ${note.deadline ? `<span class="note-deadline" data-urgency="${urgency || ""}"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-hourglass_top"/></svg> ${escapeHtml(formatDeadline(note.deadline))}</span>` : ""}
         </div>
-        ${note.pairLink ? `<button type="button" class="note-pair-chip" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')">📎 ${escapeHtml(note.pairLink.dayOfWeek || "")} · ${escapeHtml(note.pairLink.subject || "")}</button>` : ""}
+        ${note.pairLink ? `<button type="button" class="note-pair-chip" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-link"/></svg> ${escapeHtml(note.pairLink.dayOfWeek || "")} · ${escapeHtml(note.pairLink.subject || "")}</button>` : ""}
         ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
         <div class="note-btn-container">
-          <button class="note-btn-edit" onclick="editNote('${escapeAttr(note.uuid)}')" aria-label="Редактировать">✎</button>
-          <button class="note-btn-pin" onclick="pinNote('${escapeAttr(note.uuid)}')" aria-label="Закрепить">📌</button>
+          <button class="note-btn-edit" onclick="editNote('${escapeAttr(note.uuid)}')" aria-label="Редактировать"><svg class="mi" width="14" height="14"><use href="#mi-edit"/></svg></button>
+          <button class="note-btn-pin" onclick="pinNote('${escapeAttr(note.uuid)}')" aria-label="Закрепить"><svg class="mi" width="14" height="14"><use href="#mi-push_pin"/></svg></button>
           ${pairBtn}
-          <button class="note-btn-del" onclick="delNote('${escapeAttr(note.uuid)}')" aria-label="Удалить">🗑</button>
+          <button class="note-btn-del" onclick="delNote('${escapeAttr(note.uuid)}')" aria-label="Удалить"><svg class="mi" width="14" height="14"><use href="#mi-delete"/></svg></button>
         </div>
       </article>`,
     );
@@ -5779,7 +5770,7 @@ function renderStreakChip() {
     });
   }
   const fresh = readStreak();
-  chip.innerHTML = `<span class="streak-fire" aria-hidden="true">🔥</span><strong>${fresh.count || 0}</strong><span>дней</span>`;
+  chip.innerHTML = `<span class="streak-fire" aria-hidden="true"><svg class="mi" width="15" height="15" style="vertical-align:-2px"><use href="#mi-local_fire_department"/></svg></span><strong>${fresh.count || 0}</strong><span>дней</span>`;
   chip.hidden = !(fresh.count > 0);
 }
 
@@ -6219,8 +6210,10 @@ function addToProfile() {
   document.querySelectorAll(".user-name").forEach((e) => {
     const firstName = tg?.initDataUnsafe?.user?.first_name || "";
     const lastName = tg?.initDataUnsafe?.user?.last_name || "";
-    const premiumMark = tg?.initDataUnsafe?.user?.is_premium ? " ⭐️" : "";
-    e.textContent = `${firstName} ${lastName}${premiumMark}`.trim();
+    e.textContent = `${firstName} ${lastName}`.trim();
+    if (tg?.initDataUnsafe?.user?.is_premium) {
+      e.insertAdjacentHTML("beforeend", ' <svg class="mi" width="13" height="13" style="vertical-align:-1px"><use href="#mi-workspace_premium"/></svg>');
+    }
   });
   document.querySelectorAll(".user-username").forEach((e) => {
     e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}`;
@@ -6493,7 +6486,7 @@ const CARD_PRESETS = {
 
 const PREMIUM_PRESETS = {
   focus: {
-    label: "Focus ★",
+    label: "Focus",
     "--day-name-letter-sp": "0px",
     "--day-name-gap": "0.35em",
     "--lesson-number-padding": "10px",
@@ -6504,7 +6497,7 @@ const PREMIUM_PRESETS = {
     "--tname-f-size": "12px",
   },
   oled: {
-    label: "OLED ★",
+    label: "OLED",
     "--day-name-letter-sp": "1px",
     "--day-name-gap": "0.45em",
     "--lesson-number-padding": "7px",
@@ -6515,7 +6508,7 @@ const PREMIUM_PRESETS = {
     "--tname-f-size": "11px",
   },
   exam: {
-    label: "Exam ★",
+    label: "Exam",
     "--day-name-letter-sp": "2px",
     "--day-name-gap": "0.9em",
     "--lesson-number-padding": "14px",
@@ -6590,7 +6583,7 @@ function injectPremiumPresets() {
   row.innerHTML = Object.entries(PREMIUM_PRESETS)
     .map(
       ([id, p]) =>
-        `<button type="button" class="lesson-preset-btn premium" data-preset-premium="${id}">${p.label}</button>`,
+        `<button type="button" class="lesson-preset-btn premium" data-preset-premium="${id}">${p.label} <svg class="mi" width="12" height="12" style="vertical-align:-1px"><use href="#mi-star"/></svg></button>`,
     )
     .join("");
   const tip = tools.querySelector(".lesson-editor-tip");
