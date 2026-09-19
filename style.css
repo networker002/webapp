@@ -4164,7 +4164,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 22px;
-  z-index: 1801;
+  z-index: 999999;
   display: flex;
   flex-direction: column;
   overflow: hidden;
