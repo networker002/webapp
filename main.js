@@ -887,7 +887,7 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
               <div>
               <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
               <span class="subject">${escapeHtml(item.subject_name)}</span>
-              <span class="room">(${escapeHtml(item.room_name)})</span>
+              <span class="room${item.room_guessed ? " room-guessed" : ""}">(${escapeHtml(item.room_name)})${item.room_guessed ? '<sup class="room-guess-q" aria-hidden="true">?</sup>' : ""}</span>
               <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${escapeHtml(item.teacher_full)}</h5></div>
               </div>
             </div>`;
@@ -1394,6 +1394,49 @@ function openHiddenLessonsSheet() {
   });
   renderList();
 }
+
+/* ── Предположительная аудитория: тап по комнате с «?» → пояснение ── */
+function openRoomGuessSheet() {
+  document.getElementById("room-guess-modal")?.remove();
+  const modal = document.createElement("div");
+  modal.id = "room-guess-modal";
+  modal.className = "override-modal";
+  modal.innerHTML = `
+    <div class="override-sheet room-guess-sheet" role="dialog" aria-modal="true" aria-labelledby="room-guess-title">
+      <div class="room-guess-icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.9 5.7 5.7 1.9-5.7 1.9L12 17.2l-1.9-5.7-5.7-1.9 5.7-1.9zM19 13.5l.95 2.85 2.85.95-2.85.95L19 21.1l-.95-2.85-2.85-.95 2.85-.95zM5 14l.7 2.1 2.1.7-2.1.7L5 19.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg>
+      </div>
+      <header>
+        <h3 id="room-guess-title">Аудитория подобрана автоматически</h3>
+        <p>Как это работает</p>
+      </header>
+      <p class="room-guess-note">
+        Это значение подобрано нашей системой рекомендаций на основе статистики
+        твоей группы и может не совпадать с реальными данными. Если мы ошиблись —
+        напиши нам в поддержку.
+      </p>
+      <div class="override-actions">
+        <button type="button" class="ov-primary" id="room-guess-ok">Понятно</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  requestAnimationFrame(() => modal.classList.add("is-open"));
+  const close = () => {
+    modal.classList.remove("is-open");
+    setTimeout(() => modal.remove(), 180);
+  };
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) close();
+  });
+  modal.querySelector("#room-guess-ok").addEventListener("click", close);
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".room.room-guessed")) {
+    e.stopPropagation();
+    openRoomGuessSheet();
+  }
+});
 
 /* ── Обогащение строк расписания: data-атрибуты, long-press → быстрая заметка ── */
 function enrichLessonRows() {

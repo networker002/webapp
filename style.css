@@ -4043,6 +4043,53 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   color: var(--tg-theme-button-text-color, #fff);
 }
 
+/* ─── Предположительная аудитория (room_guessed) ─── */
+.room.room-guessed {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--tg-theme-link-color, var(--accent));
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.room-guess-q {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  border-radius: 50%;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 3px;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-link-color, var(--accent));
+  box-shadow: inset 0 0 0 1.2px var(--tg-theme-link-color, var(--accent));
+}
+.room-guess-sheet header { text-align: center; }
+.room-guess-sheet .room-guess-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 2px auto 12px;
+  border-radius: 50%;
+  background: var(--tg-theme-secondary-bg-color, #242F43);
+  color: var(--tg-theme-link-color, var(--accent));
+}
+.room-guess-sheet .room-guess-note {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--tg-theme-text-color);
+}
+.room-guess-sheet .override-actions { justify-content: center; }
+.room-guess-sheet .ov-primary { min-width: 140px; }
+
 /* ─── Скрытые пары: чип под днями недели и список в шите ─── */
 .hidden-lessons-chip {
   display: flex;
