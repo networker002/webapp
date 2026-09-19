@@ -2042,7 +2042,7 @@ function ensureShareSheet() {
     <div class="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title">
       <header>
         <h3 id="share-sheet-title">Поделиться</h3>
-        <button type="button" id="share-sheet-close" aria-label="Закрыть">×</button>
+        <button type="button" id="share-sheet-close" aria-label="Закрыть"><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-close"/></svg></button>
       </header>
       <div class="share-mode-row" id="share-mode-row">
         <button type="button" class="share-mode-btn is-active" data-mode="day">День</button>
@@ -2052,14 +2052,15 @@ function ensureShareSheet() {
       <p class="share-sub-label" id="share-sub-label"></p>
       <div class="share-preview" id="share-preview"></div>
       <div class="share-sheet-actions" id="share-actions">
-        <button type="button" id="share-download-btn" class="share-ghost-btn">Скачать PNG</button>
-        <button type="button" id="share-send-btn" class="share-primary-btn">Отправить</button>
+        <button type="button" id="share-download-btn" class="share-ghost-btn"><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-download"/></svg><span>Скачать PNG</span></button>
+        <button type="button" id="share-send-btn" class="share-primary-btn"><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-send"/></svg><span>Отправить</span></button>
       </div>
       <div class="share-done" id="share-done" hidden>
+        <div class="share-done-icon" aria-hidden="true"><svg class="mi" width="26" height="26"><use href="#mi-check"/></svg></div>
         <p id="share-done-text"></p>
         <div class="share-sheet-actions">
-          <button type="button" id="share-done-close" class="share-ghost-btn">Готово</button>
-          <a id="share-open-link" class="share-primary-btn" href="#">Открыть бота</a>
+          <button type="button" id="share-done-close" class="share-ghost-btn"><span>Готово</span></button>
+          <a id="share-open-link" class="share-primary-btn" href="#"><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-north_east"/></svg><span>Открыть бота</span></a>
         </div>
       </div>
     </div>`;
@@ -2158,7 +2159,9 @@ function renderDayChips(container) {
       ? new Date(shareState.monday.getFullYear(), shareState.monday.getMonth(), shareState.monday.getDate() + i)
       : null;
     chip.innerHTML = `<b>${DAY_SHORT_NAMES[dayName]}</b><span>${
-      date ? `${date.getDate()}.${date.getMonth() + 1}` : ""
+      date
+        ? `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`
+        : ""
     }</span>`;
     container.appendChild(chip);
   });
@@ -2225,9 +2228,10 @@ async function sendShareCard() {
   if (shareState.busy || !shareState.canvas) return;
   shareState.busy = true;
   const sendBtn = document.querySelector("#share-send-btn");
-  const prevText = sendBtn.textContent;
+  const sendLabel = sendBtn.querySelector("span");
+  const prevText = sendLabel.textContent;
   sendBtn.disabled = true;
-  sendBtn.textContent = "Готовлю…";
+  sendLabel.textContent = "Готовлю…";
   try {
     const blob = await canvasToPngBlob(shareState.canvas);
     if (inTelegramWeb()) {
@@ -2242,7 +2246,7 @@ async function sendShareCard() {
   } finally {
     shareState.busy = false;
     sendBtn.disabled = false;
-    sendBtn.textContent = prevText;
+    sendLabel.textContent = prevText;
   }
 }
 
@@ -2321,7 +2325,7 @@ function showShareDone(text, linkLabel) {
   const sheet = document.getElementById("share-sheet-modal");
   if (!sheet) return;
   sheet.querySelector("#share-done-text").textContent = text;
-  sheet.querySelector("#share-open-link").textContent = linkLabel || "Открыть";
+  sheet.querySelector("#share-open-link span").textContent = linkLabel || "Открыть";
   sheet.querySelector("#share-actions").hidden = true;
   sheet.querySelector("#share-done").hidden = false;
 }
