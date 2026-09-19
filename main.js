@@ -1051,7 +1051,7 @@ function renderBreakChips() {
       const gap = b.start - a.end;
       if (gap < 10) continue;
       desired.push({
-        after,
+        after: rows[i], // <--- FIX: Explicitly assign rows[i] to the 'after' property
         html: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> перемена · ${gap} мин`,
         text: `перемена · ${gap} мин`,
       });
