@@ -1924,6 +1924,16 @@ h6.skeleton { opacity: .4; }
 
 }
 
+.bottom-menu .bottom-btn {
+    padding: 9px 16px;
+}
+
+.bottom-btn .mi {
+    width: 26px;
+    height: 26px;
+    display: block;
+}
+
 .bottom-btn.selected {
     filter: drop-shadow(0 2px 10px var(--accent));
 }
@@ -2482,6 +2492,33 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
      position: relative !important;
      transition: transform .2s ease-in-out, filter .2s ease, opacity .2s ease;
 }
+
+/* Material-иконки профиля: единый размер вместо legacy scale .7 + padding */
+#profile-screen h1 { align-items: center; }
+#profile-screen h1 .mi { width: 26px; height: 26px; }
+.user-notes svg.mi, .user-lessons svg.mi {
+  scale: none;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  right: 12px;
+  top: calc(50% - 13px);
+  color: var(--tg-theme-hint-color);
+}
+.user-id svg.mi, .user-group svg.mi {
+  scale: none;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  right: 15px;
+  top: calc(50% - 10px);
+  color: var(--tg-theme-hint-color);
+  cursor: pointer;
+}
+.user-settings svg.mi { scale: none; padding: 0; width: 24px; height: 24px; }
+.sett-app svg.mi, #robot-svg-settings svg.mi { width: 24px; height: 24px; }
+.streak-fire { display: inline-flex; align-items: center; }
+.streak-fire .mi { display: block; }
 
 .user-notifications, .user-appear, .user-support {
     display: flex;
