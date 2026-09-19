@@ -3709,6 +3709,9 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
    (absolute right:0 + scale .7) — сбрасываем, чтобы огонь стоял в пилюле */
 .streak-chip .streak-fire { display: inline-flex; align-items: center; }
 .streak-chip svg.mi { position: static; scale: none; padding: 0; width: 15px; height: 15px; display: block; }
+/* легаси .profile-area>div span даёт padding-left:5px + letter-spacing —
+   раздувает пилюлю изнутри слева и разрежает «дня» */
+.profile-area .streak-chip span { padding-left: 0; letter-spacing: normal; }
 .streak-fire { animation: streak-flicker 1.6s ease-in-out infinite; }
 @keyframes streak-flicker {
   0%, 100% { transform: scale(1); }
