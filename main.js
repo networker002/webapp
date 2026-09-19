@@ -5801,7 +5801,8 @@ function renderStreakChip() {
     chip.className = "streak-chip";
     profile.appendChild(chip);
     chip.addEventListener("click", () => {
-      toast(`Серия: ${data.count || 0} · Рекорд: ${data.best || 0}`);
+      const s = readStreak();
+      toast(`Серия: ${s.count || 0} · Рекорд: ${s.best || 0}`);
       safeImpact("soft");
     });
   }
