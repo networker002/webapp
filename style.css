@@ -1980,12 +1980,15 @@ h6.skeleton { opacity: .4; }
     position: relative;
     order: -999;
     animation: start-pin .3s ease-in-out;
+    /* .note-v2 прячет всё, что выходит за карточку (overflow:hidden) —
+       для скрепки открываем, она должна быть снаружи */
+    overflow: visible;
     &::before {
         content: "📌";
         position: absolute;
-        top: -10px;
-        left: -10px;
-        font-size: larger;
+        top: -26px;
+        left: -12px;
+        font-size: 20px;
         background: none;
         transform: rotateY(180deg);
     }

@@ -1149,6 +1149,9 @@ function applyOverridesToDom() {
 }
 
 function openOverrideEditor(row) {
+  // тап по номеру пары (stopPropagation) не доходит до обработчика выбора
+  // предмета — выходим из режима выбора, чтобы не оставить меню скрытым
+  exitSubjectPicker();
   const key = lessonKey(row);
   const map = readOverrides();
   const current = map[key] || {};
@@ -1528,8 +1531,11 @@ function openQuickNoteFromLesson(row) {
   sessionStorage.setItem("pendingPairLink", JSON.stringify(pairLink));
   document.getElementById("notes-show")?.click();
   setTimeout(() => {
-    const addBtn = document.getElementById("note-add-btn");
-    if (addBtn && !addBtn.classList.contains("opened")) addBtn.click();
+    // удержание могло случиться внутри режима выбора предмета — выходим из него
+    // и открываем редактор по фактической видимости, а не по классу кнопки «+»
+    exitSubjectPicker();
+    const eventInput = document.getElementById("event-input");
+    if (!eventInput || getComputedStyle(eventInput).display === "none") showNoteEditor();
     const attach = document.getElementById("attach-event");
     if (attach) attach.value = pairLink.subject || "";
     const pairField = document.getElementById("pair-link-summary");
@@ -3001,7 +3007,9 @@ function upsSV() {
       // document
       //   .querySelectorAll(".teacher")
       //   .forEach((t) => (t.style.display = "none"));
-      if (dayName === days[n]) {
+      // «Сегодня» — только на текущей реальной неделе: тот же день недели
+      // есть в каждой неделе расписания
+      if (dayName === days[n] && scheduleWeekOffset === 0) {
         dayParseOnline();
         foundC = true;
       }
@@ -3912,7 +3920,14 @@ function saveNoteNew() {
       publishGroupBoard().catch(() => {});
     }
   });
-  document.getElementById("note-add-btn")?.click();
+  const addBtnAfterSave = document.getElementById("note-add-btn");
+  if (addBtnAfterSave) {
+    if (addBtnAfterSave.classList.contains("opened")) addBtnAfterSave.click();
+    else CloseBG();
+  }
+  // если сохранение случилось из подвешенного режима выбора предмета —
+  // возвращаем нижнее меню, иначе экран оставался без навигации
+  exitSubjectPicker();
 }
 
 async function getEdinNoteData(id) {
@@ -3931,6 +3946,7 @@ async function getEdinNoteData(id) {
     eventInput.querySelector(".event-header h4").textContent = "Добавление события";
   }
   CloseBG();
+  exitSubjectPicker();
   const addBtn = document.getElementById("note-add-btn");
   if (addBtn) addBtn.style.display = "flex";
   const saveBtn = document.getElementById("save-event-btn");
@@ -6299,6 +6315,29 @@ document.getElementById("attach-event").addEventListener("click", function() {
   initBtns();
   
 });
+// Выход из режима выбора предмета: возвращает нижнее меню/шапку/ленту дней.
+// Идемпотентен — безопасен и когда режим не активен.
+function exitSubjectPicker() {
+  document.getElementById("sl-b").style.display = "none";
+  document.querySelector(".bottom-menu").style.display = "flex";
+  document.querySelector(".days").style.display = "block";
+  document.querySelector(".second-header").style.display = "flex";
+}
+
+// Редактор заметки открываем явно, не через двойной тогл кнопки «+»:
+// её класс opened мог рассинхронизироваться с реальной видимостью редактора
+function showNoteEditor() {
+  ShowAdd();
+  const addBtn = document.getElementById("note-add-btn");
+  if (addBtn) addBtn.classList.add("opened");
+}
+
+document.getElementById("sl-b-close")?.addEventListener("click", () => {
+  exitSubjectPicker();
+  document.getElementById("notes-show").click();
+  showNoteEditor();
+});
+
 function initBtns() {
   let nowIDX = 0;
   const periods = [0, 5];
@@ -6306,34 +6345,38 @@ function initBtns() {
     document.querySelector(".swiper").swiper.slideToLoop(idx);
   }
   gotoIdx(0);
-  document.querySelector(".prev-slidebtn").addEventListener("click", function() {
-    nowIDX = nowIDX - 1;
-    if (nowIDX < periods[0]) {nowIDX = periods[1]}
-    gotoIdx(nowIDX);
-  });
-  document.querySelector(".next-slidebtn").addEventListener("click", function() {
-    nowIDX++;
-    if (nowIDX > periods[1]) {nowIDX = periods[0]};
-    gotoIdx(nowIDX);
-  });
+  const prevBtn = document.querySelector(".prev-slidebtn");
+  if (prevBtn && !prevBtn.dataset.boostBound) {
+    prevBtn.dataset.boostBound = "1";
+    prevBtn.addEventListener("click", function() {
+      nowIDX = nowIDX - 1;
+      if (nowIDX < periods[0]) {nowIDX = periods[1]}
+      gotoIdx(nowIDX);
+    });
+  }
+  const nextBtn = document.querySelector(".next-slidebtn");
+  if (nextBtn && !nextBtn.dataset.boostBound) {
+    nextBtn.dataset.boostBound = "1";
+    nextBtn.addEventListener("click", function() {
+      nowIDX++;
+      if (nowIDX > periods[1]) {nowIDX = periods[0]};
+      gotoIdx(nowIDX);
+    });
+  }
 
   document.querySelectorAll(".lesson-row").forEach((l) => {
+    if (l.dataset.pickerBound === "1") return;
+    l.dataset.pickerBound = "1";
     l.addEventListener("click", function(){
+      // снимаем флаг, чтобы следующий заход в режим выбора снова повесил обработчик
+      delete l.dataset.pickerBound;
 
       document.getElementById("attach-event").value = l.querySelector(".subject").innerHTML;
 
-      document.getElementById("sl-b").style.display = "none";
-      document.querySelector(".bottom-menu").style.display = "flex";
+      exitSubjectPicker();
       if (localStorage.getItem("isActiveAI") === "true") {assistant.style.display = "block"; message.style.display = "block"; message.innerHTML = `<div><h4 style='padding: 4px;'>Предмет выбран успешно!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none'; assistant.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;}
-      document.querySelector(".days").style.display = "block";
-      document.querySelector(".second-header").style.display = "flex";
       document.getElementById("notes-show").click();
-      if (document.getElementById("note-add-btn").style.display !== "none"){
-      document.getElementById("note-add-btn").click();
-      document.getElementById("note-add-btn").click();} else {
-        ShowAdd();
-      document.getElementById("attach-event").value = l.querySelector(".subject").innerHTML;
-      }
+      showNoteEditor();
     }, {once: true});
   });
 }
