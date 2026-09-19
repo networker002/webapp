@@ -2538,8 +2538,6 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
 }
 .user-settings svg.mi, .user-settings .user-notify-text-svg, .user-settings .user-theme-text-svg { scale: none; padding: 0; width: 24px; height: 24px; }
 .sett-app svg.mi, #robot-svg-settings svg.mi { width: 24px; height: 24px; }
-.streak-fire { display: inline-flex; align-items: center; }
-.streak-fire .mi { display: block; }
 
 .user-notifications, .user-appear, .user-support {
     display: flex;
@@ -3707,6 +3705,10 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   cursor: pointer;
 }
 .streak-chip[hidden] { display: none !important; }
+/* svg внутри карточки профиля ловит легаси .profile-area>div svg
+   (absolute right:0 + scale .7) — сбрасываем, чтобы огонь стоял в пилюле */
+.streak-chip .streak-fire { display: inline-flex; align-items: center; }
+.streak-chip svg.mi { position: static; scale: none; padding: 0; width: 15px; height: 15px; display: block; }
 .streak-fire { animation: streak-flicker 1.6s ease-in-out infinite; }
 @keyframes streak-flicker {
   0%, 100% { transform: scale(1); }
