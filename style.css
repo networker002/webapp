@@ -1926,6 +1926,7 @@ h6.skeleton { opacity: .4; }
 
 .bottom-menu .bottom-btn {
     padding: 9px 16px;
+    color: inherit;
 }
 
 .bottom-btn .mi {
@@ -4303,6 +4304,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--tg-theme-text-color, #fff);
   transition: opacity .2s ease, transform .15s ease;
 }
 #ai-chat-send:disabled { cursor: default; opacity: .85; }
