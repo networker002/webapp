@@ -2606,7 +2606,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
             }
         }
 
-        .popuper-notifications h1, p {
+        .popuper-notifications h1, .popuper-notifications p {
             text-align: center;
             margin: 0 !important;
             padding-top: 0 !important;
@@ -2751,7 +2751,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
             }
         }
 
-        .popuper-appearance h1, p {
+        .popuper-appearance h1, .popuper-appearance p {
             margin: 0 !important;
             padding-top: 0 !important;
         }
@@ -3884,7 +3884,17 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
 }
 .override-modal.is-open .override-sheet { transform: translateY(0); }
-.override-sheet header h3 { margin: 0 0 4px; font-size: 18px; }
+/* reset !important-паддингов/фона глобального header (стр. 107) для шапок шитов */
+.override-sheet header,
+.share-sheet header {
+  position: static;
+  z-index: auto;
+  background: none;
+  border-radius: 0;
+  gap: 0;
+  padding: 0 !important;
+}
+.override-sheet header h3 { margin: 0 0 4px; font-size: 18px; line-height: 1.3; }
 .override-sheet header p {
   margin: 0 0 14px;
   font-size: 12px;
@@ -3956,7 +3966,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
   justify-content: center;
   width: 52px;
   height: 52px;
-  margin: 2px auto 12px;
+  margin: 0 auto 14px;
   border-radius: 50%;
   background: var(--tg-theme-secondary-bg-color, #242F43);
   color: var(--tg-theme-link-color, var(--accent));
