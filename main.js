@@ -1050,22 +1050,26 @@ function renderBreakChips() {
       if (!a || !b) continue;
       const gap = b.start - a.end;
       if (gap < 10) continue;
-      desired.push({ after: rows[i], text: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> перемена · ${gap} мин` });
+      desired.push({
+        after,
+        html: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> перемена · ${gap} мин`,
+        text: `перемена · ${gap} мин`,
+      });
     }
     const existing = Array.from(day.querySelectorAll(".break-chip"));
     const same =
       existing.length === desired.length &&
       existing.every(
         (chip, i) =>
-          chip.textContent === desired[i].text &&
+          chip.textContent.trim() === desired[i].text &&
           chip.nextElementSibling === desired[i].after.nextElementSibling,
       );
     if (same) return;
     existing.forEach((chip) => chip.remove());
-    desired.forEach(({ after, text }) => {
+    desired.forEach(({ after, html }) => {
       const chip = document.createElement("div");
       chip.className = "break-chip";
-      chip.textContent = text;
+      chip.innerHTML = html;
       after.parentElement.insertBefore(chip, after.nextSibling);
     });
   });
