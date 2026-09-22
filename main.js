@@ -1156,9 +1156,6 @@ function applyOverridesToDom() {
 }
 
 function openOverrideEditor(row) {
-  // тап по номеру пары (stopPropagation) не доходит до обработчика выбора
-  // предмета — выходим из режима выбора, чтобы не оставить меню скрытым
-  exitSubjectPicker();
   const key = lessonKey(row);
   const map = readOverrides();
   const current = map[key] || {};
@@ -1538,13 +1535,8 @@ function openQuickNoteFromLesson(row) {
   sessionStorage.setItem("pendingPairLink", JSON.stringify(pairLink));
   document.getElementById("notes-show")?.click();
   setTimeout(() => {
-    // удержание могло случиться внутри режима выбора предмета — выходим из него
-    // и открываем редактор по фактической видимости, а не по классу кнопки «+»
-    exitSubjectPicker();
     const eventInput = document.getElementById("event-input");
     if (!eventInput || getComputedStyle(eventInput).display === "none") showNoteEditor();
-    const attach = document.getElementById("attach-event");
-    if (attach) attach.value = pairLink.subject || "";
     const pairField = document.getElementById("pair-link-summary");
     if (pairField) {
       pairField.textContent = `${pairLink.dayOfWeek} · ${pairLink.timeRange} · ${pairLink.subject}`;
@@ -3814,18 +3806,25 @@ function sanitizeAiHtml(value) {
   return template.content;
 }
 
+function setPriorityValue(value) {
+  const known = PRIORITY_META[value] ? value : "normal";
+  document.querySelectorAll("#priority-event .prio-opt").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.value === known);
+  });
+}
+
+function getPriorityValue() {
+  const active = document.querySelector("#priority-event .prio-opt.is-active");
+  return PRIORITY_META[active?.dataset.value] ? active.dataset.value : "normal";
+}
+
 function fillNoteForm(note) {
   const title = document.getElementById("name-event");
-  const time = document.getElementById("time-event");
-  const subject = document.getElementById("attach-event");
   const description = document.getElementById("extra-event");
   const deadline = document.getElementById("deadline-event");
-  const priority = document.getElementById("priority-event");
   const pairSummary = document.getElementById("pair-link-summary");
 
   if (title) title.value = note?.title || "";
-  if (time) time.value = note?.time || "";
-  if (subject) subject.value = note?.subject || "";
   if (description) description.value = note?.description || "";
   if (deadline) {
     if (note?.deadline) {
@@ -3837,7 +3836,7 @@ function fillNoteForm(note) {
             .slice(0, 16);
     } else deadline.value = "";
   }
-  if (priority) priority.value = note?.priority || "normal";
+  setPriorityValue(note?.priority || "normal");
   if (pairSummary) {
     if (note?.pairLink) {
       pairSummary.dataset.linked = "1";
@@ -3854,20 +3853,14 @@ function fillNoteForm(note) {
 
 function readNoteForm(base = {}) {
   const titleEl = document.getElementById("name-event");
-  const timeEl = document.getElementById("time-event");
-  const subjectEl = document.getElementById("attach-event");
   const descEl = document.getElementById("extra-event");
   const deadlineEl = document.getElementById("deadline-event");
-  const priorityEl = document.getElementById("priority-event");
 
   const title = (titleEl?.value || "").trim();
   if (!title) return { error: "title" };
 
-  let time = (timeEl?.value || "").trim();
-  if (!time) {
-    const n = new Date();
-    time = `${n.getDate()}.${String(n.getMonth() + 1).padStart(2, "0")}.${n.getFullYear()} ${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
-  }
+  const n = new Date();
+  const time = `${n.getDate()}.${String(n.getMonth() + 1).padStart(2, "0")}.${n.getFullYear()} ${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
 
   let deadline = deadlineEl?.value ? new Date(deadlineEl.value).toISOString() : null;
   if (deadlineEl?.value && Number.isNaN(new Date(deadlineEl.value).getTime())) {
@@ -3875,7 +3868,7 @@ function readNoteForm(base = {}) {
   }
 
   const pairLink = collectPairLinkFromForm() || base.pairLink || null;
-  const subject = (subjectEl?.value || "").trim() || pairLink?.subject || "Общий";
+  const subject = pairLink?.subject || "Общий";
 
   return {
     note: normalizeNote({
@@ -3885,7 +3878,7 @@ function readNoteForm(base = {}) {
       subject,
       description: (descEl?.value || "").slice(0, MAX_NOTE_DESC),
       deadline,
-      priority: priorityEl?.value || "normal",
+      priority: getPriorityValue(),
       pairLink,
       updatedAt: new Date().toISOString(),
       uuid: base.uuid || SetUUID(),
@@ -3933,9 +3926,6 @@ function saveNoteNew() {
     if (addBtnAfterSave.classList.contains("opened")) addBtnAfterSave.click();
     else CloseBG();
   }
-  // если сохранение случилось из подвешенного режима выбора предмета —
-  // возвращаем нижнее меню, иначе экран оставался без навигации
-  exitSubjectPicker();
 }
 
 async function getEdinNoteData(id) {
@@ -3954,7 +3944,6 @@ async function getEdinNoteData(id) {
     eventInput.querySelector(".event-header h4").textContent = "Добавление события";
   }
   CloseBG();
-  exitSubjectPicker();
   const addBtn = document.getElementById("note-add-btn");
   if (addBtn) addBtn.style.display = "flex";
   const saveBtn = document.getElementById("save-event-btn");
@@ -6333,87 +6322,12 @@ function addToProfile() {
 }
 
 
-document.getElementById("attach-event").addEventListener("click", function() {
-
-  CloseBG();
-  document.getElementById("notes-screen").style.display = "none";
-  document.querySelector("main").style.display = "block";
-  document.querySelector(".second-header").style.display = "none";
-  document.querySelector(".days").style.display = "none";
-  if (localStorage.getItem("isActiveAI") === "true") {
-    assistant.style.display = "none";
-    stopAll();
-    message.style.display = "none";
-  }
-  document.querySelector(".bottom-menu").style.display = "none";
-  document.getElementById("sl-b").style.display = "flex";
-  initBtns();
-  
-});
-// Выход из режима выбора предмета: возвращает нижнее меню/шапку/ленту дней.
-// Идемпотентен — безопасен и когда режим не активен.
-function exitSubjectPicker() {
-  document.getElementById("sl-b").style.display = "none";
-  document.querySelector(".bottom-menu").style.display = "flex";
-  document.querySelector(".days").style.display = "block";
-  document.querySelector(".second-header").style.display = "flex";
-}
-
 // Редактор заметки открываем явно, не через двойной тогл кнопки «+»:
 // её класс opened мог рассинхронизироваться с реальной видимостью редактора
 function showNoteEditor() {
   ShowAdd();
   const addBtn = document.getElementById("note-add-btn");
   if (addBtn) addBtn.classList.add("opened");
-}
-
-document.getElementById("sl-b-close")?.addEventListener("click", () => {
-  exitSubjectPicker();
-  document.getElementById("notes-show").click();
-  showNoteEditor();
-});
-
-function initBtns() {
-  let nowIDX = 0;
-  const periods = [0, 5];
-  function gotoIdx(idx){
-    document.querySelector(".swiper").swiper.slideToLoop(idx);
-  }
-  gotoIdx(0);
-  const prevBtn = document.querySelector(".prev-slidebtn");
-  if (prevBtn && !prevBtn.dataset.boostBound) {
-    prevBtn.dataset.boostBound = "1";
-    prevBtn.addEventListener("click", function() {
-      nowIDX = nowIDX - 1;
-      if (nowIDX < periods[0]) {nowIDX = periods[1]}
-      gotoIdx(nowIDX);
-    });
-  }
-  const nextBtn = document.querySelector(".next-slidebtn");
-  if (nextBtn && !nextBtn.dataset.boostBound) {
-    nextBtn.dataset.boostBound = "1";
-    nextBtn.addEventListener("click", function() {
-      nowIDX++;
-      if (nowIDX > periods[1]) {nowIDX = periods[0]};
-      gotoIdx(nowIDX);
-    });
-  }
-
-  document.querySelectorAll(".lesson-row").forEach((l) => {
-    if (l.dataset.pickerBound === "1") return;
-    l.dataset.pickerBound = "1";
-    l.addEventListener("click", function(){
-      // снимаем флаг, чтобы следующий заход в режим выбора снова повесил обработчик
-      delete l.dataset.pickerBound;
-
-      document.getElementById("attach-event").value = l.querySelector(".subject").innerHTML;
-
-      exitSubjectPicker();
-      if (localStorage.getItem("isActiveAI") === "true") {assistant.style.display = "block"; message.style.display = "block"; message.innerHTML = `<div><h4 style='padding: 4px;'>Предмет выбран успешно!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none'; assistant.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;}
-      document.getElementById("notes-show").click();
-      showNoteEditor();
-    }, {once: true});
-  });
 }
 
 let colorPicker = null;
@@ -7200,6 +7114,14 @@ window.addEventListener("DOMContentLoaded", () => {
         .slice(0, 16);
       safeImpact("light");
     });
+  });
+
+  // выбор приоритета — единственный активный чип
+  document.getElementById("priority-event")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".prio-opt");
+    if (!btn) return;
+    setPriorityValue(btn.dataset.value);
+    safeImpact("light");
   });
 
   // ленивый рендер при переключении экранов

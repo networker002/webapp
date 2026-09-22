@@ -139,20 +139,10 @@
             <span>Название</span>
             <input type="text" placeholder="Как назовём событие?" id="name-event" maxlength="96">
         </div>
-        <div class="event-field time-field">
-            <span>Время создания</span>
-            <div class="time-row">
-                <input type="text" id="time-event" maxlength="32" min="4" placeholder="12:00">
-                <b id="nowtimeset1" onclick="document.getElementById('time-event').value = new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2,'0');">now</b>
-            </div>
-        </div>
-        <div class="event-field">
-            <span>Предмет / прикрепление</span>
-            <input type="text" placeholder="Прикрепить предмет:" id="attach-event" readonly>
-        </div>
         <div class="event-field">
             <span>Ссылка на пару</span>
             <div class="pair-link-box">
+                <svg class="mi" width="16" height="16" aria-hidden="true"><use href="#mi-link"/></svg>
                 <div id="pair-link-summary" data-linked="0">Не привязана — удержите пару в расписании</div>
                 <button type="button" id="clear-pair-link" aria-label="Сбросить привязку">×</button>
             </div>
@@ -167,14 +157,14 @@
                 <button type="button" data-deadline-preset="168">Неделя</button>
             </div>
         </div>
-        <div class="event-field priority-field">
+        <div class="event-field">
             <span>Приоритет</span>
-            <select id="priority-event">
-                <option value="low">Низкий</option>
-                <option value="normal" selected>Обычный</option>
-                <option value="high">Высокий</option>
-                <option value="urgent">Срочно</option>
-            </select>
+            <div class="prio-options" id="priority-event">
+                <button type="button" class="prio-opt" data-value="low">Низкий</button>
+                <button type="button" class="prio-opt is-active" data-value="normal">Обычный</button>
+                <button type="button" class="prio-opt" data-value="high">Высокий</button>
+                <button type="button" class="prio-opt" data-value="urgent">Срочно</button>
+            </div>
         </div>
         <div class="event-field">
             <span>Дополнительно</span>
@@ -193,13 +183,7 @@
     <div class="assistant-say"><div id="ctx-assistant-say"></div></div>
 
     <main>
-        <div class="slide-btns" id="sl-b">
-        <button type="button" id="sl-b-close" aria-label="Отменить выбор предмета" style="margin-inline-start: auto;"><svg class="mi" width="22" height="22" aria-hidden="true"><use href="#mi-close"/></svg></button>
-        <button class="prev-slidebtn"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m.2-9l-.9.9q-.275.275-.275.7t.275.7t.7.275t.7-.275l2.6-2.6q.3-.3.3-.7t-.3-.7l-2.6-2.6q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l.9.9H9q-.425 0-.712.288T8 12t.288.713T9 13z"/></svg></button>
-        <button class="next-slidebtn"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m.2-9l-.9.9q-.275.275-.275.7t.275.7t.7.275t.7-.275l2.6-2.6q.3-.3.3-.7t-.3-.7l-2.6-2.6q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l.9.9H9q-.425 0-.712.288T8 12t.288.713T9 13z"/></svg></button>
-    </div>
-
-    <div class="backdrop" style="display: none;"></div>
+        <div class="backdrop" style="display: none;"></div>
         
         <div class="second-header">
             <!-- <div class="btns" id="burger-menu" onclick='openn("user-menu-display", "flex"); document.getElementById("black-bg").style.animation = "none"; document.getElementById("black-bg").style.animation = "opq1 1s ease";document.getElementById("black-bg").style.display = "block";'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>Menu-burger-horizontal SVG Icon</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18" /></svg></div> -->

@@ -1543,15 +1543,6 @@ h6.skeleton { opacity: .4; }
     flex-direction: column;
     gap: 10px;
 }
-#event-input .time-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    position: relative;
-}
-#event-input .time-row input {
-    flex: 1;
-}
 #event-input span {
     position: static;
     color: var(--tg-theme-accent-text-color);
@@ -1562,7 +1553,7 @@ h6.skeleton { opacity: .4; }
     letter-spacing: 0.5px;
     margin-bottom: 0;
 }
-#event-input input, #event-input textarea, #event-input select {
+#event-input input, #event-input textarea {
     box-sizing: border-box;
     width: 100%;
     margin-top: 0;
@@ -1576,15 +1567,7 @@ h6.skeleton { opacity: .4; }
     outline: none;
     transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
-#event-input select {
-    appearance: none;
-    padding-right: 2.6em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23888f98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1em center;
-    background-size: 12px 8px;
-}
-#event-input input:focus, #event-input textarea:focus, #event-input select:focus {
+#event-input input:focus, #event-input textarea:focus {
     border-color: rgb(from var(--accent) r g b / .8);
     box-shadow: 0 0 0 3px rgb(from var(--accent) r g b / .18);
 }
@@ -1637,6 +1620,25 @@ h6.skeleton { opacity: .4; }
     color: var(--tg-theme-hint-color);
     cursor: pointer;
 }
+#event-input .prio-options { display: flex; flex-wrap: wrap; gap: 6px; }
+#event-input .prio-opt {
+    width: auto;
+    padding: .48em .75em;
+    font-size: .85em;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    line-height: 1.2;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--tg-theme-hint-color);
+    cursor: pointer;
+    transition: background .25s ease, border-color .25s ease, color .25s ease;
+}
+#event-input .prio-opt.is-active {
+    background: rgb(from var(--accent) r g b / .22);
+    border-color: rgb(from var(--accent) r g b / .6);
+    color: var(--tg-theme-text-color);
+}
 #event-input .pair-link-box {
     display: flex;
     align-items: center;
@@ -1645,6 +1647,7 @@ h6.skeleton { opacity: .4; }
     border-radius: 16px;
     padding: 10px 12px;
 }
+#event-input .pair-link-box > svg { color: var(--tg-theme-hint-color); }
 #event-input .pair-link-box #pair-link-summary {
     flex: 1;
     min-width: 0;
@@ -1682,17 +1685,8 @@ h6.skeleton { opacity: .4; }
     cursor: pointer;
 }
 #clear-pair-link[hidden] { display: none !important; }
-/* приоритет и дедлайн заметки */
-.event-field.priority-field select,
-#deadline-event {
-    width: 100%;
-    padding: 1em;
-    border-radius: 1.5em;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: var(--accent-bg);
-    color: var(--tg-theme-text-color);
-    font: inherit;
-}
+/* у datetime-local тёмная системная пиктограмма календаря на тёмной теме */
+#deadline-event { color-scheme: dark; }
 
 #black-bg {
     position: fixed;
@@ -1767,18 +1761,6 @@ h6.skeleton { opacity: .4; }
     transition: all .05s;
 }
 .del-event:active { transform: translateY(-50%) rotate(30deg) scale(.95); }
-
-#nowtimeset1 {
-    position: absolute;
-    right: 1em;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--tg-theme-button-color);
-    color: var(--tg-theme-button-text-color);
-    padding: .25em .5em;
-    border-radius: .5em;
-    transition: all .1s;
-}
 
 #canvas {
     position: absolute;
@@ -2331,29 +2313,6 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
     align-items: center;
     box-sizing: border-box;
     padding-top: 5px;
-}
-
-.slide-btns {
-    width: 100%;
-    overflow: hidden !important;
-    display: none;
-    justify-content: space-around;
-    margin-top: 5em !important;
-    
-    button {
-        border: none;
-        outline: none;
-        padding: 5px;
-        border-radius: 50%;
-        background: none;
-        opacity: 1;
-        scale: 1.5;
-        color: var(--tg-theme-button-color);
-        transition: scale .2s ease;
-
-        &:active {scale:1.2;}
-        &:first-child{svg{transform: rotate(180deg);}}
-    }
 }
 
 
