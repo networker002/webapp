@@ -1108,12 +1108,15 @@ function applyOverridesToDom() {
     const key = lessonKey(row);
     const ov = map[key];
     row.classList.remove("is-overridden", "is-hidden-override");
-    row.querySelector(".override-badge")?.remove();
     row.style.display = "";
 
-    if (!ov) return;
+    if (!ov) {
+      row.querySelector(".override-badge")?.remove();
+      return;
+    }
 
     if (ov.hidden) {
+      row.querySelector(".override-badge")?.remove();
       row.classList.add("is-hidden-override");
       row.style.display = "none";
       return;
@@ -1124,27 +1127,29 @@ function applyOverridesToDom() {
     const room = row.querySelector(".room");
     if (ov.alias && subj) {
       if (!subj.dataset.orig) subj.dataset.orig = subj.textContent;
-      subj.textContent = ov.alias;
-    } else if (subj?.dataset.orig) {
+      if (subj.textContent !== ov.alias) subj.textContent = ov.alias;
+    } else if (subj?.dataset.orig && subj.textContent !== subj.dataset.orig) {
       subj.textContent = subj.dataset.orig;
     }
     if (ov.roomOverride && room) {
       if (!room.dataset.orig) room.dataset.orig = room.textContent;
-      room.textContent = `(${ov.roomOverride})`;
-    } else if (room?.dataset.orig) {
+      if (room.textContent !== `(${ov.roomOverride})`) room.textContent = `(${ov.roomOverride})`;
+    } else if (room?.dataset.orig && room.textContent !== room.dataset.orig) {
       room.textContent = room.dataset.orig;
     }
 
-    const badge = document.createElement("button");
-    badge.type = "button";
-    badge.className = "override-badge";
-    badge.title = "Личная правка";
-    badge.innerHTML = '<svg class="mi" width="11" height="11" style="vertical-align:-1px"><use href="#mi-auto_awesome"/></svg>';
-    badge.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openOverrideEditor(row);
-    });
-    row.appendChild(badge);
+    if (!row.querySelector(".override-badge")) {
+      const badge = document.createElement("button");
+      badge.type = "button";
+      badge.className = "override-badge";
+      badge.title = "Личная правка";
+      badge.innerHTML = '<svg class="mi" width="11" height="11" style="vertical-align:-1px"><use href="#mi-auto_awesome"/></svg>';
+      badge.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openOverrideEditor(row);
+      });
+      row.appendChild(badge);
+    }
   });
 
   updateHiddenLessonsChip();
@@ -5642,9 +5647,10 @@ function loadSummary() {
 
 /* ── Бейджи заметок на парах расписания ── */
 function paintNoteBadgesOnLessons() {
-  document.querySelectorAll(".lesson-note-dot").forEach((el) => el.remove());
-  if (document.body.classList.contains("pref-noteBadges-off")) return;
-  const openLinked = readNotes().filter((n) => n.pairLink && !n.done);
+  // идемпотентно: MutationObserver расписания (watchScheduleMutations) перезапускает
+  // enrichLessonRows после каждой вставки точек — пересоздание замыкает бесконечный цикл
+  const off = document.body.classList.contains("pref-noteBadges-off");
+  const openLinked = off ? [] : readNotes().filter((n) => n.pairLink && !n.done);
   document.querySelectorAll(".lesson-row").forEach((row) => {
     if (row.closest("#demo-lesson")) return;
     const hits = openLinked.filter(
@@ -5652,13 +5658,23 @@ function paintNoteBadgesOnLessons() {
         n.pairLink.subject === row.dataset.subject &&
         String(n.pairLink.lessonCode || "") === String(row.dataset.lessonCode || ""),
     );
-    if (!hits.length) return;
+    const existing = row.querySelector(":scope > .lesson-note-dot");
+    if (!hits.length) {
+      existing?.remove();
+      return;
+    }
+    const urgent = hits.some((h) => h.priority === "urgent" || deadlineUrgency(h.deadline) === "soon" || deadlineUrgency(h.deadline) === "overdue");
+    const count = String(hits.length);
+    const title = hits.map((h) => h.title).join(", ");
+    if (existing && existing.textContent === count && existing.title === title && existing.classList.contains("is-urgent") === urgent) {
+      return;
+    }
+    existing?.remove();
     const dot = document.createElement("span");
     dot.className = "lesson-note-dot";
-    const urgent = hits.some((h) => h.priority === "urgent" || deadlineUrgency(h.deadline) === "soon" || deadlineUrgency(h.deadline) === "overdue");
     if (urgent) dot.classList.add("is-urgent");
-    dot.textContent = String(hits.length);
-    dot.title = hits.map((h) => h.title).join(", ");
+    dot.textContent = count;
+    dot.title = title;
     row.appendChild(dot);
   });
 }
