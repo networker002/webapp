@@ -694,7 +694,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           } else {
             const cachedGroup = localStorage.getItem("userGroup");
             const cachedSchedule = localStorage.getItem("schedule");
-            if (cachedGroup && cachedSchedule) {
+            if (cachedGroup && cachedSchedule && localStorage.getItem("schedule_group") === cachedGroup) {
               const groupElement = document.getElementById("gr");
               if (groupElement) groupElement.textContent = cachedGroup;
               container.innerHTML = cachedSchedule;
@@ -729,7 +729,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
           assistant.style.display = "block";
         });
     } else if (!reqNeed) {
-      if (cachedData && Date.now() - dataLastUpd < ttl) {
+      if (cachedData && Date.now() - dataLastUpd < ttl && localStorage.getItem("schedule_group") === localStorage.getItem("userGroup")) {
         container.innerHTML = cachedData;
         
         if (nowBtn) upsSV();
@@ -784,8 +784,9 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
     scheduleWeekIndex = ((Number(weekType) % 4) + 4) % 4;
     if (weekTypeNumber === null || weekTypeNumber === undefined) scheduleWeekOffset = 0;
     window.scheduleWeekIndex = scheduleWeekIndex;
-    scheduleRowsCache = { rows: data[1], times: data[2] };
+    scheduleRowsCache = { rows: data[1], times: data[2], group: localStorage.getItem("userGroup") };
     try { localStorage.setItem("schedule_json", JSON.stringify({ weekType: scheduleWeekIndex, rows: data[1], times: data[2], savedAt: Date.now() })); } catch (_e) {}
+    try { localStorage.setItem("schedule_group", localStorage.getItem("userGroup") || ""); } catch (_e) {}
     updateDayButtonDates();
 
     let newHTML = "";
@@ -1017,11 +1018,12 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
 }
 
 function getScheduleRows() {
-  if (scheduleRowsCache?.rows?.length) return scheduleRowsCache;
+  const group = localStorage.getItem("userGroup");
+  if (scheduleRowsCache?.rows?.length && scheduleRowsCache.group === group) return scheduleRowsCache;
   try {
     const cached = JSON.parse(localStorage.getItem("schedule_json") || "null");
-    if (cached?.rows?.length) {
-      scheduleRowsCache = { rows: cached.rows, times: cached.times };
+    if (cached?.rows?.length && localStorage.getItem("schedule_group") === group) {
+      scheduleRowsCache = { rows: cached.rows, times: cached.times, group };
       return scheduleRowsCache;
     }
   } catch (_e) {}
@@ -1938,7 +1940,7 @@ function shareRowsCache() {
   if (rows?.rows?.length) return rows;
   try {
     const cached = JSON.parse(localStorage.getItem("schedule_json") || "null");
-    if (cached?.rows?.length) return { rows: cached.rows, times: cached.times };
+    if (cached?.rows?.length && localStorage.getItem("schedule_group") === localStorage.getItem("userGroup")) return { rows: cached.rows, times: cached.times };
   } catch (_) {}
   return null;
 }
@@ -2621,6 +2623,7 @@ function cacheData(data) {
   try {
     localStorage.setItem("schedule", data.toString());
     localStorage.setItem("updated_at", NOW_);
+    localStorage.setItem("schedule_group", localStorage.getItem("userGroup") || "");
     return true;
   } catch {
     return false;
