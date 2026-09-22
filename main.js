@@ -4518,42 +4518,58 @@ document.addEventListener("keydown", (event) => {
 
             loader.style.display = "flex";
             loaderContainer.style.display = "block";
-            setTimeout(function () {
-            const authHeaders = { Authorization: tg.initData };
-            fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
-                .then((response) => {
-                if (!response.ok) throw new Error("Error: " + response.status);
-                return response.json();
-                })
-                .then((userGroup) => {
-                var Group = userGroup.group_name;
-                if (localStorage.getItem("userGroup")) {
-                    if (localStorage.getItem("userGroup") !== Group) {
-                    document.getElementById("alerter").style.display = "none";
-                    document.getElementById("shocked-assistant").style.display =
-                        "none";
-                    // burgerBtn.classList.remove("opened-btn");
-                    // burgerBtn.classList.add("closed-btn");
-                    //closeN("user-menu-display");
-                    getSchedule1(true);
-                    } else {
-                    document.getElementById("alerter").style.display = "none";
-                    document.getElementById("shocked-assistant").style.display =
-                        "none";
-                    // burgerBtn.classList.remove("opened-btn");
-                    // burgerBtn.classList.add("closed-btn");
-                    localStorage.setItem("userGroup", userGroup);
-                    //closeN("user-menu-display");
-                    getSchedule1(true);
-                    }
-                }
-                });
-            closeEditGr();
-            setTimeout(function () {
-                loader.style.display = "none";
-                loaderContainer.style.display = "none";
-            }, 1500);
-            }, 3000);
+            // Пользователь подтверждает группу в боте не мгновенно: опрашиваем /group,
+            // пока группа не сменится (или не выйдет таймаут), и только потом
+            // обновляем localStorage и расписание
+            const prevGroup = localStorage.getItem("userGroup");
+            const pollDeadline = Date.now() + 45000;
+            function pollGroupChange() {
+                const authHeaders = { Authorization: tg.initData };
+                fetch("https://boost.rorosin.ru/group", { headers: authHeaders })
+                    .then((response) => {
+                        if (!response.ok) throw new Error("Error: " + response.status);
+                        return response.json();
+                    })
+                    .then((userGroup) => {
+                        const Group = userGroup && userGroup.group_name;
+                        const ready =
+                            (Group &&
+                                (Group !== prevGroup ||
+                                    Group === D ||
+                                    Group === D.toUpperCase())) ||
+                            Date.now() > pollDeadline;
+                        if (!ready) {
+                            setTimeout(pollGroupChange, 3000);
+                            return;
+                        }
+                        if (Group) {
+                            localStorage.setItem("userGroup", Group);
+                            const grElement = document.getElementById("gr");
+                            if (grElement) grElement.innerHTML = Group;
+                        }
+                        document.getElementById("alerter").style.display = "none";
+                        document.getElementById("shocked-assistant").style.display =
+                            "none";
+                        getSchedule1(true);
+                        closeEditGr();
+                        setTimeout(function () {
+                            loader.style.display = "none";
+                            loaderContainer.style.display = "none";
+                        }, 1500);
+                    })
+                    .catch(() => {
+                        if (Date.now() > pollDeadline) {
+                            closeEditGr();
+                            setTimeout(function () {
+                                loader.style.display = "none";
+                                loaderContainer.style.display = "none";
+                            }, 1500);
+                        } else {
+                            setTimeout(pollGroupChange, 3000);
+                        }
+                    });
+            }
+            setTimeout(pollGroupChange, 3000);
         }
         }
 
