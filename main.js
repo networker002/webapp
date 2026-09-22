@@ -3511,6 +3511,15 @@ function ShowAdd() {
   document.getElementById("black-bg").style.animation = "opq1 .5s ease";
   document.getElementById("black-bg").style.display = "block";
   openn("event-input", "flex");
+  // при создании новой заметки привязка сбрасывается; редактирование
+  // заполняет форму заново через fillNoteForm сразу после ShowAdd
+  const pairSummary = document.getElementById("pair-link-summary");
+  if (pairSummary && !sessionStorage.getItem("pendingPairLink")) {
+    pairSummary.dataset.linked = "0";
+    delete pairSummary.dataset.payload;
+    pairSummary.textContent = "Не привязана — удержите пару в расписании";
+  }
+  syncPairLinkClear();
   //document.getElementById("event-input").setAttribute("data-uuid", id);
 }
 
@@ -3521,9 +3530,11 @@ function CloseBG() {
     "popupBtnText .1s ease forwards";
   document.getElementById("event-input").style.animation =
     "popupBtnText2 .1s ease forwards";
-  
+
     document.getElementById("black-bg").style.display = "none";
     document.getElementById("event-input").style.display = "none";
+   // модалка закрыта без сохранения — pending-привязка не должна утекать в следующую заметку
+   sessionStorage.removeItem("pendingPairLink");
    // document.getElementById("event-input").removeAttribute("data-uuid");
 }
 
@@ -3651,6 +3662,7 @@ async function pinNote(id) {
 
   localStorage.setItem("notes", JSON.stringify(notes));
   await sendExtra();
+  getNotes();
 }
 
 async function delNote(id) {
@@ -4092,35 +4104,37 @@ function getNotes() {
   notes.forEach((note) => {
     const urgency = deadlineUrgency(note.deadline);
     const prio = PRIORITY_META[note.priority] || PRIORITY_META.normal;
+    const isPinned = note.pin || localStorage.getItem("pin-note") === String(note.uuid);
     let clasS = `note note-v2 ${prio.className}`;
-    if (note.pin || localStorage.getItem("pin-note") === String(note.uuid)) clasS += " pinned";
+    if (isPinned) clasS += " pinned";
     if (note.done) clasS += " is-done";
     if (urgency) clasS += ` deadline-${urgency}`;
 
     const pairBtn = note.pairLink
-      ? `<button type="button" class="note-btn-jump" onclick="jumpToPairLink('${note.uuid}')" title="К паре"><svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-north_east"/></svg></button>`
+      ? `<button type="button" class="note-btn-jump" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')" title="К паре"><svg class="mi" width="14" height="14"><use href="#mi-north_east"/></svg></button>`
       : "";
 
     notesArea.insertAdjacentHTML(
       "beforeend",
       `<article id="note-${escapeAttr(note.uuid)}" class="${clasS}">
         <div class="note-top">
-          <button type="button" class="note-check" onclick="toggleNoteDone('${escapeAttr(note.uuid)}')" aria-label="Готово">${note.done ? '<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-check"/></svg>' : ""}</button>
+          <button type="button" class="note-check" onclick="toggleNoteDone('${escapeAttr(note.uuid)}')" aria-label="Готово">${note.done ? '<svg class="mi" width="14" height="14"><use href="#mi-check"/></svg>' : ""}</button>
           <h2>${escapeHtml(note.title)}</h2>
+          ${isPinned ? '<svg class="mi note-pin-flag" width="15" height="15" aria-hidden="true"><use href="#mi-push_pin"/></svg>' : ""}
           <span class="note-prio-chip">${prio.label}</span>
         </div>
         <div class="note-meta">
-          <time>${escapeHtml(note.time)}</time>
+          <time><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-calendar"/></svg> ${escapeHtml(note.time)}</time>
           <span class="note-subject">${escapeHtml(note.subject)}</span>
           ${note.deadline ? `<span class="note-deadline" data-urgency="${urgency || ""}"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-hourglass_top"/></svg> ${escapeHtml(formatDeadline(note.deadline))}</span>` : ""}
         </div>
         ${note.pairLink ? `<button type="button" class="note-pair-chip" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-link"/></svg> ${escapeHtml(note.pairLink.dayOfWeek || "")} · ${escapeHtml(note.pairLink.subject || "")}</button>` : ""}
         ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
         <div class="note-btn-container">
-          <button class="note-btn-edit" onclick="editNote('${escapeAttr(note.uuid)}')" aria-label="Редактировать"><svg class="mi" width="14" height="14"><use href="#mi-edit"/></svg></button>
-          <button class="note-btn-pin" onclick="pinNote('${escapeAttr(note.uuid)}')" aria-label="Закрепить"><svg class="mi" width="14" height="14"><use href="#mi-push_pin"/></svg></button>
+          <button class="note-btn-edit" onclick="editNote('${escapeAttr(note.uuid)}')" aria-label="Редактировать"><svg class="mi" width="15" height="15"><use href="#mi-edit"/></svg></button>
+          <button class="note-btn-pin" onclick="pinNote('${escapeAttr(note.uuid)}')" aria-label="Закрепить"><svg class="mi" width="15" height="15"><use href="#mi-push_pin"/></svg></button>
           ${pairBtn}
-          <button class="note-btn-del" onclick="delNote('${escapeAttr(note.uuid)}')" aria-label="Удалить"><svg class="mi" width="14" height="14"><use href="#mi-delete"/></svg></button>
+          <button class="note-btn-del" onclick="delNote('${escapeAttr(note.uuid)}')" aria-label="Удалить"><svg class="mi" width="15" height="15"><use href="#mi-delete"/></svg></button>
         </div>
       </article>`,
     );
@@ -7069,25 +7083,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // кнопки шаринга в календаре появляются при каждом открытии
   document.getElementById("calendar-btn")?.addEventListener("click", () => {
     setTimeout(injectShareButtons, 50);
-  });
-
-  // чистим UI привязки пары при открытии новой заметки
-  document.getElementById("note-add-btn")?.addEventListener("click", () => {
-    const btn = document.getElementById("note-add-btn");
-    if (btn?.classList.contains("opened")) return;
-    setTimeout(() => {
-      const editing =
-        document.querySelector("#event-input .event-header h4")?.textContent || "";
-      if (editing.includes("Редактирование")) return;
-      if (!sessionStorage.getItem("pendingPairLink")) {
-        const pairSummary = document.getElementById("pair-link-summary");
-        if (pairSummary && pairSummary.dataset.linked !== "1") {
-          pairSummary.textContent = "Не привязана — удержите пару в расписании";
-          pairSummary.dataset.linked = "0";
-        }
-      }
-      syncPairLinkClear();
-    }, 0);
   });
 
   document.getElementById("clear-pair-link")?.addEventListener("click", () => {
