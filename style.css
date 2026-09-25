@@ -1684,7 +1684,10 @@ h6.skeleton { opacity: .4; }
 }
 
 .bottom-menu .bottom-btn {
-    padding: 9px 16px;
+    flex: 1 1 0;
+    display: grid;
+    place-items: center;
+    padding: 9px 0;
     color: inherit;
 }
 
