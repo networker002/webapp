@@ -1593,6 +1593,9 @@ function drawScheduleCard({ title, subtitle, weekLabel, lessons, days, mode }) {
   const subjectFont = "700 34px system-ui, -apple-system, sans-serif";
   const metaFont = "400 24px system-ui, -apple-system, sans-serif";
   const measureRow = (lesson) => {
+    // шрифт обязан быть установлен до wrapCardText: первая строка иначе
+    // меряется дефолтным 10px и перенос не срабатывает
+    measure.font = subjectFont;
     const lines = wrapCardText(measure, lesson.subject, maxTextW, 3);
     measure.font = metaFont;
     const meta = fitCardText(
@@ -1600,7 +1603,6 @@ function drawScheduleCard({ title, subtitle, weekLabel, lessons, days, mode }) {
       [lesson.room && `ауд. ${lesson.room}`, lesson.teacher].filter(Boolean).join(" · "),
       maxTextW,
     );
-    measure.font = subjectFont;
     // 40 = отступ времени, 84 = базовая линия предмета, +40 за строку,
     // 38 = мета-строка, 18 = нижний паддинг карточки
     const height = 84 + (lines.length - 1) * 40 + 38 + 18;
@@ -1991,6 +1993,40 @@ function buildShareWeekCard(weekIdx, monday) {
 }
 
 /* ── Share sheet: UI ── */
+/* Драг-скролл мышью: на ПК полоса дней листается только Shift+scroll */
+function enableDragScroll(el) {
+  if (!el) return;
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startScroll = 0;
+  el.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse") return;
+    dragging = true;
+    moved = false;
+    startX = e.clientX;
+    startScroll = el.scrollLeft;
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) > 4) {
+      moved = true;
+      el.classList.add("is-drag-scroll");
+    }
+    if (moved) el.scrollLeft = startScroll - dx;
+  });
+  window.addEventListener("pointerup", () => {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove("is-drag-scroll");
+    if (moved) {
+      // перетаскивание не должно выбирать день: гасим клик после драга
+      el.addEventListener("click", (c) => c.stopPropagation(), { capture: true, once: true });
+    }
+  });
+}
+
 function ensureShareSheet() {
   if (document.getElementById("share-sheet-modal")) return;
   const sheet = document.createElement("div");
@@ -2048,6 +2084,7 @@ function ensureShareSheet() {
     e.preventDefault();
     if (shareState.lastUrl) openBotChat(shareState.lastUrl);
   });
+  enableDragScroll(sheet.querySelector("#share-day-chips"));
 }
 
 function activeDayIndex() {

@@ -3139,14 +3139,22 @@ header h1 svg,
   box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
 }
 .share-sheet-modal.is-open .share-sheet { transform: translateY(0); }
+/* глобальный header делает шапки колонкой — тут заголовок по центру,
+   крестик абсолютом в правый верхний угол */
 .share-sheet header {
+  position: relative;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 14px;
 }
 .share-sheet header h3 { margin: 0; font-size: 18px; }
 #share-sheet-close {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
   background: var(--tg-theme-secondary-bg-color, #242F43);
   color: var(--tg-theme-hint-color);
@@ -3191,7 +3199,10 @@ header h1 svg,
   padding-bottom: 2px;
   margin-bottom: 12px;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
 }
+.share-day-chips.is-drag-scroll { cursor: grabbing; }
 .share-day-chips::-webkit-scrollbar { display: none; }
 .share-day-chips[hidden] { display: none !important; }
 .share-day-chip {
@@ -3213,7 +3224,9 @@ header h1 svg,
 .share-day-chip span {
   font-size: 12px;
   color: var(--tg-theme-hint-color);
-  font-variant-numeric: tabular-nums;
+  /* lining-nums обязателен: это правило целиком замещает глобальный
+     font-variant-numeric, без него даты рендерятся нелинейными цифрами */
+  font-variant-numeric: lining-nums tabular-nums;
 }
 .share-day-chip.is-active {
   background: var(--tg-theme-button-color, var(--accent));
@@ -3311,7 +3324,8 @@ header h1 svg,
 /* reset !important-паддингов/фона глобального header (стр. 107) для шапок шитов */
 .override-sheet header,
 .share-sheet header {
-  position: static;
+  /* relative, чтобы крестик share-шита позиционировался от шапки */
+  position: relative;
   z-index: auto;
   background: none;
   border-radius: 0;
