@@ -1893,6 +1893,9 @@ h6.skeleton { opacity: .4; }
 
 .streak-fire {
     animation: streak-flicker 1.6s ease-in-out infinite;
+    /* чисто декоративная иконка: не ловит тапы и не подсвечивается в вебвью */
+    pointer-events: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes streak-flicker {
