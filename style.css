@@ -1213,6 +1213,23 @@ body.pref-breaks-off .break-chip { display: none !important; }
 }
 .assistant>div:hover { scale: 1.2; }
 
+/* Реплики сыграли один раз — Starry выглядывает из-за правого края вполсилы,
+   оставаясь кликабельным для ИИ-чата; на ховер-устройствах ховером возвращается */
+.assistant.starry-away > div {
+    bottom: 4em !important;
+    right: -1.3em !important;
+    transform: rotate(-10deg);
+    opacity: .5;
+}
+@media (hover: hover) {
+    .assistant.starry-away > div:hover {
+        right: 1.5em;
+        bottom: 4em;
+        transform: none;
+        opacity: 1;
+    }
+}
+
 .assistant-say {
     position: fixed;
     right: calc(2em + 70px);

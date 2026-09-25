@@ -54,30 +54,43 @@ const btnRevMapping = {
 };
 
 message.style.display = "none";
-const initialDelay = setTimeout(function () {
-  message.style.display = "block";
-  for (let m = 0; m < msgS.length; m++) {
-    let t = setTimeout(function () {
-      message.innerHTML = msgS[m];
-    }, 5000 * m);
-    timeouts.push(t);
-  }
-}, message_start);
 
-timeouts.push(initialDelay);
+// реплики при входе проигрываются один раз; после них (и на всех следующих
+// входах) Starry выглядывает из-за правого края вполсилы, оставаясь кликабельным
+const STARRY_INTRO_KEY = "starryIntroPlayed_v1";
+const starryTuckAway = () =>
+  document.querySelector(".assistant")?.classList.add("starry-away");
+
+if (localStorage.getItem(STARRY_INTRO_KEY) === "1") {
+  starryTuckAway();
+} else {
+  const initialDelay = setTimeout(function () {
+    message.style.display = "block";
+    for (let m = 0; m < msgS.length; m++) {
+      let t = setTimeout(function () {
+        message.innerHTML = msgS[m];
+      }, 5000 * m);
+      timeouts.push(t);
+    }
+  }, message_start);
+
+  timeouts.push(initialDelay);
+  // +2с после скрытия последней реплики; внутри timeouts, чтобы stopAll()
+  // гасил и реплики, и прятанье (недоигранная серия повторится при следующем входе)
+  timeouts.push(
+    setTimeout(() => {
+      message.style.display = "none";
+      localStorage.setItem(STARRY_INTRO_KEY, "1");
+      starryTuckAway();
+    }, 5000 * (msgS.length + 1) + 2000),
+  );
+}
 
 function stopAll() {
   timeouts.forEach((t) => clearTimeout(t));
   message.style.display = "none";
   //console.log("Цикл остановлен");
 }
-
-setTimeout(
-  () => {
-    message.style.display = "none";
-  },
-  5000 * (msgS.length + 1),
-);
 
 //const btnAI = document.getElementById("activate-ai-a");
 const assistantBlock = document.querySelector(".assistant");
