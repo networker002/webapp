@@ -1222,9 +1222,11 @@ body.pref-breaks-off .break-chip { display: none !important; }
     opacity: .5;
 }
 @media (hover: hover) {
+    /* !important нужен, чтобы перебить !important-позицию правила прятанья
+       (при равной важности wins более специфичный :hover-селектор) */
     .assistant.starry-away > div:hover {
-        right: 1.5em;
-        bottom: 4em;
+        right: 1.5em !important;
+        bottom: 4em !important;
         transform: none;
         opacity: 1;
     }
