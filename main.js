@@ -5012,18 +5012,6 @@ document.querySelector(".user-appear").addEventListener("click", openAppearanceP
 
 
 function addToProfile() {
-  document.querySelectorAll(".user-name").forEach((e) => {
-    const firstName = tg?.initDataUnsafe?.user?.first_name || "";
-    const lastName = tg?.initDataUnsafe?.user?.last_name || "";
-    e.textContent = `${firstName} ${lastName}`.trim();
-    if (tg?.initDataUnsafe?.user?.is_premium) {
-      e.insertAdjacentHTML("beforeend", ' <svg class="mi" width="13" height="13" style="vertical-align:-1px"><use href="#mi-workspace_premium"/></svg>');
-    }
-  });
-  document.querySelectorAll(".user-username").forEach((e) => {
-    e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}`;
-  });
-
   const lessonsAllCountEl = document.getElementById("lessons-all-c");
   if (lessonsAllCountEl) {
     let elems = 0;
