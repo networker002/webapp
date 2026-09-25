@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Расписание 📅</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=20260922" />
+    <link rel="stylesheet" href="style.css?v=20260926" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12.2.0/swiper-bundle.min.css" integrity="sha384-+eoVPirEHy8XSrf7sRozx+2OTKCWm1qfVFWnQ7qiXW6vAb+GUXRw4gq7sU+hq6HG" crossorigin="anonymous" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@12.2.0/swiper-bundle.min.js" integrity="sha384-TmUUNA9gRm9TspAqMh20CdxlcwkNFW3UyIOibSljonhpJ1UfGenJDyQvO/EbWwpW" crossorigin="anonymous" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5.5.2" integrity="sha384-oZxUObEswsFY+jlvIkPj4iWF3WW1I6vMNyzoakb3v99l1DtAoF/VyBTrNKtSCVoa" crossorigin="anonymous" defer></script>
@@ -220,7 +220,7 @@
         </button>
         </div>
 
-    <script src="main.js?v=20260922" defer></script>
+    <script src="main.js?v=20260926" defer></script>
 
     <div class="screen-to-show" id="summary-screen">
         <div class="summary-header"><h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 15.6l3.2-4.6h-2.85l2-7H9v8h3zm5.375-4.25l-6 8.675q-.15.225-.387.3t-.463 0t-.375-.262T10 19.6V14H9q-.825 0-1.412-.587T7 12V4q0-.825.588-1.412T9 2h5.85q.8 0 1.288.625T16.425 4L15 9h1.125q.9 0 1.338.8t-.088 1.55M12 12H9z"/></svg> Мой день</h1></div>
@@ -230,15 +230,21 @@
     </div>
 
     <div class="screen-to-show" id="profile-screen">
-        <h1><svg class="mi" width="32" height="32" aria-hidden="true"><use href="#mi-person"/></svg> Профиль</h1>
+        <div class="profile-header">
+            <h1><svg class="mi" width="32" height="32" aria-hidden="true"><use href="#mi-person"/></svg> Профиль</h1>
+            <div class="cont-profile"><img alt="" width="44" height="44" hidden><div class="avatar-fallback" hidden></div><div><div class="user-name"></div><div class="user-username"></div></div></div>
+        </div>
 
         <div class="profile-area">
-            <div class="cont-profile"><img alt="" width="60" height="60" hidden><div class="avatar-fallback" hidden></div><div><div class="user-name"></div><div class="user-username"></div></div></div>
             <section>
                 <div class="user-lessons"><p>Пар в неделю</p><p id="lessons-all-c"></p><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="profile-stat-a"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20V4q0-.825.588-1.412T5 2h12q.825 0 1.413.588T19 4v6q0 .425-.288.713T18 11t-.712-.288T17 10V4h-5v6.125q0 .275-.25.425t-.5 0L9.5 9.5l-1.75 1.05q-.25.15-.5 0T7 10.125V4H5v16h5q.425 0 .713.288T11 21t-.288.713T10 22zm9.463-.462Q13 20.075 13 18t1.463-3.537T18 13t3.538 1.463T23 18t-1.463 3.538T18 23t-3.537-1.463m3.062-1.512l2.55-1.6q.25-.15.25-.425t-.25-.425l-2.55-1.6q-.25-.15-.512-.012t-.263.437v3.2q0 .3.263.438t.512-.013M7.25 4h5zM5 20V4v6.563V9.5v1.063V4z"/></svg></div>
+                <div class="user-streak">
+                    <p>Серия</p>
+                    <p class="streak-value"><span id="streak-count"></span> <span class="streak-unit" id="streak-unit"></span></p>
+                    <p class="streak-best">Рекорд: <span id="streak-best"></span></p>
+                    <svg class="mi streak-fire" width="32" height="32" aria-hidden="true"><use href="#mi-local_fire_department"/></svg>
+                </div>
             </section>
-            <div class="user-id"><b>TG ID: </b><span></span><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-content_copy"/></svg></div>
-            <div class="user-group"><b>Группа: </b><span></span><svg class="mi" width="18" height="18" aria-hidden="true"><use href="#mi-content_copy"/></svg></div>
             <div class="user-settings">
                 <div class="user-notifications">
                     <div><svg class="user-notify-text-svg" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19q-.425 0-.712-.288T4 18t.288-.712T5 17h1v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2t1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h1q.425 0 .713.288T20 18t-.288.713T19 19zm7 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-4-5h8v-7q0-1.65-1.175-2.825T12 6T9.175 7.175T8 10z"/></svg> <p>Уведомления</p></div>

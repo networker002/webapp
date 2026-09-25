@@ -1734,16 +1734,21 @@ h6.skeleton { opacity: .4; }
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
-    
     gap: 15px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-inline: 16px;
+    padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
 
     h1 {
         display: flex;
-        justify-content: center;
-        text-align: center;
+        align-items: center;
         gap: 10px;
-        padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
     }
 }
 
@@ -1795,31 +1800,39 @@ h6.skeleton { opacity: .4; }
 }
 
 .cont-profile {
-    background-color: rgb(from var(--accent) r g b / .2) !important;
-    border: 2px solid rgb(from var(--accent) r g b / .6) !important;
-    padding: 5px !important;
+    background-color: rgb(from var(--accent) r g b / .2);
+    border: 2px solid rgb(from var(--accent) r g b / .6);
+    padding: 5px;
+    padding-inline-end: 14px;
     display: flex;
-    border-radius: 55px !important;
-    justify-content: space-around;
+    border-radius: 999px;
     align-items: center;
-    justify-content: start;
-    gap: 15px;
+    gap: 10px;
+    flex: none;
+    max-width: 62%;
+    min-width: 0;
 
     img {
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         object-fit: cover;
         flex: none;
     }
+
+    > div {
+        min-width: 0;
+    }
 }
 
 .avatar-fallback {
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: rgb(from var(--accent) r g b / .3);
     color: var(--over-color);
     font-weight: 900;
-    font-size: 22px;
+    font-size: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1830,27 +1843,58 @@ h6.skeleton { opacity: .4; }
 
 .user-name {
     font-weight: 900;
-    font-size: larger;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user-username {
-    font-size: small;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.user-lessons {
-    width: calc((100% - 30px) / 2 - 15px);
-    border:2px solid rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.8);
-    background: rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.7) !important;
+.user-lessons, .user-streak {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    /*padding: 5px 10px !important;*/
 
     p {
         align-self: flex-start;
         font-size: small;
     }
+}
 
+/* спан-значения не должны ловить легаси .profile-area>section>div span (padding + letter-spacing) */
+.profile-area .user-streak span {
+    padding-left: 0;
+    letter-spacing: normal;
+}
+
+.profile-area .user-streak .streak-value {
+    font-size: x-large;
+}
+
+.streak-unit {
+    font-size: small;
+    color: var(--tg-theme-hint-color);
+}
+
+.streak-best {
+    color: var(--tg-theme-hint-color);
+}
+
+.streak-fire {
+    animation: streak-flicker 1.6s ease-in-out infinite;
+}
+
+@keyframes streak-flicker {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
 }
 
 #lessons-all-c {
@@ -1890,10 +1934,10 @@ h6.skeleton { opacity: .4; }
 }
 
 /* Material-иконки профиля: единый размер вместо legacy scale .7 + padding */
-#profile-screen h1 { align-items: center; }
 #profile-screen h1 .mi { width: 26px; height: 26px; }
-/* инлайновые svg карточки могут быть без класса .mi — нормализуем */
-.profile-area .user-lessons svg {
+/* инлайновые svg карточек могут быть без класса .mi — нормализуем */
+.profile-area .user-lessons svg,
+.profile-area .user-streak svg {
   scale: none;
   padding: 0;
   width: 26px;
@@ -1901,16 +1945,6 @@ h6.skeleton { opacity: .4; }
   right: 12px;
   top: calc(50% - 13px);
   color: var(--tg-theme-hint-color);
-}
-.user-id svg.mi, .user-group svg.mi {
-  scale: none;
-  padding: 0;
-  width: 20px;
-  height: 20px;
-  right: 15px;
-  top: calc(50% - 10px);
-  color: var(--tg-theme-hint-color);
-  cursor: pointer;
 }
 .user-settings svg.mi, .user-settings .user-notify-text-svg, .user-settings .user-theme-text-svg { scale: none; padding: 0; width: 24px; height: 24px; }
 .sett-app svg.mi, #robot-svg-settings svg.mi { width: 24px; height: 24px; }
@@ -3012,35 +3046,6 @@ h6.skeleton { opacity: .4; }
   50% { box-shadow: 0 0 0 8px rgba(255, 160, 40, 0); }
 }
 .go-widget.is-done .go-room { font-size: 28px; }
-
-/* ─── Серия дней (streak) ─── */
-.streak-chip {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: none;
-  border-radius: 999px;
-  padding: 6px 10px;
-  background: color-mix(in srgb, #ff6a00 22%, var(--tg-theme-secondary-bg-color, #242F43));
-  color: var(--tg-theme-text-color);
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-.streak-chip[hidden] { display: none !important; }
-/* svg внутри карточки профиля ловит легаси .profile-area>div svg
-   (absolute right:0 + scale .7) — сбрасываем, чтобы огонь стоял в пилюле */
-.streak-chip .streak-fire { display: inline-flex; align-items: center; }
-.streak-chip svg.mi { position: static; scale: none; padding: 0; width: 15px; height: 15px; display: block; }
-/* легаси .profile-area>div span даёт padding-left:5px + letter-spacing —
-   раздувает пилюлю изнутри слева и разрежает «дня» */
-.profile-area .streak-chip span { padding-left: 0; letter-spacing: normal; }
-.streak-fire { animation: streak-flicker 1.6s ease-in-out infinite; }
-@keyframes streak-flicker {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-}
 
 /* ─── Иконочные кнопки «Поделиться» (главный экран + «Мой день») ─── */
 #main-share-btn,

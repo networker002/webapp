@@ -4694,11 +4694,11 @@ function bumpStreak(reason = "open") {
   const data = readStreak();
   const today = todayKey();
   if (data.lastOpen === today && reason === "open") {
-    renderStreakChip();
+    renderStreakCard();
     return data;
   }
   if (data.lastOpen === today && reason === "done" && data.doneToday) {
-    renderStreakChip();
+    renderStreakCard();
     return data;
   }
 
@@ -4719,7 +4719,7 @@ function bumpStreak(reason = "open") {
   data.best = Math.max(data.best || 0, data.count || 0);
   writeStreak(data);
   syncStreakRemote(data).catch(() => {});
-  renderStreakChip();
+  renderStreakCard();
   if ((data.count || 0) >= 3 && reason === "open") {
     toast(`Серия ${data.count} ${pluralDays(data.count)} 🔥`);
     safeHaptic("success");
@@ -4776,25 +4776,15 @@ function pluralDays(n) {
   return "дней";
 }
 
-function renderStreakChip() {
-  let chip = document.getElementById("streak-chip");
-  const profile = document.querySelector(".cont-profile");
-  if (!profile) return;
-  if (!chip) {
-    chip = document.createElement("button");
-    chip.type = "button";
-    chip.id = "streak-chip";
-    chip.className = "streak-chip";
-    profile.appendChild(chip);
-    chip.addEventListener("click", () => {
-      const s = readStreak();
-      toast(`Серия: ${s.count || 0} · Рекорд: ${s.best || 0}`);
-      safeImpact("soft");
-    });
-  }
+function renderStreakCard() {
+  const countEl = document.getElementById("streak-count");
+  if (!countEl) return;
   const fresh = readStreak();
-  chip.innerHTML = `<span class="streak-fire" aria-hidden="true"><svg class="mi" width="15" height="15" style="vertical-align:-2px"><use href="#mi-local_fire_department"/></svg></span><strong>${fresh.count || 0}</strong><span>${pluralDays(fresh.count || 0)}</span>`;
-  chip.hidden = !(fresh.count > 0);
+  const count = fresh.count || 0;
+  const best = Math.max(fresh.best || 0, count);
+  countEl.textContent = count;
+  document.getElementById("streak-unit").textContent = pluralDays(count);
+  document.getElementById("streak-best").textContent = `${best} ${pluralDays(best)}`;
 }
 
 /* ── Виджет «Куда идти» ── */
@@ -5021,27 +5011,7 @@ document.querySelector(".user-appear").addEventListener("click", openAppearanceP
 
 
 
-function alertToCopy() {
-   var al = document.getElementById("fast-alert");
-    if (al) {
-      const oldctx = al.textContent;
-      al.textContent = "Скопировано";
-      al.style.display = "flex";
-      al.style.animation = "flyUP 2s normal";
-      setTimeout(function () {
-        al.style.display = "none";
-        al.textContent = oldctx;
-      }, 1900);
-    }
-}
-
 function addToProfile() {
-  document.querySelectorAll(".user-id span").forEach((e) => {
-    e.textContent = tg?.initDataUnsafe?.user?.id ?? "";
-  });
-  document.querySelectorAll(".user-group span").forEach((e) => {
-    e.textContent = localStorage.getItem("userGroup") || "Не указана";
-  });
   document.querySelectorAll(".user-name").forEach((e) => {
     const firstName = tg?.initDataUnsafe?.user?.first_name || "";
     const lastName = tg?.initDataUnsafe?.user?.last_name || "";
@@ -5052,14 +5022,6 @@ function addToProfile() {
   });
   document.querySelectorAll(".user-username").forEach((e) => {
     e.textContent = `@${tg?.initDataUnsafe?.user?.username || "anonim"}`;
-  });
-  document.querySelectorAll(".profile-area svg").forEach((c) => {
-    c.addEventListener("click", () => {
-      const targetText = c.parentElement?.querySelector("span")?.textContent;
-      if (targetText && navigator?.clipboard) {
-        navigator.clipboard.writeText(targetText);
-      }
-    });
   });
 
   const lessonsAllCountEl = document.getElementById("lessons-all-c");
@@ -5783,7 +5745,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 50);
   });
   document.getElementById("profile-show")?.addEventListener("click", () => {
-    setTimeout(renderStreakChip, 80);
+    setTimeout(renderStreakCard, 80);
   });
 
   // Premium-пресеты возвращаются при повторном открытии настроек
