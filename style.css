@@ -154,7 +154,7 @@ header {
 
 header h1 {
     display: flex;
-    gap: .2em;
+    gap: 10px;
     
     svg {
         align-self: center;
@@ -1928,8 +1928,14 @@ h6.skeleton { opacity: .4; }
      transition: transform .2s ease-in-out, filter .2s ease, opacity .2s ease;
 }
 
-/* Material-иконки профиля: единый размер вместо legacy scale .7 + padding */
-#profile-screen h1 .mi { width: 26px; height: 26px; }
+/* иконки заголовков всех трёх вкладок — единый размер (26px при тексте 32px) */
+header h1 svg,
+.summary-header h1 svg,
+#profile-screen h1 .mi {
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
 /* инлайновые svg карточек могут быть без класса .mi — нормализуем */
 .profile-area .user-lessons svg,
 .profile-area .user-streak svg {
