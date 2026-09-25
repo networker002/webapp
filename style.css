@@ -35,7 +35,6 @@
     --day-card-bg: var(--tg-theme-secondary-bg-color);
     --menu-liq-glass: blur(10px);
     --chat-bg: linear-gradient(to bottom, #000000a9, #0000008f);
-    --event-color: linear-gradient(90deg, var(--tg-theme-accent-text-color), var(--tg-theme-text-color));
     --days-selected-filter: none;
     --lst-btn-color: var(--tg-theme-button-color);
     --lst-btn-filter: none;
@@ -51,12 +50,6 @@
     --room-letter-sp: 1px;
     --room-f-size: 16px;
     --tname-f-size: 12px;
-
-    --note-bg: linear-gradient(20deg, rgb(from var(--tg-theme-hint-color) r g b / 0.5), rgb(from var(--tg-theme-hint-color) r g b / 0.2));
-    --note-title: var(--tg-theme-section-header-text-color);
-    --note-main: var(--tg-theme-text-color);
-    --note-time: var(--tg-theme-subtitle-text-color);
-    --note-lesson: var(--tg-theme-link-color);
 }
 
 @font-face {
@@ -287,29 +280,8 @@ header.scrolling {
     box-shadow: 0 0 0 transparent;
 }
 
-/* ─── Бейджи заметок и локальные правки на парах ─── */
+/* ─── Локальные правки на парах ─── */
 .lesson-row { position: relative; }
-.lesson-note-dot {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: var(--tg-theme-button-color, var(--accent));
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  animation: pop-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
-}
-.lesson-note-dot.is-urgent {
-  background: #ff5a3a;
-  box-shadow: 0 0 0 4px rgba(255, 90, 58, 0.25);
-}
 .override-badge {
   position: absolute;
   bottom: 8px;
@@ -325,17 +297,6 @@ header.scrolling {
 .lesson-row.is-overridden {
   outline: 1px dashed rgba(255, 255, 255, 0.2);
   outline-offset: -4px;
-}
-.pair-flash {
-  animation: pair-flash 1.2s ease;
-}
-@keyframes pair-flash {
-  0%, 100% { box-shadow: none; }
-  30% { box-shadow: 0 0 0 3px var(--tg-theme-button-color, var(--accent)); }
-}
-@keyframes pop-in {
-  from { transform: scale(0.4); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
 }
 
 /* ─── Перемены между парами ─── */
@@ -1494,200 +1455,6 @@ h6.skeleton { opacity: .4; }
     opacity: .7;
 }
 
-#event-input {
-    /* верхняя посадка модалки; max-height ниже считается от неё,
-       иначе на телефонах с инсертом шапки Telegram нижний край
-       (и sticky-кнопка «Сохранить») уезжает за экран и не пролистывается */
-    --event-input-top: calc(
-        max(8px, var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)) + 4px
-    );
-    position: fixed;
-    top: var(--event-input-top);
-    left: 50%;
-    box-sizing: border-box;
-    transform: translate(-50%, 0);
-    background: none;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    backdrop-filter: blur(16px);
-    padding: 20px 18px;
-    width: 90%;
-    max-width: 420px;
-    z-index: 2001;
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
-    display: none;
-    flex-direction: column;
-    gap: 11px;
-    max-height: calc(
-        min(var(--tg-viewport-stable-height, 100dvh), 100dvh) - var(--event-input-top) - 16px
-    );
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding-top: calc(
-        max(var(--tg-content-safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px)) + 12px
-    );
-    padding-bottom: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-}
-#event-input h4 {
-    color: var(--tg-theme-text-color);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    margin: 0;
-    text-align: center;
-}
-#event-input>label, #event-input>div:not(.btbtns) {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-#event-input span {
-    position: static;
-    color: var(--tg-theme-accent-text-color);
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0;
-}
-#event-input input, #event-input textarea {
-    box-sizing: border-box;
-    width: 100%;
-    margin-top: 0;
-    padding: .85em 1em;
-    border-radius: 16px;
-    border: 1px solid rgb(from var(--tg-theme-hint-color) r g b / .25);
-    background: rgb(from var(--tg-theme-secondary-bg-color) r g b / .55);
-    color: var(--tg-theme-text-color);
-    font-size: 1.1em;
-    font-family: "DejaVuSans", sans-serif;
-    outline: none;
-    transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
-}
-#event-input input:focus, #event-input textarea:focus {
-    border-color: rgb(from var(--accent) r g b / .8);
-    box-shadow: 0 0 0 3px rgb(from var(--accent) r g b / .18);
-}
-#event-input input::placeholder, #event-input textarea::placeholder {
-    color: var(--tg-theme-hint-color);
-}
-#event-input textarea { min-height: 64px; resize: vertical; max-height: 120px; }
-#event-input br { display: none; }
-
-.btbtns {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 12px;
-    position: sticky;
-    bottom: 0;
-    z-index: 3;
-    padding: 10px 0 calc(12px + max(var(--tg-safe-area-inset-bottom, 0px), var(--tg-content-safe-area-inset-bottom, 0px)));
-    background: linear-gradient(to top, rgb(from var(--tg-theme-bg-color) r g b / .96) 55%, transparent);
-}
-#event-input button {
-    padding: .72em .9em;
-    border-radius: 2em;
-    border: none;
-    color: var(--tg-theme-button-text-color);
-    background: var(--tg-theme-button-color);
-    font-size: 1.1em;
-    font-weight: 600;
-    width: 100%;
-    outline: none;
-    cursor: pointer;
-    transition: background .3s ease, transform .15s ease;
-    font-family: "DejaVuSans", sans-serif;
-    box-sizing: border-box;
-    margin-top: 0;
-}
-#event-input button:active { transform: translateY(2px) scale(.99); }
-/* контент модалки не сжимается — скроллится целиком */
-#event-input > * { flex-shrink: 0; }
-#event-input .deadline-presets { display: flex; flex-wrap: wrap; gap: 6px; }
-#event-input .deadline-presets button {
-    width: auto;
-    padding: .48em .75em;
-    font-size: .85em;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    line-height: 1.2;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--tg-theme-hint-color);
-    cursor: pointer;
-}
-#event-input .prio-options { display: flex; flex-wrap: wrap; gap: 6px; }
-#event-input .prio-opt {
-    width: auto;
-    padding: .48em .75em;
-    font-size: .85em;
-    font-weight: 600;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    line-height: 1.2;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--tg-theme-hint-color);
-    cursor: pointer;
-    transition: background .25s ease, border-color .25s ease, color .25s ease;
-}
-#event-input .prio-opt.is-active {
-    background: rgb(from var(--accent) r g b / .22);
-    border-color: rgb(from var(--accent) r g b / .6);
-    color: var(--tg-theme-text-color);
-}
-#event-input .pair-link-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 10px 12px;
-}
-#event-input .pair-link-box > svg { color: var(--tg-theme-hint-color); }
-#event-input .pair-link-box #pair-link-summary {
-    flex: 1;
-    min-width: 0;
-    padding: .85em 1em;
-    border-radius: 16px;
-    border: 1px dashed rgb(from var(--tg-theme-hint-color) r g b / .4);
-    background: rgb(from var(--tg-theme-secondary-bg-color) r g b / .35);
-    color: var(--tg-theme-hint-color);
-    font-size: 1em;
-    line-height: 1.35;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-#event-input .pair-link-box #pair-link-summary[data-linked="1"] {
-    border-style: solid;
-    color: var(--tg-theme-text-color);
-    font-weight: 600;
-}
-/* крестик отвязки пары: компактный и скрытый без привязки */
-#event-input .pair-link-box #clear-pair-link {
-    flex: none;
-    width: 22px !important;
-    height: 22px !important;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    font-size: 14px !important;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgb(from var(--tg-theme-hint-color) r g b / .2);
-    color: var(--tg-theme-text-color);
-    cursor: pointer;
-}
-#clear-pair-link[hidden] { display: none !important; }
-/* у datetime-local тёмная системная пиктограмма календаря на тёмной теме */
-#deadline-event { color-scheme: dark; }
-
 #black-bg {
     position: fixed;
     top: 50%;
@@ -1726,41 +1493,6 @@ h6.skeleton { opacity: .4; }
     outline: none !important;
 }
 .chat-input button:active { transform: scale(.9); }
-
-.custom-events {
-    position: relative;
-    margin-top: .5em;
-    display: flex;
-    flex-direction: column;
-    gap: .25em;
-    padding: .2em;
-    padding-left: 1em;
-    background: linear-gradient(90deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .002));
-}
-.custom-events::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 100%;
-    width: .4em;
-    background: var(--room-green);
-    border-radius: .5em 0 0 .5em;
-}
-
-.del-event {
-    color: var(--tg-theme-destructive-text-color);
-    position: absolute;
-    right: 1em;
-    top: 50%;
-    transform: translateY(-50%);
-    border: none;
-    padding: 6px;
-    border-radius: 12px;
-    transition: all .05s;
-}
-.del-event:active { transform: translateY(-50%) rotate(30deg) scale(.95); }
 
 #canvas {
     position: absolute;
@@ -1813,7 +1545,6 @@ h6.skeleton { opacity: .4; }
     100% { filter: drop-shadow(0 0 4px #ffffff); }
 }
 @keyframes popupBtnText { 100% { opacity: 0; } }
-@keyframes popupBtnText2 { 100% { opacity: 0; transform: translate(-50%, 0%); } }
 
 .loading-error {
     padding-left: 1.5em;
@@ -1934,7 +1665,7 @@ h6.skeleton { opacity: .4; }
 
 #runner-menu {
     position: absolute;
-    width: calc(100% / 4);
+    width: calc(100% / 3);
     height: 100%;
     content: "";
     background: rgb( from var(--accent) r g b / 0.15);
@@ -1944,367 +1675,6 @@ h6.skeleton { opacity: .4; }
     z-index: -1 !important;
     transition: left 0.3s cubic-bezier(0.33, 1, 0.68, 1);
 }
-
-#notes-screen {
-    gap: 15px;
-
-    h1 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
-    }
-}
-
-.note.pinned {
-    border-color: rgb( from var(--accent) r g b / .65);
-    box-shadow: 0 0 18px rgb(from var(--accent) r g b / .25);
-    position: relative;
-    order: -999;
-    animation: start-pin .3s ease-in-out;
-}
-
-.note-pin-flag {
-    color: var(--tg-theme-accent-text-color, var(--accent));
-    flex: none;
-    margin-top: 2px;
-}
-
-@keyframes start-pin {
-    0% {
-        opacity: .5;
-        transform: scaleX(1.05) scaleY(0.95);
-    }
-}
-
-.notes-area {
-    display: flex;
-    flex-direction: column;
-    padding: 0 16px;
-    box-sizing: border-box;
-    /* 190px = заголовок + доска дедлайнов группы над областью (иначе пустая
-       страница заметок даёт ~60px холостого скролла); фолбэк 0px обязателен:
-       без Telegram-переменной весь calc схлопывается в auto */
-    min-height: calc(100vh - 190px - var(--tg-content-safe-area-inset-top, 0px)) !important;
-    height: fit-content !important;
-    width: calc(100% - 30px) !important;
-}
-
-.note {
-    padding: 15px;
-    border-radius: 20px;
-    background: linear-gradient(145deg, rgba(from var(--accent-bg) r g b / .9), rgba(from var(--accent) r g b / .22));
-    border: 1px solid rgba(255, 255, 255, .2);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 15px;
-
-    h1, h2, h3 {
-        color: var(--note-title);
-    }
-    p, span {
-        color: var(--note-main);
-    }
-
-    time {
-        color: var(--note-time);
-        letter-spacing: 1px;
-    }
-
-    lesson {
-        color: var(--note-lesson);
-        text-decoration: underline;
-
-        &:active {
-            text-decoration: none;
-        }
-    }
-
-    .note-btn-container {
-        margin-top: 10px;
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-    }
-
-    button {
-        outline: none;
-        border: none;
-        cursor: pointer;
-        font-family: "DejaVuSans", sans-serif;
-        transition: transform .1s ease-in-out, opacity .1s ease;
-    }
-
-    .note-btn-container button {
-        width: 34px;
-        height: 34px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.12);
-        color: var(--tg-theme-accent-text-color, var(--accent));
-    }
-
-    .note-btn-del {
-        background: rgb(from var(--tg-theme-destructive-text-color) r g b / .2);
-        color: var(--tg-theme-destructive-text-color);
-    }
-}
-
-/* ─── Заметки 2.0: тулбар фильтров, приоритеты, дедлайны ─── */
-.notes-toolbar {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 4px 2px 10px;
-  scrollbar-width: none;
-}
-.notes-toolbar::-webkit-scrollbar { display: none; }
-.notes-filter-btn {
-  flex: 0 0 auto;
-  border: none;
-  background: var(--accent-bg, var(--tg-theme-secondary-bg-color));
-  color: var(--tg-theme-hint-color);
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-.notes-filter-btn.is-active {
-  background: var(--tg-theme-button-color, var(--accent));
-  color: var(--tg-theme-button-text-color, #fff);
-}
-
-.note-v2 {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-.note-v2.is-done {
-  opacity: 0.55;
-}
-.note-v2.is-done h2 {
-  text-decoration: line-through;
-}
-.note-top {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-.note-top h2 {
-  flex: 1;
-  margin: 0;
-  font-size: 1.05rem;
-}
-.note .note-check {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--tg-theme-button-color, var(--accent));
-  background: transparent;
-  color: var(--tg-theme-button-color, var(--accent));
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.note-prio-chip {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 4px 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--tg-theme-hint-color);
-  white-space: nowrap;
-}
-.note-v2.prio-high .note-prio-chip,
-.note-v2.prio-urgent .note-prio-chip {
-  background: rgba(255, 120, 60, 0.2);
-  color: #ffb070;
-}
-.note-v2.prio-urgent {
-  box-shadow: inset 3px 0 0 #ff5a3a;
-}
-.note-v2.deadline-overdue {
-  box-shadow: inset 3px 0 0 #ff3b3b, 0 0 0 1px rgba(255, 60, 60, 0.25);
-  animation: note-urgent-pulse 1.6s ease-in-out infinite;
-}
-.note-v2.deadline-soon {
-  box-shadow: inset 3px 0 0 #ffaa2a;
-}
-@keyframes note-urgent-pulse {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.08); }
-}
-.note-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--tg-theme-hint-color);
-}
-.note-deadline {
-  font-weight: 700;
-}
-.note-pair-chip {
-  margin-top: 10px;
-  border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--tg-theme-accent-text-color, var(--accent));
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-  width: 100%;
-}
-.empty-note-v2 {
-  padding: 1.25em;
-  text-align: center;
-  border-radius: 20px;
-  background: rgba(from var(--accent-bg) r g b / .7);
-}
-.empty-note-v2 h2 { font-size: 1.1rem; }
-.empty-note-v2 p {
-  margin-top: .5em;
-  color: var(--tg-theme-hint-color);
-  font-size: .9em;
-}
-body.pref-compactNotes-on .note-v2 { padding: 10px !important; }
-body.pref-compactNotes-on .note-v2 .note-meta, body.pref-compactNotes-on .note-v2 .note-pair-chip { margin-top: 4px; }
-body.pref-largeNotes-on .note-v2 { font-size: 1.08em; }
-body.pref-hideDone-on .note-v2.is-done { display: none !important; }
-
-/* ─── Доска дедлайнов группы ─── */
-.group-board {
-  /* 31px = отступ колонки заметок (15px) + её padding (16px) — края доски
-     совпадают с краями карточек заметок под ней */
-  margin: 8px 31px 4px;
-  padding: 12px;
-  box-sizing: border-box;
-  align-self: stretch;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, .2);
-  background: var(--tg-theme-secondary-bg-color, #242F43);
-}
-.group-board-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.group-board-head p {
-  margin: 2px 0 0;
-  font-size: 11px;
-  color: var(--tg-theme-hint-color);
-}
-.group-board-head button {
-  border: none;
-  border-radius: 12px;
-  padding: 8px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  background: var(--tg-theme-button-color, var(--accent));
-  color: var(--tg-theme-button-text-color, #fff);
-  white-space: nowrap;
-  cursor: pointer;
-}
-.group-board-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 220px;
-  overflow: auto;
-}
-.group-board-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2px 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--tg-theme-bg-color, #171F30) 55%, transparent);
-}
-.group-board-item strong { font-size: 13px; }
-.group-board-item span {
-  grid-column: 1 / -1;
-  font-size: 11px;
-  color: var(--tg-theme-hint-color);
-}
-.group-board-item time {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--tg-theme-accent-text-color, var(--accent));
-}
-.group-board-item.prio-urgent {
-  box-shadow: inset 0 0 0 1px rgba(255, 80, 80, 0.45);
-}
-.group-board-empty {
-  margin: 0;
-  font-size: 12px;
-  color: var(--tg-theme-hint-color);
-}
-
-.note button:active {
-    transform: scaleX(1.1) scaleY(0.9);
-    opacity: .9;
-}
-
-#note-add-btn {
-    position: fixed;
-    bottom: 6em;
-    left: 50%;
-    transform: translateX(-50%) rotate(0deg) scale(1);
-    background: var(--tg-theme-button-color);
-    padding: 0;
-    border-radius: 50%;
-    outline: none;
-    border: none;
-    color: var(--tg-theme-button-text-color);
-    /* Жёсткие размеры: aspect-ratio поддерживают не все webview,
-       на старых движках кнопка растягивалась в эллипс */
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    max-width: 44px;
-    min-height: 44px;
-    max-height: 44px;
-    flex: 0 0 44px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform .45s ease-in-out, background .4s ease, bottom .5s ease-in-out, left .5s ease-in-out, scale .2s ease;
-    scale: 1.25;
-    z-index: 99999;
-}
-
-#note-add-btn svg {
-    width: 32px;
-    height: 32px;
-    flex: 0 0 auto;
-}
-
-#note-add-btn:active { scale: 1.12; }
-
-/* Открытая модалка: кнопка превращается в «×», уезжает в левый нижний угол
-   и уменьшается — иначе она лежит прямо на кнопке «Сохранить» */
-#note-add-btn.opened {
-    left: calc(10px + var(--tg-safe-area-inset-left, 0px));
-    bottom: calc(10px + var(--tg-safe-area-inset-bottom, 0px));
-    transform: translateX(0%) rotate(45deg) scale(1);
-    scale: .72;
-    background: rgb(from var(--tg-theme-hint-color) r g b / .7);
-}
-
-#note-add-btn.opened:active { scale: .64; }
 
 .screen-to-show {
     justify-content: center;
@@ -2422,7 +1792,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
     font-size: small;
 }
 
-.user-notes, .user-lessons {
+.user-lessons {
     width: calc((100% - 30px) / 2 - 15px);
     border:2px solid rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.8);
     background: rgb(from var(--tg-theme-secondary-bg-color) r g b / 0.7) !important;
@@ -2430,7 +1800,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
     flex-direction: column;
     justify-content: space-around;
     /*padding: 5px 10px !important;*/
-    
+
     p {
         align-self: flex-start;
         font-size: small;
@@ -2438,11 +1808,11 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
 
 }
 
-#notes-all-c, #lessons-all-c {
+#lessons-all-c {
     font-size: x-large;
 }
 
-.notes-profile-a {
+.profile-stat-a {
     pointer-events: none !important;
 }
 
@@ -2477,8 +1847,8 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
 /* Material-иконки профиля: единый размер вместо legacy scale .7 + padding */
 #profile-screen h1 { align-items: center; }
 #profile-screen h1 .mi { width: 26px; height: 26px; }
-/* инлайновые svg карточек могут быть без класса .mi — нормализуем обе */
-.profile-area .user-notes svg, .profile-area .user-lessons svg {
+/* инлайновые svg карточки могут быть без класса .mi — нормализуем */
+.profile-area .user-lessons svg {
   scale: none;
   padding: 0;
   width: 26px;
@@ -2853,7 +2223,7 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
             }
         }
 
-        #theme-status-ap, #lessons-style-status, #notes-s-status {
+        #theme-status-ap, #lessons-style-status {
             color: var(--tg-theme-hint-color);
         }
 
@@ -3522,58 +2892,6 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
             gap: 10px;
             margin: 0;
         }
-
-/* ─── Лента дедлайнов на «Мой день» ─── */
-#deadlines-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 0 16px 12px;
-  align-items: center;
-}
-.deadlines-strip-head {
-  width: 100%;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--tg-theme-hint-color);
-  font-weight: 700;
-}
-.deadline-pill {
-  border: none;
-  background: var(--accent-bg, var(--tg-theme-secondary-bg-color));
-  color: var(--tg-theme-text-color);
-  border-radius: 16px;
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-  min-width: 120px;
-  cursor: pointer;
-  animation: deadline-breathe 2.4s ease-in-out infinite;
-}
-.deadline-pill strong {
-  font-size: 13px;
-}
-.deadline-pill span {
-  font-size: 11px;
-  opacity: 0.75;
-}
-.deadline-overdue {
-  box-shadow: inset 0 0 0 1px rgba(255, 80, 80, 0.55);
-  background: rgba(255, 70, 70, 0.18);
-}
-.deadline-soon {
-  box-shadow: inset 0 0 0 1px rgba(255, 170, 40, 0.55);
-}
-.deadline-near {
-  box-shadow: inset 0 0 0 1px rgba(80, 180, 255, 0.4);
-}
-@keyframes deadline-breathe {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
 
 /* ─── Виджет «Куда идти» ─── */
 .go-widget {
@@ -4449,27 +3767,8 @@ body.pref-hideDone-on .note-v2.is-done { display: none !important; }
             padding-left: 10px;
         }
 
-        /* ─── Под-экран «Заметки студента» ─── */
-        #set-app4 {
-            animation: starting .5s forwards;
-            display: none;
-            flex-direction: column;
-            justify-content: center !important;
-            text-align: center;
-        }
-        #set-app4 .tips-screen-title { margin-top: 10px !important; }
-        #set-app4 .tips-screen-sub {
-            color: var(--tg-theme-hint-color);
-            font-size: 14px;
-            margin-top: 4px !important;
-        }
-        #set-app4 .a-settings-area { padding-left: 10px; }
-
 /* ─── Анимации отключены системно ─── */
 @media (prefers-reduced-motion: reduce) {
-  .deadline-pill,
-  .note-v2.deadline-overdue,
-  .lesson-note-dot,
   #ai-chat-panel,
   .soft-paywall-card,
   .go-widget,

@@ -1440,7 +1440,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* ── Обогащение строк расписания: data-атрибуты, long-press → быстрая заметка ── */
+/* ── Обогащение строк расписания: data-атрибуты, тап по номеру → правки ── */
 function enrichLessonRows() {
   const week = scheduleWeekIndex ?? getScheduleWeekIndex();
   document.querySelectorAll(".lesson-row").forEach((row) => {
@@ -1476,38 +1476,6 @@ function enrichLessonRows() {
 
     if (!row.dataset.boostBound) {
       row.dataset.boostBound = "1";
-      let pressTimer = null;
-      let pressX = 0;
-      let pressY = 0;
-      row.addEventListener("pointerdown", (e) => {
-        pressX = e.clientX;
-        pressY = e.clientY;
-        pressTimer = setTimeout(() => {
-          safeImpact("medium");
-          openQuickNoteFromLesson(row);
-        }, 550);
-      });
-      const clearPress = (e) => {
-        if (
-          e &&
-          (Math.abs((e.clientX || 0) - pressX) > 12 ||
-            Math.abs((e.clientY || 0) - pressY) > 12)
-        ) {
-          clearTimeout(pressTimer);
-        }
-        clearTimeout(pressTimer);
-      };
-      row.addEventListener("pointerup", clearPress);
-      row.addEventListener("pointerleave", () => clearTimeout(pressTimer));
-      row.addEventListener("pointercancel", () => clearTimeout(pressTimer));
-      row.addEventListener("pointermove", (e) => {
-        if (
-          Math.abs(e.clientX - pressX) > 12 ||
-          Math.abs(e.clientY - pressY) > 12
-        ) {
-          clearTimeout(pressTimer);
-        }
-      });
 
       // Тап по номеру пары → локальное переименование/скрытие
       row.querySelector(".lesson")?.addEventListener("click", (e) => {
@@ -1517,34 +1485,7 @@ function enrichLessonRows() {
     }
   });
   applyOverridesToDom();
-  paintNoteBadgesOnLessons();
   renderBreakChips();
-}
-
-function openQuickNoteFromLesson(row) {
-  const pairLink = {
-    weekIndex: Number(row.dataset.week),
-    dayOfWeek: row.dataset.day,
-    lessonCode: row.dataset.lessonCode,
-    subject: row.dataset.subject,
-    room: row.dataset.room,
-    teacher: row.dataset.teacher,
-    timeRange: row.dataset.time,
-    pairId: row.dataset.pairId,
-  };
-  sessionStorage.setItem("pendingPairLink", JSON.stringify(pairLink));
-  document.getElementById("notes-show")?.click();
-  setTimeout(() => {
-    const eventInput = document.getElementById("event-input");
-    if (!eventInput || getComputedStyle(eventInput).display === "none") showNoteEditor();
-    const pairField = document.getElementById("pair-link-summary");
-    if (pairField) {
-      pairField.textContent = `${pairLink.dayOfWeek} · ${pairLink.timeRange} · ${pairLink.subject}`;
-      pairField.dataset.linked = "1";
-    }
-    syncPairLinkClear();
-    toast("Пара привязана к заметке");
-  }, 120);
 }
 
 function watchScheduleMutations() {
@@ -2548,19 +2489,6 @@ async function waitForInitData(retries = 10) {
     }
 }
 
-function safeReadNotes() {
-  try {
-    const rawNotes = localStorage.getItem("notes");
-    if (!rawNotes || rawNotes === "null") return [];
-    const parsedNotes = JSON.parse(rawNotes);
-    if (Array.isArray(parsedNotes)) return parsedNotes;
-    return parsedNotes ? [parsedNotes] : [];
-  } catch (error) {
-    console.warn("Failed to read notes from localStorage:", error);
-    return [];
-  }
-}
-
 // photo_url может отсутствовать (десктоп-клиент) или протухнуть — тогда инициалы
 function setupProfileAvatar(user) {
   const img = document.querySelector(".cont-profile img");
@@ -2773,141 +2701,6 @@ function cleanDaySchedule(dayElement) {
   //teacherHide(dayElement, false);
 }
 
-function teacherHide(element = document, del = true) {
-  // //let notAdd = true;
-  // if (del) {
-  //   localStorage.setItem("added-teacher", "false");
-  // }
-  // var btnsList = element.querySelectorAll(".list-btn");
-  // var eventsAll = document.querySelectorAll(".custom-events");
-  // if (eventsAll) {
-  //   eventsAll.forEach((ev) => {
-  //     if (ev) {
-  //       ev.style.display = "none";
-  //     }
-  //   });
-  // }
-  // var cDataTeacher = container.querySelectorAll(".teacher svg");
-
-  // //if (cDataTeacher.length === 0) {
-  // //  notAdd = false;
-  // //}
-  // btnsList.forEach((btnX) => {
-  //   btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-
-  //   btnX.parentElement.querySelector(".teacher").style.display = "none";
-
-  //   var newUUID = SetUUID();
-  //   btnX.parentElement.querySelector(".teacher").id = newUUID;
-  //   let shown = false;
-  //   let addedNotesBtn = false;
-  //   //console.log("working...");
-  //   if (localStorage.getItem("added-teacher") !== "true") {
-  //     //console.log("not true! adding rooms");
-  //     var test = btnX.parentElement.querySelector(".room").innerHTML;
-  //     if (test) {
-  //       if (test.length < 7) {
-  //         test = test.replace(/[()]/g, "");
-  //         let corpus = Number(test[0]);
-  //         let floor = Number(test[1]);
-  //         let room = Number(test.slice(2, 4));
-          
-  //           btnX.parentElement.querySelector(".teacher").innerHTML +=
-  //             `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em";>Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room} <svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
-          
-  //       } else if (test.length > 6 && test[1] !== "Н") {
-  //         let tests = test.split("/", 2);
-  //         tests.forEach((test) => {
-  //           test = test.replace(/[()]/g, "").trim();
-  //           let corpus = Number(test[0]);
-  //           let floor = Number(test[1]);
-  //           let room = Number(test.slice(2, 4));
-            
-  //             btnX.parentElement.querySelector(".teacher").innerHTML +=
-  //               `<h5 style="color: var(--room-green); padding-top: .3em; font-weight: 500; display: flex; justify-content: start; flex-direction: row-reverse; gap: .5em; ">Корпус: ${corpus} │ этаж: ${floor} │ аудитория: ${room}<svg style="width: 1em ! important; height: 1em !important" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m-1 4h1m-1 4h1m4-8h1m-1 4h1m-1 4h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></h5>`;
-            
-  //         });
-  //       }
-  //     }
-  //     if (btnX.parentElement.querySelector(".time.now")) {
-  //       btnX.parentElement
-  //         .querySelector(".time.now")
-  //         .parentElement.querySelector(".teacher").innerHTML +=
-  //         `<h4 style="padding-top: .2em; color: #46ff15dd" class="isNow">Сейчас идет</h4>`;
-  //     }
-  //   }
-
-  //   btnX.addEventListener("click", function () {
-  //     var test = btnX.parentElement.querySelector(".room").innerHTML;
-  //     if (test) {
-  //       if (
-  //         btnX.parentElement
-  //           .querySelector(".room")
-  //           .classList.contains("changing-rooms")
-  //       ) {
-  //         if (!localStorage.getItem("roomShown")) {
-  //           localStorage.setItem("roomShown", false);
-  //         }
-  //         if (localStorage.getItem("roomShown") === "false") {
-  //           var message = document.getElementById("ctx-assistant-say");
-  //           stopAll();
-  //           message.style.display = "block";
-  //           message.innerHTML = `<h4 style="font-weight: 500;">В промежутке между парами <span style="color: #fff41fed;">вам придётся менять корпуса!</span> <span style="font-weight:600;">Будьте внимательны</span></h4><div style="text-align: right;"><button onclick="hideRoomShown()" class="ai-btn">ОК</button></div>`;
-  //           setTimeout(function () {
-  //             message.style.display = "none";
-  //           }, 10000);
-  //         }
-  //       }
-  //     }
-  //     let events = btnX.parentElement.querySelectorAll(".custom-events");
-
-  //     if (events) {
-  //       events.forEach((e) => {
-  //         //console.log(e);
-  //         if (e) {
-  //           e.style.display = "block";
-  //         }
-  //       });
-  //     }
-
-  //     if (!shown) {
-  //       btnX.parentElement.querySelector(".teacher").style.display = "block";
-
-  //       if (!addedNotesBtn) {
-  //         if (
-  //           btnX.parentElement
-  //             .querySelector(".teacher")
-  //             .querySelector(".input-svg")
-  //         ) {
-  //           btnX.parentElement
-  //             .querySelector(".teacher")
-  //             .querySelector(".input-svg")
-  //             .remove();
-  //         }
-  //         btnX.parentElement.querySelector(".teacher").innerHTML +=
-  //           `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="input-svg" onclick="ShowAdd('${newUUID}');" ><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 14v-2h7v2zm0-4V8h11v2zm0-4V4h11v2zm9 14v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></svg>`;
-  //         addedNotesBtn = true;
-  //       }
-
-  //       btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34M15 10H9a1 1 0 0 0-.708 1.707l3 3a1 1 0 0 0 1.415 0l3-3a1 1 0 0 0 0-1.414l-.094-.083A1 1 0 0 0 15 10"/></svg>`;
-  //       shown = true;
-  //     } else {
-  //       btnX.parentElement.querySelector(".teacher").style.display = "none";
-  //       if (events) {
-  //         events.forEach((e) => {
-  //           //console.log(e);
-  //           if (e) {
-  //             e.style.display = "none";
-  //           }
-  //         });
-  //       }
-  //       btnX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE --><path fill="currentColor" d="M17 3.34A10 10 0 1 1 2 12l.005-.324A10 10 0 0 1 17 3.34m-4.293 5.953a1 1 0 0 0-1.414 0l-3 3A1 1 0 0 0 9 14h6c.217 0 .433-.07.613-.21l.094-.083a1 1 0 0 0 0-1.414z"/></svg>`;
-  //       shown = false;
-  //     }
-  //   });
-  // });
-  // localStorage.setItem("added-teacher", "true");
-}
 
 function hideRoomShown() {
   var message = document.getElementById("ctx-assistant-say");
@@ -3101,18 +2894,6 @@ updater.addEventListener("click", function () {
       setTimeout(function () {
         message.style.display = "block";
       }, 2000);
-    }
-    if (
-      localStorage.getItem("isActiveAI") === "true" &&
-      localStorage.getItem("notes")
-    ) {
-      stopAll();
-      message.style.display = "block";
-      message.innerHTML = `<div><h4>Ваши заметки перенеслись в отдельную категорию!</h4></div><div style="text-align:right"><button onclick="message.style.display = 'none';" class="my-def-btns">Понятно</button></div>`;
-      setTimeout(() => {
-        message.innerHTML = "";
-        message.style.display = "none";
-      }, 7000);
     }
     r += 360;
     if (updater) updater.style.transform = `rotate(${r}deg)`;
@@ -3505,39 +3286,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (nowBtn) upsSV();
 });
 
-function ShowAdd() {
-  console.log("showing popup");
-  document.getElementById("black-bg").style.animation = "none";
-  document.getElementById("black-bg").style.animation = "opq1 .5s ease";
-  document.getElementById("black-bg").style.display = "block";
-  openn("event-input", "flex");
-  // при создании новой заметки привязка сбрасывается; редактирование
-  // заполняет форму заново через fillNoteForm сразу после ShowAdd
-  const pairSummary = document.getElementById("pair-link-summary");
-  if (pairSummary && !sessionStorage.getItem("pendingPairLink")) {
-    pairSummary.dataset.linked = "0";
-    delete pairSummary.dataset.payload;
-    pairSummary.textContent = "Не привязана — удержите пару в расписании";
-  }
-  syncPairLinkClear();
-  //document.getElementById("event-input").setAttribute("data-uuid", id);
-}
-
-function CloseBG() {
-  document.getElementById("black-bg").style.animation = "";
-  document.getElementById("event-input").style.animation = "";
-  document.getElementById("black-bg").style.animation =
-    "popupBtnText .1s ease forwards";
-  document.getElementById("event-input").style.animation =
-    "popupBtnText2 .1s ease forwards";
-
-    document.getElementById("black-bg").style.display = "none";
-    document.getElementById("event-input").style.display = "none";
-   // модалка закрыта без сохранения — pending-привязка не должна утекать в следующую заметку
-   sessionStorage.removeItem("pendingPairLink");
-   // document.getElementById("event-input").removeAttribute("data-uuid");
-}
-
 function CloseBG2() {
   document.getElementById("black-bg").style.animation =
     "popupBtnText 1s ease forwards";
@@ -3545,258 +3293,6 @@ function CloseBG2() {
     document.getElementById("black-bg").style.display = "none";
     document.getElementById("black-bg").style.zIndex = "1999";
   }, 900);
-}
-function SetUUID() {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0;
-    var v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function DelEvent(el, infoExtra = {}) {
-  const eventElement = el.parentElement;
-
-  setTimeout(function () {
-    eventElement.remove();
-
-    //console.log("cleaned");
-    //console.log(container.querySelector(el));
-
-    try {
-      var ls = localStorage.getItem("notes");
-      if (ls && infoExtra) {
-        try {
-          var parsed = JSON.parse(ls);
-          if (Array.isArray(parsed)) {
-            var filtered = parsed.filter(function (n) {
-              if (!n) return false;
-              var match = true;
-              if (infoExtra.title !== undefined)
-                match = match && n.title === infoExtra.title;
-              if (infoExtra.time !== undefined)
-                match = match && n.time === infoExtra.time;
-              if (infoExtra.description !== undefined)
-                match = match && n.description === infoExtra.description;
-              return !match;
-            });
-            localStorage.setItem("notes", JSON.stringify(filtered));
-          } else {
-            if (typeof parsed === "object" && parsed !== null) {
-              var shouldRemove = true;
-              if (infoExtra.title !== undefined)
-                shouldRemove = shouldRemove && parsed.title === infoExtra.title;
-              if (infoExtra.time !== undefined)
-                shouldRemove = shouldRemove && parsed.time === infoExtra.time;
-              if (infoExtra.description !== undefined)
-                shouldRemove =
-                  shouldRemove && parsed.description === infoExtra.description;
-              if (shouldRemove) localStorage.removeItem("notes");
-            }
-          }
-        } catch (e) {
-          try {
-            var parts = ls
-              .split("<sep>")
-              .map(function (s) {
-                return s.trim();
-              })
-              .filter(Boolean);
-            var newParts = parts.filter(function (item) {
-              try {
-                var obj = JSON.parse(item);
-                var match = true;
-                if (infoExtra.title !== undefined)
-                  match = match && obj.title === infoExtra.title;
-                if (infoExtra.time !== undefined)
-                  match = match && obj.time === infoExtra.time;
-                if (infoExtra.description !== undefined)
-                  match = match && obj.description === infoExtra.description;
-                return !match;
-              } catch (_err) {
-                return true;
-              }
-            });
-            if (newParts.length === 0) localStorage.removeItem("notes");
-            else localStorage.setItem("notes", newParts.join("<sep> "));
-          } catch (_e) {}
-        }
-      }
-    } catch {}
-
-    localStorage.setItem("schedule", container.innerHTML);
-  }, 100);
-
-  haptic.notificationOccurred("success");
-}
-
-async function pinNote(id) {
-  const notes = JSON.parse(localStorage.getItem("notes")) || [];
-  const el = document.getElementById(`note-${id}`);
-  if (!el) return;
-
-  const isPinned = el.classList.contains("pinned");
-
-  if (isPinned) {
-    el.classList.remove("pinned");
-    localStorage.setItem("pin-note", "");
-    
-    const note = notes.find(n => String(n.uuid) === String(id));
-    if (note) note.pin = false;
-
-  } else {
-    document.querySelectorAll(".note").forEach((n) => n.classList.remove("pinned"));
-    
-    el.classList.add("pinned");
-    haptic?.notificationOccurred?.("success");
-    localStorage.setItem("pin-note", String(id));
-
-    notes.forEach((n) => {
-      n.pin = (String(n.uuid) === String(id));
-    });
-  }
-
-  localStorage.setItem("notes", JSON.stringify(notes));
-  await sendExtra();
-  getNotes();
-}
-
-async function delNote(id) {
-  const el = document.getElementById(`note-${id}`);
-  if (!el) return;
-
-  const titleText = el.querySelector("h2")?.textContent.trim();
-  const timeText = el.querySelector("time")?.textContent.trim();
-  const lessonText = el.querySelector("lesson")?.textContent.trim();
-
-
-  const ls = localStorage.getItem("notes");
-  if (!ls) return;
-
-  let notes;
-  try {
-    notes = JSON.parse(ls);
-    console.log(notes);
-  } catch (e) {
-    return;
-  }
-  if (!Array.isArray(notes)) return;
-  console.log([titleText, timeText, lessonText]);
-  const updatedNotes = notes.filter((note) => {
-    return !(
-      // note.title === titleText &&
-      // note.time === timeText &&
-      // note.subject === lessonText
-      String(note.uuid) === String(id)
-    );
-  });
-
-  if (updatedNotes.length < notes.length) {
-    el.remove(); 
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
-    haptic?.notificationOccurred?.("success");
-    console.log(`[${Date.now()}]`, updatedNotes)
-      await sendExtra();
-      initApp();
-  }
-
-}
-
-/* ── Заметки 2.0: приоритеты, дедлайны, привязка к парам ── */
-const NOTES_FILTER_KEY = "notesFilter_v1";
-const MAX_NOTE_DESC = 2000;
-const MAX_NOTE_TITLE = 96;
-const PRIORITY_META = {
-  low: { label: "Низкий", className: "prio-low" },
-  normal: { label: "Обычный", className: "prio-normal" },
-  high: { label: "Высокий", className: "prio-high" },
-  urgent: { label: "Срочно", className: "prio-urgent" },
-};
-
-function normalizeNote(raw) {
-  if (!raw || typeof raw !== "object") return null;
-  const uuid =
-    raw.uuid ||
-    `legacy-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  const priority = PRIORITY_META[raw.priority] ? raw.priority : "normal";
-  return {
-    title: String(raw.title || "Без названия").slice(0, MAX_NOTE_TITLE),
-    subject: String(raw.subject || "Общий").slice(0, 128),
-    description: String(raw.description || "").slice(0, MAX_NOTE_DESC),
-    time: String(raw.time || ""),
-    uuid: String(uuid),
-    pin: Boolean(raw.pin),
-    pairLink: raw.pairLink && typeof raw.pairLink === "object" ? raw.pairLink : null,
-    deadline: raw.deadline || null,
-    priority,
-    done: Boolean(raw.done),
-    createdAt: raw.createdAt || new Date().toISOString(),
-    updatedAt: raw.updatedAt || new Date().toISOString(),
-  };
-}
-
-function readNotes() {
-  let list = [];
-  try {
-    list = JSON.parse(localStorage.getItem("notes") || "[]");
-  } catch (_) {
-    list = [];
-  }
-  if (!Array.isArray(list)) list = [];
-  const normalized = list.map(normalizeNote).filter(Boolean);
-  const changed = JSON.stringify(list) !== JSON.stringify(normalized);
-  if (changed) localStorage.setItem("notes", JSON.stringify(normalized));
-  return normalized;
-}
-
-function writeNotes(list) {
-  localStorage.setItem("notes", JSON.stringify(list.map(normalizeNote).filter(Boolean)));
-}
-
-function deadlineUrgency(deadline) {
-  if (!deadline) return null;
-  const end = new Date(deadline);
-  if (Number.isNaN(end.getTime())) return null;
-  const now = new Date();
-  const diffH = (end - now) / 3600000;
-  if (diffH < 0) return "overdue";
-  if (diffH <= 24) return "soon";
-  if (diffH <= 72) return "near";
-  return "ok";
-}
-
-function formatDeadline(deadline) {
-  if (!deadline) return "";
-  const d = new Date(deadline);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-function collectPairLinkFromForm() {
-  const pending = sessionStorage.getItem("pendingPairLink");
-  if (pending) {
-    try {
-      const parsed = JSON.parse(pending);
-      sessionStorage.removeItem("pendingPairLink");
-      return parsed;
-    } catch (_) {}
-  }
-  const summary = document.getElementById("pair-link-summary");
-  if (summary?.dataset.linked === "1" && summary.dataset.payload) {
-    try {
-      return JSON.parse(summary.dataset.payload);
-    } catch (_) {}
-  }
-  return null;
 }
 
 function sanitizeAiHtml(value) {
@@ -3816,456 +3312,6 @@ function sanitizeAiHtml(value) {
     });
   });
   return template.content;
-}
-
-function setPriorityValue(value) {
-  const known = PRIORITY_META[value] ? value : "normal";
-  document.querySelectorAll("#priority-event .prio-opt").forEach((btn) => {
-    btn.classList.toggle("is-active", btn.dataset.value === known);
-  });
-}
-
-function getPriorityValue() {
-  const active = document.querySelector("#priority-event .prio-opt.is-active");
-  return PRIORITY_META[active?.dataset.value] ? active.dataset.value : "normal";
-}
-
-function fillNoteForm(note) {
-  const title = document.getElementById("name-event");
-  const description = document.getElementById("extra-event");
-  const deadline = document.getElementById("deadline-event");
-  const pairSummary = document.getElementById("pair-link-summary");
-
-  if (title) title.value = note?.title || "";
-  if (description) description.value = note?.description || "";
-  if (deadline) {
-    if (note?.deadline) {
-      const d = new Date(note.deadline);
-      deadline.value = Number.isNaN(d.getTime())
-        ? ""
-        : new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-            .toISOString()
-            .slice(0, 16);
-    } else deadline.value = "";
-  }
-  setPriorityValue(note?.priority || "normal");
-  if (pairSummary) {
-    if (note?.pairLink) {
-      pairSummary.dataset.linked = "1";
-      pairSummary.dataset.payload = JSON.stringify(note.pairLink);
-      pairSummary.textContent = `${note.pairLink.dayOfWeek || ""} · ${note.pairLink.timeRange || ""} · ${note.pairLink.subject || ""}`.trim();
-    } else {
-      pairSummary.dataset.linked = "0";
-      delete pairSummary.dataset.payload;
-      pairSummary.textContent = "Не привязана — удержите пару в расписании";
-    }
-    syncPairLinkClear();
-  }
-}
-
-function readNoteForm(base = {}) {
-  const titleEl = document.getElementById("name-event");
-  const descEl = document.getElementById("extra-event");
-  const deadlineEl = document.getElementById("deadline-event");
-
-  const title = (titleEl?.value || "").trim();
-  if (!title) return { error: "title" };
-
-  const n = new Date();
-  const time = `${n.getDate()}.${String(n.getMonth() + 1).padStart(2, "0")}.${n.getFullYear()} ${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
-
-  let deadline = deadlineEl?.value ? new Date(deadlineEl.value).toISOString() : null;
-  if (deadlineEl?.value && Number.isNaN(new Date(deadlineEl.value).getTime())) {
-    deadline = null;
-  }
-
-  const pairLink = collectPairLinkFromForm() || base.pairLink || null;
-  const subject = pairLink?.subject || "Общий";
-
-  return {
-    note: normalizeNote({
-      ...base,
-      title,
-      time,
-      subject,
-      description: (descEl?.value || "").slice(0, MAX_NOTE_DESC),
-      deadline,
-      priority: getPriorityValue(),
-      pairLink,
-      updatedAt: new Date().toISOString(),
-      uuid: base.uuid || SetUUID(),
-      createdAt: base.createdAt || new Date().toISOString(),
-    }),
-  };
-}
-
-async function persistNotesAndSync() {
-  await sendExtra();
-  try {
-    await api("/extra/notes", {
-      method: "POST",
-      body: JSON.stringify({ notes: readNotes() }),
-    });
-  } catch (err) {
-    console.warn("notes sync endpoint unavailable, extra/theme used", err);
-  }
-}
-
-function saveNoteNew() {
-  const result = readNoteForm();
-  if (result.error) {
-    safeHaptic("error");
-    const name = document.getElementById("name-event");
-    if (name) name.style.outline = "2px solid var(--tg-theme-destructive-text-color)";
-    setTimeout(() => {
-      if (name) name.style.outline = "none";
-    }, 2500);
-    return;
-  }
-  const notes = readNotes();
-  notes.push(result.note);
-  writeNotes(notes);
-  persistNotesAndSync().then(() => {
-    getNotes();
-    safeHaptic("success");
-    syncDeadlineReminders(true);
-    if (localStorage.getItem(BOARD_OPT_IN_KEY) === "1") {
-      publishGroupBoard().catch(() => {});
-    }
-  });
-  const addBtnAfterSave = document.getElementById("note-add-btn");
-  if (addBtnAfterSave) {
-    if (addBtnAfterSave.classList.contains("opened")) addBtnAfterSave.click();
-    else CloseBG();
-  }
-}
-
-async function getEdinNoteData(id) {
-  const notes = readNotes();
-  const idx = notes.findIndex((n) => String(n.uuid) === String(id));
-  if (idx < 0) return;
-  const result = readNoteForm(notes[idx]);
-  if (result.error) {
-    safeHaptic("error");
-    return;
-  }
-  notes[idx] = result.note;
-  writeNotes(notes);
-  const eventInput = document.getElementById("event-input");
-  if (eventInput?.querySelector(".event-header h4")) {
-    eventInput.querySelector(".event-header h4").textContent = "Добавление события";
-  }
-  CloseBG();
-  const addBtn = document.getElementById("note-add-btn");
-  if (addBtn) addBtn.style.display = "flex";
-  const saveBtn = document.getElementById("save-event-btn");
-  if (saveBtn) saveBtn.onclick = saveNoteNew;
-  await persistNotesAndSync();
-  getNotes();
-  safeHaptic("success");
-  syncDeadlineReminders(true);
-  if (localStorage.getItem(BOARD_OPT_IN_KEY) === "1") {
-    publishGroupBoard().catch(() => {});
-  }
-}
-
-function editNote(id) {
-  const addBtn = document.getElementById("note-add-btn");
-  if (addBtn) addBtn.style.display = "none";
-  ShowAdd();
-  const eventInput = document.getElementById("event-input");
-  if (eventInput?.querySelector(".event-header h4")) {
-    eventInput.querySelector(".event-header h4").textContent = "Редактирование";
-  }
-  const notes = readNotes();
-  const note = notes.find((n) => String(n.uuid) === String(id));
-  if (!note) return;
-  fillNoteForm(note);
-  const saveBtn = document.getElementById("save-event-btn");
-  if (saveBtn) saveBtn.onclick = () => getEdinNoteData(id);
-}
-
-async function toggleNoteDone(id) {
-  const notes = readNotes();
-  const note = notes.find((n) => String(n.uuid) === String(id));
-  if (!note) return;
-  const wasDone = Boolean(note.done);
-  note.done = !note.done;
-  note.updatedAt = new Date().toISOString();
-  writeNotes(notes);
-  await persistNotesAndSync();
-  getNotes();
-  safeImpact("soft");
-  // отмечено выполнение → серия, напоминания и доска дедлайнов группы
-  try {
-    if (!wasDone) bumpStreak("done");
-    syncDeadlineReminders(true);
-    if (localStorage.getItem(BOARD_OPT_IN_KEY) === "1") {
-      publishGroupBoard().catch(() => {});
-    }
-  } catch (_) {}
-}
-
-function jumpToPairLink(id) {
-  const note = readNotes().find((n) => String(n.uuid) === String(id));
-  if (!note?.pairLink) {
-    toast("Нет привязки к паре");
-    return;
-  }
-  const { weekIndex, dayOfWeek } = note.pairLink;
-  const dayIdx = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"].indexOf(dayOfWeek);
-  if (typeof weekIndex === "number") {
-    // мгновенный рендер нужной недели и дня из кэша
-    jumpToScheduleWeek(weekIndex, dayIdx);
-  }
-  document.getElementById("schedule-show")?.click();
-  setTimeout(() => {
-    if (dayIdx >= 0) {
-      document.querySelector(".swiper")?.swiper?.slideToLoop?.(dayIdx);
-      document.querySelectorAll(".btnD")[dayIdx]?.click?.();
-    }
-    setTimeout(() => {
-      document.querySelectorAll(".lesson-row").forEach((row) => {
-        row.classList.remove("pair-flash");
-        const samePair = note.pairLink.pairId
-          ? row.dataset.pairId === note.pairLink.pairId
-          : row.dataset.subject === note.pairLink.subject && String(row.dataset.lessonCode) === String(note.pairLink.lessonCode || "");
-        if (samePair) {
-          row.classList.add("pair-flash");
-          row.scrollIntoView({ behavior: "smooth", block: "center" });
-          setTimeout(() => row.classList.remove("pair-flash"), 3000);
-        }
-      });
-    }, 400);
-  }, 500);
-  safeHaptic("success");
-}
-
-function getNotes() {
-  const notesArea = document.querySelector(".notes-area");
-  if (!notesArea) return;
-  const filter = localStorage.getItem(NOTES_FILTER_KEY) || "all";
-  let notes = readNotes();
-
-  notes = notes.slice().sort((a, b) => {
-    if (a.pin !== b.pin) return a.pin ? -1 : 1;
-    if (a.done !== b.done) return a.done ? 1 : -1;
-    const pa = { urgent: 0, high: 1, normal: 2, low: 3 }[a.priority] ?? 2;
-    const pb = { urgent: 0, high: 1, normal: 2, low: 3 }[b.priority] ?? 2;
-    if (pa !== pb) return pa - pb;
-    const da = a.deadline ? new Date(a.deadline).getTime() : Infinity;
-    const db = b.deadline ? new Date(b.deadline).getTime() : Infinity;
-    return da - db;
-  });
-
-  if (filter === "open") notes = notes.filter((n) => !n.done);
-  if (filter === "done") notes = notes.filter((n) => n.done);
-  if (filter === "deadlines") notes = notes.filter((n) => n.deadline && !n.done);
-  if (filter === "linked") notes = notes.filter((n) => n.pairLink);
-
-  notesArea.innerHTML = "";
-
-  const toolbar = document.createElement("div");
-  toolbar.className = "notes-toolbar";
-  toolbar.innerHTML = ["all", "open", "deadlines", "linked", "done"]
-    .map((f) => {
-      const labels = {
-        all: "Все",
-        open: "Активные",
-        deadlines: "Дедлайны",
-        linked: "К парам",
-        done: "Готово",
-      };
-      return `<button type="button" class="notes-filter-btn${filter === f ? " is-active" : ""}" data-filter="${f}">${labels[f]}</button>`;
-    })
-    .join("");
-  notesArea.appendChild(toolbar);
-  toolbar.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      localStorage.setItem(NOTES_FILTER_KEY, btn.dataset.filter);
-      getNotes();
-      safeImpact("light");
-    });
-  });
-
-  if (!notes.length) {
-    notesArea.insertAdjacentHTML(
-      "beforeend",
-      `<div class="note empty-note-v2">
-        <h2>Пока пусто</h2>
-        <p>Удержите пару в расписании — заметка привяжется автоматически. Добавьте дедлайн, чтобы не пропустить сдачу.</p>
-      </div>`,
-    );
-    paintNoteBadgesOnLessons();
-    renderDeadlinesStrip();
-    return;
-  }
-
-  notes.forEach((note) => {
-    const urgency = deadlineUrgency(note.deadline);
-    const prio = PRIORITY_META[note.priority] || PRIORITY_META.normal;
-    const isPinned = note.pin || localStorage.getItem("pin-note") === String(note.uuid);
-    let clasS = `note note-v2 ${prio.className}`;
-    if (isPinned) clasS += " pinned";
-    if (note.done) clasS += " is-done";
-    if (urgency) clasS += ` deadline-${urgency}`;
-
-    const pairBtn = note.pairLink
-      ? `<button type="button" class="note-btn-jump" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')" title="К паре"><svg class="mi" width="14" height="14"><use href="#mi-north_east"/></svg></button>`
-      : "";
-
-    notesArea.insertAdjacentHTML(
-      "beforeend",
-      `<article id="note-${escapeAttr(note.uuid)}" class="${clasS}">
-        <div class="note-top">
-          <button type="button" class="note-check" onclick="toggleNoteDone('${escapeAttr(note.uuid)}')" aria-label="Готово">${note.done ? '<svg class="mi" width="14" height="14"><use href="#mi-check"/></svg>' : ""}</button>
-          <h2>${escapeHtml(note.title)}</h2>
-          ${isPinned ? '<svg class="mi note-pin-flag" width="15" height="15" aria-hidden="true"><use href="#mi-push_pin"/></svg>' : ""}
-          <span class="note-prio-chip">${prio.label}</span>
-        </div>
-        <div class="note-meta">
-          <time><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-calendar"/></svg> ${escapeHtml(note.time)}</time>
-          <span class="note-subject">${escapeHtml(note.subject)}</span>
-          ${note.deadline ? `<span class="note-deadline" data-urgency="${urgency || ""}"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-hourglass_top"/></svg> ${escapeHtml(formatDeadline(note.deadline))}</span>` : ""}
-        </div>
-        ${note.pairLink ? `<button type="button" class="note-pair-chip" onclick="jumpToPairLink('${escapeAttr(note.uuid)}')"><svg class="mi" width="13" height="13" style="vertical-align:-2px"><use href="#mi-link"/></svg> ${escapeHtml(note.pairLink.dayOfWeek || "")} · ${escapeHtml(note.pairLink.subject || "")}</button>` : ""}
-        ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
-        <div class="note-btn-container">
-          <button class="note-btn-edit" onclick="editNote('${escapeAttr(note.uuid)}')" aria-label="Редактировать"><svg class="mi" width="15" height="15"><use href="#mi-edit"/></svg></button>
-          <button class="note-btn-pin" onclick="pinNote('${escapeAttr(note.uuid)}')" aria-label="Закрепить"><svg class="mi" width="15" height="15"><use href="#mi-push_pin"/></svg></button>
-          ${pairBtn}
-          <button class="note-btn-del" onclick="delNote('${escapeAttr(note.uuid)}')" aria-label="Удалить"><svg class="mi" width="15" height="15"><use href="#mi-delete"/></svg></button>
-        </div>
-      </article>`,
-    );
-  });
-
-  paintNoteBadgesOnLessons();
-  renderDeadlinesStrip();
-}
-
-
-function saveTeacherData() {
-  // //console.log("saving data");
-  // var errR = false;
-  // var allTeachers = document.querySelectorAll(".teacher");
-  // var myElement = document.getElementById("event-input");
-  // var TitleEvent = document.getElementById("name-event").value ?? "Безымянный";
-  // var TimePeriodEvent = document.getElementById("time-event").value;
-  // var ExtraEvent = document.getElementById("extra-event").value;
-  // var UUID = myElement.getAttribute("data-uuid");
-  // var UTeacher = document.getElementById(UUID);
-
-  // function escapeX(string) {
-  //   var htmlEscapes = {
-  //     "&": "&amp;",
-  //     "<": "&lt;",
-  //     ">": "&gt;",
-  //   };
-
-  //   return string.replace(/[&<>"']/g, function (match) {
-  //     return htmlEscapes[match];
-  //   });
-  // }
-  // function testLetters(str) {
-  //   return /[a-zA-Zа-яА-ЯёЁ]/.test(str);
-  // }
-
-  // TitleEvent = escapeX(TitleEvent);
-  // ExtraEvent = escapeX(ExtraEvent);
-  // TimePeriodEvent = escapeX(TimePeriodEvent);
-  // let infoExtra = {
-  //   title: TitleEvent,
-  //   time: TimePeriodEvent,
-  //   description: ExtraEvent,
-  //   subject: UTeacher.parentElement.querySelector(".subject").innerHTML,
-  // };
-
-  // if (!TimePeriodEvent || testLetters(TimePeriodEvent)) {
-  //   document.getElementById("save-event-btn").innerHTML =
-  //     "<b>Неверный ввод!</b>";
-  //   document.getElementById("save-event-btn").style.pointerEvents = "none";
-  //   document.getElementById("save-event-btn").style.background =
-  //     "var(--tg-theme-destructive-text-color)";
-  //   document.getElementById("save-event-btn").style.boxShadow = "none";
-  //   haptic.notificationOccurred("error");
-  //   errR = true;
-  //   setTimeout(() => {
-  //     document.getElementById("save-event-btn").innerHTML = "Сохранить";
-  //     document.getElementById("save-event-btn").style.pointerEvents = "all";
-  //     document.getElementById("save-event-btn").style.background =
-  //       "var(--tg-theme-button-color)";
-
-  //     document.getElementById("save-event-btn").style.color =
-  //       "var(--tg-theme-button-text-color)";
-  //     document.getElementById("save-event-btn").style.boxShadow = "none";
-  //   }, 2000);
-  // } else {
-  //   CloseBG();
-  //   var notesEx = localStorage.getItem("notes");
-  //   var notes = [];
-  //   if (notesEx) {
-  //     try {
-  //       var parsed = JSON.parse(notesEx);
-  //       if (Array.isArray(parsed)) {
-  //         notes = parsed;
-  //       } else if (
-  //         typeof parsed === "object" &&
-  //         parsed !== null &&
-  //         parsed.title
-  //       ) {
-  //         notes = [parsed];
-  //       }
-  //     } catch (err) {
-  //       notes = notesEx
-  //         .split("<sep>")
-  //         .map((item) => item.trim())
-  //         .filter((item) => item)
-  //         .map((item) => {
-  //           try {
-  //             return JSON.parse(item);
-  //           } catch (_err) {
-  //             return null;
-  //           }
-  //         })
-  //         .filter((item) => item);
-  //     }
-  //   }
-
-  //   notes.push(infoExtra);
-  //   localStorage.setItem("notes", JSON.stringify(notes));
-
-  //   sendExtra();
-  // }
-
-  // if (!errR) {
-  //   if (ExtraEvent) {
-  //     UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick='DelEvent(this, ${JSON.stringify(infoExtra)});' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
-  //   } else {
-  //     UTeacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time1">${TimePeriodEvent}</span><svg class="del-event" onclick='DelEvent(this, ${JSON.stringify(infoExtra)});' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`;
-  //   }
-
-  //   document.getElementById("event-input").removeAttribute("data-uuid");
-  //   setTimeout(() => {
-  //     localStorage.setItem("schedule", container.innerHTML);
-  //   }, 100);
-  //   // allTeachers.forEach((teacher) => {
-  //   //   if (teacher.style.display === "block") {
-  //   //     if (ExtraEvent) {
-  //   //     teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-  //   //     } else {
-  //   //       teacher.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-  //   //     }
-  //   //   }
-  //   // });
-  //   // if (TeacherOnly.style.display === "block") {
-  //   //        if (ExtraEvent) {
-  //   //        TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><h6 style="font-weight: 200; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: 80%;">${ExtraEvent}</h6><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-  //   //        } else {
-  //   //         TeacherOnly.innerHTML += `<div class="custom-events"><h4 style="letter-spacing: 1px; font-weight: 600;">${TitleEvent}</h4><span class="time">${TimePeriodEvent}</span><svg class="del-event" onclick="this.parentElement.style.display = 'none';" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg></div>`
-  //   //        }
-  //   //      }
-  // }
 }
 
 function toBtoa(str) {
@@ -4586,26 +3632,13 @@ document.addEventListener("keydown", (event) => {
 
 window.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded");
-  
+
   newUIFeatures();
   initDynamicDayBottomSpacing();
   //teacherHide();
   upsSV();
   //setThemesData();
   // initColorPicker();
-  
-
-    if (localStorage.getItem("notes") && localStorage.getItem("notes") !== "[]") {
-    stopAll();
-    message.style.display = "block";
-    message.innerHTML = `<h2 style='color: yellow;'>Напоминаю!</h2><p>У тебя есть заметки на предметы</p><div class="msg-btn12"><button class="my-def-btns" style="background: var(--tg-theme-destructive-text-color) !important" onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)'; localStorage.removeItem('notes'); sendExtra(); updater.click();">Очистить все</button><button onclick="message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Закрыть</button></div>`;
-
-    setTimeout(() => {
-      message.parentElement.style.transform = "translate(0)";
-      message.innerHTML = "";
-      message.style.display = "none";
-    }, 7500);
-  }
 });
 
 const Header = document.querySelector("header");
@@ -4705,7 +3738,7 @@ function initSwiper() {
     loop: true,
   });
 
-  // помечаем программные переходы (кнопки дней, календарь, стрелки заметок),
+  // помечаем программные переходы (кнопки дней, календарь),
   // чтобы slideChange от них не принимался за свайп через границу недели.
   // slideChange доходит асинхронно, поэтому флаг снимаем по таймауту,
   // а не сразу после вызова
@@ -4804,7 +3837,6 @@ const ICON_OFF_D =
   const themePl = document.getElementById("theme-status-ap");
   const asntPl = document.getElementById("activate-ai-a");
   const lessonPl = document.getElementById("lessons-style-status");
-  const notesPl = document.getElementById("notes-s-status");
   const perPl = document.getElementById("activate-person-a");
 
   // asntPl.onchange = () => {
@@ -5047,21 +4079,6 @@ async function noti() {
         // console.log("theme was applied (func noti)");
         //set2Theme();
       }
-
-      if (extraData.notes) {
-        const savedPinnedUuid = localStorage.getItem("pin-note");
-        
-        localStorage.setItem("notes", JSON.stringify(extraData.notes));
-        console.log("got notes (func noti)");
-        
-        if (savedPinnedUuid) {
-          const notesExist = extraData.notes.some(note => String(note.uuid) === String(savedPinnedUuid));
-          if (!notesExist) {
-            localStorage.setItem("pin-note", "");
-            console.log("pinned note no longer exists, clearing pin-note");
-          }
-        }
-      }
     }
   } catch (error) {
     console.warn("Дополнительные данные недоступны:", error);
@@ -5069,8 +4086,7 @@ async function noti() {
 }
 
 async function initApp() {
-  await noti(); 
-  getNotes();
+  await noti();
   if (localStorage.getItem("customThemeColors")) {
     applyTheme(localStorage.getItem("customThemeColors").split(","))
   }
@@ -5143,22 +4159,6 @@ async function sendExtra() {
     return;
   }
 
-  let notes = [];
-  const notesRaw = localStorage.getItem("notes");
-  if (notesRaw) {
-    try {
-      const parsedNotes = JSON.parse(notesRaw);
-      if (Array.isArray(parsedNotes)) {
-        notes = parsedNotes;
-      } else if (parsedNotes && typeof parsedNotes === "object") {
-        notes = [parsedNotes];
-      }
-    } catch (err) {
-      console.error("Failed to parse notes from localStorage:", err);
-      notes = [];
-    }
-  }
-
   let theme = [];
   const storedTheme = localStorage.getItem("customThemeColors");
   if (storedTheme) {
@@ -5175,7 +4175,7 @@ async function sendExtra() {
         Authorization: initData,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ notes, theme }),
+      body: JSON.stringify({ theme }),
     });
 
     if (!response.ok) {
@@ -5398,10 +4398,6 @@ function newUIFeatures() {
   // newToRep();
   // document.querySelector("header h1").innerHTML = "Мой дневник";
   // document.querySelector(".days ul").style.gap = "2.25vw";
-  // document.querySelector("#event-input textarea").style.maxHeight = "180px";
-  // document
-  //   .querySelector("#event-input textarea")
-  //   .setAttribute("maxlength", 128);
   document.querySelectorAll(".btnD").forEach((btn, idx) => {
     if (idx === 6) {
       btn.style.display = "none";
@@ -5419,12 +4415,6 @@ function newUIFeatures() {
 
   updateDayButtonDates();
 
-  //var menu2 = document.createElement("div");
-  //menu2.classList.add("menu-swiper");
-  //document.body.appendChild(menu2);
-  //menu2.style.position = "fixed";
-  //menu2.style.bottom = "1em";
-  //menu2.innerHTML = <ul style="display:flex; flex: 1 1 0; min-width: 0; gap: .5em; font-size: smaller;"><li>Расписание</li><li>Заметки</li><li>Задания</li><li>Профиль</li></ul>;
   // document.querySelectorAll("h5").forEach((r) => {
   //   if (r.innerHTML.startsWith("Корпус")) {
   //     r.innerHTML +=
@@ -5454,7 +4444,6 @@ window.addEventListener("DOMContentLoaded", () => { if (container.innerHTML) ups
 
 // document.getElementById("schedule-show")
 // document.getElementById("marks-show")
-//document.getElementById("notes-show").addEventListener("click", initApp(), {"once": true});
 // document.getElementById("profile-show")
 //window.addEventListener("DOMContentLoaded", ()=> initApp());
 
@@ -5642,83 +4631,13 @@ function loadSummary() {
     </div>
   `;
 
-  // лента дедлайнов и виджет «Куда идти» живут в одном ритме со сводкой
+  // виджет «Куда идти» живёт в одном ритме со сводкой
   // (этот же вызов отрабатывает и 30-секундный интервал выше)
-  renderDeadlinesStrip();
   renderGoWidget();
-}
-
-/* ── Бейджи заметок на парах расписания ── */
-function paintNoteBadgesOnLessons() {
-  // идемпотентно: MutationObserver расписания (watchScheduleMutations) перезапускает
-  // enrichLessonRows после каждой вставки точек — пересоздание замыкает бесконечный цикл
-  const off = document.body.classList.contains("pref-noteBadges-off");
-  const openLinked = off ? [] : readNotes().filter((n) => n.pairLink && !n.done);
-  document.querySelectorAll(".lesson-row").forEach((row) => {
-    if (row.closest("#demo-lesson")) return;
-    const hits = openLinked.filter(
-      (n) =>
-        n.pairLink.subject === row.dataset.subject &&
-        String(n.pairLink.lessonCode || "") === String(row.dataset.lessonCode || ""),
-    );
-    const existing = row.querySelector(":scope > .lesson-note-dot");
-    if (!hits.length) {
-      existing?.remove();
-      return;
-    }
-    const urgent = hits.some((h) => h.priority === "urgent" || deadlineUrgency(h.deadline) === "soon" || deadlineUrgency(h.deadline) === "overdue");
-    const count = String(hits.length);
-    const title = hits.map((h) => h.title).join(", ");
-    if (existing && existing.textContent === count && existing.title === title && existing.classList.contains("is-urgent") === urgent) {
-      return;
-    }
-    existing?.remove();
-    const dot = document.createElement("span");
-    dot.className = "lesson-note-dot";
-    if (urgent) dot.classList.add("is-urgent");
-    dot.textContent = count;
-    dot.title = title;
-    row.appendChild(dot);
-  });
-}
-
-/* ── Лента дедлайнов на «Мой день» ── */
-function renderDeadlinesStrip() {
-  let strip = document.getElementById("deadlines-strip");
-  const summary = document.getElementById("summary-screen");
-  if (!summary) return;
-  if (!strip) {
-    strip = document.createElement("div");
-    strip.id = "deadlines-strip";
-    summary.insertBefore(strip, summary.querySelector(".now-lesson-summary-container"));
-  }
-  const upcoming = readNotes()
-    .filter((n) => n.deadline && !n.done)
-    .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-    .slice(0, 4);
-  if (!upcoming.length) {
-    strip.innerHTML = "";
-    strip.hidden = true;
-    return;
-  }
-  strip.hidden = false;
-  strip.innerHTML =
-    `<div class="deadlines-strip-head">Дедлайны</div>` +
-    upcoming
-      .map((n) => {
-        const u = deadlineUrgency(n.deadline);
-        return `<button type="button" class="deadline-pill deadline-${u}" onclick="document.getElementById('notes-show').click()">
-          <strong>${escapeHtml(n.title)}</strong>
-          <span>${escapeHtml(formatDeadline(n.deadline))}</span>
-        </button>`;
-      })
-      .join("");
 }
 
 /* ── Серия дней (streak) ── */
 const STREAK_KEY = "boostStreak_v1";
-const BOARD_OPT_IN_KEY = "groupBoardOptIn_v1";
-const REMINDER_SYNC_KEY = "deadlineRemindersSyncedAt_v1";
 const PAYWALL_SHOWN_KEY = "softPaywallShown_v1";
 const INSTALL_HINT_KEY = "homeScreenHintShown_v1";
 
@@ -5955,164 +4874,7 @@ function renderGoWidget() {
   if (state === "next" && minutes <= 5) box.classList.add("is-urgent-go");
 }
 
-/* ── Доска дедлайнов группы (анонимный обмен) ── */
-function collectPublicDeadlines() {
-  let notes = [];
-  try {
-    notes = JSON.parse(localStorage.getItem("notes") || "[]");
-  } catch (_) {
-    notes = [];
-  }
-  if (!Array.isArray(notes)) return [];
-  return notes
-    .filter((n) => n && n.deadline && !n.done)
-    .slice(0, 20)
-    .map((n) => ({
-      title: String(n.title || "").slice(0, 64),
-      subject: String(n.subject || "").slice(0, 64),
-      deadline: n.deadline,
-      priority: ["low", "normal", "high", "urgent"].includes(n.priority)
-        ? n.priority
-        : "normal",
-    }));
-}
-
-async function publishGroupBoard() {
-  const items = collectPublicDeadlines();
-  const data = await api("/group/board", {
-    method: "POST",
-    body: JSON.stringify({
-      items,
-      optIn: true,
-      anonymous: true,
-    }),
-  });
-  localStorage.setItem(BOARD_OPT_IN_KEY, "1");
-  return data;
-}
-
-async function fetchGroupBoard() {
-  return api("/group/board", { method: "GET" });
-}
-
-function renderGroupBoard(data) {
-  const notesScreen = document.getElementById("notes-screen");
-  if (!notesScreen) return;
-  let panel = document.getElementById("group-board");
-  if (!panel) {
-    panel = document.createElement("section");
-    panel.id = "group-board";
-    panel.className = "group-board";
-    const h1 = notesScreen.querySelector("h1");
-    if (h1) h1.insertAdjacentElement("afterend", panel);
-    else notesScreen.prepend(panel);
-  }
-
-  const items = Array.isArray(data?.items) ? data.items : [];
-  const group = data?.group || localStorage.getItem("userGroup") || "Группа";
-  const opted = localStorage.getItem(BOARD_OPT_IN_KEY) === "1";
-
-  panel.innerHTML = `
-    <div class="group-board-head">
-      <div>
-        <strong>Доска дедлайнов · ${escapeHtml(group)}</strong>
-        <p>Анонимно от одногруппников</p>
-      </div>
-      <button type="button" id="group-board-sync">${opted ? "Обновить" : "Поделиться своими"}</button>
-    </div>
-    <div class="group-board-list">
-      ${
-        items.length
-          ? items
-              .slice(0, 12)
-              .map(
-                (it) => `<article class="group-board-item prio-${escapeHtml(it.priority || "normal")}">
-          <strong>${escapeHtml(it.title)}</strong>
-          <span>${escapeHtml(it.subject || "")}</span>
-          <time>${escapeHtml(
-            it.deadline
-              ? new Date(it.deadline).toLocaleString("ru-RU", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "",
-          )}</time>
-        </article>`,
-              )
-              .join("")
-          : `<p class="group-board-empty">${opted ? "Пока пусто — будь первым" : "Включи обмен, чтобы видеть дедлайны группы"}</p>`
-      }
-    </div>`;
-
-  panel.querySelector("#group-board-sync")?.addEventListener("click", async () => {
-    try {
-      toast("Синхронизация…");
-      await publishGroupBoard();
-      const fresh = await fetchGroupBoard();
-      renderGroupBoard(fresh);
-      safeHaptic("success");
-      toast("Доска обновлена");
-    } catch (err) {
-      console.warn(err);
-      safeHaptic("error");
-      toast("Доска недоступна офлайн");
-    }
-  });
-}
-
-async function initGroupBoard() {
-  try {
-    if (localStorage.getItem(BOARD_OPT_IN_KEY) === "1") {
-      await publishGroupBoard().catch(() => {});
-    }
-    const data = await fetchGroupBoard();
-    renderGroupBoard(data);
-  } catch (_) {
-    renderGroupBoard({ items: [], group: localStorage.getItem("userGroup") });
-  }
-}
-
-/* ── Синхронизация напоминаний о дедлайнах с ботом ── */
-async function syncDeadlineReminders(force = false) {
-  const last = Number(localStorage.getItem(REMINDER_SYNC_KEY) || 0);
-  if (!force && Date.now() - last < 5 * 60 * 1000) return;
-
-  let notes = [];
-  try {
-    notes = JSON.parse(localStorage.getItem("notes") || "[]");
-  } catch (_) {
-    return;
-  }
-  const reminders = (Array.isArray(notes) ? notes : [])
-    .filter((n) => n?.deadline && !n.done)
-    .map((n) => ({
-      uuid: String(n.uuid || ""),
-      title: String(n.title || "").slice(0, 96),
-      deadline: n.deadline,
-      priority: n.priority || "normal",
-      subject: String(n.subject || "").slice(0, 64),
-    }))
-    .filter((r) => r.uuid && r.deadline)
-    .slice(0, 50);
-
-  try {
-    await api("/reminders/sync", {
-      method: "POST",
-      body: JSON.stringify({
-        reminders,
-        leadMinutes: [60, 1440],
-        enabled: true,
-      }),
-    });
-    localStorage.setItem(REMINDER_SYNC_KEY, String(Date.now()));
-  } catch (err) {
-    console.warn("reminder sync", err);
-  }
-}
-
-/* ── Deep links / start_param: go | story_* | day_DD.MM | note_<uuid> ── */
+/* ── Deep links / start_param: go | story_* | day_DD.MM ── */
 async function trackAttribution(param) {
   const value = String(param || "").slice(0, 128);
   if (!value) return;
@@ -6122,9 +4884,7 @@ async function trackAttribution(param) {
       ? "go"
       : value.startsWith("day_")
         ? "day"
-        : value.startsWith("note_")
-          ? "note"
-          : "direct";
+        : "direct";
   const key = `attribution:${source}:${value}`;
   if (sessionStorage.getItem(key)) return;
   try {
@@ -6169,14 +4929,6 @@ function handleStartParam() {
     }, 600);
     return;
   }
-  if (param.startsWith("note_")) {
-    const id = param.slice(5);
-    document.getElementById("notes-show")?.click();
-    setTimeout(() => {
-      document.getElementById(`note-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-      document.getElementById(`note-${id}`)?.classList.add("pair-flash");
-    }, 400);
-  }
 }
 
 /* ── Подсказка «Добавить на экран» ── */
@@ -6213,7 +4965,6 @@ setInterval(loadSummary, 30000);
 const screensButtonsMapping = {
   "schedule-show": [document.querySelector("main"), document.querySelector("header")],
   "marks-show": [document.getElementById("summary-screen")],
-  "notes-show": [document.getElementById("notes-screen")],
   "profile-show": [document.getElementById("profile-screen")]
 }
 
@@ -6242,28 +4993,8 @@ Object.keys(screensButtonsMapping).forEach((k) => {
 
 document.getElementById("schedule-show").click();
 
-document.getElementById("note-add-btn").addEventListener("click", function showHide() {
-  if (this.classList.contains("opened")) {
-    this.classList.remove("opened");
-    CloseBG();
-  } else {
-    ShowAdd();
-  this.classList.add("opened");
-}
-});
-
 document.querySelector(".user-notifications").addEventListener("click", () => {showNotificationsSettings()});
 document.querySelector(".user-appear").addEventListener("click", openAppearancePopup)
-
-// document.getElementById("cancel-event-btn").addEventListener("click", function(){
-//  if (document.getElementById("note-add-btn").classList.contains("opened")) {
-//     document.getElementById("note-add-btn").classList.remove("opened");
-//     CloseBG();
-//   } else {
-//     ShowAdd();
-//   document.getElementById("note-add-btn").classList.add("opened");
-// }
-// });
 
 // function showNotificationsSettings() {
 //         document.querySelector(".popuper-notifications").style.display = "flex";
@@ -6318,11 +5049,6 @@ function addToProfile() {
     });
   });
 
-  const notesCountEl = document.getElementById("notes-all-c");
-  if (notesCountEl) {
-    notesCountEl.textContent = String(safeReadNotes().length);
-  }
-
   const lessonsAllCountEl = document.getElementById("lessons-all-c");
   if (lessonsAllCountEl) {
     let elems = 0;
@@ -6333,15 +5059,6 @@ function addToProfile() {
     });
     lessonsAllCountEl.textContent = elems;
   }
-}
-
-
-// Редактор заметки открываем явно, не через двойной тогл кнопки «+»:
-// её класс opened мог рассинхронизироваться с реальной видимостью редактора
-function showNoteEditor() {
-  ShowAdd();
-  const addBtn = document.getElementById("note-add-btn");
-  if (addBtn) addBtn.classList.add("opened");
 }
 
 let colorPicker = null;
@@ -6431,15 +5148,11 @@ function getValidCustomColors() {
 }
 let CustombtnEnabled = false;
 
-/* ── Тумблеры внешнего вида: подсказки, подсветка, перемены, заметки ── */
+/* ── Тумблеры внешнего вида: подсказки, подсветка, перемены ── */
 const PREF_KEY = {
   tips: "prefTips",
   highlights: "prefHighlights",
   breaks: "prefBreaks",
-  compactNotes: "prefCompactNotes",
-  largeNotes: "prefLargeNotes",
-  hideDone: "prefHideDone",
-  noteBadges: "prefNoteBadges",
 };
 
 function applyPref(key, checked) {
@@ -6448,46 +5161,19 @@ function applyPref(key, checked) {
   document.body.classList.toggle(`pref-${key}-off`, !checked);
   document.body.classList.toggle(`pref-${key}-on`, checked);
   if (key === "breaks") renderBreakChips();
-  if (key === "hideDone" || key === "noteBadges") {
-    getNotes();
-  }
-}
-
-function syncPairLinkClear() {
-  const summary = document.getElementById("pair-link-summary");
-  const clearBtn = document.getElementById("clear-pair-link");
-  if (clearBtn) clearBtn.hidden = summary?.dataset.linked !== "1";
 }
 
 function initAppearanceExtras() {
-  // Тумблеры живут прямо в под-экранах «Подсказки» и «Заметки студента»
+  // Тумблеры живут прямо в под-экране «Подсказки»
   document.querySelectorAll("input[data-pref]").forEach((input) => {
     if (input.__prefBound) return;
     input.__prefBound = true;
     const key = input.dataset.pref;
     const storageKey = PREF_KEY[key] || `pref${key[0].toUpperCase()}${key.slice(1)}`;
-    input.checked = (localStorage.getItem(storageKey) ?? (key === "tips" || key === "highlights" || key === "breaks" || key === "noteBadges" ? "on" : "off")) === "on";
+    input.checked = (localStorage.getItem(storageKey) ?? (key === "tips" || key === "highlights" || key === "breaks" ? "on" : "off")) === "on";
     applyPref(key, input.checked);
     input.addEventListener("change", () => applyPref(key, input.checked));
   });
-  // Ряд «Заметки студента» открывает свой под-экран
-  const notesSwipe = document.getElementById("notes-swipe-1");
-  const notesScreen = document.getElementById("set-app4");
-  if (notesSwipe && notesScreen && !notesSwipe.__prefBound) {
-    notesSwipe.__prefBound = true;
-    notesSwipe.addEventListener("click", () => {
-      const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
-      if (!appearanceSettings) return;
-      if (tg?.BackButton) { tg.BackButton.show(); tg.BackButton.onClick(() => window.__showAppearanceRoot?.()); }
-      appearanceSettings.style.animation = "ending .3s forwards";
-      setTimeout(() => {
-        appearanceSettings.style.display = "none";
-        appearanceSettings.style.animation = "";
-        notesScreen.style.display = "flex";
-        notesScreen.style.animation = "starting .5s forwards";
-      }, 330);
-    });
-  }
 }
 
 /* ── Пресеты карточки пары в редакторе занятия ── */
@@ -6823,7 +5509,6 @@ function initColorPicker() {
 
         function showAppearanceSettings() {
             const el2 = document.getElementById("set-app2");
-            const el4 = document.getElementById("set-app4");
             if (themeSettings) {
                 themeSettings.style.display = "none";
                 themeSettings.style.animation = "";
@@ -6833,9 +5518,6 @@ function initColorPicker() {
             } if (tipsSettings) {
                 tipsSettings.style.display = "none";
                 tipsSettings.style.animation = ""
-            } if (el4) {
-                el4.style.display = "none";
-                el4.style.animation = ""
             }
             appearanceSettings.style.display = "flex";
             appearanceSettings.style.animation = "starting2 .5s forwards";
@@ -7062,7 +5744,7 @@ function initColorPicker() {
 
         document.getElementById("lesson-swipe-1").onclick = () => showLessonVisualSetting();
 
-/* ── Инициализация фич: расписание, шаринг, AI, заметки, сводка ── */
+/* ── Инициализация фич: расписание, шаринг, AI, сводка ── */
 window.addEventListener("DOMContentLoaded", () => {
   watchScheduleMutations();
   enhanceLessonEditor();
@@ -7070,53 +5752,15 @@ window.addEventListener("DOMContentLoaded", () => {
   initAiChat();
   initAppearanceExtras();
   enrichLessonRows();
-  getNotes();
-  renderDeadlinesStrip();
   renderGoWidget();
   bumpStreak("open");
   injectPremiumPresets();
   handleStartParam();
   injectHomeScreenHint();
-  syncDeadlineReminders();
-  initGroupBoard();
 
   // кнопки шаринга в календаре появляются при каждом открытии
   document.getElementById("calendar-btn")?.addEventListener("click", () => {
     setTimeout(injectShareButtons, 50);
-  });
-
-  document.getElementById("clear-pair-link")?.addEventListener("click", () => {
-    sessionStorage.removeItem("pendingPairLink");
-    const pairSummary = document.getElementById("pair-link-summary");
-    if (pairSummary) {
-      pairSummary.dataset.linked = "0";
-      delete pairSummary.dataset.payload;
-      pairSummary.textContent = "Не привязана — удержите пару в расписании";
-    }
-    syncPairLinkClear();
-    safeImpact("light");
-  });
-
-  // чипы быстрого дедлайна (+3ч / +24ч / …)
-  document.querySelectorAll("[data-deadline-preset]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const hours = Number(btn.dataset.deadlinePreset);
-      const d = new Date(Date.now() + hours * 3600000);
-      const input = document.getElementById("deadline-event");
-      if (!input) return;
-      input.value = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        .toISOString()
-        .slice(0, 16);
-      safeImpact("light");
-    });
-  });
-
-  // выбор приоритета — единственный активный чип
-  document.getElementById("priority-event")?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".prio-opt");
-    if (!btn) return;
-    setPriorityValue(btn.dataset.value);
-    safeImpact("light");
   });
 
   // ленивый рендер при переключении экранов
@@ -7127,11 +5771,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById("profile-show")?.addEventListener("click", () => {
     setTimeout(renderStreakChip, 80);
-  });
-  document.getElementById("notes-show")?.addEventListener("click", () => {
-    setTimeout(() => {
-      if (!document.getElementById("group-board")) initGroupBoard();
-    }, 80);
   });
 
   // Premium-пресеты возвращаются при повторном открытии настроек
