@@ -2764,15 +2764,15 @@ header h1 svg,
         }
 
         .tg-th-colors div:first-child {
-            background: var(--tg-theme-section-bg-color);
+            background: var(--tg-theme-bg-color);
         }
 
         .tg-th-colors div:nth-child(2) {
-            background: var(--tg-theme-section-separator-color);
+            background: var(--tg-theme-secondary-bg-color);
         }
 
         .tg-th-colors div:nth-child(3) {
-            background: var(--tg-theme-link-color);
+            background: var(--tg-theme-accent-text-color, var(--tg-theme-button-color));
         }
 
         .tg-sync-txt-1 {

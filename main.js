@@ -2591,6 +2591,8 @@ tg.onEvent('themeChanged', () => {
     applyTheme(savedTheme.split(","));
     hideLoader();
   }
+  // превью гаммы и образцы в настройках перечитываются из обновлённых --tg-theme-*
+  if (typeof refreshThemeStatus === "function") refreshThemeStatus();
 });
 
 function cacheData(data) {
@@ -4267,6 +4269,11 @@ function applyTheme(colors) {
   root.setProperty("--tg-theme-secondary-bg-color", colors[1]);
   root.setProperty("--tg-theme-accent-text-color", colors[2]);
   root.setProperty("--tg-theme-button-color", colors[2]);
+  // расширенные слоты: старые сохранённые темы из трёх цветов продолжают
+  // работать — текст, хинты и текст кнопок тогда остаются от Telegram
+  if (colors[3]) root.setProperty("--tg-theme-text-color", colors[3]);
+  if (colors[4]) root.setProperty("--tg-theme-hint-color", colors[4]);
+  if (colors[5]) root.setProperty("--tg-theme-button-text-color", colors[5]);
 
   root.setProperty("--main-bg-color", colors[0]);
   root.setProperty("--header-bg-color", colors[0]);
@@ -5082,11 +5089,26 @@ function refreshThemeStatus() {
     element.classList.remove("selected");
   });
 
-  const mainColorElem = document.getElementById("main-color-th");
-  const secondaryColorElem = document.getElementById("secondary-color-th");
-  const accentColorElem = document.getElementById("accent-color-th");
+  const slotElems = [
+    document.getElementById("main-color-th"),
+    document.getElementById("secondary-color-th"),
+    document.getElementById("accent-color-th"),
+    document.getElementById("text-color-th"),
+    document.getElementById("hint-color-th"),
+    document.getElementById("btntext-color-th"),
+  ];
 
-  mainColorElem.classList.add("selected");
+  // слоты без сохранённого значения показывают живую гамму Telegram
+  const telegramSlots = [
+    getCssVar("--tg-theme-bg-color") || defaultColors[0],
+    getCssVar("--tg-theme-secondary-bg-color") || defaultColors[1],
+    getCssVar("--tg-theme-accent-text-color") || defaultColors[2],
+    getCssVar("--tg-theme-text-color") || "#ffffff",
+    getCssVar("--tg-theme-hint-color") || "#aaaaaa",
+    getCssVar("--tg-theme-button-text-color") || "#ffffff",
+  ];
+
+  slotElems[0].classList.add("selected");
 
   const rawLStheme = localStorage.getItem("customThemeColors");
   let colors = [];
@@ -5095,33 +5117,14 @@ function refreshThemeStatus() {
     colors = rawLStheme.split(",").map((c) => c.trim().toLowerCase());
   }
 
-  if (colors.length === 3) {
-    mainColorElem.textContent = colors[0];
-    mainColorElem.style.background = colors[0];
+  // сохранённая тема бывает старой (3 слота) и новой (6)
+  slotElems.forEach((el, i) => {
+    const color = colors[i] || telegramSlots[i];
+    el.textContent = color;
+    el.style.background = color;
+  });
 
-    secondaryColorElem.textContent = colors[1];
-    secondaryColorElem.style.background = colors[1];
-
-    accentColorElem.textContent = colors[2];
-    accentColorElem.style.background = colors[2];
-
-    if (colorPicker) colorPicker.color.hexString = colors[0];
-  } else {
-    const bg = getCssVar("--tg-theme-bg-color") || defaultColors[0];
-    const secBg = getCssVar("--tg-theme-secondary-bg-color") || defaultColors[1];
-    const accent = getCssVar("--tg-theme-accent-text-color") || defaultColors[2];
-
-    mainColorElem.textContent = bg;
-    mainColorElem.style.background = bg;
-
-    secondaryColorElem.textContent = secBg;
-    secondaryColorElem.style.background = secBg;
-
-    accentColorElem.textContent = accent;
-    accentColorElem.style.background = accent;
-
-    if (colorPicker) colorPicker.color.hexString = bg;
-  }
+  if (colorPicker) colorPicker.color.hexString = slotElems[0].textContent;
 
   disableSaveBtn();
 }
@@ -5144,7 +5147,7 @@ function getValidCustomColors() {
   if (!cleanStr) return null;
 
   const colors = cleanStr.split(",").filter(Boolean);
-  return colors.length === 3 ? colors : null;
+  return colors.length === 3 || colors.length === 6 ? colors : null;
 }
 let CustombtnEnabled = false;
 
@@ -5423,7 +5426,9 @@ function initColorPicker() {
 
     const propertiesToRemove = [
       "--tg-theme-bg-color", "--tg-theme-header-bg-color", "--tg-theme-secondary-bg-color",
-      "--tg-theme-accent-text-color", "--tg-theme-button-color", "--main-bg-color",
+      "--tg-theme-accent-text-color", "--tg-theme-button-color",
+      "--tg-theme-text-color", "--tg-theme-hint-color", "--tg-theme-button-text-color",
+      "--main-bg-color",
       "--header-bg-color", "--header-glass", "--accent-bg", "--days-bg",
       "--day-card-bg", "--accent", "--alert-bg", "--room-green",
       "--lst-btn-color", "--days-selected-bg"
@@ -5437,10 +5442,13 @@ function initColorPicker() {
       if (typeof sendExtra === "function") await sendExtra();
     } else {
       const selectedColors = [
-        document.getElementById("main-color-th").textContent.trim(),
-        document.getElementById("secondary-color-th").textContent.trim(),
-        document.getElementById("accent-color-th").textContent.trim(),
-      ];
+        "main-color-th",
+        "secondary-color-th",
+        "accent-color-th",
+        "text-color-th",
+        "hint-color-th",
+        "btntext-color-th",
+      ].map((id) => document.getElementById(id).textContent.trim());
 
       const customThemeStr = selectedColors.join(",");
       localStorage.setItem("customThemeColors", customThemeStr);
@@ -5487,6 +5495,7 @@ function initColorPicker() {
 
         function showThemeSettingsScreen() {
           if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
+            refreshThemeStatus();
             appearanceSettings.style.animation = "ending .3s forwards";
             setTimeout(() => {
                 appearanceSettings.style.display = "none";
