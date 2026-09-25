@@ -90,6 +90,7 @@
 
 button, input, select, textarea {
     font-family: inherit;
+    font-variant-numeric: lining-nums;
 }
 
 body {
@@ -98,6 +99,7 @@ body {
     color: var(--over-color);
     scroll-behavior: smooth;
     font-family: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-variant-numeric: lining-nums;
     min-height: 100vh;
     overflow-x: hidden !important;
 }
