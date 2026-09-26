@@ -31,6 +31,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Stamp static assets with unix-time version
+        run: |
+          sed -E -i "s/((style\.css|main\.js)\?v=)[^"]*/$(date +%s)/g" index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
