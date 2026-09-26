@@ -2337,6 +2337,12 @@ header h1 svg,
             cursor: pointer;
         }
 
+        .appearance-root {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
         .set-title {
             font-size: 24px;
             font-weight: 800;

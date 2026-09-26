@@ -3870,7 +3870,7 @@ const ICON_OFF_D =
   function openAppearancePopup() {
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideAppearancePopup()})};
             document.querySelectorAll(".popuper-appearance [id^='set-app']").forEach(e => {e.style.display = "none"; e.style.animation = "";});
-            const areaRoot = document.querySelector(".popuper-appearance > .a-settings-area");
+            const areaRoot = document.querySelector(".popuper-appearance > .appearance-root");
             areaRoot.style.animation = "";
             areaRoot.style.opacity = "";
             areaRoot.style.transform = "";
@@ -5507,7 +5507,7 @@ function initColorPicker() {
   });
 }
 
-        const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
+        const appearanceSettings = document.querySelector(".popuper-appearance > .appearance-root");
         const themeSettings = document.getElementById("set-app1");
         const backToAppearance = document.querySelectorAll(".back-to-ap-settins-btn");
 
@@ -5589,26 +5589,8 @@ function initColorPicker() {
 
         function showLessonVisualSetting() {
             const el = document.getElementById("set-app2");
-            appearanceSettings.style.animation = "";
-            appearanceSettings.style.animation = "ending .3s forwards";
-            
-            setTimeout(() => {
-             appearanceSettings.style.display = "none";
-             el.style.display = "flex";
-            el.style.animation = "";
-            el.style.animation = "starting .5s ease forwards";
-            
-            }, 310);
-            
-
-            const lessonIn = document.querySelector("#demo-lesson .day");
-
-            [ lessonIn.querySelector(".day-name2"), lessonIn.querySelector(".lesson"), lessonIn.querySelector(".time"), lessonIn.querySelector(".subject"), lessonIn.querySelector(".room"), lessonIn.querySelector(".teacher")].filter(Boolean).forEach((e) => {
-                e.onclick = () => {
-                    selectObjectSettings(e);
-                }
-             })
-            
+            appearanceSettings.style.display = "none";
+            el.style.display = "flex";
         };
 
 
