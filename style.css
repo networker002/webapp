@@ -149,7 +149,10 @@ header {
     z-index: 999;
     padding: 10px !important;
     border-radius: 0 0 35px 35px;
-    padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top)) !important;
+    padding-top: calc(
+        var(--tg-safe-area-inset-top, 0px) +
+        var(--tg-content-safe-area-inset-top, 0px) + 10px
+    ) !important;
 }
 
 header h1 {
@@ -1744,7 +1747,9 @@ h6.skeleton { opacity: .4; }
     width: 100%;
     box-sizing: border-box;
     padding-inline: 16px;
-    padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
+    padding-top: calc(
+        var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)
+    );
 }
 
 /* заголовок центрируется на всю ширину, плашка юзера — absolute справа */
@@ -1753,7 +1758,8 @@ h6.skeleton { opacity: .4; }
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 52px;
+    /* 48px = 44px чип + рамка; центр строки держит заголовок на общих 10px */
+    min-height: 48px;
 
     h1 {
         display: flex;
@@ -1929,11 +1935,19 @@ h6.skeleton { opacity: .4; }
 }
 
 /* иконки заголовков всех трёх вкладок — единый размер (26px при тексте 32px) */
+header h1,
+.summary-header h1,
+.header-row h1 {
+  /* фиксированная строка — смена метрик шрифта больше не двигает заголовки */
+  line-height: 1.2;
+}
+
 header h1 svg,
 .summary-header h1 svg,
 #profile-screen h1 .mi {
-  width: 26px;
-  height: 26px;
+  /* 1em: глиф Material Symbols (~0.85em) видимой высотой как текст заголовка */
+  width: 1em;
+  height: 1em;
   flex: none;
 }
 /* инлайновые svg карточек могут быть без класса .mi — нормализуем */
@@ -2992,7 +3006,12 @@ header h1 svg,
         }
 
         .summary-header h1 {
-            padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
+            /* +5px гасят паддинг .screen-to-show — строка заголовка на тех же 10px,
+               что и на вкладках «Расписание» и «Профиль» */
+            padding-top: calc(
+                var(--tg-content-safe-area-inset-top, 0px) +
+                var(--tg-safe-area-inset-top, 0px) + 5px
+            );
             text-align: center;
             display: flex;
             justify-content: center;
