@@ -2251,13 +2251,15 @@ header h1 svg,
             padding-left: 10px;
         }
 
-        .a-settings-area>div {
+        .a-settings-area>div,
+        .a-settings-area>label {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .a-settings-area>div>div {
+        .a-settings-area>div>div,
+        .a-settings-area>label>div {
             display: flex;
             align-items: center;
             gap: 10px
@@ -2311,19 +2313,55 @@ header h1 svg,
         }
 
         .sett-app {
-            transition: opacity .2s ease, transform .1s ;
+            transition: opacity .15s ease;
 
-            &:active {opacity: .7; transform: translateX(5px);}
-
-            svg:nth-child(2) {transition: transform .075s;}
-
-            &:active svg:nth-child(2) {
-                transform: rotateY(180deg) scale(.7);
-            }
+            &:active { opacity: .55; }
         }
 
-        #theme-status-ap, #lessons-style-status {
+        /* иконки строк — фиксированная колонка, текст начинается друг под другом */
+        .sett-app > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .sett-app > div:first-child svg,
+        .sett-app > div:first-child #robot-svg-settings svg {
+            width: 24px;
+            height: 24px;
+            flex: none;
+        }
+
+        .sett-app.set-toggle {
+            cursor: pointer;
+        }
+
+        .set-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 4px 0 2px !important;
+        }
+
+        .set-sub {
             color: var(--tg-theme-hint-color);
+            font-size: 14px;
+            margin: 0 0 16px !important;
+        }
+
+        .set-group-label {
+            color: var(--tg-theme-hint-color);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin: 18px 4px 8px !important;
+        }
+
+        .soon-tag {
+            color: var(--tg-theme-hint-color);
+            font-size: 13px;
+            font-weight: 600;
         }
 
         #robot-svg-settings {
@@ -3861,28 +3899,6 @@ header h1 svg,
                     font-size: 2.5em;
                 }
             }
-        #set-app3 {
-            animation: starting .5s forwards;
-            display: none;
-            flex-direction: column;
-            justify-content: center !important;
-            text-align: center;
-        }
-
-        #set-app3 .tips-screen-title {
-            margin-top: 10px !important;
-        }
-
-        #set-app3 .tips-screen-sub {
-            color: var(--tg-theme-hint-color);
-            font-size: 14px;
-            margin-top: 4px !important;
-        }
-
-        #set-app3 .a-settings-area {
-            padding-left: 10px;
-        }
-
 /* ─── Анимации отключены системно ─── */
 @media (prefers-reduced-motion: reduce) {
   #ai-chat-panel,

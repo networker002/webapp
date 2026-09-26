@@ -3886,9 +3886,7 @@ const ICON_OFF_D =
   }
 
 
-  const themePl = document.getElementById("theme-status-ap");
   const asntPl = document.getElementById("activate-ai-a");
-  const lessonPl = document.getElementById("lessons-style-status");
   const perPl = document.getElementById("activate-person-a");
 
   // asntPl.onchange = () => {
@@ -3979,12 +3977,8 @@ const ICON_OFF_D =
     }
 
   function setThemesData(){
-    if (themePl) {
-      themePl.textContent = localStorage.getItem("customThemeColors") ? "custom" : tg.colorScheme;
-    }
     if (localStorage.getItem("isActiveAI") === "true") {asntPl.checked = true}
     initPerPl();
-    
   }
   function showNotificationsSettings() {
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideNotificationsSettings()}) }
@@ -5298,7 +5292,7 @@ function enhanceLessonEditor() {
 
   const tip = document.createElement("p");
   tip.className = "lesson-editor-tip";
-  tip.textContent = "Тап по элементу превью → тонкая настройка. Пресеты — для быстрого утра.";
+  tip.textContent = "Пресет применяется к карточкам расписания сразу.";
   tools.insertBefore(tip, presets.nextSibling);
 
   const demo = document.getElementById("demo-lesson");
@@ -5495,23 +5489,19 @@ function initColorPicker() {
     const animElem = document.getElementById("anim-svg-save-e");
     animElem.style.left = `${xInside}px`;
     animElem.style.top = `${yInside}px`;
-    animElem.style.animation = "show-a-sg 2s ease forwards";
-    animElem.style.animationDelay = "500ms";
+    animElem.style.animation = "show-a-sg .8s ease forwards";
 
     setTimeout(() => {
       document.getElementById("done-svg-c-0").style.display = "flex";
       setTimeout(() => {
-        document.getElementById("set-app1").style.animation = "ending2 .3s";
         document.getElementById("done-svg-c-0").style.display = "none";
         animElem.style.display = "none";
-        setTimeout(() => {
-          saveBtn.classList.remove("anim");
-          saveBtn.style.pointerEvents = "all";
-          showAppearanceSettings();
-          refreshThemeStatus();
-        }, 330);
-      }, 1000);
-    }, 2000);
+        saveBtn.classList.remove("anim");
+        saveBtn.style.pointerEvents = "all";
+        showAppearanceSettings();
+        refreshThemeStatus();
+      }, 700);
+    }, 500);
 
     saveBtn.classList.add("anim");
   });
@@ -5519,53 +5509,26 @@ function initColorPicker() {
 
         const appearanceSettings = document.querySelector(".popuper-appearance > .a-settings-area");
         const themeSettings = document.getElementById("set-app1");
-        const tipsSettings = document.getElementById("set-app3");
         const backToAppearance = document.querySelectorAll(".back-to-ap-settins-btn");
 
         function showThemeSettingsScreen() {
           if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
             refreshThemeStatus();
-            appearanceSettings.style.animation = "ending .3s forwards";
-            setTimeout(() => {
-                appearanceSettings.style.display = "none";
-                appearanceSettings.style.animation = "";
-                themeSettings.style.display = "flex";
-                themeSettings.style.animation = "starting .5s forwards";
-            }, 330);
-        }
-
-        function showTipsSettingsScreen() {
-          if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function() {showAppearanceSettings()})}
-            appearanceSettings.style.animation = "ending .3s forwards";
-            setTimeout(() => {
-                appearanceSettings.style.display = "none";
-                appearanceSettings.style.animation = "";
-                tipsSettings.style.display = "flex";
-                tipsSettings.style.animation = "starting .5s forwards";
-            }, 330);
+            appearanceSettings.style.display = "none";
+            themeSettings.style.display = "flex";
         }
 
         function showAppearanceSettings() {
+            if (themeSettings) themeSettings.style.display = "none";
             const el2 = document.getElementById("set-app2");
-            if (themeSettings) {
-                themeSettings.style.display = "none";
-                themeSettings.style.animation = "";
-            } if (el2) {
-                el2.style.display = "none";
-                el2.style.animation = ""
-            } if (tipsSettings) {
-                tipsSettings.style.display = "none";
-                tipsSettings.style.animation = ""
-            }
+            if (el2) el2.style.display = "none";
             appearanceSettings.style.display = "flex";
-            appearanceSettings.style.animation = "starting2 .5s forwards";
         }
         window.__showAppearanceRoot = showAppearanceSettings;
 
         
 
         document.getElementById("theme-swipe-1").onclick = showThemeSettingsScreen;
-        document.getElementById("tips-swipe-1").onclick = showTipsSettingsScreen;
         backToAppearance.forEach(e => e.onclick = showAppearanceSettings)
 
 
@@ -5617,143 +5580,12 @@ function initColorPicker() {
 
         document.querySelector(".reset-lesson-settings-c-btn")?.addEventListener("click", () => {
             resetCustomLessonCard();
-            //anim
-            const ob = document.querySelector(".to-settings");
-          ob?.click();
+            localStorage.removeItem("lessonCardPreset");
+            document
+                .querySelectorAll(".lesson-preset-btn")
+                .forEach((b) => b.classList.remove("is-active"));
             disableResLessonBtn();
-          ob?.click();
         });
-
-        var settingsObjNamesMapping = {
-            "day-name2": ["День недели", "--day-name-letter-sp", "--day-name-gap"],
-            "lesson": ["Номер пары", "--lesson-number-padding"],
-            "time": ["Время пары", "--time-letter-sp"],
-            "subject": ["Название предмета", "--subject-f-size"],
-            "room": ["Аудитория", "--room-letter-sp", "--room-f-size"],
-            "teacher": ["Преподаватель", "--tname-f-size"]
-        }
-
-        var settingsObjNamesMapping2 = {
-            "day-name2": ["День недели", "Длина текста", "Расстояние элементов"],
-            "lesson": ["Номер пары", "Размер значка"],
-            "time": ["Время пары", "Расстояние между символами"],
-            "subject": ["Название предмета", "Размер шрифта"],
-            "room": ["Аудитория", "Расстояние между символами", "Размер шрифта"],
-            "teacher": ["Преподаватель", "Размер шрифта"]
-        }
-
-        const lessonCardSettingSteps = {
-            "--day-name-letter-sp": { step: 1, min: 0, max: 10, unit: "px" },
-            "--day-name-gap": { step: 0.1, min: 0, max: 2, unit: "em" },
-            "--lesson-number-padding": { step: 1, min: 0, max: 15, unit: "px" },
-            "--time-letter-sp": { step: 1, min: -1, max: 5, unit: "px" },
-            "--subject-f-size": { step: 1, min: 10, max: 22, unit: "px" },
-            "--room-letter-sp": { step: 1, min: -1, max: 10, unit: "px" },
-            "--room-f-size": { step: 1, min: 10, max: 22, unit: "px" },
-            "--tname-f-size": { step: 1, min: 10, max: 20, unit: "px" }
-        };
-
-        function getLessonCardSettingValue(property) {
-            return getComputedStyle(document.documentElement).getPropertyValue(property).trim();
-        }
-
-        function saveLessonCardSetting(property, value) {
-            const savedSettings = JSON.parse(localStorage.getItem(lessonCardSettingsStorageKey) || "{}");
-            savedSettings[property] = value;
-            localStorage.setItem(lessonCardSettingsStorageKey, JSON.stringify(savedSettings));
-        }
-
-        function updateLessonCardSetting(container, property, description) {
-            const value = getLessonCardSettingValue(property);
-            container.querySelector(".set-content-1").textContent = `${description}: ${value}`;
-            //enableResLessonBtn();
-
-        }
-
-        function changeLessonCardSetting(container, direction) {
-            const selectedObject = document.querySelector(".to-settings");
-            if (!selectedObject) return;
-            enableResLessonBtn();
-
-            const settingIndex = Array.from(document.querySelectorAll(".settings-container-1")).indexOf(container);
-            const property = settingsObjNamesMapping[selectedObject.classList[0]][settingIndex + 1];
-            const description = settingsObjNamesMapping2[selectedObject.classList[0]][settingIndex + 1];
-            const setting = lessonCardSettingSteps[property];
-            if (!setting) return;
-
-            const currentValue = parseFloat(getLessonCardSettingValue(property)) || 0;
-            const nextValue = Math.min(setting.max, Math.max(setting.min, currentValue + direction * setting.step));
-            const value = `${Number(nextValue.toFixed(2))}${setting.unit}`;
-            document.documentElement.style.setProperty(property, value);
-            saveLessonCardSetting(property, value);
-            updateLessonCardSetting(container, property, description);
-        }
-
-        // document.querySelectorAll(".settings-container-1").forEach((container) => {
-        //     container.querySelector(".minus-set").onclick = () => changeLessonCardSetting(container, -1);
-        //     container.querySelector(".plus-set").onclick = () => changeLessonCardSetting(container, 1);
-        // });
-
-        function attachHoldListener(element, callback) {
-        let delayTimer = null;
-        let repeatInterval = null;
-
-        const start = (e) => {
-            if (e.type === 'touchstart') e.preventDefault();
-
-            stop();
-
-            callback();
-
-            delayTimer = setTimeout(() => {
-                repeatInterval = setInterval(callback, 80);
-            }, 400);
-        };
-
-        const stop = () => {
-            clearTimeout(delayTimer);
-            clearInterval(repeatInterval);
-        };
-
-        element.addEventListener('mousedown', start);
-        element.addEventListener('touchstart', start, { passive: false });
-
-        element.addEventListener('mouseup', stop);
-        element.addEventListener('mouseleave', stop);
-        element.addEventListener('touchend', stop);
-        element.addEventListener('touchcancel', stop);
-    }
-
-    document.querySelectorAll(".settings-container-1").forEach((container) => {
-        const minusBtn = container.querySelector(".minus-set");
-        const plusBtn = container.querySelector(".plus-set");
-
-        if (minusBtn) {
-            attachHoldListener(minusBtn, () => changeLessonCardSetting(container, -1));
-        }
-        if (plusBtn) {
-            attachHoldListener(plusBtn, () => changeLessonCardSetting(container, 1));
-        }
-    });
-
-        function selectObjectSettings(obj) {
-            const settingsCont = document.querySelector(".setting-tools-area");
-            const baseSetting = document.querySelector(".settings-container-1").innerHTML;
-            let selected = false;
-            if (obj.classList.contains("to-settings")) selected = true;
-            document.querySelectorAll(".to-settings").forEach((c) => {c.classList.remove("to-settings")});
-            obj.classList.add("to-settings");
-            document.querySelector("#setting-week-name h4").textContent = `${settingsObjNamesMapping[obj.classList[0]][0]}`;
-             document.querySelectorAll(".settings-container-1").forEach((el, idx) => {if (idx > 0) el.style.display = "none"});
-            settingsObjNamesMapping2[obj.classList[0]].forEach((el, idx) => {
-                   if (idx > 0) {document.querySelectorAll(".settings-container-1")[idx-1].style.display = "flex";
-                      updateLessonCardSetting(document.querySelectorAll(".settings-container-1")[idx-1], settingsObjNamesMapping[obj.classList[0]][idx], el);
-                     }
-            })
-            
-            if (selected) {obj.classList.remove("to-settings"); document.querySelector("#setting-week-name h4").textContent = `Выберите элемент`; document.querySelector(".set-content-1").textContent = "Свойство элемента"; document.querySelectorAll(".settings-container-1").forEach((el, idx) => {if (idx > 0) el.style.display = "none"})}
-        }
-
 
         function showLessonVisualSetting() {
             const el = document.getElementById("set-app2");
