@@ -2446,7 +2446,35 @@ header h1 svg,
 }
 
 
+        .hex-edit-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25em;
+}
+
+#hex-input {
+    width: 190px;
+    padding: 8px 12px;
+    border: 2px solid rgb(from currentColor r g b / .35);
+    border-radius: 12px;
+    background: var(--tg-theme-secondary-bg-color);
+    color: var(--tg-theme-text-color);
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color .15s ease, color .15s ease;
+}
+
+#hex-input.invalid {
+    border-color: #e05555;
+    color: #e05555;
+}
+
         .color-p {
+    width: 96px;
+    box-sizing: border-box;
+    text-align: center;
     padding: 5px;
     border-radius: 15px;
     /* margin: 5px; */

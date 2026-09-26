@@ -5353,6 +5353,7 @@ function initColorPicker() {
 
   const btn1 = document.getElementById("th-c-1");
   const btn2 = document.getElementById("th-c-2");
+  const hexInput = document.getElementById("hex-input");
 
   btn1.onchange = () => {
     document.querySelector(".color-p-container").style.display = "none";
@@ -5397,6 +5398,10 @@ function initColorPicker() {
       selectedEl.textContent = color.hexString;
       selectedEl.style.background = color.hexString;
     }
+    if (hexInput) {
+      hexInput.value = color.hexString;
+      hexInput.classList.remove("invalid");
+    }
     enableSaveBtn();
     //CustombtnEnabled = true;
   });
@@ -5413,12 +5418,36 @@ function initColorPicker() {
         item.classList.remove("selected");
       });
       e.classList.add("selected");
+      if (hexInput) {
+        hexInput.value = e.textContent.trim();
+        hexInput.classList.remove("invalid");
+      }
       if (colorPicker && e.textContent.startsWith("#")) {
         colorPicker.color.hexString = e.textContent.trim();
         if (!CustombtnEnabled) disableSaveBtn(); 
       }
     });
   });
+
+  // ручной ввод HEX: применяется только валидное значение
+  if (hexInput) {
+    hexInput.addEventListener("input", () => {
+      let v = hexInput.value.trim();
+      if (v && !v.startsWith("#")) v = "#" + v;
+      const ok = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(v);
+      hexInput.classList.toggle("invalid", hexInput.value.trim() !== "" && !ok);
+      const selected = document.querySelector(".color-p.selected");
+      if (!selected || !ok) return;
+      const hex = (
+        v.length === 4 ? "#" + v[1] + v[1] + v[2] + v[2] + v[3] + v[3] : v
+      ).toUpperCase();
+      selected.textContent = hex;
+      selected.style.background = hex;
+      if (colorPicker) colorPicker.color.hexString = hex;
+      enableSaveBtn();
+      CustombtnEnabled = true;
+    });
+  }
 
   const saveBtn = document.querySelector(".save-ch-btn");
   saveBtn.addEventListener("click", async (e) => {
