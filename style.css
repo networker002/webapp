@@ -185,8 +185,11 @@ header.scrolling {
     display: flex;
     justify-content: center;
     list-style: none;
-    margin: 1em;
-    gap: 2.25vw;
+    margin: 1em auto;
+    /* квадратные кнопки (aspect-ratio 1/1 + flex:1 из JS) на широких
+       вьюпортах иначе вырастают до ~200px — полоса ограничена */
+    max-width: 560px;
+    gap: clamp(8px, 2.25vw, 14px);
     user-select: none;
 }
 .days ul li {
@@ -1674,6 +1677,8 @@ h6.skeleton { opacity: .4; }
     border-radius: 35px;
 
     inset: auto 5px 5px 5px;
+    max-width: 520px;
+    margin-inline: auto;
 
     button {
         background: none;
