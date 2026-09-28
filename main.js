@@ -795,6 +795,10 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
     }
     container.innerHTML = newHTML;
 
+    // синхронно, не дожидаясь дебаунса MutationObserver (120ms): иначе чипы
+    // перемен и локальные правки появляются позже самих пар
+    enrichLessonRows();
+
     if (nowBtn) upsSV();
     const dayss = document.querySelectorAll(".day");
     dayss.forEach((DAY) => {
