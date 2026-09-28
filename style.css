@@ -203,7 +203,6 @@ header.scrolling {
     cursor: pointer;
     user-select: none;
     border: 1px solid rgb( from var(--days-o-color) r g b / 0.14);
-    box-shadow: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
     backdrop-filter: blur(8px);
     position: relative;
     z-index: 1;
