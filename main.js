@@ -2632,7 +2632,6 @@ function initDynamicDayBottomSpacing() {
 function upsSV() {
   if (!nowBtn) return;
   let found = false;
-  let foundC = false;
   var ch = false;
   lm = new Map();
   var DAYS = document.querySelectorAll(".day");
@@ -2662,7 +2661,6 @@ function upsSV() {
       // есть в каждой неделе расписания
       if (dayName === days[n] && scheduleWeekOffset === 0) {
         dayParseOnline();
-        foundC = true;
       }
 
       // if (de.querySelectorAll(".lesson-row").length >= 4) {
@@ -2698,7 +2696,6 @@ function upsSV() {
       de.dataset.cleaned = "true";
     }
   });
-  document.querySelector("header h1 span").textContent = foundC ? "Сегодня" : "Мой дневник";
   loadSummary();
   updateDynamicDayBottomSpacing();
 }
