@@ -39,7 +39,6 @@
     --lst-btn-color: var(--tg-theme-button-color);
     --lst-btn-filter: none;
     --days-selected-bg: var(--tg-theme-button-color);
-    --btn-shadows-1: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
     --btn-opacity-days: 1;
 
     --lesson-number-padding: 5px;
@@ -237,7 +236,6 @@ header.scrolling {
         background:
         var(--days-bg);
         border-radius: 15px;
-        box-shadow: var(--btn-shadows-1);
         opacity: var(--btn-opacity-days);
         transition: opacity .3s ease;
         will-change: opacity;
