@@ -10,7 +10,9 @@
     --header-glass: rgb(from var(--tg-theme-header-bg-color) r g b / 0.5);
     --menu-bg: linear-gradient(70deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.125));
     --menu-color: #fff;
+    --text-shadow-c: none;
     --alert-bg: var(--tg-theme-accent-text-color);
+    --time-color: var(--tg-theme-text-color);
     --accent: var(--tg-theme-accent-text-color);
     --accent-bg: var(--tg-theme-secondary-bg-color);
     --lessons-b-c: var(--tg-theme-hint-color);
@@ -28,6 +30,7 @@
     --menu-bg-bg: #00000075;
     --room-green: var(--tg-theme-accent-text-color);
     --star-background-day: 0;
+    --only-dark: block;
     --only-light-color: none;
     --day-card-bg: var(--tg-theme-secondary-bg-color);
     --menu-liq-glass: blur(10px);
@@ -36,14 +39,16 @@
     --lst-btn-color: var(--tg-theme-button-color);
     --lst-btn-filter: none;
     --days-selected-bg: var(--tg-theme-button-color);
+    --btn-shadows-1: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
+    --btn-opacity-days: 1;
 
     --lesson-number-padding: 5px;
     --day-name-letter-sp: 1px;
     --day-name-gap: 0.4em;
-    --time-letter-sp: .2px;
+    --time-letter-sp: 1px;
     --subject-f-size: 16px;
-    --room-letter-sp: .3px;
-    --room-f-size: 13px;
+    --room-letter-sp: 1px;
+    --room-f-size: 16px;
     --tname-f-size: 12px;
 }
 
@@ -108,19 +113,42 @@ html {
 
 main { overflow-x: hidden; }
 
-/* шапка — плоская липкая полоса в цвет фона; при скролле — стекло с волосяной линией */
+.sun {
+    position: relative;
+    pointer-events: none;
+}
+.sun::after {
+    position: fixed;
+    content: "";
+    top: var(--star-background-day);
+    transform: translate(-50%, -50vh) scale(.9);
+    left: 50%;
+    width: 50vh;
+    height: 50vh;
+    background: #ffffff7c;
+    border-radius: 50%;
+    filter: drop-shadow(2em .5em 6em #ff8411);
+    z-index: -1000;
+    box-shadow: inset 0 0 2.5em #ff8411a2;
+    display: var(--only-dark);
+    opacity: .9;
+    pointer-events: none;
+}
+
 header {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 2px;
-    background: var(--main-bg-color);
+    gap: 1em;
+    padding: .5em;
+    background: var(--header-bg-color);
     position: sticky;
-    transition: background-color .2s ease;
+    transition: all .2s ease;
     top: 0;
     z-index: 999;
     padding: 10px !important;
+    border-radius: 0 0 35px 35px;
     padding-top: calc(
         var(--tg-safe-area-inset-top, 0px) +
         var(--tg-content-safe-area-inset-top, 0px) + 10px
@@ -142,16 +170,15 @@ header h1 {
 
 
 header h5 {
-    color: var(--tg-theme-hint-color);
-    font-size: 13px;
-    font-weight: 500;
+    color: var(--tg-theme-hint-color)
 }
 
 header.scrolling {
-    background-color: rgb(from var(--main-bg-color) r g b / 0.78);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: inset 0 -1px 0 rgb(from var(--tg-theme-hint-color) r g b / 0.16);
+    transition: all 1s;
+    background-color: var(--header-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all .3s ease;
 }
 
 .days ul {
@@ -166,38 +193,78 @@ header.scrolling {
     user-select: none;
 }
 .days ul li {
-    box-sizing: border-box;
     background-color: var(--days-bg);
     aspect-ratio: 1 / 1;
     text-align: center;
     color: var(--days-o-color);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: .5px;
+    font-weight:800;
+    letter-spacing: 2px;
     padding: .5em;
-    border-radius: 14px;
+    border-radius: .5em;
     cursor: pointer;
     user-select: none;
+    border: 1px solid rgb( from var(--days-o-color) r g b / 0.35);
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
+    backdrop-filter: blur(8px);
     position: relative;
     z-index: 1;
-    transition: transform .12s ease, background-color .2s ease, color .2s ease;
+    border-radius: 15px;
+    transition: transform .15s ease, color .3s ease, background-color .3s ease;
+    will-change: transform;
+    animation: openingBtn .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    &::before {
+        content: "";
+        position: absolute;
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        background:
+        radial-gradient(ellipse at top, #fff, transparent),
+  radial-gradient(ellipse at bottom, var(--accent), transparent);
+        border-radius: 15px;
+    }
+    
+    &::after {
+        content: "";
+        position: absolute;
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 95%;
+        height: 94.5%;
+        z-index: -1;
+        background:
+        var(--days-bg);
+        border-radius: 15px;
+        box-shadow: var(--btn-shadows-1);
+        opacity: var(--btn-opacity-days);
+        transition: opacity .3s ease;
+        will-change: opacity;
+    }
 }
 
 .days ul li:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
 .days .selected {
     color: var(--tg-theme-button-text-color);
     background-color: var(--days-selected-bg);
     filter: var(--days-selected-filter);
+    --btn-opacity-days: 0.8;
 }
 
 
 
 .day {
-    background: var(--day-card-bg);
-    border-radius: 20px;
+    background: rgb( from var(--day-card-bg) r g b / 0.7);
+    border-radius: 35px;
     padding: 1em;
     margin-left: 1em;
     margin-right: 1em;
@@ -205,6 +272,9 @@ header.scrolling {
     touch-action: pan-y;
     user-select: none;
     overflow-x: hidden;
+    transition: transform cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
+    outline: 2px var(--accent) double;
+    filter: drop-shadow(1px 1px 8px rgb( from var(--accent) r g b / 0.5));
     --dynamic-day-bottom-space: 0px;
     margin-bottom: /*var(--dynamic-day-bottom-space)*/ calc(3px + var(--dynamic-day-bottom-space));
 }
@@ -234,22 +304,22 @@ header.scrolling {
     display: flex;
     align-items: center;
     gap: 15px;
-    background: rgb(from var(--over-color) r g b / 0.04);
-    padding: 12px 14px;
-    border-radius: 14px;
-    margin-top: 12px !important;
-    border: 1px solid rgb(from var(--tg-theme-hint-color) r g b / 0.14);
+    background: linear-gradient(45deg, rgba(from var(--over-color) r g b / 0.1), rgba(from var(--accent) r g b / 0.3));
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 15px !important;
+    border: 1px solid rgba(255,255,255,.2);
 }
 
 .lesson-row.is-current, .lesson-row2.is-current {
-    border-color: color-mix(in srgb, #34c759 55%, transparent);
-    background: color-mix(in srgb, #34c759 12%, transparent);
+    border-color: #38e681;
+    background: linear-gradient(45deg, rgba(56, 230, 129, .12), rgba(56, 230, 129, .3));
+    box-shadow: 0 0 18px rgba(56, 230, 129, .42), inset 0 0 12px rgba(56, 230, 129, .12);
 }
 
-/* текстовая колонка пары: без min-width:0 флекс-элемент распирается
-   длинным предметом и не даёт ему переноситься */
-.day .lesson-row > div:not(:first-child), .lesson-row2 > div:not(:first-child) {
-    min-width: 0;
+.lesson-row.is-upcoming, .lesson-row2.is-upcoming {
+    border-color: rgba(255, 255, 255, .16);
+    box-shadow: 0 0 0 transparent;
 }
 
 /* ─── Локальные правки на парах ─── */
@@ -351,19 +421,15 @@ body.pref-breaks-off .break-chip { display: none !important; }
 } */
 
 .subject {
-    display: block;
-    overflow-wrap: break-word;
     font-size: var(--subject-f-size);
+    /* font-weight: 600; */
 }
 
 .mi { fill: currentColor; flex: none; }
 
 .room {
-    display: block;
-    margin-top: 2px;
-    color: var(--tg-theme-hint-color);
-    font-size: var(--room-f-size);
     letter-spacing: var(--room-letter-sp);
+    font-size: var(--room-f-size);
 }
 
 .lesson-row h4, .lesson-row2 h4 {
@@ -451,60 +517,144 @@ body.pref-breaks-off .break-chip { display: none !important; }
     }
 }
 
+@keyframes openingBtn {
+    0% {
+        scale: 1;
+        opacity: 1;
+    }
+    50% {
+        scale: .9;
+        opacity: .95;
+    }
+    100% {
+        scale: 1;
+        opacity: 1;
+    }
+}
+
 @keyframes raise {
     0% { opacity: 0; transform: translateY(-4px); }
     100% { opacity: 1; transform: translateY(0); }
 }
 
-.time, .time1 {
-    color: var(--tg-theme-hint-color);
-    font-weight: 500;
-    font-size: 14px;
+.time {
+    color: var(--time-color);
     letter-spacing: var(--time-letter-sp);
+    font-weight: 200;
+    font-size: larger;
     padding-top: .2em;
     padding-bottom: .25em;
-    font-variant-numeric: lining-nums tabular-nums;
+    text-shadow: 1px 2px 4px var(--text-shadow-c);
+    opacity: .8;
+}
+.time1 {
+    color: var(--time-color);
+    letter-spacing: 1px;
+    font-weight: 200;
+    font-size: larger;
+    padding-top: .2em;
+    padding-bottom: .25em;
+    text-shadow: 1px 2px 4px var(--text-shadow-c);
+    opacity: .75;
 }
 .time.now { position: relative; }
-.time.now::after,
-.isNow::after {
+.time.now::after {
     content: "";
     position: absolute;
-    height: 6px;
-    width: 6px;
+    height: 10px;
+    width: 10px;
     top: 50%;
-    transform: translateY(-50%);
-    background: #34c759;
+    transform: translateY(-60%);
+    background: #85ff15;
     border-radius: 50%;
     margin-left: .5em;
+    animation: active 2s infinite;
+    opacity: .8;
 }
 
 .isNow {
     position: relative;
+    animation: activeNoScale 2s infinite;
     display: none;
+}
+.isNow::after {
+    content: "";
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    top: 50%;
+    transform: translateY(-35%);
+    background: #85ff15;
+    border-radius: 50%;
+    margin-left: .5em;
+    animation: active 2s infinite;
+    opacity: .8;
+}
+
+@keyframes active {
+    50% { scale: .94; filter: drop-shadow(0 0 .4em #9bff6abc); }
+}
+@keyframes activeNoScale {
+    50% { text-shadow: 0 0 .4em #86ff6a44; }
 }
 
 #gr {
             text-align: center;
-            margin: 8px auto;
-            letter-spacing: .3px;
-            color: var(--tg-theme-button-color);
-            background: rgb(from var(--tg-theme-button-color) r g b / 0.12);
-            padding: 6px 16px;
-            border-radius: 999px;
-            font-weight: 700;
+            margin: 1.2em;
+            letter-spacing: 2px;
+            color: var(--accent);
+            background: var(--accent-bg);
+            padding: 6px 18px;
+            border-radius: 36px;
+            font-weight: 800;
+            backdrop-filter: blur(8px);
             position: relative;
             overflow: hidden !important;
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
-            width: fit-content;
-            transition: opacity .2s ease;
+            outline: 3px var(--accent) solid;
+            box-shadow: 0 0 14px;
+            transition: box-shadow .5s;
+
+        }
+
+        #gr::after {
+            position: absolute;
+            content: "";
+            top: -150%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 150%;
+            background: var(--tg-theme-text-color);
+            border-radius: 0 0 50% 50%;
+            transition: top 1s cubic-bezier(.6, .3, .1, .9);
+        }
+
+
+        #gr.active::after {
+            top: 0%;
         }
 
         #gr.active {
-            /* редактор группы открыт — чип приглушается как неактивный */
-            opacity: .45;
+            box-shadow: none;
+        }
+
+
+        #gr::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 6em;
+            background: linear-gradient(90deg, #ffffff10, #ffffff8a, #ffffff10);
+            overflow: hidden;
+            z-index: -1;
+            top: 0;
+            left: -100%;
+            transition: all .2s;
+            animation: blicking .5s forwards cubic-bezier(0.215, 0.610, 0.355, 1);
+            animation-delay: 500ms;
         }
 
         #set-group-btn {
@@ -837,7 +987,7 @@ body.pref-breaks-off .break-chip { display: none !important; }
     overflow: hidden;
     overflow-x: hidden;
 }
-.btns:active { scale: .9; }
+.btns:active { scale: .75; }
 
 .btnD { color: #fff; display: flex; justify-content: center; align-items: center; border: none; transition: all .3s ease, transform .1s ease; outline: none !important; user-select: none; }
 
