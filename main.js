@@ -4458,7 +4458,6 @@ function newUIFeatures() {
     btn.style.flexDirection = "column";
     btn.style.flex = "1 1 0";
     btn.style.minWidth = "0";
-    btn.style.aspectRaito = "1 / 1";
     btn.style.textAlign = "center";
     btn.style.gap = ".1em";
 
