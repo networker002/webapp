@@ -203,9 +203,7 @@ header.scrolling {
     border-radius: .5em;
     cursor: pointer;
     user-select: none;
-    border: 1px solid rgb( from var(--days-o-color) r g b / 0.35);
-    border-top: 1px solid rgba(255, 255, 255, 0.45);
-    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgb( from var(--days-o-color) r g b / 0.14);
     box-shadow: inset 4px 4px 8px rgb( from var(--days-o-color) r g b / 0.15), inset -2px -2px 4px #00000046;
     backdrop-filter: blur(8px);
     position: relative;
@@ -225,8 +223,7 @@ header.scrolling {
         height: 100%;
         z-index: -2;
         background:
-        radial-gradient(ellipse at top, #fff, transparent),
-  radial-gradient(ellipse at bottom, var(--accent), transparent);
+        radial-gradient(ellipse at top, #fff, transparent);
         border-radius: 15px;
     }
     
@@ -1282,6 +1279,11 @@ body.pref-breaks-off .break-chip { display: none !important; }
     text-wrap: wrap;
     overflow-wrap: anywhere;
     max-width: calc(100vw - 5em - 70px);
+}
+
+/* Starry спрятан за краем — реплика прижимается следом, без дыры справа */
+.assistant.starry-away ~ .assistant-say {
+    right: 2em;
 }
 
 .msg-btn12 {
