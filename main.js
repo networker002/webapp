@@ -118,200 +118,6 @@ function applyAIState(isActive) {
   }
 }
 
-/* ── AI-чат по расписанию с дневной квотой ── */
-const AI_QUOTA_KEY = "aiChatQuota_v1";
-const AI_FREE_DAILY = 5;
-const AI_PREMIUM_DAILY = 30;
-const AI_CHIPS = [
-  "Когда следующая пара?",
-  "Куда идти сейчас?",
-  "Сколько пар сегодня?",
-  "Что завтра?",
-];
-
-function aiQuotaState() {
-  const today = new Date().toISOString().slice(0, 10);
-  let raw = {};
-  try {
-    raw = JSON.parse(localStorage.getItem(AI_QUOTA_KEY) || "{}") || {};
-  } catch (_) {
-    raw = {};
-  }
-  if (raw.day !== today) raw = { day: today, used: 0 };
-  const premium =
-    Boolean(tg?.initDataUnsafe?.user?.is_premium) ||
-    localStorage.getItem("boostSoftPremium") === "1";
-  // Лимит, возвращённый сервером (/ai/chat → quota), приоритетнее локальной догадки
-  // по is_premium — на бэкенде премиум-статус может быть другим
-  const limit =
-    Number.isFinite(raw.limit) && raw.limit > 0 ? raw.limit : premium ? AI_PREMIUM_DAILY : AI_FREE_DAILY;
-  return { ...raw, premium, limit, left: Math.max(0, limit - (raw.used || 0)) };
-}
-
-function syncAiQuota(quota) {
-  // Сервер — источник истины по остатку квоты: перезаписываем им оптимистичный локальный счётчик
-  if (!quota || typeof quota !== "object") return;
-  const used = Number(quota.used);
-  const limit = Number(quota.limit);
-  if (!Number.isFinite(used) || !Number.isFinite(limit) || limit <= 0) return;
-  localStorage.setItem(AI_QUOTA_KEY, JSON.stringify({ day: new Date().toISOString().slice(0, 10), used: Math.max(0, used), limit }));
-}
-
-function consumeAiQuota() {
-  const st = aiQuotaState();
-  if (st.left <= 0) return false;
-  st.used = (st.used || 0) + 1;
-  // limit сохраняем: там может лежать серверное значение из syncAiQuota
-  localStorage.setItem(AI_QUOTA_KEY, JSON.stringify({ day: st.day, used: st.used, limit: st.limit }));
-  return true;
-}
-
-function initAiChat() {
-  if (document.getElementById("ai-chat-panel")) return;
-
-  const panel = document.createElement("div");
-  panel.id = "ai-chat-panel";
-  panel.hidden = true;
-  panel.innerHTML = `
-    <div class="ai-chat-head">
-      <strong>Спросить расписание</strong>
-      <span id="ai-quota-label" class="ai-quota-label"></span>
-      <button type="button" id="ai-chat-close" aria-label="Закрыть">×</button>
-    </div>
-    <div id="ai-chips" class="ai-chips"></div>
-    <div id="ai-chat-log" class="ai-chat-log"></div>
-    <form id="ai-chat-form" class="ai-chat-form">
-      <input id="ai-chat-input" maxlength="200" placeholder="Когда следующая пара? Куда идти?" autocomplete="off" />
-      <button type="submit" id="ai-chat-send" aria-label="Отправить">
-        <svg class="mi send-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" aria-hidden="true"><use href="#mi-send"/></svg>
-      </button>
-    </form>
-  `;
-  document.body.appendChild(panel);
-
-  const log = panel.querySelector("#ai-chat-log");
-  const form = panel.querySelector("#ai-chat-form");
-  const input = panel.querySelector("#ai-chat-input");
-  const chips = panel.querySelector("#ai-chips");
-  const quotaLabel = panel.querySelector("#ai-quota-label");
-  const openChat = () => {
-    panel.hidden = false;
-    refreshQuotaLabel();
-    input.focus();
-    safeImpact("light");
-  };
-
-  function refreshQuotaLabel() {
-    const st = aiQuotaState();
-    quotaLabel.innerHTML = st.premium
-      ? `${st.left}/${st.limit} <svg class="mi" width="13" height="13" style="vertical-align:-1px"><use href="#mi-star"/></svg>`
-      : `${st.left}/${st.limit}`;
-  }
-
-  chips.innerHTML = AI_CHIPS.map(
-    (q) => `<button type="button" class="ai-chip" data-q="${escapeAttr(q)}">${escapeHtml(q)}</button>`,
-  ).join("");
-  chips.querySelectorAll(".ai-chip").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      input.value = btn.dataset.q || "";
-      form.requestSubmit();
-    });
-  });
-
-  function appendMsg(role, text) {
-    const div = document.createElement("div");
-    div.className = `ai-msg ai-${role}`;
-    if (role === "bot" && /<[^>]+>/.test(String(text))) {
-      div.appendChild(sanitizeAiHtml(text));
-    } else div.textContent = text;
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
-  }
-
-  // Ассистент «звёздочка» открывает чат только если он включён в настройках
-  const aiEnabled = () => localStorage.getItem("isActiveAI") !== "false";
-  const openChatFromStarry = () => {
-    if (!aiEnabled()) return;
-    openChat();
-  };
-  document.getElementById("default-assistant")?.addEventListener("click", openChatFromStarry);
-  document.getElementById("gloomy-asistant")?.addEventListener("click", openChatFromStarry);
-  panel.querySelector("#ai-chat-close").addEventListener("click", () => {
-    panel.hidden = true;
-  });
-
-  const sendBtn = panel.querySelector("#ai-chat-send");
-  function setSendBusy(busy) {
-    if (!sendBtn) return;
-    sendBtn.disabled = busy;
-    sendBtn.classList.toggle("is-thinking", busy);
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (sendBtn?.disabled) return;
-    const q = (input.value || "").trim();
-    if (!q) return;
-    const st = aiQuotaState();
-    if (st.left <= 0) {
-      appendMsg(
-        "bot",
-        st.premium
-          ? "Дневной лимит AI исчерпан. Завтра снова будет доступен."
-          : "Лимит на сегодня закончился. Telegram Premium или серия 7 дней дают расширенную квоту.",
-      );
-      safeHaptic("error");
-      refreshQuotaLabel();
-      return;
-    }
-    if (!consumeAiQuota()) return;
-    refreshQuotaLabel();
-    input.value = "";
-    setSendBusy(true);
-    appendMsg("user", q);
-    appendMsg("bot", "Думаю");
-    const pending = log.lastChild;
-    pending.classList.add("ai-thinking");
-    try {
-      const data = await api("/ai/chat", {
-        method: "POST",
-        body: JSON.stringify({ message: q }),
-      });
-      // Ответ несёт актуальный остаток квоты — корректируем локальный счётчик
-      if (data?.quota) syncAiQuota(data.quota);
-      refreshQuotaLabel();
-      pending.classList.remove("ai-thinking");
-      pending.replaceChildren();
-      const reply = data?.reply ||
-        (data?.status === "rejected"
-          ? "Могу помочь только с вопросами по расписанию."
-          : "Не получилось ответить. Попробуй иначе.");
-      pending.appendChild(/<[^>]+>/.test(reply) ? sanitizeAiHtml(reply) : document.createTextNode(reply));
-      safeHaptic("success");
-    } catch (err) {
-      pending.classList.remove("ai-thinking");
-      const errText = String(err?.message || "");
-      // В теле 429 сервер отдаёт {used, limit} — синхронизируем и его,
-      // чтобы остаток в шапке совпадал с сервером
-      const jsonAt = errText.indexOf("{");
-      if (errText.includes("429") && jsonAt !== -1) {
-        try {
-          syncAiQuota(JSON.parse(errText.slice(jsonAt)));
-          refreshQuotaLabel();
-        } catch (_) {}
-      }
-      pending.textContent = errText.includes("429")
-        ? "Дневная квота AI исчерпана. Завтра лимит обновится."
-        : "Сеть или сервер недоступны. Проверь интернет.";
-      safeHaptic("error");
-    } finally {
-      setSendBusy(false);
-    }
-  });
-
-  refreshQuotaLabel();
-}
-
 initAI();
 
 
@@ -3347,25 +3153,6 @@ function CloseBG2() {
   }, 900);
 }
 
-function sanitizeAiHtml(value) {
-  const template = document.createElement("template");
-  template.innerHTML = String(value || "");
-  const allowed = new Set(["B", "STRONG", "I", "EM", "U", "S", "BR", "P", "UL", "OL", "LI", "A"]);
-  template.content.querySelectorAll("*").forEach((node) => {
-    if (!allowed.has(node.tagName)) {
-      node.replaceWith(...node.childNodes);
-      return;
-    }
-    [...node.attributes].forEach((attr) => {
-      if (node.tagName === "A" && attr.name === "href" && /^(https?:|tg:)/i.test(attr.value)) {
-        node.setAttribute("target", "_blank");
-        node.setAttribute("rel", "noopener noreferrer");
-      } else node.removeAttribute(attr.name);
-    });
-  });
-  return template.content;
-}
-
 function toBtoa(str) {
   const utf8Bytes = encodeURIComponent(str).replace(
     /%([0-9A-F]{2})/g,
@@ -5595,12 +5382,11 @@ function initColorPicker() {
 
         document.getElementById("lesson-swipe-1").onclick = () => showLessonVisualSetting();
 
-/* ── Инициализация фич: расписание, шаринг, AI, сводка ── */
+/* ── Инициализация фич: расписание, шаринг, сводка ── */
 window.addEventListener("DOMContentLoaded", () => {
   watchScheduleMutations();
   enhanceLessonEditor();
   injectShareButtons();
-  initAiChat();
   initAppearanceExtras();
   enrichLessonRows();
   renderGoWidget();
