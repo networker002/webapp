@@ -454,8 +454,6 @@ body.pref-breaks-off .break-chip { display: none !important; }
     word-wrap: balance;
     font-size: 14px;
     position: relative;
-    transition: all 2s;
-    animation: raise 0.4s ease forwards;
     text-align: left;
     padding-top: .25em;
     opacity: .75 !important;
@@ -485,17 +483,7 @@ body.pref-breaks-off .break-chip { display: none !important; }
     align-items: center;
     display: flex;
     justify-content: center;
-    animation: openingLesson .4s ease;
     /* border-top: 2px solid var(--lessons-b-c); */
-}
-
-@keyframes openingLesson {
-    0% {
-        scale: .75;
-    }
-    100% {
-        scale: 1;
-    }
 }
 
 @keyframes openingBtn {
@@ -511,11 +499,6 @@ body.pref-breaks-off .break-chip { display: none !important; }
         scale: 1;
         opacity: 1;
     }
-}
-
-@keyframes raise {
-    0% { opacity: 0; transform: translateY(-4px); }
-    100% { opacity: 1; transform: translateY(0); }
 }
 
 .time {
