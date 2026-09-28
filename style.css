@@ -192,7 +192,7 @@ header.scrolling {
     user-select: none;
 }
 .days ul li {
-    background-color: var(--days-bg);
+    --chip-fill: var(--days-bg);
     text-align: center;
     color: var(--days-o-color);
     font-weight:800;
@@ -201,7 +201,12 @@ header.scrolling {
     border-radius: .5em;
     cursor: pointer;
     user-select: none;
-    border: 1px solid rgb( from var(--days-o-color) r g b / 0.14);
+    /* стеклянное ребро: градиентная белая кромка (ярко сверху, тает внизу);
+       border-box/padding-box-трюк даёт градиентный бордер с круглыми углами */
+    border: 1px solid transparent;
+    background:
+        linear-gradient(var(--chip-fill), var(--chip-fill)) padding-box,
+        linear-gradient(160deg, rgb(from #ffffff r g b / 0.45), rgb(from #ffffff r g b / 0.04)) border-box;
     backdrop-filter: blur(8px);
     position: relative;
     z-index: 1;
@@ -248,7 +253,7 @@ header.scrolling {
 
 .days .selected {
     color: var(--tg-theme-button-text-color);
-    background-color: var(--days-selected-bg);
+    --chip-fill: var(--days-selected-bg);
     filter: var(--days-selected-filter);
     --btn-opacity-days: 0.8;
 }
