@@ -935,6 +935,15 @@ function applyOverridesToDom() {
 
     if (!ov) {
       row.querySelector(".override-badge")?.remove();
+      // вернуть оригинальные название/аудиторию — правки сняты
+      const subj = row.querySelector(".subject");
+      const room = row.querySelector(".room");
+      if (subj?.dataset.orig && subj.textContent !== subj.dataset.orig) {
+        subj.textContent = subj.dataset.orig;
+      }
+      if (room?.dataset.orig && room.textContent !== `(${room.dataset.orig})`) {
+        room.textContent = `(${room.dataset.orig})`;
+      }
       return;
     }
 
@@ -955,10 +964,11 @@ function applyOverridesToDom() {
       subj.textContent = subj.dataset.orig;
     }
     if (ov.roomOverride && room) {
-      if (!room.dataset.orig) room.dataset.orig = room.textContent;
+      // dataset.orig храним без скобок — как его пишет enrichLessonRows
+      if (!room.dataset.orig) room.dataset.orig = (room.textContent || "").replace(/[()]/g, "").trim();
       if (room.textContent !== `(${ov.roomOverride})`) room.textContent = `(${ov.roomOverride})`;
-    } else if (room?.dataset.orig && room.textContent !== room.dataset.orig) {
-      room.textContent = room.dataset.orig;
+    } else if (room?.dataset.orig && room.textContent !== `(${room.dataset.orig})`) {
+      room.textContent = `(${room.dataset.orig})`;
     }
 
     if (!row.querySelector(".override-badge")) {
