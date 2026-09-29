@@ -1263,7 +1263,77 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* ── Обогащение строк расписания: data-атрибуты, тап по номеру → правки ── */
+/* ── Обогащение строк расписания: data-атрибуты, удержание карточки → правки ── */
+
+/* Удержание карточки пары (любое место, кроме вложенных кнопок) открывает
+ * «Личную правку»: локальное скрытие, переименование, аудитория. Сдвиг пальца
+ * больше 10px (скролл/свайп) и подъём пальца отменяют удержание; сработавший
+ * холд глотает отпускной клик, чтобы под шитом не открылся попап карточки. */
+const LESSON_HOLD_MS = 450;
+const LESSON_HOLD_SLOP_PX = 10;
+
+function bindLessonRowLongPress(row) {
+  let holdTimer = null;
+  let startX = 0;
+  let startY = 0;
+  let touchPress = false;
+  let swallowClickUntil = 0;
+
+  row.addEventListener("click", (e) => {
+    if (Date.now() < swallowClickUntil) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  // системное меню долгого тапа не должно вылезать поверх шита правки
+  row.addEventListener("contextmenu", (e) => {
+    if (touchPress) e.preventDefault();
+  });
+
+  row.addEventListener("pointerdown", (e) => {
+    if (!e.isPrimary || holdTimer) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    // у кнопок внутри карточки своё действие (бейдж личной правки)
+    if (e.target.closest("button, a, input, textarea, select")) return;
+
+    startX = e.clientX;
+    startY = e.clientY;
+    touchPress = e.pointerType !== "mouse";
+
+    const onMove = (ev) => {
+      if (Math.hypot(ev.clientX - startX, ev.clientY - startY) > LESSON_HOLD_SLOP_PX) cancelHold();
+    };
+    const cancelHold = () => {
+      if (holdTimer) clearTimeout(holdTimer);
+      holdTimer = null;
+      touchPress = false;
+      row.classList.remove("is-holding");
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", cancelHold);
+      window.removeEventListener("pointercancel", cancelHold);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", cancelHold);
+    window.addEventListener("pointercancel", cancelHold);
+
+    row.classList.add("is-holding");
+    holdTimer = setTimeout(() => {
+      holdTimer = null;
+      row.classList.remove("is-holding");
+      if (!row.isConnected) {
+        cancelHold();
+        return;
+      }
+      swallowClickUntil = Date.now() + 600;
+      safeImpact("medium");
+      openOverrideEditor(row);
+      // window-слушатели снимет pointerup — он же вернёт нативное контекстное меню
+    }, LESSON_HOLD_MS);
+  });
+}
+
 function enrichLessonRows() {
   const week = scheduleWeekIndex ?? getScheduleWeekIndex();
   document.querySelectorAll(".lesson-row").forEach((row) => {
@@ -1299,12 +1369,7 @@ function enrichLessonRows() {
 
     if (!row.dataset.boostBound) {
       row.dataset.boostBound = "1";
-
-      // Тап по номеру пары → локальное переименование/скрытие
-      row.querySelector(".lesson")?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openOverrideEditor(row);
-      });
+      bindLessonRowLongPress(row);
     }
   });
   applyOverridesToDom();

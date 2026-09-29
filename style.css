@@ -304,7 +304,12 @@ header.scrolling {
 }
 
 /* ─── Локальные правки на парах ─── */
-.lesson-row { position: relative; }
+.lesson-row {
+  position: relative;
+  -webkit-touch-callout: none;
+}
+/* отклик на удержание карточки — вход в личную правку */
+.lesson-row.is-holding { scale: .985; }
 .override-badge {
   position: absolute;
   bottom: 8px;
