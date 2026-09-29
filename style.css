@@ -344,9 +344,17 @@ header.scrolling {
 .day .break-chip + .lesson-row { margin-top: 4px !important; }
 body.pref-breaks-off .break-chip { display: none !important; }
 
-.now-lesson-summary-container { padding: 0 1em 1em; }
+/* единая сетка с go-widget и нижним меню (16px, кэп 488) */
+.now-lesson-summary-container,
+.summary-path-next {
+    align-self: stretch;
+    box-sizing: border-box;
+    width: min(100% - 2em, 488px);
+    margin-inline: auto;
+    padding: 0 0 1em;
+}
 
-.summary-path-next { padding: 0 1em 1em; 
+.summary-path-next {
     &::before {
         content: "ЗАТЕМ";
         font-weight: 100;
@@ -3041,10 +3049,10 @@ header h1 svg,
 
 /* ─── Виджет «Куда идти» ─── */
 .go-widget {
-  /* экран «Мой день» — flex-колонка с align-items: center, без stretch
-     виджет сжимается под короткий номер аудитории; тянем на всю ширину
-     как карточки «сейчас идёт»/«затем» (1em ≈ 16px боковых отступов у них) */
-  margin: 8px 16px 12px;
+  /* единая сетка с карточками сводки и нижним меню (16px, кэп 488) */
+  box-sizing: border-box;
+  width: min(100% - 2em, 488px);
+  margin: 8px auto 12px;
   align-self: stretch;
   padding: 16px 18px;
   border-radius: 22px;
