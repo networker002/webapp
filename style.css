@@ -636,6 +636,17 @@ body.pref-breaks-off .break-chip { display: none !important; }
             text-decoration: underline;
         }
 
+        /* Список групп потока: элемент целиком, перенос — только между элементами.
+           .tname-text — один flex-item внутри .tname/.summary-details span,
+           иначе каждая группа станет отдельным flex-item'ом с родительским gap */
+        .tname-text {
+            min-width: 0;
+        }
+
+        .tname-group {
+            white-space: nowrap;
+        }
+
 
         #gr::before {
             content: "";

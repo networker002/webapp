@@ -319,6 +319,15 @@ function bindTeacherRegHint() {
   }
 }
 
+// Список групп потока («ИС-25-21О, ИС-25-22О, …» с бэкенда): каждый элемент
+// неразрывен — перенос строки только между элементами, не внутри и не по дефису
+function teacherGroupsHtml(text) {
+  return String(text || "")
+    .split(", ")
+    .map((g) => `<span class="tname-group">${escapeHtml(g)}</span>`)
+    .join(", ");
+}
+
 function toast(text, ms = 1900) {
   const al = document.getElementById("fast-alert");
   if (!al) return;
@@ -646,10 +655,13 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
     const weekLessons = data[1].filter(d => Number(d.day_number) === Number(weekType));
 
     // Преподаватель: в карточке вместо ФИО — группа пары (текст уже приходит
-    // подменённым с бэкенда), под ней иконка группы вместо человека
+    // подменённым с бэкенда), под ней иконка группы вместо человека; текст —
+    // в одном .tname-text, иначе спаны групп станут отдельными flex-item'ами .tname
     const whoIcon = isTeacherMode()
       ? '<svg style="width: 1em; height: 1em;" aria-hidden="true"><use href="#mi-groups"/></svg>'
       : '<svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>';
+    const whoText = (full) =>
+      `<span class="tname-text">${isTeacherMode() ? teacherGroupsHtml(full) : escapeHtml(full)}</span>`;
     
     for (const dayName of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
       const dayKey = dayMapping2[dayName];
@@ -737,7 +749,7 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
               <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
               <span class="subject">${escapeHtml(item.subject_name)}</span>
               <span class="room${item.room_guessed ? " room-guessed" : ""}">(${escapeHtml(item.room_name)})${item.room_guessed ? '<sup class="room-guess-q" aria-hidden="true"><svg class="mi" width="14" height="14"><use href="#mi-help"/></svg></sup>' : ""}</span>
-              <div class="teacher"><h5 class="tname">${whoIcon}${escapeHtml(item.teacher_full)}</h5></div>
+              <div class="teacher"><h5 class="tname">${whoIcon}${whoText(item.teacher_full)}</h5></div>
               </div>
             </div>`;
           }
@@ -4679,7 +4691,7 @@ function loadSummary() {
       <div class="summary-details">
         <span><b>Время</b>${time}</span>
         <span><b>Аудитория</b>${room}</span>
-        <span><b>${teacherLabel}</b>${teacher}</span>
+        <span><b>${teacherLabel}</b><span class="tname-text">${isTeacherMode() ? teacherGroupsHtml(teacher) : escapeHtml(teacher)}</span></span>
       </div>
     </section>`;
 
@@ -4893,8 +4905,10 @@ function renderGoWidget() {
   const room = lesson.room || "—";
   const big = room.replace(/\s+/g, "");
   // в режиме преподавателя в lesson.teacher — группы (возможно, поток списком),
-  // сокращать их как ФИО нельзя
-  const who = isTeacherMode() ? lesson.teacher : shortenTeacherName(lesson.teacher);
+  // сокращать их как ФИО нельзя; NBSP внутри групп → обычные пробелы в буфере
+  const who = isTeacherMode()
+    ? String(lesson.teacher || "").replace(/\u00a0/g, " ")
+    : shortenTeacherName(lesson.teacher);
   const copyText = [
     lesson.subject || "",
     lesson.room || "",
