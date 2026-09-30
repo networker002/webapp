@@ -913,9 +913,9 @@ function renderBreakChips() {
       if (!a || !b) continue;
       const gap = b.start - a.end;
       if (gap < 10) continue;
-      // Длинный перерыв — это окно в пропущенные пары (пара ≈ 120 мин):
-      // 110 мин ещё перемена, 150 — уже окно в одну пару
-      const missedPairs = Math.floor(gap / 120);
+      // Длинный перерыв — это окно в пропущенные пары (пара ≈ 80 мин):
+      // 79 мин ещё перемена, 80 — уже окно в одну пару
+      const missedPairs = Math.floor(gap / 80);
       const label = missedPairs >= 1
         ? `Окно · ${missedPairs} ${missedPairs === 1 ? "пара" : missedPairs <= 4 ? "пары" : "пар"} (${gap} мин)`
         : `перемена · ${gap} мин`;
