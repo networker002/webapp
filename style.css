@@ -647,6 +647,17 @@ body.pref-breaks-off .break-chip { display: none !important; }
             white-space: nowrap;
         }
 
+        /* .summary-details делает flex'ом ВСЕ span внутри (селектор по тегу) —
+           возвращаем текстовым блокам строковый поток, иначе список групп
+           растягивается gap'ом и space-between на весь блок */
+        .summary-details .tname-text {
+            display: inline;
+        }
+
+        .summary-details .tname-group {
+            display: inline;
+        }
+
 
         #gr::before {
             content: "";

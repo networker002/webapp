@@ -5645,9 +5645,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // ленивый рендер при переключении экранов
   document.getElementById("marks-show")?.addEventListener("click", () => {
-    setTimeout(() => {
-      renderGoWidget();
-    }, 50);
+    // loadSummary, не только renderGoWidget: после сна WebView интервалы не
+    // наверстывают пропущенные тики, и сводка «Сейчас идёт/Перемена» остаётся
+    // с прошлого пробуждения (go-widget при этом обновляется сам)
+    setTimeout(loadSummary, 50);
+  });
+  // возврат из фона: перерисовать сводку сразу, не дожидаясь 30-сек тика
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) loadSummary();
   });
   document.getElementById("profile-show")?.addEventListener("click", () => {
     setTimeout(renderStreakCard, 80);
