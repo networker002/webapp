@@ -2802,19 +2802,23 @@ function upsSV() {
       //   de.style = "margin-bottom: 6em !important";
       // }
 
+      // «завтра» — только на текущей реальной неделе: тот же день недели
+      // есть в каждой из четырёх недель расписания
       if (
         dayName === days[tommorrow.getDay()] &&
         rr &&
         new Date().getHours() > 7 &&
         dayLesson &&
-        !isTeacherMode()
+        !isTeacherMode() &&
+        scheduleWeekOffset === 0
       ) {
         stopAll();
         message.style.display = "block";
         //assistant.style.transform = "translate(0%, -50%)";
         //message.parentElement.style.transform = "translate(0%, -50%)";
         const firstLessonNo = parseInt(dayLesson.textContent, 10);
-        message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">к ${firstLessonNo} паре</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
+        const preposition = firstLessonNo === 2 ? "ко" : "к";
+        message.innerHTML = `<div><div><p>Завтра тебе <span style="color:yellow;">${preposition} ${firstLessonNo} паре</span>!</p><p>Не пропусти ее, лучше подготовься заранее и прийди за <span style="color:rgb(0, 255, 100);">10-15</span> мин</p></div><div style="text-align:right"><button onclick="rr=false;  message.style.display = 'none';assistant.style.transform = 'translate(0)';message.parentElement.style.transform = 'translate(0)';" class="my-def-btns">Хорошо</button></div</div>`;
         clickedAi = true;
       } else if (clickedAi) {
         //assistant.style.transform = "translate(0)";
