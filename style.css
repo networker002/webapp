@@ -700,21 +700,23 @@ body.pref-breaks-off .break-chip { display: none !important; }
             position: fixed;
             top: 0;
             left: 50%;
-            width: calc(100% - 16px);
+            width: min(calc(100% - 32px), 488px);
             transform: translateX(-50%);
             display: flex;
             background: linear-gradient(rgb(from var(--accent) r g b / .15), rgb(from var(--tg-theme-header-bg-color) r g b / .85));
             backdrop-filter: blur(18px);
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             text-align: center;
             z-index: 200000;
-            padding: 1em;
-            margin-top: calc(4em + var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
+            padding: 18px 16px 14px;
+            margin-top: calc(4em + var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
             box-sizing: border-box;
             outline: none;
-            border-radius: 35px 35px 95px 95px;
+            border-radius: 28px;
+            max-height: calc(100dvh - 5em - var(--tg-content-safe-area-inset-top, 0px) - var(--tg-safe-area-inset-top, 0px));
+            overflow: hidden;
             display: none;
 
             input {
@@ -767,39 +769,92 @@ body.pref-breaks-off .break-chip { display: none !important; }
                 transform: translateY(-50%);
             }
 
-            button:last-child:active {
-                opacity: .35;
+            #errs-reg {
+                margin: .7em .5em .1em;
             }
+        }
+
+        .gr-edit-head {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .gr-edit-head h1 {
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+            font-size: 1.25em;
+        }
+
+        .gr-edit-close-btn {
+            flex: none;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid rgb(from var(--tg-theme-hint-color) r g b / 0.3);
+            background: rgb(from var(--tg-theme-bg-color) r g b / 0.35);
+            color: var(--tg-theme-text-color);
+        }
+
+        .gr-edit-close-btn:active {
+            transform: scale(.9);
+            opacity: .35;
         }
 
         .tips-res-e-g {
             display: none;
             flex-direction: column;
-            gap: 10px;
-            padding: 10px;
-            background: rgb(from var(--tg-theme-bg-color) r g b / 0.2);
-            backdrop-filter: blur(32px);
-            position: absolute;
+            gap: 6px;
             width: calc(100% - 30px);
-            border-radius: 12px;
-            z-index: 99999;
-            height: 4em !important;
-            overflow-y: scroll;
+            margin-top: 12px;
+            max-height: min(40vh, 340px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
-            scrollbar-width: 1px;
-            transform: translateY(2.25em);
-            animation: rasing-i-c2 .5s;
+            scrollbar-width: thin;
+            border-radius: 14px;
+            animation: rasing-i-c2 .3s;
 
             div {
-                transition: background .2s;
-                padding: 10px 5px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                padding: 8px 14px;
                 border: 1px solid rgb(from var(--tg-theme-hint-color) r g b / 0.25);
-                line-height: 100%;
-                border-radius: 20px;
+                border-radius: 12px;
+                line-height: 1.2;
+                cursor: pointer;
+                transition: background .15s, border-color .15s;
             }
 
-            div:active {
-                background: rgba(255, 255, 255, 0.05);
+            div[data-tip].active,
+            div[data-tip]:active {
+                background: rgb(from var(--accent) r g b / 0.18);
+                border-color: rgb(from var(--accent) r g b / 0.55);
+            }
+
+            div b {
+                color: var(--accent);
+                font-weight: 700;
+            }
+
+            .tips-more {
+                min-height: 0;
+                justify-content: center;
+                padding: 4px;
+                border: none;
+                color: var(--tg-theme-hint-color);
+                font-size: 12px;
+                cursor: default;
             }
         }
 

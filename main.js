@@ -3421,6 +3421,7 @@ document.addEventListener("keydown", (event) => {
         groupEditor.style.pointerEvents = "";
         groupButton.style.pointerEvents = "";
         back.style.display = "none";
+        resetGroupEditor();
       }, 500);
         }
 
@@ -3438,23 +3439,116 @@ document.addEventListener("keydown", (event) => {
       groupEditor.style.animation = "none";
       groupEditor.style.pointerEvents = "";
       back.style.display = "none";
+      resetGroupEditor();
     }
 
-        document.getElementById("group-set").addEventListener("input", (e) => {
-            document.querySelectorAll(".tips-res-e-g div").forEach(e1 => e1.remove());
-            document.querySelector(".tips-res-e-g").style.display = "none";
-            var res = ALLGROUPS.filter(el => el.toLocaleLowerCase().trim().includes(document.getElementById("group-set").value.toLocaleLowerCase().trim()));
-            if (res.length > 0 && document.getElementById("group-set").value.trim() !== "") {
-                document.querySelector(".tips-res-e-g").style.display = "flex";
+        // ── Подсказки выбора группы в #gr-edit ──
+        const groupTipsBox = document.querySelector(".tips-res-e-g");
+        const groupInput = document.getElementById("group-set");
+        const GROUP_TIPS_MAX = 60;
+        let groupTips = [];
+        let groupTipsActive = -1;
+
+        function hideGroupTips() {
+            groupTips = [];
+            groupTipsActive = -1;
+            groupTipsBox.innerHTML = "";
+            groupTipsBox.style.display = "none";
+        }
+
+        function pickGroupTip(name) {
+            groupInput.value = name;
+            hideGroupTips();
+            haptic?.selectionChanged?.();
+            groupInput.focus();
+        }
+
+        function markActiveGroupTip() {
+            groupTipsBox.querySelectorAll("div[data-tip]").forEach((el) => {
+                const active = Number(el.dataset.index) === groupTipsActive;
+                el.classList.toggle("active", active);
+                el.setAttribute("aria-selected", active ? "true" : "false");
+                if (active) el.scrollIntoView({ block: "nearest" });
+            });
+        }
+
+        function highlightGroupMatch(name, query) {
+            const idx = name.toLocaleLowerCase().indexOf(query);
+            if (idx === -1) return escapeHtml(name);
+            return (
+                escapeHtml(name.slice(0, idx)) +
+                "<b>" + escapeHtml(name.slice(idx, idx + query.length)) + "</b>" +
+                escapeHtml(name.slice(idx + query.length))
+            );
+        }
+
+        groupInput.addEventListener("input", () => {
+            const query = groupInput.value.trim().toLocaleLowerCase();
+            groupTipsBox.innerHTML = "";
+            groupTipsActive = -1;
+            if (!query || !Array.isArray(ALLGROUPS) || !ALLGROUPS.length) {
+                groupTips = [];
+                groupTipsBox.style.display = "none";
+                return;
             }
-            res.forEach((r) => {
-                var ell = document.querySelector(".tips-res-e-g").appendChild(document.createElement("div"));
-                (ell).innerHTML = r;
-                ell.onclick = () => {
-                    document.getElementById("group-set").value = r; document.querySelector(".tips-res-e-g").style.display = "none";
-                }
-            })
+            const matches = ALLGROUPS.filter((el) => el.toLocaleLowerCase().includes(query));
+            groupTips = matches.slice(0, GROUP_TIPS_MAX);
+            if (!groupTips.length) {
+                groupTipsBox.style.display = "none";
+                return;
+            }
+            groupTips.forEach((name, i) => {
+                const row = document.createElement("div");
+                row.dataset.tip = name;
+                row.dataset.index = i;
+                row.setAttribute("role", "option");
+                row.innerHTML = highlightGroupMatch(name, query);
+                row.addEventListener("click", () => pickGroupTip(name));
+                groupTipsBox.appendChild(row);
+            });
+            if (matches.length > groupTips.length) {
+                const more = document.createElement("div");
+                more.className = "tips-more";
+                more.textContent = "Показаны первые " + groupTips.length + " — уточните запрос";
+                groupTipsBox.appendChild(more);
+            }
+            groupTipsBox.style.display = "flex";
+            groupTipsBox.scrollTop = 0;
         });
+
+        groupInput.addEventListener("keydown", (event) => {
+            const tipsOpen = groupTipsBox.style.display === "flex" && groupTips.length > 0;
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                if (!tipsOpen) return;
+                event.preventDefault();
+                groupTipsActive = event.key === "ArrowDown"
+                    ? (groupTipsActive + 1) % groupTips.length
+                    : (groupTipsActive <= 0 ? groupTips.length - 1 : groupTipsActive - 1);
+                markActiveGroupTip();
+            } else if (event.key === "Enter") {
+                event.preventDefault();
+                if (tipsOpen && groupTipsActive >= 0) pickGroupTip(groupTips[groupTipsActive]);
+                else groupSet0();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && document.getElementById("gr-edit").style.display === "flex") closeEditGr();
+        });
+
+        document.addEventListener("click", (event) => {
+            const editor = document.getElementById("gr-edit");
+            if (editor.style.display !== "flex") return;
+            if (event.target.closest("#gr-edit") || event.target.closest("#gr")) return;
+            closeEditGr();
+        });
+
+        function resetGroupEditor() {
+            hideGroupTips();
+            groupInput.value = "";
+            const err = document.querySelector("#gr-edit #errs-reg");
+            if (err) err.textContent = "";
+        }
 
         function req() {
             fetch("https://www.miet.ru/schedule/groups")
@@ -3469,6 +3563,7 @@ document.addEventListener("keydown", (event) => {
                     ALLGROUPS = data.toString().split(",");
                     updateGroupsDatalist();
                 })
+                .catch((err) => console.log("groups list unavailable", err));
         }
         req();
 
