@@ -291,6 +291,34 @@ function escapeAttr(str) {
   return escapeHtml(str).replace(/\n/g, " ");
 }
 
+/* ── Роль пользователя: студент (группа) или преподаватель (ФИО) ── */
+function isTeacherMode() {
+  return localStorage.getItem("userRole") === "teacher";
+}
+
+// Шапка: студент видит группу, преподаватель — «Фамилия И. О.»
+function grLabel(name) {
+  return isTeacherMode() ? shortenTeacherName(name) : name;
+}
+
+function setGrLabel(text) {
+  const gr = document.getElementById("gr");
+  if (!gr) return;
+  gr.innerHTML = text;
+  gr.classList.toggle("teacher-mode", isTeacherMode());
+}
+
+function bindTeacherRegHint() {
+  const link = document.getElementById("teacher-reg-link");
+  if (link && !link.dataset.bound) {
+    link.dataset.bound = "1";
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      tg?.openTelegramLink?.("https://t.me/mietcbot");
+    });
+  }
+}
+
 function toast(text, ms = 1900) {
   const al = document.getElementById("fast-alert");
   if (!al) return;
@@ -462,11 +490,15 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
         .then((userGroup) => {
           if (userGroup !== null) {
             var Group = userGroup?.group_name;
+            var Role = userGroup?.role || "student";
             if (Group !== null) {
               if (localStorage.getItem("userGroup") !== Group) {
                 localStorage.setItem("userGroup", Group);
               }
-              document.getElementById("gr").innerHTML = Group;
+              if (localStorage.getItem("userRole") !== Role) {
+                localStorage.setItem("userRole", Role);
+              }
+              setGrLabel(grLabel(Group));
               //document.getElementById("group-name-menu").innerHTML = Group;
 
               return fetch("https://boost.rorosin.ru/schedulejson", {
@@ -491,7 +523,9 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             <h6>Давайте сделаем это сейчас:</h6>
             <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
             <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
-            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+            <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
+            <p class="teacher-reg-hint">Преподаватель? Напишите боту <b>/group</b> и свою фамилию — <a href="https://t.me/mietcbot" id="teacher-reg-link">зарегистрироваться</a></p>`;
+          bindTeacherRegHint();
           throw new Error("Group not found!");
         })
         .then((resp) => {
@@ -514,8 +548,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
             const cachedGroup = localStorage.getItem("userGroup");
             const cachedSchedule = localStorage.getItem("schedule");
             if (cachedGroup && cachedSchedule && localStorage.getItem("schedule_group") === cachedGroup) {
-              const groupElement = document.getElementById("gr");
-              if (groupElement) groupElement.textContent = cachedGroup;
+              setGrLabel(grLabel(cachedGroup));
               container.innerHTML = cachedSchedule;
               dayParseOnline();
               initSwiper();
@@ -554,10 +587,7 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
         if (nowBtn) upsSV();
         var Group = localStorage.getItem("userGroup");
         if (Group) {
-          const grElement = document.getElementById("gr");
-          //const menuElement = document.getElementById("group-name-menu");
-          if (grElement) grElement.innerHTML = Group;
-          //if (menuElement) menuElement.innerHTML = Group;
+          setGrLabel(grLabel(Group));
         }
         //teacherHide();
         dayParseOnline();
@@ -586,7 +616,9 @@ function getSchedule1(reqNeed = false, weekTypeNumber = null) {
       <h6>Давайте сделаем это сейчас:</h6>
       <h6 id="errs-reg" style="min-height: 1.5em;"></h6>
       <input type="text" maxlength="16" minlength="4" placeholder="Группа: " name="group-set" id="group-set" list="groups-datalist" autocomplete="off"><br>
-      <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>`;
+      <button type="submit" id="set-group-btn" onclick="groupSet0()">Готово</button>
+      <p class="teacher-reg-hint">Преподаватель? Напишите боту <b>/group</b> и свою фамилию — <a href="https://t.me/mietcbot" id="teacher-reg-link">зарегистрироваться</a></p>`;
+    bindTeacherRegHint();
   }
 }
 
@@ -612,6 +644,12 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
     //let dayType = data[0];
 
     const weekLessons = data[1].filter(d => Number(d.day_number) === Number(weekType));
+
+    // Преподаватель: в карточке вместо ФИО — группа пары (текст уже приходит
+    // подменённым с бэкенда), под ней иконка группы вместо человека
+    const whoIcon = isTeacherMode()
+      ? '<svg style="width: 1em; height: 1em;" aria-hidden="true"><use href="#mi-groups"/></svg>'
+      : '<svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>';
     
     for (const dayName of ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]) {
       const dayKey = dayMapping2[dayName];
@@ -699,7 +737,7 @@ function applyScheduleData(data, weekTypeNumber = null, cacheHtml = true) {
               <h6 class="time">${data[2][item.lesson_code].toString().replace(",", " - ")}</h6>
               <span class="subject">${escapeHtml(item.subject_name)}</span>
               <span class="room${item.room_guessed ? " room-guessed" : ""}">(${escapeHtml(item.room_name)})${item.room_guessed ? '<sup class="room-guess-q" aria-hidden="true"><svg class="mi" width="14" height="14"><use href="#mi-help"/></svg></sup>' : ""}</span>
-              <div class="teacher"><h5 class="tname"><svg style="width: 1em; height: 1em; " xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M9.775 12q-.9 0-1.5-.675T7.8 9.75l.325-2.45q.2-1.425 1.3-2.363T12 4t2.575.938t1.3 2.362l.325 2.45q.125.9-.475 1.575t-1.5.675zM4 18v-.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2v.8q0 .825-.587 1.413T18 20H6q-.825 0-1.412-.587T4 18"/></svg>${escapeHtml(item.teacher_full)}</h5></div>
+              <div class="teacher"><h5 class="tname">${whoIcon}${escapeHtml(item.teacher_full)}</h5></div>
               </div>
             </div>`;
           }
@@ -3347,6 +3385,8 @@ document.addEventListener("keydown", (event) => {
 });
 
         function openEditGr() {
+      // У преподавателя нет группы для смены — редактирование недоступно
+      if (isTeacherMode()) return;
       const groupButton = document.getElementById("gr");
       const groupEditor = document.getElementById("gr-edit");
       const back = document.querySelector(".backdrop");
@@ -3516,8 +3556,8 @@ document.addEventListener("keydown", (event) => {
                         }
                         if (Group) {
                             localStorage.setItem("userGroup", Group);
-                            const grElement = document.getElementById("gr");
-                            if (grElement) grElement.innerHTML = Group;
+                            localStorage.setItem("userRole", userGroup.role || "student");
+                            setGrLabel(grLabel(Group));
                         }
                         document.getElementById("alerter").style.display = "none";
                         document.getElementById("shocked-assistant").style.display =
@@ -4521,7 +4561,9 @@ function loadSummary() {
 
   const subject = selectedLesson?.subject || "Предмет не указан";
   const room = selectedLesson?.room || "Аудитория не указана";
-  const teacher = selectedLesson?.teacher || "Преподаватель не указан";
+  // Преподаватель: в этом поле приходит группа пары (подмена на бэкенде)
+  const teacher = selectedLesson?.teacher || (isTeacherMode() ? "Группа не указана" : "Преподаватель не указан");
+  const teacherLabel = isTeacherMode() ? "Группа" : "Преподаватель";
   const time = selectedLesson?.timeText || "";
   const state = current ? "current" : next ? "upcoming" : "finished";
 
@@ -4533,7 +4575,7 @@ function loadSummary() {
       <div class="summary-details">
         <span><b>Время</b>${time}</span>
         <span><b>Аудитория</b>${room}</span>
-        <span><b>Преподаватель</b>${teacher}</span>
+        <span><b>${teacherLabel}</b>${teacher}</span>
       </div>
     </section>`;
 

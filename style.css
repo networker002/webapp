@@ -618,6 +618,24 @@ body.pref-breaks-off .break-chip { display: none !important; }
             box-shadow: none;
         }
 
+        /* Режим преподавателя: «Фамилия И. О.» вместо группы, редактирования нет */
+        #gr.teacher-mode {
+            cursor: default;
+        }
+
+        #alerter .teacher-reg-hint {
+            margin: 0.9em auto 0;
+            max-width: 34ch;
+            font-size: 12px;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        #alerter .teacher-reg-hint a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
 
         #gr::before {
             content: "";
