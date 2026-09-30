@@ -3987,6 +3987,7 @@ const ICON_OFF_D =
     initPerPl();
   }
   function showNotificationsSettings() {
+            if (isTeacherMode()) return;
             if (tg.BackButton) {tg.BackButton.show(); tg.BackButton.onClick(function () {hideNotificationsSettings()}) }
             document.querySelector(".popuper-notifications").style.display = "flex";
             document.getElementById("cancel-bg").style.display = "block";
@@ -5632,6 +5633,10 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById("profile-show")?.addEventListener("click", () => {
     setTimeout(renderStreakCard, 80);
+    // преподаватели не получают уведомления — строки настроек быть не должно
+    document
+      .querySelector(".user-notifications")
+      ?.style.setProperty("display", isTeacherMode() ? "none" : "");
   });
 
   // Premium-пресеты возвращаются при повторном открытии настроек
