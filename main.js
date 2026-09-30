@@ -913,10 +913,16 @@ function renderBreakChips() {
       if (!a || !b) continue;
       const gap = b.start - a.end;
       if (gap < 10) continue;
+      // Длинный перерыв — это окно в пропущенные пары (пара ≈ 120 мин):
+      // 110 мин ещё перемена, 150 — уже окно в одну пару
+      const missedPairs = Math.floor(gap / 120);
+      const label = missedPairs >= 1
+        ? `Окно · ${missedPairs} ${missedPairs === 1 ? "пара" : missedPairs <= 4 ? "пары" : "пар"} (${gap} мин)`
+        : `перемена · ${gap} мин`;
       desired.push({
         after: rows[i], // <--- FIX: Explicitly assign rows[i] to the 'after' property
-        html: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> перемена · ${gap} мин`,
-        text: `перемена · ${gap} мин`,
+        html: `<svg class="mi" width="14" height="14" style="vertical-align:-2px"><use href="#mi-local_cafe"/></svg> ${label}`,
+        text: label,
       });
     }
     const existing = Array.from(day.querySelectorAll(".break-chip"));
@@ -4883,10 +4889,13 @@ function renderGoWidget() {
   const { lesson, state, minutes } = info;
   const room = lesson.room || "—";
   const big = room.replace(/\s+/g, "");
+  // в режиме преподавателя в lesson.teacher — группы (возможно, поток списком),
+  // сокращать их как ФИО нельзя
+  const who = isTeacherMode() ? lesson.teacher : shortenTeacherName(lesson.teacher);
   const copyText = [
     lesson.subject || "",
     lesson.room || "",
-    shortenTeacherName(lesson.teacher),
+    who,
   ]
     .filter(Boolean)
     .join(" - ");
