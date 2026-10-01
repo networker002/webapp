@@ -1764,7 +1764,7 @@ async function uploadShareBlob(blob, weekRange = null, cardDate = null) {
   );
   // Жёсткий таймаут: пока идёт заливка, юзер сидит на кнопке «Отправить»
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 12000);
+  const timer = setTimeout(() => ctrl.abort(), 25000);
   try {
     const res = await fetch(`${API_BASE}/share/upload`, {
       method: "POST",
@@ -2193,6 +2193,7 @@ async function deliverViaBot(blob, payload) {
   // несёт дату/диапазон, и бот рисует карточку сам из расписания.
   const { weekRange, cardDate } = payload;
   let start = null;
+  let uploaded = false;
   try {
     const publicUrl = await uploadShareBlob(blob, weekRange, cardDate);
     const digest = (publicUrl.split("/").pop() || "").replace(/\.png$/i, "").split("_").pop();
@@ -2200,6 +2201,7 @@ async function deliverViaBot(blob, payload) {
       start = `card_${digest}`;
       if (weekRange) start += `_${weekRange.replace(/\./g, "")}`;
       else if (cardDate) start += `_${cardDate}`;
+      uploaded = true;
     }
   } catch (err) {
     console.warn("card upload failed — bot will render it server-side", err);
@@ -2215,7 +2217,9 @@ async function deliverViaBot(blob, payload) {
   openBotChat(url);
   safeHaptic("success");
   showShareDone(
-    "Карточка уже в чате с ботом — перешли её в любой чат или сохрани на устройство.",
+    uploaded
+      ? "Карточка уже в чате с ботом — перешли её в любой чат или сохрани на устройство."
+      : "Картинку передать не удалось — бот нарисует свою версию карточки в чате.",
     "Открыть бота",
   );
 }
